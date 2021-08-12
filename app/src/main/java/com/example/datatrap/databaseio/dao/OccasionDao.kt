@@ -24,5 +24,5 @@ interface OccasionDao {
 
     // zisti pocet akcii obsahujucich vybrane id sessiony
     @Query("SELECT COUNT(*) FROM occasion WHERE Session = :idSession")
-    suspend fun countOccasionsOfSession(idSession: Long): Int
+    fun countOccasionsOfSession(idSession: Long): Flow<Int>
 }

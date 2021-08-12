@@ -1,4 +1,47 @@
 package com.example.datatrap.viewmodels
 
-class OccasionViewModel {
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.datatrap.databaseio.TrapDatabase
+import com.example.datatrap.models.Occasion
+import com.example.datatrap.repositories.OccasionRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
+
+class OccasionViewModel(application: Application): AndroidViewModel(application) {
+
+    private val occasionRepository: OccasionRepository
+
+    init {
+        val occasionDao = TrapDatabase.getDatabase(application).occasionDao()
+        occasionRepository = OccasionRepository(occasionDao)
+    }
+
+    fun insertOccasion(occasion: Occasion){
+        viewModelScope.launch(Dispatchers.IO) {
+            occasionRepository.insertOccasion(occasion)
+        }
+    }
+
+    fun updateOccasion(occasion: Occasion){
+        viewModelScope.launch(Dispatchers.IO) {
+            occasionRepository.updateOccasion(occasion)
+        }
+    }
+
+    fun deleteOccasion(occasion: Occasion){
+        viewModelScope.launch(Dispatchers.IO) {
+            occasionRepository.deleteOccasion(occasion)
+        }
+    }
+
+    fun getOccasionsForSession(idSession: Long): Flow<List<Occasion>>{
+        return occasionRepository.getOccasionsForSession(idSession)
+    }
+
+    fun countOccasionsOfSession(idSession: Long): Flow<Int>{
+        return occasionRepository.countOccasionsOfSession(idSession)
+    }
 }
