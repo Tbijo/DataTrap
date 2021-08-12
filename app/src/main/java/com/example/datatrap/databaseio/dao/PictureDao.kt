@@ -1,10 +1,8 @@
 package com.example.datatrap.databaseio.dao
 
-import android.graphics.Picture
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import com.example.datatrap.models.Picture
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface PictureDao {
@@ -12,8 +10,11 @@ interface PictureDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPicture(picture: Picture)
 
+    @Delete
+    suspend fun deletePicture(picture: Picture)
+
     @Query("SELECT * FROM images WHERE Img_ID = :pictureID")
-    suspend fun getPicture(pictureID: String): Picture
+    fun getPicture(pictureID: String): Flow<List<Picture>>
 
     // mozno este jedna metoda getPicture ale vstup param bude path obrazka
 }

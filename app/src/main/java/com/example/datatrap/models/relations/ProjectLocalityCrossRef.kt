@@ -1,4 +1,4 @@
-package com.example.datatrap.databaseio.relations.projectlocality
+package com.example.datatrap.models.relations
 
 import androidx.room.Entity
 

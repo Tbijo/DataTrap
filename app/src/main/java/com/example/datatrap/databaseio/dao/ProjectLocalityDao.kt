@@ -1,6 +1,8 @@
-package com.example.datatrap.databaseio.relations.projectlocality
+package com.example.datatrap.databaseio.dao
 
 import androidx.room.*
+import com.example.datatrap.models.relations.ProjectLocalityCrossRef
+import com.example.datatrap.models.relations.ProjectWithLocalities
 import kotlinx.coroutines.flow.Flow
 
 @Dao
