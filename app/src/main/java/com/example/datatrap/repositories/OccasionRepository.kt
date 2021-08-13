@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.OccasionDao
 import com.example.datatrap.models.Occasion
 import kotlinx.coroutines.flow.Flow
@@ -18,11 +19,11 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
         occasionDao.deleteOccasion(occasion)
     }
 
-    fun getOccasionsForSession(idSession: Long): Flow<List<Occasion>>{
+    fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>{
         return occasionDao.getOccasionsForSession(idSession)
     }
 
-    fun countOccasionsOfSession(idSession: Long): Flow<Int>{
+    fun countOccasionsOfSession(idSession: Long): LiveData<Int>{
         return occasionDao.countOccasionsOfSession(idSession)
     }
 }

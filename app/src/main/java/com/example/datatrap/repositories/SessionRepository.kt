@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.SessionDao
 import com.example.datatrap.models.Session
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,7 @@ class SessionRepository(private val sessionDao: SessionDao) {
         sessionDao.deleteSession(session)
     }
 
-    fun getSessionsForProject(projectName: String): Flow<List<Session>>{
+    fun getSessionsForProject(projectName: String): LiveData<List<Session>>{
         return sessionDao.getSessionsForProject(projectName)
     }
 }

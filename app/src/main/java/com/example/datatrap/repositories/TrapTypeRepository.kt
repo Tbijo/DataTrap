@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.TrapTypeDao
 import com.example.datatrap.models.TrapType
 import kotlinx.coroutines.flow.Flow
@@ -18,5 +19,5 @@ class TrapTypeRepository(private val trapTypeDao: TrapTypeDao) {
         trapTypeDao.deleteTrapType(trapType)
     }
 
-    val trapTypeList: Flow<List<TrapType>> = trapTypeDao.getTrapTypes()
+    val trapTypeList: LiveData<List<TrapType>> = trapTypeDao.getTrapTypes()
 }

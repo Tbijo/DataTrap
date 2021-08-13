@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.MethodTypeDao
 import com.example.datatrap.models.MethodType
 import kotlinx.coroutines.flow.Flow
@@ -18,5 +19,5 @@ class MethodTypeRepository(private val methodTypeDao: MethodTypeDao) {
         methodTypeDao.deleteMethodType(methodType)
     }
 
-    val methodTypeList: Flow<List<MethodType>> = methodTypeDao.getMethodTypes()
+    val methodTypeList: LiveData<List<MethodType>> = methodTypeDao.getMethodTypes()
 }

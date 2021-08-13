@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.MethodType
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +18,8 @@ interface MethodTypeDao {
     suspend fun deleteMethodType(methodType: MethodType)
 
     @Query("SELECT * FROM method_types WHERE MethodTypeName = :methodTypeName")
-    suspend fun getMethodType(methodTypeName: String): MethodType
+    suspend fun getMethodType(methodTypeName: String): LiveData<MethodType>
 
     @Query("SELECT * FROM method_types")
-    fun getMethodTypes(): Flow<List<MethodType>>
+    fun getMethodTypes(): LiveData<List<MethodType>>
 }

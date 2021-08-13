@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Session
@@ -37,7 +38,7 @@ class SessionViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun getSessionsForProject(projectName: String): Flow<List<Session>>{
+    fun getSessionsForProject(projectName: String): LiveData<List<Session>>{
         return sessionRepository.getSessionsForProject(projectName)
     }
 }

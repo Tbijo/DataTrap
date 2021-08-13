@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Locality
 import kotlinx.coroutines.flow.Flow
@@ -17,15 +18,15 @@ interface LocalityDao {
     suspend fun deleteLocality(locality: Locality)
 
     @Query("SELECT * FROM locality WHERE LocalityName = :localityName")
-    suspend fun getLocality(localityName: String): Locality
+    suspend fun getLocality(localityName: String): LiveData<Locality>
 
     @Query("SELECT * FROM locality")
-    fun getLocalities(): Flow<List<Locality>>
+    fun getLocalities(): LiveData<List<Locality>>
 
     // pridat getLocalities podla zvoleneho id Projektu
 
     @Query("SELECT * FROM locality WHERE LocalityName LIKE :localityName")
-    fun searchLocalities(localityName: String): Flow<List<Locality>>
+    fun searchLocalities(localityName: String): LiveData<List<Locality>>
 
     // mozno pridat metodu na ziskanie najnovsej lokality
 }

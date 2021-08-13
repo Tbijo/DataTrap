@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Project
 import kotlinx.coroutines.flow.Flow
@@ -20,8 +21,8 @@ interface ProjectDao {
     suspend fun getProject(projectName: String)
 
     @Query("SELECT * FROM projects")
-    fun getProjects(): Flow<List<Project>>
+    fun getProjects(): LiveData<List<Project>>
 
     @Query("SELECT * FROM projects WHERE ProjectName LIKE :nameProject")
-    fun searchProjects(nameProject: String): Flow<List<Project>>
+    fun searchProjects(nameProject: String): LiveData<List<Project>>
 }

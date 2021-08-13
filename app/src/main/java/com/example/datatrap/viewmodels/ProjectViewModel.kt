@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Project
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class ProjectViewModel(application: Application): AndroidViewModel(application) {
 
-    val projectList: Flow<List<Project>>
+    val projectList: LiveData<List<Project>>
     private val projectRepository: ProjectRepository
 
     init {
@@ -39,7 +40,7 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun searchProjects(projectName: String): Flow<List<Project>>{
+    fun searchProjects(projectName: String): LiveData<List<Project>>{
         return projectRepository.searchProjects(projectName)
     }
 }

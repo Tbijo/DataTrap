@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.ProjectDao
 import com.example.datatrap.models.Project
 import kotlinx.coroutines.flow.Flow
@@ -18,9 +19,9 @@ class ProjectRepository(private val projectDao: ProjectDao) {
         projectDao.deleteProject(project)
     }
 
-    val projectList: Flow<List<Project>> = projectDao.getProjects()
+    val projectList: LiveData<List<Project>> = projectDao.getProjects()
 
-    fun searchProjects(projectName: String): Flow<List<Project>>{
+    fun searchProjects(projectName: String): LiveData<List<Project>>{
         return projectDao.searchProjects(projectName)
     }
 }

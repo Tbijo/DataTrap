@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Occasion
 import kotlinx.coroutines.flow.Flow
@@ -17,12 +18,12 @@ interface OccasionDao {
     suspend fun deleteOccasion(occasion: Occasion)
 
     @Query("SELECT * FROM occasion WHERE id = :idOccasion")
-    suspend fun getOccasion(idOccasion: Long): Occasion
+    suspend fun getOccasion(idOccasion: Long): LiveData<Occasion>
 
     @Query("SELECT * FROM occasion WHERE Session = :idSession")
-    fun getOccasionsForSession(idSession: Long): Flow<List<Occasion>>
+    fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>
 
     // zisti pocet akcii obsahujucich vybrane id sessiony
     @Query("SELECT COUNT(*) FROM occasion WHERE Session = :idSession")
-    fun countOccasionsOfSession(idSession: Long): Flow<Int>
+    fun countOccasionsOfSession(idSession: Long): LiveData<Int>
 }

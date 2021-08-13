@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Mouse
 import kotlinx.coroutines.flow.Flow
@@ -17,10 +18,10 @@ interface MouseDao {
     suspend fun deleteMouse(mouse: Mouse)
 
     @Query("SELECT * FROM sm WHERE id = :idMouse")
-    suspend fun getMouse(idMouse: Long): Mouse
+    suspend fun getMouse(idMouse: Long): LiveData<Mouse>
 
     @Query("SELECT * FROM sm WHERE Occasion_ID = :idOccasion")
-    fun getMiceForOccasion(idOccasion: Int): Flow<List<Mouse>>
+    fun getMiceForOccasion(idOccasion: Int): LiveData<List<Mouse>>
 
     // mozno pridat metodu co vrati najnovsieho potkana
 }

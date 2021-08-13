@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.VegetType
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class VegetTypeViewModel(application: Application): AndroidViewModel(application) {
 
-    val vegetTypeList: Flow<List<VegetType>>
+    val vegetTypeList: LiveData<List<VegetType>>
     private val vegetTypeRepository: VegetTypeRepository
 
     init {

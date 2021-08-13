@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.models.relations.ProjectWithLocalities
@@ -16,5 +17,5 @@ interface ProjectLocalityDao {
 
     @Transaction // kedze robime pristup k viacerym tabulkam treba anotovat aby nedoslo k viacerym pristupom naraz
     @Query("SELECT * FROM projects WHERE ProjectName = :projectName")
-    fun getLocalitiesForProject(projectName: String): Flow<List<ProjectWithLocalities>>
+    fun getLocalitiesForProject(projectName: String): LiveData<List<ProjectWithLocalities>>
 }

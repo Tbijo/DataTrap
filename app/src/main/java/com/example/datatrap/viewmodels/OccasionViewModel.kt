@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Occasion
@@ -37,11 +38,11 @@ class OccasionViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun getOccasionsForSession(idSession: Long): Flow<List<Occasion>>{
+    fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>{
         return occasionRepository.getOccasionsForSession(idSession)
     }
 
-    fun countOccasionsOfSession(idSession: Long): Flow<Int>{
+    fun countOccasionsOfSession(idSession: Long): LiveData<Int>{
         return occasionRepository.countOccasionsOfSession(idSession)
     }
 }

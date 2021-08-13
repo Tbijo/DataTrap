@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.MethodType
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class MethodTypeViewModel(application: Application): AndroidViewModel(application) {
 
-    val methodTypeList: Flow<List<MethodType>>
+    val methodTypeList: LiveData<List<MethodType>>
     private val methodTypeRepository: MethodTypeRepository
 
     init {

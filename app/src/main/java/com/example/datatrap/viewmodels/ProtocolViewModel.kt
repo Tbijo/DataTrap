@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Protocol
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class ProtocolViewModel(application: Application): AndroidViewModel(application) {
 
-    val procolList: Flow<List<Protocol>>
+    val procolList: LiveData<List<Protocol>>
     private val protocolRepository: ProtocolRepository
 
     init {

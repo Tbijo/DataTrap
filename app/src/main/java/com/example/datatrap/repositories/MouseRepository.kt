@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.MouseDao
 import com.example.datatrap.models.Mouse
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +19,7 @@ class MouseRepository(private val mouseDao: MouseDao) {
         mouseDao.deleteMouse(mouse)
     }
 
-    fun getMiceForOccasion(idOccasion: Int): Flow<List<Mouse>>{
+    fun getMiceForOccasion(idOccasion: Int): LiveData<List<Mouse>>{
         return mouseDao.getMiceForOccasion(idOccasion)
     }
 }

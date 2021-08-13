@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Protocol
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +18,8 @@ interface ProtocolDao {
     suspend fun deleteProtocol(protocol: Protocol)
 
     @Query("SELECT * FROM protocols WHERE ProtocolName = :protocolName")
-    suspend fun getProtocol(protocolName: String): Protocol
+    suspend fun getProtocol(protocolName: String): LiveData<Protocol>
 
     @Query("SELECT * FROM protocols")
-    fun getProtocols(): Flow<List<Protocol>>
+    fun getProtocols(): LiveData<List<Protocol>>
 }

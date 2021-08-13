@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
@@ -32,7 +33,7 @@ class ProjectLocalityViewModel(application: Application): AndroidViewModel(appli
         }
     }
 
-    fun getLocalitiesForProject(projectName: String): Flow<List<ProjectWithLocalities>> {
+    fun getLocalitiesForProject(projectName: String): LiveData<List<ProjectWithLocalities>> {
         return projectLocalityRepository.getLocalitiesForProject(projectName)
     }
 }

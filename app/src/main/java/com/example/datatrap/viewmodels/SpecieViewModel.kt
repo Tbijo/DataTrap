@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Specie
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class SpecieViewModel(application: Application): AndroidViewModel(application) {
 
-    val specieList: Flow<List<Specie>>
+    val specieList: LiveData<List<Specie>>
     private val specieRepository: SpecieRepository
 
     init {
@@ -39,7 +40,7 @@ class SpecieViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun searchSpecies(specieCode: String): Flow<List<Specie>>{
+    fun searchSpecies(specieCode: String): LiveData<List<Specie>>{
         return specieRepository.searchSpecies(specieCode)
     }
 }

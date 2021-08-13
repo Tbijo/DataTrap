@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.LocalityDao
 import com.example.datatrap.models.Locality
 import kotlinx.coroutines.flow.Flow
@@ -18,9 +19,9 @@ class LocalityRepository(private val localityDao: LocalityDao) {
         localityDao.deleteLocality(locality)
     }
 
-    val localityList: Flow<List<Locality>> = localityDao.getLocalities()
+    val localityList: LiveData<List<Locality>> = localityDao.getLocalities()
 
-    fun searchLocalities(localityName: String): Flow<List<Locality>>{
+    fun searchLocalities(localityName: String): LiveData<List<Locality>>{
         return localityDao.searchLocalities(localityName)
     }
 }

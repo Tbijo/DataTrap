@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.ProjectLocalityDao
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.models.relations.ProjectWithLocalities
@@ -15,7 +16,7 @@ class ProjectLocalityRepository(private val projectLocalityDao: ProjectLocalityD
         projectLocalityDao.deleteProjectLocalityCrossRef(projectLocalityCrossRef)
     }
 
-    fun getLocalitiesForProject(projectName: String): Flow<List<ProjectWithLocalities>>{
+    fun getLocalitiesForProject(projectName: String): LiveData<List<ProjectWithLocalities>>{
         return projectLocalityDao.getLocalitiesForProject(projectName)
     }
 }

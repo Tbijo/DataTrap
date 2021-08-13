@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.TrapType
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +18,8 @@ interface TrapTypeDao {
     suspend fun deleteTrapType(trapType: TrapType)
 
     @Query("SELECT * FROM trap_types WHERE TrapTypeName = :trapTypeName")
-    suspend fun getTrapType(trapTypeName: String): TrapType
+    suspend fun getTrapType(trapTypeName: String): LiveData<TrapType>
 
     @Query("SELECT * FROM trap_types")
-    fun getTrapTypes(): Flow<List<TrapType>>
+    fun getTrapTypes(): LiveData<List<TrapType>>
 }

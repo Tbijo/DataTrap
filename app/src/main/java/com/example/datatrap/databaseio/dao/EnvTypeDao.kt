@@ -1,5 +1,6 @@
 package com.example.datatrap.databaseio.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.EnvType
 import kotlinx.coroutines.flow.Flow
@@ -17,8 +18,8 @@ interface EnvTypeDao {
     suspend fun deleteEnvType(envType: EnvType)
 
     @Query("SELECT * FROM env_types WHERE EnvTypeName = :EnvTypeName")
-    suspend fun getEnvType(EnvTypeName: String): EnvType
+    suspend fun getEnvType(EnvTypeName: String): LiveData<EnvType>
 
     @Query("SELECT * FROM env_types")
-    fun getEnvTypes(): Flow<List<EnvType>>
+    fun getEnvTypes(): LiveData<List<EnvType>>
 }

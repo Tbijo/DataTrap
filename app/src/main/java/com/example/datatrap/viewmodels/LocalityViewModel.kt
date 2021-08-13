@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Locality
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class LocalityViewModel(application: Application): AndroidViewModel(application) {
 
-    val localityList: Flow<List<Locality>>
+    val localityList: LiveData<List<Locality>>
     private val localityRepository: LocalityRepository
 
     init {
@@ -39,7 +40,7 @@ class LocalityViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun searchLocalities(localityName: String): Flow<List<Locality>>{   //LiveData
+    fun searchLocalities(localityName: String): LiveData<List<Locality>>{   //LiveData
         return localityRepository.searchLocalities(localityName)//.asLiveData()
     }
 }

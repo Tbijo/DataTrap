@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.EnvType
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class EnvTypeViewModel(application: Application): AndroidViewModel(application) {
 
-    val envTypeList: Flow<List<EnvType>>
+    val envTypeList: LiveData<List<EnvType>>
     private val envTypeRepository: EnvTypeRepository
 
     init {

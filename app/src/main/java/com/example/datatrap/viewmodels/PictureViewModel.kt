@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Picture
@@ -32,7 +33,7 @@ class PictureViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getPicture(pictureID: String): Flow<List<Picture>> {  // treba vybrat prvy
+    fun getPicture(pictureID: String): LiveData<Picture> {  // treba vybrat prvy
         return pictureRepository.getPicture(pictureID)
     }
 }

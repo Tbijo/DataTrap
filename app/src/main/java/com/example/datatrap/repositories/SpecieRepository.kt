@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.SpecieDao
 import com.example.datatrap.models.Specie
 import kotlinx.coroutines.flow.Flow
@@ -18,9 +19,9 @@ class SpecieRepository(private val specieDao: SpecieDao) {
         specieDao.deleteSpecie(specie)
     }
 
-    val specieList: Flow<List<Specie>> = specieDao.getSpecies()
+    val specieList: LiveData<List<Specie>> = specieDao.getSpecies()
 
-    fun searchSpecies(specieCode: String): Flow<List<Specie>>{
+    fun searchSpecies(specieCode: String): LiveData<List<Specie>>{
         return specieDao.searchSpecies(specieCode)
     }
 

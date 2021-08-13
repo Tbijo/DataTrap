@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Mouse
@@ -37,7 +38,7 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun getMiceForOccasion(idOccasion: Int): Flow<List<Mouse>>{
+    fun getMiceForOccasion(idOccasion: Int): LiveData<List<Mouse>>{
         return mouseRepository.getMiceForOccasion(idOccasion)
     }
 }

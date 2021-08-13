@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.TrapType
@@ -12,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class TrapTypeViewModel(application: Application): AndroidViewModel(application) {
 
-    val trapTypeList: Flow<List<TrapType>>
+    val trapTypeList: LiveData<List<TrapType>>
     private val trapTypeRepository: TrapTypeRepository
 
     init {
