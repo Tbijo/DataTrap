@@ -1,6 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/locality_navigation">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/locality_navigation"
+    app:startDestination="@id/listPrjLocalityFragment">
 
+    <fragment
+        android:id="@+id/listPrjLocalityFragment"
+        android:name="com.example.datatrap.locality.fragments.list.ListPrjLocalityFragment"
+        android:label="fragment_list_prj_locality"
+        tools:layout="@layout/fragment_list_prj_locality" >
+        <action
+            android:id="@+id/action_listPrjLocalityFragment_to_listAllLocalityFragment"
+            app:destination="@id/listAllLocalityFragment" />
+        <argument
+            android:name="projectId"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_listPrjLocalityFragment_to_sessionActivity"
+            app:destination="@id/sessionActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/listAllLocalityFragment"
+        android:name="com.example.datatrap.locality.fragments.list.ListAllLocalityFragment"
+        android:label="fragment_list_all_locality"
+        tools:layout="@layout/fragment_list_all_locality" >
+        <action
+            android:id="@+id/action_listAllLocalityFragment_to_listPrjLocalityFragment"
+            app:destination="@id/listPrjLocalityFragment" />
+        <action
+            android:id="@+id/action_listAllLocalityFragment_to_addLocalityFragment"
+            app:destination="@id/addLocalityFragment" />
+        <action
+            android:id="@+id/action_listAllLocalityFragment_to_updateLocalityFragment"
+            app:destination="@id/updateLocalityFragment" />
+        <action
+            android:id="@+id/action_listAllLocalityFragment_to_localityMapFragment"
+            app:destination="@id/localityMapFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addLocalityFragment"
+        android:name="com.example.datatrap.locality.fragments.AddLocalityFragment"
+        android:label="fragment_add_locality"
+        tools:layout="@layout/fragment_add_locality" >
+        <action
+            android:id="@+id/action_addLocalityFragment_to_listAllLocalityFragment"
+            app:destination="@id/listAllLocalityFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateLocalityFragment"
+        android:name="com.example.datatrap.locality.fragments.UpdateLocalityFragment"
+        android:label="fragment_update_locality"
+        tools:layout="@layout/fragment_update_locality" >
+        <action
+            android:id="@+id/action_updateLocalityFragment_to_listAllLocalityFragment"
+            app:destination="@id/listAllLocalityFragment" />
+        <argument
+            android:name="locality"
+            app:argType="com.example.datatrap.models.Locality" />
+    </fragment>
+    <fragment
+        android:id="@+id/localityMapFragment"
+        android:name="com.example.datatrap.locality.fragments.LocalityMapFragment"
+        android:label="fragment_locality_map"
+        tools:layout="@layout/fragment_locality_map" >
+        <action
+            android:id="@+id/action_localityMapFragment_to_listAllLocalityFragment"
+            app:destination="@id/listAllLocalityFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/sessionActivity"
+        android:name="com.example.datatrap.session.SessionActivity"
+        android:label="SessionActivity" />
 </navigation>

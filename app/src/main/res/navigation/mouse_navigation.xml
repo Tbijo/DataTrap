@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mouse_navigation">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mouse_navigation"
+    app:startDestination="@id/listOccMouseFragment">
 
+    <fragment
+        android:id="@+id/listOccMouseFragment"
+        android:name="com.example.datatrap.mouse.fragments.list.ListOccMouseFragment"
+        android:label="fragment_list_occ_mouse"
+        tools:layout="@layout/fragment_list_occ_mouse" >
+        <action
+            android:id="@+id/action_listOccMouseFragment_to_updateMouseFragment"
+            app:destination="@id/updateMouseFragment" />
+        <action
+            android:id="@+id/action_listOccMouseFragment_to_addMouseActivity"
+            app:destination="@id/addMouseActivity" />
+        <argument
+            android:name="occasionId"
+            app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateMouseFragment"
+        android:name="com.example.datatrap.mouse.fragments.UpdateMouseFragment"
+        android:label="UpdateMouseFragment" >
+        <action
+            android:id="@+id/action_updateMouseFragment_to_listOccMouseFragment"
+            app:destination="@id/listOccMouseFragment" />
+        <argument
+            android:name="mouse"
+            app:argType="com.example.datatrap.models.Mouse" />
+    </fragment>
+    <activity
+        android:id="@+id/addMouseActivity"
+        android:name="com.example.datatrap.mouse.AddMouseActivity"
+        android:label="AddMouseActivity" />
 </navigation>

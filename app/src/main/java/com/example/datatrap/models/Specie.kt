@@ -1,9 +1,12 @@
 package com.example.datatrap.models
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "species")
 data class Specie(
 
@@ -40,4 +43,4 @@ data class Specie(
 
     @ColumnInfo(name = "Img_sp")
     val img: Int?
-)
+): Parcelable

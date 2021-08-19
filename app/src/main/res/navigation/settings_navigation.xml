@@ -1,6 +1,276 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/settings_navigation">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings_navigation"
+    app:startDestination="@id/listMainFragment">
 
+    <fragment
+        android:id="@+id/listMainFragment"
+        android:name="com.example.datatrap.settings.fragments.list.ListMainFragment"
+        android:label="fragment_list_main"
+        tools:layout="@layout/fragment_list_main" >
+        <action
+            android:id="@+id/action_listMainFragment_to_aboutActivity2"
+            app:destination="@id/aboutActivity2" />
+        <action
+            android:id="@+id/action_listMainFragment_to_specieActivity2"
+            app:destination="@id/specieActivity2" />
+        <action
+            android:id="@+id/action_listMainFragment_to_bugReportActivity2"
+            app:destination="@id/bugReportActivity2" />
+        <action
+            android:id="@+id/action_listMainFragment_to_mainActivity2"
+            app:destination="@id/mainActivity2" />
+        <action
+            android:id="@+id/action_listMainFragment_to_listVegetTypeFragment"
+            app:destination="@id/listVegetTypeFragment" />
+        <action
+            android:id="@+id/action_listMainFragment_to_listTrapTypeFragment"
+            app:destination="@id/listTrapTypeFragment" />
+        <action
+            android:id="@+id/action_listMainFragment_to_listProtocolFragment2"
+            app:destination="@id/listProtocolFragment2" />
+        <action
+            android:id="@+id/action_listMainFragment_to_listEnvTypeFragment"
+            app:destination="@id/listEnvTypeFragment" />
+        <action
+            android:id="@+id/action_listMainFragment_to_listMethodFragment"
+            app:destination="@id/listMethodFragment" />
+        <action
+            android:id="@+id/action_listMainFragment_to_listMethodTypeFragment"
+            app:destination="@id/listMethodTypeFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity2"
+        android:name="com.example.datatrap.mainprj.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
+    <activity
+        android:id="@+id/specieActivity2"
+        android:name="com.example.datatrap.specie.SpecieActivity"
+        android:label="SpecieActivity" />
+    <activity
+        android:id="@+id/bugReportActivity2"
+        android:name="com.example.datatrap.bugreport.BugReportActivity"
+        android:label="BugReportActivity" />
+    <activity
+        android:id="@+id/aboutActivity2"
+        android:name="com.example.datatrap.about.AboutActivity"
+        android:label="AboutActivity" />
+    <fragment
+        android:id="@+id/listVegetTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.vegettype.list.ListVegetTypeFragment"
+        android:label="fragment_list_veget_type"
+        tools:layout="@layout/fragment_list_veget_type" >
+        <action
+            android:id="@+id/action_listVegetTypeFragment_to_listMainFragment"
+            app:destination="@id/listMainFragment" />
+        <action
+            android:id="@+id/action_listVegetTypeFragment_to_addVegetTypeFragment"
+            app:destination="@id/addVegetTypeFragment" />
+        <action
+            android:id="@+id/action_listVegetTypeFragment_to_updateVegetTypeFragment"
+            app:destination="@id/updateVegetTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addVegetTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.vegettype.AddVegetTypeFragment"
+        android:label="AddVegetTypeFragment" >
+        <action
+            android:id="@+id/action_addVegetTypeFragment_to_listVegetTypeFragment"
+            app:destination="@id/listVegetTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateVegetTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.vegettype.UpdateVegetTypeFragment"
+        android:label="fragment_update_veget_type"
+        tools:layout="@layout/fragment_update_veget_type" >
+        <action
+            android:id="@+id/action_updateVegetTypeFragment_to_listVegetTypeFragment"
+            app:destination="@id/listVegetTypeFragment" />
+        <argument
+            android:name="vegetType"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/listTrapTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.traptype.list.ListTrapTypeFragment"
+        android:label="fragment_list_trap_type"
+        tools:layout="@layout/fragment_list_trap_type" >
+        <action
+            android:id="@+id/action_listTrapTypeFragment_to_listMainFragment"
+            app:destination="@id/listMainFragment" />
+        <action
+            android:id="@+id/action_listTrapTypeFragment_to_addTrapTypeFragment"
+            app:destination="@id/addTrapTypeFragment" />
+        <action
+            android:id="@+id/action_listTrapTypeFragment_to_updateTrapTypeFragment"
+            app:destination="@id/updateTrapTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addTrapTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.traptype.AddTrapTypeFragment"
+        android:label="fragment_add_trap_type"
+        tools:layout="@layout/fragment_add_trap_type" >
+        <action
+            android:id="@+id/action_addTrapTypeFragment_to_listTrapTypeFragment"
+            app:destination="@id/listTrapTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateTrapTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.traptype.UpdateTrapTypeFragment"
+        android:label="fragment_update_trap_type"
+        tools:layout="@layout/fragment_update_trap_type" >
+        <action
+            android:id="@+id/action_updateTrapTypeFragment_to_listTrapTypeFragment"
+            app:destination="@id/listTrapTypeFragment" />
+        <argument
+            android:name="trapType"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/listProtocolFragment2"
+        android:name="com.example.datatrap.settings.fragments.list.protocol.list.ListProtocolFragment"
+        android:label="fragment_list_protocol"
+        tools:layout="@layout/fragment_list_protocol" >
+        <action
+            android:id="@+id/action_listProtocolFragment2_to_listMainFragment"
+            app:destination="@id/listMainFragment" />
+        <action
+            android:id="@+id/action_listProtocolFragment2_to_addProtocolFragment"
+            app:destination="@id/addProtocolFragment" />
+        <action
+            android:id="@+id/action_listProtocolFragment2_to_updateProtocolFragment"
+            app:destination="@id/updateProtocolFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addProtocolFragment"
+        android:name="com.example.datatrap.settings.fragments.list.protocol.AddProtocolFragment"
+        android:label="fragment_add_protocol"
+        tools:layout="@layout/fragment_add_protocol" >
+        <action
+            android:id="@+id/action_addProtocolFragment_to_listProtocolFragment2"
+            app:destination="@id/listProtocolFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateProtocolFragment"
+        android:name="com.example.datatrap.settings.fragments.list.protocol.UpdateProtocolFragment"
+        android:label="fragment_update_protocol"
+        tools:layout="@layout/fragment_update_protocol" >
+        <action
+            android:id="@+id/action_updateProtocolFragment_to_listProtocolFragment2"
+            app:destination="@id/listProtocolFragment2" />
+        <argument
+            android:name="protocol"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/listMethodTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.methodtype.list.ListMethodTypeFragment"
+        android:label="fragment_list_method_type"
+        tools:layout="@layout/fragment_list_method_type" >
+        <action
+            android:id="@+id/action_listMethodTypeFragment_to_listMainFragment"
+            app:destination="@id/listMainFragment" />
+        <action
+            android:id="@+id/action_listMethodTypeFragment_to_addMethodTypeFragment"
+            app:destination="@id/addMethodTypeFragment" />
+        <action
+            android:id="@+id/action_listMethodTypeFragment_to_updateMethodTypeFragment"
+            app:destination="@id/updateMethodTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listMethodFragment"
+        android:name="com.example.datatrap.settings.fragments.list.method.list.ListMethodFragment"
+        android:label="fragment_list_method"
+        tools:layout="@layout/fragment_list_method" >
+        <action
+            android:id="@+id/action_listMethodFragment_to_listMainFragment"
+            app:destination="@id/listMainFragment" />
+        <action
+            android:id="@+id/action_listMethodFragment_to_addMethodFragment"
+            app:destination="@id/addMethodFragment" />
+        <action
+            android:id="@+id/action_listMethodFragment_to_updateMethodFragment"
+            app:destination="@id/updateMethodFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/listEnvTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.envtype.list.ListEnvTypeFragment"
+        android:label="fragment_list_env_type"
+        tools:layout="@layout/fragment_list_env_type" >
+        <action
+            android:id="@+id/action_listEnvTypeFragment_to_listMainFragment"
+            app:destination="@id/listMainFragment" />
+        <action
+            android:id="@+id/action_listEnvTypeFragment_to_addEnvTypeFragment"
+            app:destination="@id/addEnvTypeFragment" />
+        <action
+            android:id="@+id/action_listEnvTypeFragment_to_updateEnvTypeFragment"
+            app:destination="@id/updateEnvTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addMethodTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.methodtype.AddMethodTypeFragment"
+        android:label="fragment_add_method_type"
+        tools:layout="@layout/fragment_add_method_type" >
+        <action
+            android:id="@+id/action_addMethodTypeFragment_to_listMethodTypeFragment"
+            app:destination="@id/listMethodTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateMethodTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.methodtype.UpdateMethodTypeFragment"
+        android:label="fragment_update_method_type"
+        tools:layout="@layout/fragment_update_method_type" >
+        <action
+            android:id="@+id/action_updateMethodTypeFragment_to_listMethodTypeFragment"
+            app:destination="@id/listMethodTypeFragment" />
+        <argument
+            android:name="methodType"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/addMethodFragment"
+        android:name="com.example.datatrap.settings.fragments.list.method.AddMethodFragment"
+        android:label="fragment_add_method"
+        tools:layout="@layout/fragment_add_method" >
+        <action
+            android:id="@+id/action_addMethodFragment_to_listMethodFragment"
+            app:destination="@id/listMethodFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateMethodFragment"
+        android:name="com.example.datatrap.settings.fragments.list.method.UpdateMethodFragment"
+        android:label="fragment_update_method"
+        tools:layout="@layout/fragment_update_method" >
+        <action
+            android:id="@+id/action_updateMethodFragment_to_listMethodFragment"
+            app:destination="@id/listMethodFragment" />
+        <argument
+            android:name="method"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/addEnvTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.envtype.AddEnvTypeFragment"
+        android:label="fragment_add_env_type"
+        tools:layout="@layout/fragment_add_env_type" >
+        <action
+            android:id="@+id/action_addEnvTypeFragment_to_listEnvTypeFragment"
+            app:destination="@id/listEnvTypeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateEnvTypeFragment"
+        android:name="com.example.datatrap.settings.fragments.list.envtype.UpdateEnvTypeFragment"
+        android:label="fragment_update_env_type"
+        tools:layout="@layout/fragment_update_env_type" >
+        <action
+            android:id="@+id/action_updateEnvTypeFragment_to_listEnvTypeFragment"
+            app:destination="@id/listEnvTypeFragment" />
+        <argument
+            android:name="envType"
+            app:argType="string" />
+    </fragment>
 </navigation>

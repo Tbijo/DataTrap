@@ -1,6 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_navigation">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/loginFragment">
 
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.datatrap.mainprj.fragments.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_loginFragment_to_listAllProjectFragment"
+            app:destination="@id/listAllProjectFragment" />
+        <action
+            android:id="@+id/action_loginFragment_to_specieActivity"
+            app:destination="@id/specieActivity" />
+        <action
+            android:id="@+id/action_loginFragment_to_aboutActivity"
+            app:destination="@id/aboutActivity" />
+        <action
+            android:id="@+id/action_loginFragment_to_bugReportActivity"
+            app:destination="@id/bugReportActivity" />
+        <action
+            android:id="@+id/action_loginFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
+        <action
+            android:id="@+id/action_loginFragment_to_localityActivity"
+            app:destination="@id/localityActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/listAllProjectFragment"
+        android:name="com.example.datatrap.mainprj.fragments.list.ListAllProjectFragment"
+        android:label="fragment_list_project"
+        tools:layout="@layout/fragment_list_project" >
+        <action
+            android:id="@+id/action_listAllProjectFragment_to_addProjectFragment"
+            app:destination="@id/addProjectFragment" />
+        <action
+            android:id="@+id/action_listAllProjectFragment_to_updateProjectFragment"
+            app:destination="@id/updateProjectFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/updateProjectFragment"
+        android:name="com.example.datatrap.mainprj.fragments.UpdateProjectFragment"
+        android:label="fragment_update_project"
+        tools:layout="@layout/fragment_update_project" >
+        <action
+            android:id="@+id/action_updateProjectFragment_to_listAllProjectFragment"
+            app:destination="@id/listAllProjectFragment" />
+        <argument
+            android:name="project"
+            app:argType="com.example.datatrap.models.Project" />
+    </fragment>
+    <fragment
+        android:id="@+id/addProjectFragment"
+        android:name="com.example.datatrap.mainprj.fragments.AddProjectFragment"
+        android:label="fragment_add_project"
+        tools:layout="@layout/fragment_add_project" >
+        <action
+            android:id="@+id/action_addProjectFragment_to_listAllProjectFragment"
+            app:destination="@id/listAllProjectFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/aboutActivity"
+        android:name="com.example.datatrap.about.AboutActivity"
+        android:label="AboutActivity" />
+    <activity
+        android:id="@+id/bugReportActivity"
+        android:name="com.example.datatrap.bugreport.BugReportActivity"
+        android:label="BugReportActivity" />
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.example.datatrap.settings.SettingsActivity"
+        android:label="SettingsActivity" />
+    <activity
+        android:id="@+id/specieActivity"
+        android:name="com.example.datatrap.specie.SpecieActivity"
+        android:label="SpecieActivity" />
+    <activity
+        android:id="@+id/localityActivity"
+        android:name="com.example.datatrap.locality.LocalityActivity"
+        android:label="LocalityActivity" >
+        <argument
+            android:name="projectId"
+            app:argType="integer" />
+    </activity>
 </navigation>

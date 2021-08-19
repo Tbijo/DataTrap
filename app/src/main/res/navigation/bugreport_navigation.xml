@@ -1,6 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/bugreport_navigation">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bugreport_navigation"
+    app:startDestination="@id/bugReportFragment">
 
+    <fragment
+        android:id="@+id/bugReportFragment"
+        android:name="com.example.datatrap.bugreport.BugReportFragment"
+        android:label="fragment_bug_report"
+        tools:layout="@layout/fragment_bug_report" >
+        <action
+            android:id="@+id/action_bugReportFragment_to_specieActivity2"
+            app:destination="@id/specieActivity" />
+        <action
+            android:id="@+id/action_bugReportFragment_to_settingsActivity2"
+            app:destination="@id/settingsActivity" />
+        <action
+            android:id="@+id/action_bugReportFragment_to_aboutActivity2"
+            app:destination="@id/aboutActivity" />
+        <action
+            android:id="@+id/action_bugReportFragment_to_mainActivity2"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <activity
+        android:id="@+id/aboutActivity"
+        android:name="com.example.datatrap.about.AboutActivity"
+        android:label="AboutActivity" />
+    <activity
+        android:id="@+id/settingsActivity"
+        android:name="com.example.datatrap.settings.SettingsActivity"
+        android:label="SettingsActivity" />
+    <activity
+        android:id="@+id/specieActivity"
+        android:name="com.example.datatrap.specie.SpecieActivity"
+        android:label="SpecieActivity" />
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.datatrap.mainprj.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
 </navigation>

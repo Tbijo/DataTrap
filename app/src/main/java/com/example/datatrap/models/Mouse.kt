@@ -1,9 +1,12 @@
 package com.example.datatrap.models
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 @Entity(tableName = "sm")
 data class Mouse(
     
@@ -95,4 +98,4 @@ data class Mouse(
 
     @ColumnInfo(name = "Img_sm")
     val img: Int?,
-)
+): Parcelable
