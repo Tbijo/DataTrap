@@ -3,7 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_about.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_bug_report.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_locality.xml" value="0.1" />
         <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_mouse.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_occasion.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_session.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_all_localities.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_locality_prj.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_prj_locality.xml" value="0.1" />
+        <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_locality.xml" value="0.1" />
       </map>
     </option>
   </component>
