@@ -1,60 +1,93 @@
 package com.example.datatrap.mainprj.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentUpdateProjectBinding
+import com.example.datatrap.models.Project
+import com.example.datatrap.viewmodels.ProjectViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [UpdateProjectFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UpdateProjectFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentUpdateProjectBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var projectViewModel: ProjectViewModel
+    private val args by navArgs<UpdateProjectFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_update_project, container, false)
+        savedInstanceState: Bundle?): View? {
+
+        _binding = FragmentUpdateProjectBinding.inflate(inflater, container, false)
+        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
+
+        binding.etProjectName.setText(args.project.projectName)
+        binding.etDate.setText(args.project.date)
+        binding.etNumLocality.setText(args.project.numLocal)
+        binding.etNumMouse.setText(args.project.numMice)
+
+        binding.btnUpdateProject.setOnClickListener {
+            updateProject()
+        }
+
+        setHasOptionsMenu(true)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UpdateProjectFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UpdateProjectFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.delete_menu, menu)
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_delete -> deleteUser()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    private fun updateProject() {
+        val projectName = binding.etProjectName.text.toString()
+        val date = binding.etDate.text.toString()
+        val numLocal = binding.etNumLocality.text.toString()
+        val numMouse = binding.etNumMouse.text.toString()
+
+        if (projectName.isNotEmpty() && date.isNotEmpty() && numLocal.isNotEmpty() && numMouse.isNotEmpty()){
+            val project = Project(projectName, date, Integer.parseInt(numLocal), Integer.parseInt(numMouse))
+            projectViewModel.updateProject(project)
+            Toast.makeText(requireContext(), "Project updated.", Toast.LENGTH_SHORT).show()
+
+            val action = UpdateProjectFragmentDirections.actionUpdateProjectFragmentToListAllProjectFragment()
+            findNavController().navigate(action)
+        }else{
+            Toast.makeText(requireContext(), "All fields must be filled.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun deleteUser() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_, _ ->
+
+            projectViewModel.deleteProject(args.project)
+
+            Toast.makeText(requireContext(),"Project deleted.", Toast.LENGTH_LONG).show()
+            val action = UpdateProjectFragmentDirections.actionUpdateProjectFragmentToListAllProjectFragment()
+            findNavController().navigate(action)
+        }
+            .setNegativeButton("No"){_, _ -> }
+            .setTitle("Delete project?")
+            .setMessage("Are you sure you want to delete this project?")
+            .create().show()
+    }
+
 }

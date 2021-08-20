@@ -13,21 +13,6 @@
         <action
             android:id="@+id/action_loginFragment_to_listAllProjectFragment"
             app:destination="@id/listAllProjectFragment" />
-        <action
-            android:id="@+id/action_loginFragment_to_specieActivity"
-            app:destination="@id/specieActivity" />
-        <action
-            android:id="@+id/action_loginFragment_to_aboutActivity"
-            app:destination="@id/aboutActivity" />
-        <action
-            android:id="@+id/action_loginFragment_to_bugReportActivity"
-            app:destination="@id/bugReportActivity" />
-        <action
-            android:id="@+id/action_loginFragment_to_settingsActivity"
-            app:destination="@id/settingsActivity" />
-        <action
-            android:id="@+id/action_loginFragment_to_localityActivity"
-            app:destination="@id/localityActivity" />
     </fragment>
     <fragment
         android:id="@+id/listAllProjectFragment"
@@ -40,6 +25,21 @@
         <action
             android:id="@+id/action_listAllProjectFragment_to_updateProjectFragment"
             app:destination="@id/updateProjectFragment" />
+        <action
+            android:id="@+id/action_listAllProjectFragment_to_specieActivity"
+            app:destination="@id/specieActivity" />
+        <action
+            android:id="@+id/action_listAllProjectFragment_to_aboutActivity"
+            app:destination="@id/aboutActivity" />
+        <action
+            android:id="@+id/action_listAllProjectFragment_to_bugReportActivity"
+            app:destination="@id/bugReportActivity" />
+        <action
+            android:id="@+id/action_listAllProjectFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
+        <action
+            android:id="@+id/action_listAllProjectFragment_to_localityActivity"
+            app:destination="@id/localityActivity" />
     </fragment>
     <fragment
         android:id="@+id/updateProjectFragment"
@@ -83,7 +83,7 @@
         android:name="com.example.datatrap.locality.LocalityActivity"
         android:label="LocalityActivity" >
         <argument
-            android:name="projectId"
-            app:argType="integer" />
+            android:name="projectName"
+            app:argType="string" />
     </activity>
 </navigation>

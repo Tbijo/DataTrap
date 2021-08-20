@@ -17,16 +17,16 @@
             android:id="@+id/action_listSpecieFragment_to_updateSpecieFragment"
             app:destination="@id/updateSpecieFragment" />
         <action
-            android:id="@+id/action_listSpecieFragment_to_settingsActivity2"
+            android:id="@+id/action_listSpecieFragment_to_settingsActivity"
             app:destination="@id/settingsActivity" />
         <action
-            android:id="@+id/action_listSpecieFragment_to_mainActivity2"
+            android:id="@+id/action_listSpecieFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
         <action
-            android:id="@+id/action_listSpecieFragment_to_bugReportActivity2"
+            android:id="@+id/action_listSpecieFragment_to_bugReportActivity"
             app:destination="@id/bugReportActivity" />
         <action
-            android:id="@+id/action_listSpecieFragment_to_aboutActivity2"
+            android:id="@+id/action_listSpecieFragment_to_aboutActivity"
             app:destination="@id/aboutActivity" />
     </fragment>
     <fragment

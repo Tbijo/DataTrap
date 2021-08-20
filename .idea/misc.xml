@@ -3,9 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/activity_main.xml" value="0.16574074074074074" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_about.xml" value="0.17806484295845998" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_method.xml" value="0.1" />
-        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_project.xml" value="0.1" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_project.xml" value="0.18" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_trap_type.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_veget_type.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_bug_report.xml" value="0.17806484295845998" />
@@ -15,6 +16,7 @@
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_list_main.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_list_method.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_list_prj_session.xml" value="0.1" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_list_project.xml" value="0.17806484295845998" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_list_protocol.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_list_ses_occasion.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_list_specie.xml" value="0.1" />
@@ -22,11 +24,15 @@
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_method.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_mouse.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_occasion.xml" value="0.1" />
-        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_project.xml" value="0.1" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_project.xml" value="0.25" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_session.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_specie.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_trap_type.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_veget_type.xml" value="0.1" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/project_row.xml" value="0.22" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/delete_menu.xml" value="0.26296296296296295" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/drawer_menu.xml" value="0.25" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/search_menu.xml" value="0.1" />
         <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_about.xml" value="0.1" />
         <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_bug_report.xml" value="0.1" />
         <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_locality.xml" value="0.1" />

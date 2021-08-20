@@ -11,16 +11,16 @@
         android:label="fragment_bug_report"
         tools:layout="@layout/fragment_bug_report" >
         <action
-            android:id="@+id/action_bugReportFragment_to_specieActivity2"
+            android:id="@+id/action_bugReportFragment_to_specieActivity"
             app:destination="@id/specieActivity" />
         <action
-            android:id="@+id/action_bugReportFragment_to_settingsActivity2"
+            android:id="@+id/action_bugReportFragment_to_settingsActivity"
             app:destination="@id/settingsActivity" />
         <action
-            android:id="@+id/action_bugReportFragment_to_aboutActivity2"
+            android:id="@+id/action_bugReportFragment_to_aboutActivity"
             app:destination="@id/aboutActivity" />
         <action
-            android:id="@+id/action_bugReportFragment_to_mainActivity2"
+            android:id="@+id/action_bugReportFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
     </fragment>
     <activity

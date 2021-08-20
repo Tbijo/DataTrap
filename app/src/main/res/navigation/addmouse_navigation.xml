@@ -11,8 +11,8 @@
         android:label="fragment_add_new_mouse"
         tools:layout="@layout/fragment_add_new_mouse" >
         <action
-            android:id="@+id/action_addNewMouseFragment_to_mouseActivity2"
-            app:destination="@id/mouseActivity2" />
+            android:id="@+id/action_addNewMouseFragment_to_mouseActivity"
+            app:destination="@id/mouseActivity" />
     </fragment>
     <fragment
         android:id="@+id/recaptureMouseFragment"
@@ -20,14 +20,14 @@
         android:label="fragment_recapture_mouse"
         tools:layout="@layout/fragment_recapture_mouse" >
         <action
-            android:id="@+id/action_recaptureMouseFragment_to_mouseActivity2"
-            app:destination="@id/mouseActivity2" />
+            android:id="@+id/action_recaptureMouseFragment_to_mouseActivity"
+            app:destination="@id/mouseActivity" />
         <argument
             android:name="mouse"
             app:argType="com.example.datatrap.models.Mouse" />
     </fragment>
     <activity
-        android:id="@+id/mouseActivity2"
+        android:id="@+id/mouseActivity"
         android:name="com.example.datatrap.mouse.MouseActivity"
         android:label="MouseActivity" />
 </navigation>
