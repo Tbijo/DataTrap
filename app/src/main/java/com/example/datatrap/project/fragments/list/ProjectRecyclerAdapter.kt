@@ -1,11 +1,8 @@
-package com.example.datatrap.mainprj.fragments.list
+package com.example.datatrap.project.fragments.list
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.ProjectRowBinding
 import com.example.datatrap.models.Project
@@ -28,10 +25,9 @@ class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyVie
         holder.binding.tvProjectDate.text = currenItem.date
 
         holder.binding.projectRow.setOnClickListener {
-            // tu sa prejde na locality s projektom ID
-            // ROBI SA TO INAK TREBA PREROBIT LEBO IDEME DO DRUHEJ NAVIGACIE
-            val bundle: Bundle = bundleOf("name" to "History")
-            findNavController().setGraph(R.navigation.my_second_navigation, bundle)
+            // tu sa prejde na locality s projektom
+            val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToListPrjLocalityFragment(currenItem)
+            holder.binding.root.findNavController().navigate(action)
         }
 
         holder.binding.projectRow.setOnLongClickListener {

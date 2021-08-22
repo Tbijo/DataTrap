@@ -1,4 +1,4 @@
-package com.example.datatrap.mainprj.fragments
+package com.example.datatrap.project.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
@@ -62,7 +62,7 @@ class UpdateProjectFragment : Fragment() {
         val numLocal = binding.etNumLocality.text.toString()
         val numMouse = binding.etNumMouse.text.toString()
 
-        if (projectName.isNotEmpty() && date.isNotEmpty() && numLocal.isNotEmpty() && numMouse.isNotEmpty()){
+        if (checkInput(projectName, date, numLocal, numMouse)){
             val project = Project(projectName, date, Integer.parseInt(numLocal), Integer.parseInt(numMouse))
             projectViewModel.updateProject(project)
             Toast.makeText(requireContext(), "Project updated.", Toast.LENGTH_SHORT).show()
@@ -70,8 +70,12 @@ class UpdateProjectFragment : Fragment() {
             val action = UpdateProjectFragmentDirections.actionUpdateProjectFragmentToListAllProjectFragment()
             findNavController().navigate(action)
         }else{
-            Toast.makeText(requireContext(), "All fields must be filled.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun checkInput(projectName: String, date: String, numLocal: String, numMouse: String): Boolean {
+        return projectName.isNotEmpty() && date.isNotEmpty() && numLocal.isNotEmpty() && numMouse.isNotEmpty()
     }
 
     private fun deleteUser() {

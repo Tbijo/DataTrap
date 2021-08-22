@@ -10,9 +10,6 @@
         android:label="fragment_about"
         tools:layout="@layout/fragment_about" >
         <action
-            android:id="@+id/action_aboutFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
-        <action
             android:id="@+id/action_aboutFragment_to_bugReportActivity"
             app:destination="@id/bugReportActivity" />
         <action
@@ -21,6 +18,9 @@
         <action
             android:id="@+id/action_aboutFragment_to_specieActivity"
             app:destination="@id/specieActivity" />
+        <action
+            android:id="@+id/action_aboutFragment_to_projectActivity"
+            app:destination="@id/projectActivity" />
     </fragment>
     <activity
         android:id="@+id/bugReportActivity"
@@ -35,8 +35,8 @@
         android:name="com.example.datatrap.specie.SpecieActivity"
         android:label="SpecieActivity" />
     <activity
-        android:id="@+id/mainActivity"
-        android:name="com.example.datatrap.mainprj.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+        android:id="@+id/projectActivity"
+        android:name="com.example.datatrap.project.ProjectActivity"
+        android:label="activity_project"
+        tools:layout="@layout/activity_project" />
 </navigation>

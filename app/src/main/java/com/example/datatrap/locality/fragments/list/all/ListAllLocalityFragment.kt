@@ -1,4 +1,4 @@
-package com.example.datatrap.locality.fragments.list
+package com.example.datatrap.locality.fragments.list.all
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,10 +14,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [ListPrjLocalityFragment.newInstance] factory method to
+ * Use the [ListAllLocalityFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class ListPrjLocalityFragment : Fragment() {
+class ListAllLocalityFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -35,7 +35,7 @@ class ListPrjLocalityFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_prj_locality, container, false)
+        return inflater.inflate(R.layout.fragment_list_all_locality, container, false)
     }
 
     companion object {
@@ -45,12 +45,12 @@ class ListPrjLocalityFragment : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment ListPrjLocalityFragment.
+         * @return A new instance of fragment ListAllLocalityFragment.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            ListPrjLocalityFragment().apply {
+            ListAllLocalityFragment().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)

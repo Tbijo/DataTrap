@@ -4,7 +4,7 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/mainActivity"
+            android:id="@+id/projectActivity"
             android:icon="@drawable/ic_storage"
             android:title="Projects" />
 

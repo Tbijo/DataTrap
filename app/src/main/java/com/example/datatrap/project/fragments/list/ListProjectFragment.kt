@@ -1,4 +1,4 @@
-package com.example.datatrap.mainprj.fragments.list
+package com.example.datatrap.project.fragments.list
 
 import android.os.Bundle
 import android.view.*

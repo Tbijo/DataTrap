@@ -20,8 +20,8 @@
             android:id="@+id/action_bugReportFragment_to_aboutActivity"
             app:destination="@id/aboutActivity" />
         <action
-            android:id="@+id/action_bugReportFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
+            android:id="@+id/action_bugReportFragment_to_projectActivity"
+            app:destination="@id/projectActivity" />
     </fragment>
     <activity
         android:id="@+id/aboutActivity"
@@ -36,8 +36,8 @@
         android:name="com.example.datatrap.specie.SpecieActivity"
         android:label="SpecieActivity" />
     <activity
-        android:id="@+id/mainActivity"
-        android:name="com.example.datatrap.mainprj.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+        android:id="@+id/projectActivity"
+        android:name="com.example.datatrap.project.ProjectActivity"
+        android:label="activity_project"
+        tools:layout="@layout/activity_project" />
 </navigation>

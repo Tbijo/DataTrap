@@ -20,14 +20,14 @@
             android:id="@+id/action_listSpecieFragment_to_settingsActivity"
             app:destination="@id/settingsActivity" />
         <action
-            android:id="@+id/action_listSpecieFragment_to_mainActivity"
-            app:destination="@id/mainActivity" />
-        <action
             android:id="@+id/action_listSpecieFragment_to_bugReportActivity"
             app:destination="@id/bugReportActivity" />
         <action
             android:id="@+id/action_listSpecieFragment_to_aboutActivity"
             app:destination="@id/aboutActivity" />
+        <action
+            android:id="@+id/action_listSpecieFragment_to_projectActivity"
+            app:destination="@id/projectActivity" />
     </fragment>
     <fragment
         android:id="@+id/addSpecieFragment"
@@ -49,11 +49,6 @@
             app:argType="com.example.datatrap.models.Specie" />
     </fragment>
     <activity
-        android:id="@+id/mainActivity"
-        android:name="com.example.datatrap.mainprj.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
-    <activity
         android:id="@+id/bugReportActivity"
         android:name="com.example.datatrap.bugreport.BugReportActivity"
         android:label="BugReportActivity" />
@@ -65,4 +60,9 @@
         android:id="@+id/settingsActivity"
         android:name="com.example.datatrap.settings.SettingsActivity"
         android:label="SettingsActivity" />
+    <activity
+        android:id="@+id/projectActivity"
+        android:name="com.example.datatrap.project.ProjectActivity"
+        android:label="activity_project"
+        tools:layout="@layout/activity_project" />
 </navigation>

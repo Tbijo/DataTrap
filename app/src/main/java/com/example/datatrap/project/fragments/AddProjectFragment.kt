@@ -1,4 +1,4 @@
-package com.example.datatrap.mainprj.fragments
+package com.example.datatrap.project.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddProjectBinding
 import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.ProjectViewModel
@@ -53,7 +54,7 @@ class AddProjectFragment : Fragment() {
             val action = AddProjectFragmentDirections.actionAddProjectFragmentToListAllProjectFragment()
             findNavController().navigate(action)
         }else{
-            Toast.makeText(requireContext(), "All fields must be filled.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
     }
 

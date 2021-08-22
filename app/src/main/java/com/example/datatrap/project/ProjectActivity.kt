@@ -1,4 +1,4 @@
-package com.example.datatrap.mainprj
+package com.example.datatrap.project
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,23 +9,23 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.datatrap.R
-import com.example.datatrap.databinding.ActivityMainBinding
+import com.example.datatrap.databinding.ActivityProjectBinding
 
-class MainActivity : AppCompatActivity() {
+class ProjectActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMainBinding
+    private lateinit var binding: ActivityProjectBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityProjectBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        navController = findNavController(R.id.main_fragmentContainerView)
-        appBarConfiguration = AppBarConfiguration(navController.graph, binding.mainDrawerlayout)
-        binding.mainNavigationview.setupWithNavController(navController)
-        setupActionBarWithNavController(navController, binding.mainDrawerlayout)
+        navController = findNavController(R.id.project_fragmentContainerView)
+        appBarConfiguration = AppBarConfiguration(navController.graph, binding.projectDrawerlayout)
+        binding.projectNavigationview.setupWithNavController(navController)
+        setupActionBarWithNavController(navController, binding.projectDrawerlayout)
     }
 
     override fun onSupportNavigateUp(): Boolean {
