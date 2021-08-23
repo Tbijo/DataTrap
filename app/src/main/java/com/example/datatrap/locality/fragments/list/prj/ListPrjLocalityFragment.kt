@@ -5,16 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
 import com.example.datatrap.models.Locality
-import com.example.datatrap.models.Project
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 
@@ -43,8 +40,8 @@ class ListPrjLocalityFragment : Fragment() {
         })
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
+            // presun do sessionov s projektom a lokalitou
             override fun useClickListener(position: Int) {
-                // presun do sessionov s projektom a lokalitou
                 prjLocalityViewModel.getLocalitiesForProject(args.project.projectName).observe(viewLifecycleOwner, Observer {
                     val locality: Locality = it.first().localities[position]
                     val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(args.project, locality)
@@ -63,7 +60,9 @@ class ListPrjLocalityFragment : Fragment() {
         })
 
         binding.addLocalityFloatButton.setOnClickListener {
-
+            // prechod do vsetkych lokalit na pracu s lokalitami a vytvorenie kombinacie project a locality
+            val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListAllLocalityFragment(args.project)
+            findNavController().navigate(action)
         }
 
         return binding.root

@@ -100,6 +100,9 @@
         <action
             android:id="@+id/action_listAllLocalityFragment_to_listPrjLocalityFragment"
             app:destination="@id/listPrjLocalityFragment" />
+        <argument
+            android:name="project"
+            app:argType="com.example.datatrap.models.Project" />
     </fragment>
     <fragment
         android:id="@+id/addLocalityFragment"
@@ -109,6 +112,9 @@
         <action
             android:id="@+id/action_addLocalityFragment_to_listAllLocalityFragment"
             app:destination="@id/listAllLocalityFragment" />
+        <argument
+            android:name="project"
+            app:argType="com.example.datatrap.models.Project" />
     </fragment>
     <fragment
         android:id="@+id/updateLocalityFragment"
@@ -121,6 +127,9 @@
         <argument
             android:name="locality"
             app:argType="com.example.datatrap.models.Locality" />
+        <argument
+            android:name="project"
+            app:argType="com.example.datatrap.models.Project" />
     </fragment>
     <fragment
         android:id="@+id/localityMapFragment"

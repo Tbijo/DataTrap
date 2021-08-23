@@ -1,60 +1,181 @@
 package com.example.datatrap.locality.fragments
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentUpdateLocalityBinding
+import com.example.datatrap.models.Locality
+import com.example.datatrap.viewmodels.LocalityViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [UpdateLocalityFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class UpdateLocalityFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    /*Este by bolo treba dat nejaku kontrolu ci je GPS zapate*/
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentUpdateLocalityBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var localityViewModel: LocalityViewModel
+    private val args by navArgs<UpdateLocalityFragmentArgs>()
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_update_locality, container, false)
+        savedInstanceState: Bundle?): View? {
+
+        _binding = FragmentUpdateLocalityBinding.inflate(inflater, container, false)
+        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
+        fusedLocationProviderClient =
+            LocationServices.getFusedLocationProviderClient(requireContext())
+
+        binding.etLocalityName.setText(args.locality.localityName)
+        binding.etLocalityDate.setText(args.locality.date)
+        binding.etLocalityNote.setText(args.locality.note)
+        binding.etSessionNum.setText(args.locality.numSessions.toString())
+        binding.tvLatitude.text = args.locality.x.toString()
+        binding.tvLongnitude.text = args.locality.y.toString()
+
+        binding.btnGetCoordinates.setOnClickListener {
+            updateLocality()
+        }
+
+        binding.btnUpdateLocality.setOnClickListener {
+            getCoordinates()
+        }
+
+        setHasOptionsMenu(true)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UpdateLocalityFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UpdateLocalityFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_delete -> deleteLocality()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteLocality() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_, _ ->
+
+            localityViewModel.deleteLocality(args.locality)
+
+            Toast.makeText(requireContext(),"Locality deleted.", Toast.LENGTH_LONG).show()
+            val action = UpdateLocalityFragmentDirections.actionUpdateLocalityFragmentToListAllLocalityFragment(args.project)
+            findNavController().navigate(action)
+        }
+            .setNegativeButton("No"){_, _ -> }
+            .setTitle("Delete Locality?")
+            .setMessage("Are you sure you want to delete this locality?")
+            .create().show()
+    }
+
+    private fun updateLocality() {
+        val localityName = binding.etLocalityName.text.toString()
+        val localityDate = binding.etLocalityDate.text.toString()
+        val localityNote = binding.etLocalityNote.text.toString()
+        val latitude = binding.tvLatitude.text.toString()
+        val longnitude = binding.tvLongnitude.text.toString()
+
+        if (checkInput(localityName, localityDate, latitude, longnitude)){
+            val locality = Locality(localityName, localityDate,
+                Integer.parseInt(latitude).toFloat(),
+                Integer.parseInt(longnitude).toFloat(),0, localityNote)
+            localityViewModel.updateLocality(locality)
+            Toast.makeText(requireContext(), "Locality updated.", Toast.LENGTH_SHORT).show()
+
+            val action = UpdateLocalityFragmentDirections.actionUpdateLocalityFragmentToListAllLocalityFragment(args.project)
+            findNavController().navigate(action)
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun checkInput(
+        localityName: String,
+        localityDate: String,
+        latitude: String,
+        longnitude: String
+    ): Boolean {
+        return localityName.isNotEmpty() && localityDate.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun getCoordinates() {
+        if (hasLocationPermission()) {
+            // ak mame povolenie mozme zobrazit suradnice
+            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                binding.tvLatitude.text = location.latitude.toString()
+                binding.tvLongnitude.text = location.longitude.toString()
+            }
+        } else {
+            // ak nie tak si ho vyziadame
+            requestLocationPermission()
+        }
+    }
+
+    // tato funkcia vrati true ak su povolenia dane a false ak nie su
+    private fun hasLocationPermission() =
+        EasyPermissions.hasPermissions(
+            requireContext(),
+            Manifest.permission.ACCESS_FINE_LOCATION    // sem pojdu permissiony ktore chceme skontrolovat ci su povolene
+        )
+
+    // vyziadanie si povoleni
+    private fun requestLocationPermission() {
+        EasyPermissions.requestPermissions(
+            this,
+            "This app can not work without Location Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
+            1,
+            Manifest.permission.ACCESS_FINE_LOCATION    // co chceme povolit
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        // musime len poslat vsetky parametre aby kniznica EasyPermissions vedela pracovat s nasimi runtime permissions
+        // posledny parameter je tento fragment
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    // bude zavolana ked pouzivatel da povolenie
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        Toast.makeText(requireContext(), "Permission Granted.", Toast.LENGTH_SHORT).show()
+    }
+
+    // bude zavolana ked pouzivatel zamietne povolenie
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            // ak tato funkcia vrati true znamena to ze uzivatel permanentne zablokoval ziadanu permission
+            // tak mu dame nastavenia aby ich potom sam manualne povolil
+            AppSettingsDialog.Builder(requireActivity()).build().show()
+        } else {
+            // inak len vyzadujeme permission
+            requestLocationPermission()
+        }
+    }
+
 }

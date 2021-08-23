@@ -5,56 +5,86 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentListAllLocalityBinding
+import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
+import com.example.datatrap.locality.fragments.list.prj.ListPrjLocalityFragmentArgs
+import com.example.datatrap.locality.fragments.list.prj.PrjLocalityRecyclerAdapter
+import com.example.datatrap.models.Locality
+import com.example.datatrap.models.Project
+import com.example.datatrap.models.relations.ProjectLocalityCrossRef
+import com.example.datatrap.viewmodels.LocalityViewModel
+import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ListAllLocalityFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ListAllLocalityFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentListAllLocalityBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var localityViewModel: LocalityViewModel
+    private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
+    private lateinit var adapter: PrjLocalityRecyclerAdapter
+    private val args by navArgs<ListAllLocalityFragmentArgs>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_all_locality, container, false)
+        savedInstanceState: Bundle?): View? {
+
+        _binding = FragmentListAllLocalityBinding.inflate(inflater, container, false)
+        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
+        prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
+
+        adapter = PrjLocalityRecyclerAdapter()
+        val recyclerView = binding.localityRecyclerview
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        localityViewModel.localityList.observe(viewLifecycleOwner, Observer {localities ->
+            adapter.setData(localities)
+        })
+
+        adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
+            override fun useClickListener(position: Int) {
+                // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
+                localityViewModel.localityList.observe(viewLifecycleOwner, Observer { localities ->
+                    val locality: Locality = localities[position]
+                    val project: Project = args.project
+                    val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectName, locality.localityName)
+                    prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
+                    Toast.makeText(requireContext(), "Combination created.", Toast.LENGTH_SHORT).show()
+                    val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToListPrjLocalityFragment(args.project)
+                    findNavController().navigate(action)
+                })
+            }
+
+            override fun useLongClickListener(position: Int) {
+                // tu sa pojde upravit alebo vymazat lokalita
+                localityViewModel.localityList.observe(viewLifecycleOwner, Observer { localities ->
+                    val locality: Locality = localities[position]
+                    val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToUpdateLocalityFragment(locality, args.project)
+                    findNavController().navigate(action)
+                })
+            }
+
+        })
+
+        binding.addLocalityFloatButton.setOnClickListener {
+            // tu sa pojde vytvorit nova lokalita
+            val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToAddLocalityFragment(args.project)
+            findNavController().navigate(action)
+        }
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListAllLocalityFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListAllLocalityFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
+
 }

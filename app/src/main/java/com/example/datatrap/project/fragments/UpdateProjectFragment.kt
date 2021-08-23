@@ -46,7 +46,7 @@ class UpdateProjectFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.menu_delete -> deleteUser()
+            R.id.menu_delete -> deleteProject()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -78,7 +78,7 @@ class UpdateProjectFragment : Fragment() {
         return projectName.isNotEmpty() && date.isNotEmpty() && numLocal.isNotEmpty() && numMouse.isNotEmpty()
     }
 
-    private fun deleteUser() {
+    private fun deleteProject() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
