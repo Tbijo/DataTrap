@@ -29,7 +29,6 @@ class AddProjectFragment : Fragment() {
 
         projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
-        // nastavenie onClick na pridanie noveho usera
         binding.btnAddProject.setOnClickListener {
             insertProject()
         }

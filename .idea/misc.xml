@@ -14,6 +14,7 @@
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_locality.xml" value="0.17806484295845998" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_method.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_project.xml" value="0.18" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_specie.xml" value="0.17806484295845998" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_trap_type.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_add_veget_type.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_bug_report.xml" value="0.17806484295845998" />
@@ -40,8 +41,10 @@
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_specie.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_trap_type.xml" value="0.1" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_update_veget_type.xml" value="0.1" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/fragment_view_specie.xml" value="0.17806484295845998" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/locality_row.xml" value="0.22" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/project_row.xml" value="0.22" />
+        <entry key="..\:/GitHub/DataTrap/app/src/main/res/layout/specie_row.xml" value="0.22" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/delete_menu.xml" value="0.26296296296296295" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/drawer_menu.xml" value="0.25" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/search_menu.xml" value="0.1" />

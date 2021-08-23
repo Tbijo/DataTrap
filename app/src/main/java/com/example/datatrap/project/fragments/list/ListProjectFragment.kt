@@ -27,7 +27,7 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
 
         adapter = ProjectRecyclerAdapter()
         binding.projectRecyclerview.adapter = adapter
-        binding.projectRecyclerview.layoutManager =LinearLayoutManager(requireContext())
+        binding.projectRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
         projectViewModel.projectList.observe(viewLifecycleOwner, Observer { projects ->
             adapter.setData(projects)

@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_listSpecieFragment_to_projectActivity"
             app:destination="@id/projectActivity" />
+        <action
+            android:id="@+id/action_listSpecieFragment_to_viewSpecieFragment"
+            app:destination="@id/viewSpecieFragment" />
     </fragment>
     <fragment
         android:id="@+id/addSpecieFragment"
@@ -65,4 +68,13 @@
         android:name="com.example.datatrap.project.ProjectActivity"
         android:label="activity_project"
         tools:layout="@layout/activity_project" />
+    <fragment
+        android:id="@+id/viewSpecieFragment"
+        android:name="com.example.datatrap.specie.fragments.list.ViewSpecieFragment"
+        android:label="fragment_view_specie"
+        tools:layout="@layout/fragment_view_specie" >
+        <argument
+            android:name="specie"
+            app:argType="com.example.datatrap.models.Specie" />
+    </fragment>
 </navigation>
