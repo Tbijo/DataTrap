@@ -9,7 +9,6 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.datatrap.R
-import com.example.datatrap.databinding.ActivityAboutBinding
 import com.example.datatrap.databinding.ActivitySettingsBinding
 
 class SettingsActivity : AppCompatActivity() {
