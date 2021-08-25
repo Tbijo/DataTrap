@@ -6,30 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
-import com.example.datatrap.R
-import com.example.datatrap.databinding.FragmentAddProjectBinding
 import com.example.datatrap.databinding.FragmentAddSessionBinding
-import com.example.datatrap.viewmodels.ProjectViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
 
 class AddSessionFragment : Fragment() {
 
     private var _binding: FragmentAddSessionBinding? = null
     private val binding get() = _binding!!
-    private lateinit var projectViewModel: SessionViewModel
+    private lateinit var sessionViewModel: SessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentAddSessionBinding.inflate(inflater, container, false)
 
-        projectViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
+        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
 
-        binding.btnAddProject.setOnClickListener {
-            insertProject()
+        binding.btnAddSession.setOnClickListener {
+            insertSession()
         }
 
         return binding.root
+    }
+
+    private fun insertSession() {
+
     }
 
 }

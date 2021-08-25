@@ -42,5 +42,5 @@ data class Specie(
     val note: String?,
 
     @ColumnInfo(name = "Img_sp")
-    val img: Int?
+    val img: String?
 ): Parcelable

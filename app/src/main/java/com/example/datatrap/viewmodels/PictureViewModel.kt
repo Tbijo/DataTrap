@@ -33,7 +33,7 @@ class PictureViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getPicture(pictureID: String): LiveData<Picture> {  // treba vybrat prvy
-        return pictureRepository.getPicture(pictureID)
+    fun getPictureById(pictureID: String): LiveData<Picture> {
+        return pictureRepository.getPictureById(pictureID)
     }
 }
