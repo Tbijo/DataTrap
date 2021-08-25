@@ -40,8 +40,8 @@ class SpecieRecyclerAdapter : RecyclerView.Adapter<SpecieRecyclerAdapter.MyViewH
         return specieList.size
     }
 
-    fun setData(projects: List<Specie>){
-        this.specieList = projects
+    fun setData(species: List<Specie>){
+        this.specieList = species
         notifyDataSetChanged()
     }
 
