@@ -1,14 +1,13 @@
 package com.example.datatrap.specie.fragments
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateSpecieBinding
+import com.example.datatrap.locality.fragments.UpdateLocalityFragmentDirections
 import com.example.datatrap.models.Picture
 import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.PictureViewModel
@@ -65,7 +65,35 @@ class UpdateSpecieFragment : Fragment() {
             updateSpecie()
         }
 
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_delete -> deleteSpecie()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteSpecie() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_, _ ->
+
+            specieViewModel.deleteSpecie(args.specie)
+
+            Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
+            val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToListSpecieFragment()
+            findNavController().navigate(action)
+        }
+            .setNegativeButton("No"){_, _ -> }
+            .setTitle("Delete Specie?")
+            .setMessage("Are you sure you want to delete this specie?")
+            .create().show()
     }
 
     override fun onDestroy() {
