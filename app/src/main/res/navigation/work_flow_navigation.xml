@@ -11,9 +11,6 @@
         android:label="fragment_list_project"
         tools:layout="@layout/fragment_list_project" >
         <action
-            android:id="@+id/action_listAllProjectFragment_to_addProjectFragment"
-            app:destination="@id/addProjectFragment" />
-        <action
             android:id="@+id/action_listAllProjectFragment_to_updateProjectFragment"
             app:destination="@id/updateProjectFragment" />
         <action
@@ -43,15 +40,6 @@
         <argument
             android:name="project"
             app:argType="com.example.datatrap.models.Project" />
-    </fragment>
-    <fragment
-        android:id="@+id/addProjectFragment"
-        android:name="com.example.datatrap.project.fragments.AddProjectFragment"
-        android:label="fragment_add_project"
-        tools:layout="@layout/fragment_add_project" >
-        <action
-            android:id="@+id/action_addProjectFragment_to_listAllProjectFragment"
-            app:destination="@id/listAllProjectFragment" />
     </fragment>
     <activity
         android:id="@+id/aboutActivity"
@@ -146,9 +134,6 @@
         android:label="fragment_list_prj_session"
         tools:layout="@layout/fragment_list_prj_session" >
         <action
-            android:id="@+id/action_listPrjSessionFragment_to_addSessionFragment"
-            app:destination="@id/addSessionFragment" />
-        <action
             android:id="@+id/action_listPrjSessionFragment_to_updateSessionFragment"
             app:destination="@id/updateSessionFragment" />
         <action
@@ -162,15 +147,6 @@
             app:argType="com.example.datatrap.models.Locality" />
     </fragment>
     <fragment
-        android:id="@+id/addSessionFragment"
-        android:name="com.example.datatrap.session.fragments.AddSessionFragment"
-        android:label="fragment_add_session"
-        tools:layout="@layout/fragment_add_session" >
-        <action
-            android:id="@+id/action_addSessionFragment_to_listPrjSessionFragment"
-            app:destination="@id/listPrjSessionFragment" />
-    </fragment>
-    <fragment
         android:id="@+id/updateSessionFragment"
         android:name="com.example.datatrap.session.fragments.UpdateSessionFragment"
         android:label="fragment_update_session"
@@ -181,6 +157,12 @@
         <argument
             android:name="session"
             app:argType="com.example.datatrap.models.Session" />
+        <argument
+            android:name="project"
+            app:argType="com.example.datatrap.models.Project" />
+        <argument
+            android:name="locality"
+            app:argType="com.example.datatrap.models.Locality" />
     </fragment>
     <fragment
         android:id="@+id/listSesOccasionFragment"

@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateSpecieBinding
-import com.example.datatrap.locality.fragments.UpdateLocalityFragmentDirections
 import com.example.datatrap.models.Picture
 import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.PictureViewModel

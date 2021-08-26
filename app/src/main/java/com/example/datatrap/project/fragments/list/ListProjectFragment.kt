@@ -1,16 +1,22 @@
 package com.example.datatrap.project.fragments.list
 
 import android.os.Bundle
+import android.text.InputType
 import android.view.*
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProjectBinding
+import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.ProjectViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -34,8 +40,7 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
         })
 
         binding.addProjectFloatButton.setOnClickListener {
-            val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToAddProjectFragment()
-            findNavController().navigate(action)
+            showAddDialog("New Project", "Project Name", "Add new project?")
         }
 
         setHasOptionsMenu(true)
@@ -74,6 +79,40 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
                 adapter.setData(it)
             }
         })
+    }
+
+    private fun showAddDialog(title: String, hint: String, message: String){
+        val input = EditText(requireContext())
+        input.hint = hint
+        input.inputType = InputType.TYPE_CLASS_TEXT
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(title)
+        .setMessage(message)
+        .setView(input)
+        .setPositiveButton("OK") { _, _ ->
+            val name = input.text.toString()
+            insertProject(name)
+        }
+        .setNegativeButton("Cancel") { dialog, _ ->
+            dialog.cancel()
+        }
+        .create().show()
+    }
+
+    private fun insertProject(name: String){
+        if (name.isNotEmpty()){
+            val sdf = SimpleDateFormat("dd/M/yyyy")
+            val currentDate = sdf.format(Date())
+
+            val project: Project = Project(name, currentDate, 0, 0)
+
+            projectViewModel.insertProject(project)
+
+            Toast.makeText(requireContext(),"New project added.", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
     }
 
 }

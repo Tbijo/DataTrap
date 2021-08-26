@@ -1,18 +1,25 @@
 package com.example.datatrap.session.fragments.list
 
 import android.os.Bundle
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListPrjSessionBinding
 import com.example.datatrap.models.Session
 import com.example.datatrap.viewmodels.SessionViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class ListPrjSessionFragment : Fragment() {
 
@@ -51,7 +58,7 @@ class ListPrjSessionFragment : Fragment() {
                 // uprava vybranej session
                 sessionViewModel.getSessionsForProject(args.project.projectName).observe(viewLifecycleOwner, Observer { sessions ->
                     val session: Session = sessions[position]
-                    val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(session)
+                    val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(session, args.project, args.locality)
                     findNavController().navigate(action)
                 })
             }
@@ -59,8 +66,7 @@ class ListPrjSessionFragment : Fragment() {
 
         binding.addSessionFloatButton.setOnClickListener {
             // pridanie novej session
-            val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToAddSessionFragment()
-            findNavController().navigate(action)
+            showAddDialog("New Session", "Session Number", "Add new session?")
         }
 
         return binding.root
@@ -69,6 +75,40 @@ class ListPrjSessionFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun showAddDialog(title: String, hint: String, message: String){
+        val input = EditText(requireContext())
+        input.hint = hint
+        input.inputType = InputType.TYPE_CLASS_NUMBER
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(title)
+            .setMessage(message)
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val name = input.text.toString()
+                insertSession(name)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .create().show()
+    }
+
+    private fun insertSession(name: String){
+        if (name.isNotEmpty()){
+            val sdf = SimpleDateFormat("dd/M/yyyy")
+            val currentDate = sdf.format(Date())
+
+            val session: Session = Session(1, Integer.parseInt(name), args.project.projectName, 0, currentDate)
+
+            sessionViewModel.insertSession(session)
+
+            Toast.makeText(requireContext(),"New session added.", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
     }
 
 }
