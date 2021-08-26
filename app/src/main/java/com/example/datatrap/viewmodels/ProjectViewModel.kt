@@ -8,7 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Project
 import com.example.datatrap.repositories.ProjectRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ProjectViewModel(application: Application): AndroidViewModel(application) {

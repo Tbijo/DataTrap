@@ -3,7 +3,6 @@ package com.example.datatrap.databaseio.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Specie
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SpecieDao {

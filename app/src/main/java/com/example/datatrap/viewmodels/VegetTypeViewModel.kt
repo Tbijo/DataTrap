@@ -8,7 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.VegetType
 import com.example.datatrap.repositories.VegetTypeRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class VegetTypeViewModel(application: Application): AndroidViewModel(application) {

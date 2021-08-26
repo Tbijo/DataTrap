@@ -3,7 +3,6 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.SpecieDao
 import com.example.datatrap.models.Specie
-import kotlinx.coroutines.flow.Flow
 
 class SpecieRepository(private val specieDao: SpecieDao) {
 

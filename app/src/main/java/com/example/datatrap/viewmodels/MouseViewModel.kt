@@ -8,7 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.repositories.MouseRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MouseViewModel(application: Application): AndroidViewModel(application) {

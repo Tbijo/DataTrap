@@ -8,7 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Session
 import com.example.datatrap.repositories.SessionRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class SessionViewModel(application: Application): AndroidViewModel(application) {

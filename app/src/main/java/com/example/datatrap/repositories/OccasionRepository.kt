@@ -3,7 +3,6 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.OccasionDao
 import com.example.datatrap.models.Occasion
-import kotlinx.coroutines.flow.Flow
 
 class OccasionRepository(private val occasionDao: OccasionDao) {
 

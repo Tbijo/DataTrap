@@ -3,7 +3,6 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.ProjectDao
 import com.example.datatrap.models.Project
-import kotlinx.coroutines.flow.Flow
 
 class ProjectRepository(private val projectDao: ProjectDao) {
 

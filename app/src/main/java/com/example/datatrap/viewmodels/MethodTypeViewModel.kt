@@ -8,7 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.MethodType
 import com.example.datatrap.repositories.MethodTypeRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MethodTypeViewModel(application: Application): AndroidViewModel(application) {

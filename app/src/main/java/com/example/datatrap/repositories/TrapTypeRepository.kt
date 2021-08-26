@@ -3,7 +3,6 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.TrapTypeDao
 import com.example.datatrap.models.TrapType
-import kotlinx.coroutines.flow.Flow
 
 class TrapTypeRepository(private val trapTypeDao: TrapTypeDao) {
 

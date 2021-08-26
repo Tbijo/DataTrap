@@ -3,7 +3,6 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.MouseDao
 import com.example.datatrap.models.Mouse
-import kotlinx.coroutines.flow.Flow
 
 class MouseRepository(private val mouseDao: MouseDao) {
 

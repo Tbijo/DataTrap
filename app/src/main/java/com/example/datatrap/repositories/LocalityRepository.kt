@@ -3,7 +3,6 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.LocalityDao
 import com.example.datatrap.models.Locality
-import kotlinx.coroutines.flow.Flow
 
 class LocalityRepository(private val localityDao: LocalityDao) {
 

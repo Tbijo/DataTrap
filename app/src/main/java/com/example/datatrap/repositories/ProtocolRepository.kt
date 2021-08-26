@@ -3,7 +3,6 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.ProtocolDao
 import com.example.datatrap.models.Protocol
-import kotlinx.coroutines.flow.Flow
 
 class ProtocolRepository(private val protocolDao: ProtocolDao) {
 

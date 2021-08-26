@@ -9,7 +9,6 @@ import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.models.relations.ProjectWithLocalities
 import com.example.datatrap.repositories.ProjectLocalityRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ProjectLocalityViewModel(application: Application): AndroidViewModel(application) {

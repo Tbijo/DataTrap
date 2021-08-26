@@ -8,7 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Occasion
 import com.example.datatrap.repositories.OccasionRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class OccasionViewModel(application: Application): AndroidViewModel(application) {

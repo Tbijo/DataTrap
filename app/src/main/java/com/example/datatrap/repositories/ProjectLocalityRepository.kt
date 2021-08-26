@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.ProjectLocalityDao
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.models.relations.ProjectWithLocalities
-import kotlinx.coroutines.flow.Flow
 
 class ProjectLocalityRepository(private val projectLocalityDao: ProjectLocalityDao) {
 

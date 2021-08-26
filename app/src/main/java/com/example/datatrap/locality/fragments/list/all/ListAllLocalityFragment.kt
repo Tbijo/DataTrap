@@ -11,10 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListAllLocalityBinding
-import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
-import com.example.datatrap.locality.fragments.list.prj.ListPrjLocalityFragmentArgs
 import com.example.datatrap.locality.fragments.list.prj.PrjLocalityRecyclerAdapter
 import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Project

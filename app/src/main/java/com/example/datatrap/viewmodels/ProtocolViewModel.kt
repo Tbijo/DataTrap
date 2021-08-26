@@ -8,7 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Protocol
 import com.example.datatrap.repositories.ProtocolRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class ProtocolViewModel(application: Application): AndroidViewModel(application) {

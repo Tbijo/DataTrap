@@ -8,7 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.EnvType
 import com.example.datatrap.repositories.EnvTypeRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class EnvTypeViewModel(application: Application): AndroidViewModel(application) {

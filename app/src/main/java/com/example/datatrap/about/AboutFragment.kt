@@ -5,10 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.example.datatrap.R
-import com.example.datatrap.databinding.ActivityAboutBinding
 import com.example.datatrap.databinding.FragmentAboutBinding
-import com.example.datatrap.databinding.FragmentAddProjectBinding
 
 class AboutFragment : Fragment() {
 

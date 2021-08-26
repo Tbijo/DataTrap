@@ -8,8 +8,6 @@ import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Picture
 import com.example.datatrap.repositories.PictureRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class PictureViewModel(application: Application) : AndroidViewModel(application) {

@@ -3,7 +3,6 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.VegetTypeDao
 import com.example.datatrap.models.VegetType
-import kotlinx.coroutines.flow.Flow
 
 class VegetTypeRepository(private val vegetTypeDao: VegetTypeDao) {
 
