@@ -42,8 +42,8 @@ class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyVie
         return projectList.size
     }
 
-    fun setData(users: List<Project>){
-        this.projectList = users
+    fun setData(projects: List<Project>){
+        this.projectList = projects
         notifyDataSetChanged()
     }
 }
