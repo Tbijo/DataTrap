@@ -44,7 +44,7 @@ data class Occasion(
     val gotCaught: Int?, // boolean
 
     @ColumnInfo(name = "No_traps")
-    val nomTraps: Int?,
+    val numTraps: Int?,
 
     @ColumnInfo(name = "Num_mice")
     val numMice: Int?,
