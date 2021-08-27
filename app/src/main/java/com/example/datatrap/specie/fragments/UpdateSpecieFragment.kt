@@ -86,8 +86,8 @@ class UpdateSpecieFragment : Fragment() {
             specieViewModel.deleteSpecie(args.specie)
 
             Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
-            val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToListSpecieFragment()
-            findNavController().navigate(action)
+
+            findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Specie?")
@@ -120,7 +120,7 @@ class UpdateSpecieFragment : Fragment() {
 
             if (imageUri != null){
                 img = "specie_$speciesCode"
-                val picture = Picture(speciesCode, imageUri.toString(), null)
+                val picture = Picture(img, imageUri.toString(), null)
                 pictureViewModel.insertPicture(picture)
             }
 
@@ -130,8 +130,7 @@ class UpdateSpecieFragment : Fragment() {
 
             Toast.makeText(requireContext(), "Specie Updated.", Toast.LENGTH_SHORT).show()
 
-            val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToListSpecieFragment()
-            findNavController().navigate(action)
+            findNavController().navigateUp()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }

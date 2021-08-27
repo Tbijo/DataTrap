@@ -61,8 +61,8 @@ class UpdateSessionFragment : Fragment() {
             sessionViewModel.deleteSession(args.session)
 
             Toast.makeText(requireContext(),"Session deleted.", Toast.LENGTH_LONG).show()
-            val action = UpdateSessionFragmentDirections.actionUpdateSessionFragmentToListPrjSessionFragment(args.project, args.locality)
-            findNavController().navigate(action)
+
+            findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Session?")
@@ -81,8 +81,7 @@ class UpdateSessionFragment : Fragment() {
 
             Toast.makeText(requireContext(), "Session Updated.", Toast.LENGTH_SHORT).show()
 
-            val action = UpdateSessionFragmentDirections.actionUpdateSessionFragmentToListPrjSessionFragment(args.project, args.locality)
-            findNavController().navigate(action)
+            findNavController().navigateUp()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }

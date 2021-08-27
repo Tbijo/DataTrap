@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddLocalityBinding
 import com.example.datatrap.models.Locality
@@ -29,7 +28,6 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private var _binding: FragmentAddLocalityBinding? = null
     private val binding get() = _binding!!
     private lateinit var localityViewModel: LocalityViewModel
-    private val args by navArgs<AddLocalityFragmentArgs>()
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun onCreateView(
@@ -75,8 +73,7 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             localityViewModel.insertLocality(locality)
             Toast.makeText(requireContext(), "New locality added.", Toast.LENGTH_SHORT).show()
 
-            val action = AddLocalityFragmentDirections.actionAddLocalityFragmentToListAllLocalityFragment(args.project)
-            findNavController().navigate(action)
+            findNavController().navigateUp()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }

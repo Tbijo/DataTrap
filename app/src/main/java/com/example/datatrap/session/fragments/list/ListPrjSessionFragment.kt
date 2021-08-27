@@ -57,7 +57,7 @@ class ListPrjSessionFragment : Fragment() {
             override fun useLongClickListener(position: Int) {
                 // uprava vybranej session
                     val session: Session = sessionList[position]
-                    val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(session, args.project, args.locality)
+                    val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(session)
                     findNavController().navigate(action)
             }
         })

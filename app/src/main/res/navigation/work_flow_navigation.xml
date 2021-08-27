@@ -34,9 +34,6 @@
         android:name="com.example.datatrap.project.fragments.UpdateProjectFragment"
         android:label="fragment_update_project"
         tools:layout="@layout/fragment_update_project" >
-        <action
-            android:id="@+id/action_updateProjectFragment_to_listAllProjectFragment"
-            app:destination="@id/listAllProjectFragment" />
         <argument
             android:name="project"
             app:argType="com.example.datatrap.models.Project" />
@@ -85,9 +82,6 @@
         <action
             android:id="@+id/action_listAllLocalityFragment_to_localityMapFragment"
             app:destination="@id/localityMapFragment" />
-        <action
-            android:id="@+id/action_listAllLocalityFragment_to_listPrjLocalityFragment"
-            app:destination="@id/listPrjLocalityFragment" />
         <argument
             android:name="project"
             app:argType="com.example.datatrap.models.Project" />
@@ -96,38 +90,21 @@
         android:id="@+id/addLocalityFragment"
         android:name="com.example.datatrap.locality.fragments.AddLocalityFragment"
         android:label="fragment_add_locality"
-        tools:layout="@layout/fragment_add_locality" >
-        <action
-            android:id="@+id/action_addLocalityFragment_to_listAllLocalityFragment"
-            app:destination="@id/listAllLocalityFragment" />
-        <argument
-            android:name="project"
-            app:argType="com.example.datatrap.models.Project" />
-    </fragment>
+        tools:layout="@layout/fragment_add_locality" />
     <fragment
         android:id="@+id/updateLocalityFragment"
         android:name="com.example.datatrap.locality.fragments.UpdateLocalityFragment"
         android:label="fragment_update_locality"
         tools:layout="@layout/fragment_update_locality" >
-        <action
-            android:id="@+id/action_updateLocalityFragment_to_listAllLocalityFragment"
-            app:destination="@id/listAllLocalityFragment" />
         <argument
             android:name="locality"
             app:argType="com.example.datatrap.models.Locality" />
-        <argument
-            android:name="project"
-            app:argType="com.example.datatrap.models.Project" />
     </fragment>
     <fragment
         android:id="@+id/localityMapFragment"
         android:name="com.example.datatrap.locality.fragments.LocalityMapFragment"
         android:label="fragment_locality_map"
-        tools:layout="@layout/fragment_locality_map" >
-        <action
-            android:id="@+id/action_localityMapFragment_to_listAllLocalityFragment"
-            app:destination="@id/listAllLocalityFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_locality_map" />
     <fragment
         android:id="@+id/listPrjSessionFragment"
         android:name="com.example.datatrap.session.fragments.list.ListPrjSessionFragment"
@@ -151,18 +128,9 @@
         android:name="com.example.datatrap.session.fragments.UpdateSessionFragment"
         android:label="fragment_update_session"
         tools:layout="@layout/fragment_update_session" >
-        <action
-            android:id="@+id/action_updateSessionFragment_to_listPrjSessionFragment"
-            app:destination="@id/listPrjSessionFragment" />
         <argument
             android:name="session"
             app:argType="com.example.datatrap.models.Session" />
-        <argument
-            android:name="project"
-            app:argType="com.example.datatrap.models.Project" />
-        <argument
-            android:name="locality"
-            app:argType="com.example.datatrap.models.Locality" />
     </fragment>
     <fragment
         android:id="@+id/listSesOccasionFragment"
@@ -190,18 +158,18 @@
         android:name="com.example.datatrap.occasion.fragments.AddOccasionFragment"
         android:label="fragment_add_occasion"
         tools:layout="@layout/fragment_add_occasion" >
-        <action
-            android:id="@+id/action_addOccasionFragment_to_listSesOccasionFragment"
-            app:destination="@id/listSesOccasionFragment" />
+        <argument
+            android:name="session"
+            app:argType="com.example.datatrap.models.Session" />
+        <argument
+            android:name="locality"
+            app:argType="com.example.datatrap.models.Locality" />
     </fragment>
     <fragment
         android:id="@+id/updateOccasionFragment"
         android:name="com.example.datatrap.occasion.fragments.UpdateOccasionFragment"
         android:label="fragment_update_occasion"
         tools:layout="@layout/fragment_update_occasion" >
-        <action
-            android:id="@+id/action_updateOccasionFragment_to_listSesOccasionFragment"
-            app:destination="@id/listSesOccasionFragment" />
         <argument
             android:name="occasion"
             app:argType="com.example.datatrap.models.Occasion" />
@@ -228,9 +196,6 @@
         android:id="@+id/updateMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.UpdateMouseFragment"
         android:label="UpdateMouseFragment" >
-        <action
-            android:id="@+id/action_updateMouseFragment_to_listOccMouseFragment"
-            app:destination="@id/listOccMouseFragment" />
         <argument
             android:name="mouse"
             app:argType="com.example.datatrap.models.Mouse" />
@@ -239,19 +204,12 @@
         android:id="@+id/addNewMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.AddNewMouseFragment"
         android:label="fragment_add_new_mouse"
-        tools:layout="@layout/fragment_add_new_mouse" >
-        <action
-            android:id="@+id/action_addNewMouseFragment_to_listOccMouseFragment"
-            app:destination="@id/listOccMouseFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_add_new_mouse" />
     <fragment
         android:id="@+id/recaptureMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.RecaptureMouseFragment"
         android:label="fragment_recapture_mouse"
         tools:layout="@layout/fragment_recapture_mouse" >
-        <action
-            android:id="@+id/action_recaptureMouseFragment_to_listOccMouseFragment"
-            app:destination="@id/listOccMouseFragment" />
         <argument
             android:name="mouse"
             app:argType="com.example.datatrap.models.Mouse" />

@@ -67,8 +67,7 @@ class UpdateProjectFragment : Fragment() {
             projectViewModel.updateProject(project)
             Toast.makeText(requireContext(), "Project updated.", Toast.LENGTH_SHORT).show()
 
-            val action = UpdateProjectFragmentDirections.actionUpdateProjectFragmentToListAllProjectFragment()
-            findNavController().navigate(action)
+            findNavController().navigateUp()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
@@ -85,8 +84,8 @@ class UpdateProjectFragment : Fragment() {
             projectViewModel.deleteProject(args.project)
 
             Toast.makeText(requireContext(),"Project deleted.", Toast.LENGTH_LONG).show()
-            val action = UpdateProjectFragmentDirections.actionUpdateProjectFragmentToListAllProjectFragment()
-            findNavController().navigate(action)
+
+            findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete project?")

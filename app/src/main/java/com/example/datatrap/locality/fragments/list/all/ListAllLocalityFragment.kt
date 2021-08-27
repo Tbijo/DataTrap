@@ -55,14 +55,14 @@ class ListAllLocalityFragment : Fragment() {
                     val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectName, locality.localityName)
                     prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
                     Toast.makeText(requireContext(), "Combination created.", Toast.LENGTH_SHORT).show()
-                    val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToListPrjLocalityFragment(args.project)
-                    findNavController().navigate(action)
+
+                    findNavController().navigateUp()
             }
 
             override fun useLongClickListener(position: Int) {
                 // tu sa pojde upravit alebo vymazat lokalita
                     val locality: Locality = localityList[position]
-                    val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToUpdateLocalityFragment(locality, args.project)
+                    val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToUpdateLocalityFragment(locality)
                     findNavController().navigate(action)
             }
 
@@ -70,7 +70,7 @@ class ListAllLocalityFragment : Fragment() {
 
         binding.addLocalityFloatButton.setOnClickListener {
             // tu sa pojde vytvorit nova lokalita
-            val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToAddLocalityFragment(args.project)
+            val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToAddLocalityFragment()
             findNavController().navigate(action)
         }
 

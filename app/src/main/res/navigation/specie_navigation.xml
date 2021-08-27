@@ -35,18 +35,11 @@
     <fragment
         android:id="@+id/addSpecieFragment"
         android:name="com.example.datatrap.specie.fragments.AddSpecieFragment"
-        android:label="AddSpecieFragment" >
-        <action
-            android:id="@+id/action_addSpecieFragment_to_listSpecieFragment"
-            app:destination="@id/listSpecieFragment" />
-    </fragment>
+        android:label="AddSpecieFragment" />
     <fragment
         android:id="@+id/updateSpecieFragment"
         android:name="com.example.datatrap.specie.fragments.UpdateSpecieFragment"
         android:label="UpdateSpecieFragment" >
-        <action
-            android:id="@+id/action_updateSpecieFragment_to_listSpecieFragment"
-            app:destination="@id/listSpecieFragment" />
         <argument
             android:name="specie"
             app:argType="com.example.datatrap.models.Specie" />

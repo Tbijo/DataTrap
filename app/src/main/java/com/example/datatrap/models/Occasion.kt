@@ -62,5 +62,5 @@ data class Occasion(
     val note: String?,
 
     @ColumnInfo(name = "Img_occ")
-    val img: Int?
+    val img: String?
 ): Parcelable

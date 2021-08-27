@@ -80,8 +80,7 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             localityViewModel.deleteLocality(args.locality)
 
             Toast.makeText(requireContext(),"Locality deleted.", Toast.LENGTH_LONG).show()
-            val action = UpdateLocalityFragmentDirections.actionUpdateLocalityFragmentToListAllLocalityFragment(args.project)
-            findNavController().navigate(action)
+            findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Locality?")
@@ -103,8 +102,7 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             localityViewModel.updateLocality(locality)
             Toast.makeText(requireContext(), "Locality updated.", Toast.LENGTH_SHORT).show()
 
-            val action = UpdateLocalityFragmentDirections.actionUpdateLocalityFragmentToListAllLocalityFragment(args.project)
-            findNavController().navigate(action)
+            findNavController().navigateUp()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }

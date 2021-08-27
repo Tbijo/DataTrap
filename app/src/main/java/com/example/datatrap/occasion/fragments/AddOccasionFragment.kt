@@ -1,60 +1,110 @@
 package com.example.datatrap.occasion.fragments
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentAddOccasionBinding
+import com.example.datatrap.models.Occasion
+import com.example.datatrap.models.Picture
+import com.example.datatrap.viewmodels.OccasionViewModel
+import com.example.datatrap.viewmodels.PictureViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddOccasionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddOccasionFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentAddOccasionBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var occasionViewModel: OccasionViewModel
+    private lateinit var pictureViewModel: PictureViewModel
+    private val args by navArgs<AddOccasionFragmentArgs>()
+
+    private var imageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_occasion, container, false)
+        savedInstanceState: Bundle?): View? {
+        _binding = FragmentAddOccasionBinding.inflate(inflater, container, false)
+        occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
+        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
+
+        binding.btnAddOccasion.setOnClickListener {
+            insertOccasion()
+        }
+
+        binding.btnOccPhoto.setOnClickListener {
+            takePicture()
+        }
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddOccasionFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddOccasionFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun takePicture() {
+
     }
+
+    private fun insertOccasion() {
+        val occasionNum: Int = Integer.parseInt(binding.etOccasion.text.toString())
+        val method: String = binding.spinMethod.selectedItem.toString()
+        val methodType: String = binding.spinMethodType.selectedItem.toString()
+        val trapType: String = binding.spinTrapType.selectedItem.toString()
+        val envType: String? = binding.spinEnvType.selectedItem.toString()
+        val vegType: String? = binding.spinVegType.selectedItem.toString()
+
+        val sdf = SimpleDateFormat("dd/M/yyyy")
+        val currentDate = sdf.format(Date())
+
+        val gotCaught = 0
+        val numTraps = 0
+        val numMice = 0
+        val temperature: Float? = null
+        val weather: String? = null
+        val leg: String = binding.etLeg.toString()
+        val note: String? = binding.etOccasionNote.toString()
+        var img: String? = null
+
+        if (checkInput(occasionNum, method, methodType, trapType, leg)){
+
+            if (imageUri != null){
+                img = "Nazov Fotky"
+                val picture = Picture(img, imageUri.toString(), binding.etOccPicNote.text.toString())
+                pictureViewModel.insertPicture(picture)
+            }
+
+            val occasion = Occasion(0, occasionNum, args.locality.localityName, args.session.id, method, methodType,
+            trapType, envType, vegType, currentDate, gotCaught, numTraps, numMice, temperature,
+            weather, leg, note, img)
+
+            occasionViewModel.insertOccasion(occasion)
+            Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
+
+            findNavController().navigateUp()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun checkInput(
+        occasion: Int,
+        method: String,
+        methodType: String,
+        trapType: String,
+        leg: String
+    ): Boolean {
+        return occasion.toString().isNotEmpty() && method.isNotEmpty() && methodType.isNotEmpty() && trapType.isNotEmpty() && leg.isNotEmpty()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
 }

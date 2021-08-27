@@ -1,60 +1,70 @@
 package com.example.datatrap.occasion.fragments
 
+import android.app.AlertDialog
+import android.net.Uri
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentUpdateOccasionBinding
+import com.example.datatrap.viewmodels.OccasionViewModel
+import com.example.datatrap.viewmodels.PictureViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [UpdateOccasionFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UpdateOccasionFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentUpdateOccasionBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var occasionViewModel: OccasionViewModel
+    private lateinit var pictureViewModel: PictureViewModel
+    private val args by navArgs<UpdateOccasionFragmentArgs>()
+
+    private var imageUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_update_occasion, container, false)
+        savedInstanceState: Bundle?): View? {
+        _binding = FragmentUpdateOccasionBinding.inflate(inflater, container, false)
+        occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
+        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
+
+        setHasOptionsMenu(true)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UpdateOccasionFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UpdateOccasionFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.delete_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_delete -> deleteOccasion()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteOccasion() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_, _ ->
+
+            occasionViewModel.deleteOccasion(args.occasion)
+
+            Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
+        }
+            .setNegativeButton("No"){_, _ -> }
+            .setTitle("Delete Occasion?")
+            .setMessage("Are you sure you want to delete this occasion?")
+            .create().show()
+    }
+
 }

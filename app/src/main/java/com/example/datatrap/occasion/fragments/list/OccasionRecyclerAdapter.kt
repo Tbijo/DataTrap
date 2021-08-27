@@ -2,6 +2,7 @@ package com.example.datatrap.occasion.fragments.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.OccasionRowBinding
 import com.example.datatrap.models.Occasion
@@ -25,10 +26,14 @@ class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyV
 
         holder.binding.occasionRow.setOnClickListener {
             // tu sa pojde do Mouse s occasion
+            val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToListOccMouseFragment(currenItem)
+            holder.binding.occasionRow.findNavController().navigate(action)
         }
 
         holder.binding.occasionRow.setOnLongClickListener {
             // tu sa pojde do update occasion
+            val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToUpdateOccasionFragment(currenItem)
+            holder.binding.occasionRow.findNavController().navigate(action)
             true
         }
     }

@@ -71,7 +71,7 @@ class AddSpecieFragment : Fragment() {
 
             if (imageUri != null){
                 img = "specie_$speciesCode"
-                val picture = Picture(speciesCode, imageUri.toString(), null)
+                val picture = Picture(img, imageUri.toString(), null)
                 pictureViewModel.insertPicture(picture)
             }
 
@@ -81,8 +81,7 @@ class AddSpecieFragment : Fragment() {
 
             Toast.makeText(requireContext(), "Specie Added.", Toast.LENGTH_SHORT).show()
 
-            val action = AddSpecieFragmentDirections.actionAddSpecieFragmentToListSpecieFragment()
-            findNavController().navigate(action)
+            findNavController().navigateUp()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
