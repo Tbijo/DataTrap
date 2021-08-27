@@ -22,6 +22,7 @@ class ListPrjLocalityFragment : Fragment() {
     private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListPrjLocalityFragmentArgs>()
+    private lateinit var localityList: List<Locality>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,25 +38,22 @@ class ListPrjLocalityFragment : Fragment() {
 
         prjLocalityViewModel.getLocalitiesForProject(args.project.projectName).observe(viewLifecycleOwner, Observer {
             adapter.setData(it.first().localities)
+            localityList = it.first().localities
         })
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
             // presun do sessionov s projektom a lokalitou
             override fun useClickListener(position: Int) {
-                prjLocalityViewModel.getLocalitiesForProject(args.project.projectName).observe(viewLifecycleOwner, Observer {
-                    val locality: Locality = it.first().localities[position]
+                    val locality: Locality = localityList[position]
                     val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(args.project, locality)
                     findNavController().navigate(action)
-                })
             }
 
             override fun useLongClickListener(position: Int) {
                 // vymazat kombinaciu projektu a vybranej lokality
-                prjLocalityViewModel.getLocalitiesForProject(args.project.projectName).observe(viewLifecycleOwner, Observer {
-                    val locality: Locality = it.first().localities[position]
+                    val locality: Locality = localityList[position]
                     val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectName, locality.localityName)
                     prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
-                })
             }
         })
 

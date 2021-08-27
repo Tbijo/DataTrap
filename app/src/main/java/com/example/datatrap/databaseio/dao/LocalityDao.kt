@@ -7,7 +7,7 @@ import com.example.datatrap.models.Locality
 @Dao
 interface LocalityDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertLocality(locality: Locality)
 
     @Update

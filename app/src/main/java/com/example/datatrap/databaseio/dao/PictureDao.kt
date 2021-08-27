@@ -7,7 +7,7 @@ import com.example.datatrap.models.Picture
 @Dao
 interface PictureDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPicture(picture: Picture)
 
     @Delete

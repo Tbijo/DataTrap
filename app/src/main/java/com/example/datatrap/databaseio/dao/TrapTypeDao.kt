@@ -7,7 +7,7 @@ import com.example.datatrap.models.TrapType
 @Dao
 interface TrapTypeDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrapType(trapType: TrapType)
 
     @Update

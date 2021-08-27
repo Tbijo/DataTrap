@@ -7,7 +7,7 @@ import com.example.datatrap.models.EnvType
 @Dao
 interface EnvTypeDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEnvType(envType: EnvType)
 
     @Update

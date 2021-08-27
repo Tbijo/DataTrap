@@ -7,7 +7,7 @@ import com.example.datatrap.models.MethodType
 @Dao
 interface MethodTypeDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMethodType(methodType: MethodType)
 
     @Update

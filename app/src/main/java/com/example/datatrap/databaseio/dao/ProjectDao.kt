@@ -7,7 +7,7 @@ import com.example.datatrap.models.Project
 @Dao
 interface ProjectDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProject(project: Project)
 
     @Update

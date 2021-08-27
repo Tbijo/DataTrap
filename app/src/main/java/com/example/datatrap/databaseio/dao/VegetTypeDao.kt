@@ -7,7 +7,7 @@ import com.example.datatrap.models.VegetType
 @Dao
 interface VegetTypeDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertVegetType(vegetType: VegetType)
 
     @Update

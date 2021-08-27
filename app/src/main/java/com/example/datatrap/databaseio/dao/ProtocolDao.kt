@@ -7,7 +7,7 @@ import com.example.datatrap.models.Protocol
 @Dao
 interface ProtocolDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProtocol(protocol: Protocol)
 
     @Update

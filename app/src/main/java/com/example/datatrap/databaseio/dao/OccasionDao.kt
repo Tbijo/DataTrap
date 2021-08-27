@@ -7,7 +7,7 @@ import com.example.datatrap.models.Occasion
 @Dao
 interface OccasionDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOccasion(occasion: Occasion)
 
     @Update

@@ -7,7 +7,7 @@ import com.example.datatrap.models.Session
 @Dao
 interface SessionDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSession(session: Session)
 
     @Update

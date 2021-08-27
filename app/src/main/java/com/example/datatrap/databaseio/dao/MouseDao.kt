@@ -7,7 +7,7 @@ import com.example.datatrap.models.Mouse
 @Dao
 interface MouseDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMouse(mouse: Mouse)
 
     @Update

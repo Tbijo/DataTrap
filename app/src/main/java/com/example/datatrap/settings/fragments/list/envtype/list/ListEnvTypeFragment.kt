@@ -25,6 +25,7 @@ class ListEnvTypeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var adapter: EnvTypeRecyclerAdapter
     private lateinit var envTypeViewModel: EnvTypeViewModel
+    private lateinit var envTypeList: List<EnvType>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,30 +39,24 @@ class ListEnvTypeFragment : Fragment() {
 
         envTypeViewModel.envTypeList.observe(viewLifecycleOwner, Observer { envTypes ->
             adapter.setData(envTypes)
+            envTypeList = envTypes
         })
 
         binding.addEnvtypeFloatButton.setOnClickListener {
             showAddDialog("New Environment Type", "Name", "Add new environment type?")
-            // ASI BUDE TREBA REFRESHNUT RECYCLER TREBA OTESTOVAT ALE ZA PO ULOZENI LEBO OKNO NEBUDE CAKAT
         }
 
         adapter.setOnItemClickListener(object: EnvTypeRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update envType
-                envTypeViewModel.envTypeList.observe(viewLifecycleOwner, Observer {
-                    val currName: String = it[position].envTypeName
-                    showUpdateDialog("Update Environment Type", "Name", "Update environment type?", currName)
-                    // ASI BUDE TREBA REFRESHNUT RECYCLER TREBA OTESTOVAT ALE ZA PO ULOZENI LEBO OKNO NEBUDE CAKAT
-                })
+                val currName: String = envTypeList[position].envTypeName
+                showUpdateDialog("Update Environment Type", "Name", "Update environment type?", currName)
             }
 
             override fun useLongClickListener(position: Int) {
                 // delete envType
-                envTypeViewModel.envTypeList.observe(viewLifecycleOwner, Observer {
-                    val envType: EnvType = it[position]
-                    deleteEnvType(envType)
-                    // ASI BUDE TREBA REFRESHNUT RECYCLER TREBA OTESTOVAT ALE ZA PO ULOZENI LEBO OKNO NEBUDE CAKAT
-                })
+                val envType: EnvType = envTypeList[position]
+                deleteEnvType(envType)
             }
         })
 

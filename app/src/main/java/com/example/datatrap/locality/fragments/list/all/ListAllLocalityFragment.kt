@@ -27,6 +27,7 @@ class ListAllLocalityFragment : Fragment() {
     private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListAllLocalityFragmentArgs>()
+    private lateinit var localityList: List<Locality>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,29 +44,26 @@ class ListAllLocalityFragment : Fragment() {
 
         localityViewModel.localityList.observe(viewLifecycleOwner, Observer {localities ->
             adapter.setData(localities)
+            localityList = localities
         })
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
-                localityViewModel.localityList.observe(viewLifecycleOwner, Observer { localities ->
-                    val locality: Locality = localities[position]
+                    val locality: Locality = localityList[position]
                     val project: Project = args.project
                     val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectName, locality.localityName)
                     prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
                     Toast.makeText(requireContext(), "Combination created.", Toast.LENGTH_SHORT).show()
                     val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToListPrjLocalityFragment(args.project)
                     findNavController().navigate(action)
-                })
             }
 
             override fun useLongClickListener(position: Int) {
                 // tu sa pojde upravit alebo vymazat lokalita
-                localityViewModel.localityList.observe(viewLifecycleOwner, Observer { localities ->
-                    val locality: Locality = localities[position]
+                    val locality: Locality = localityList[position]
                     val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToUpdateLocalityFragment(locality, args.project)
                     findNavController().navigate(action)
-                })
             }
 
         })

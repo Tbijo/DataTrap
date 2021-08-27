@@ -8,7 +8,7 @@ import com.example.datatrap.models.relations.ProjectWithLocalities
 @Dao
 interface ProjectLocalityDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProjectLocalityCrossRef(projectLocalityCrossRef: ProjectLocalityCrossRef)
 
     @Delete

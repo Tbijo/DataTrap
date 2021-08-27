@@ -28,6 +28,7 @@ class ListPrjSessionFragment : Fragment() {
     private lateinit var sessionViewModel: SessionViewModel
     private lateinit var adapter: PrjSessionRecyclerAdapter
     private val args by navArgs<ListPrjSessionFragmentArgs>()
+    private lateinit var sessionList: List<Session>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,25 +43,22 @@ class ListPrjSessionFragment : Fragment() {
 
         sessionViewModel.getSessionsForProject(args.project.projectName).observe(viewLifecycleOwner, Observer { sessions ->
             adapter.setData(sessions)
+            sessionList = sessions
         })
 
         adapter.setOnItemClickListener(object : PrjSessionRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // ideme do occasion
-                sessionViewModel.getSessionsForProject(args.project.projectName).observe(viewLifecycleOwner, Observer { sessions ->
-                    val session: Session = sessions[position]
+                    val session: Session = sessionList[position]
                     val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(session, args.locality)
                     findNavController().navigate(action)
-                })
             }
 
             override fun useLongClickListener(position: Int) {
                 // uprava vybranej session
-                sessionViewModel.getSessionsForProject(args.project.projectName).observe(viewLifecycleOwner, Observer { sessions ->
-                    val session: Session = sessions[position]
+                    val session: Session = sessionList[position]
                     val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(session, args.project, args.locality)
                     findNavController().navigate(action)
-                })
             }
         })
 
@@ -101,7 +99,7 @@ class ListPrjSessionFragment : Fragment() {
             val sdf = SimpleDateFormat("dd/M/yyyy")
             val currentDate = sdf.format(Date())
 
-            val session: Session = Session(1, Integer.parseInt(name), args.project.projectName, 0, currentDate)
+            val session: Session = Session(0, Integer.parseInt(name), args.project.projectName, 0, currentDate)
 
             sessionViewModel.insertSession(session)
 

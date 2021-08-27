@@ -7,7 +7,7 @@ import com.example.datatrap.models.Specie
 @Dao
 interface SpecieDao {
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSpecie(specie: Specie)
 
     @Update
