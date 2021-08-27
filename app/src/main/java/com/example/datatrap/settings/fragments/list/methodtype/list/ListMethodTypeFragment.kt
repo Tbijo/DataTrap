@@ -1,60 +1,149 @@
 package com.example.datatrap.settings.fragments.list.methodtype.list
 
 import android.os.Bundle
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentListMethodTypeBinding
+import com.example.datatrap.models.MethodType
+import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
+import com.example.datatrap.viewmodels.MethodTypeViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ListMethodTypeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ListMethodTypeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentListMethodTypeBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: AnyRecyclerAdapter
+    private lateinit var methodTypeViewModel: MethodTypeViewModel
+    private lateinit var methodTypeList: List<MethodType>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_method_type, container, false)
+        savedInstanceState: Bundle?): View? {
+        _binding = FragmentListMethodTypeBinding.inflate(inflater, container, false)
+        methodTypeViewModel = ViewModelProvider(this).get(MethodTypeViewModel::class.java)
+
+        adapter = AnyRecyclerAdapter()
+        binding.methodTypeRecyclerview.adapter = adapter
+        binding.methodTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+
+        methodTypeViewModel.methodTypeList.observe(viewLifecycleOwner, Observer { methodTypes ->
+            adapter.setData(methodTypes)
+            methodTypeList = methodTypes
+        })
+
+        binding.addMethodtypeFloatButton.setOnClickListener {
+            // add method type
+            showAddDialog("New Method Type", "Add new method type?")
+        }
+
+        adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
+            override fun useClickListener(position: Int) {
+                // update method type
+                val currName: String = methodTypeList[position].methodTypeName
+                showUpdateDialog("Update Method Type", "Update method type?", currName)
+            }
+
+            override fun useLongClickListener(position: Int) {
+                // delete method type
+                val methodType: MethodType = methodTypeList[position]
+                deleteEnvType(methodType, "Method type", "Method Type")
+            }
+        })
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListMethodTypeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListMethodTypeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
+
+    private fun showAddDialog(title: String, message: String){
+        val input = EditText(requireContext())
+        input.hint = "Name"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(title)
+            .setMessage(message)
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val name = input.text.toString()
+                insertMethodType(name)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .create().show()
+    }
+
+    private fun insertMethodType(name: String){
+        if (name.isNotEmpty()){
+
+            val methodType: MethodType = MethodType(name)
+
+            methodTypeViewModel.insertMethodType(methodType)
+
+            Toast.makeText(requireContext(),"New method type added.", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun showUpdateDialog(title: String, message: String, currName: String){
+        val input = EditText(requireContext())
+        input.setText(currName)
+        input.hint = "Name"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(title)
+            .setMessage(message)
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val name = input.text.toString()
+                updateMethodType(name)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .create().show()
+    }
+
+    private fun updateMethodType(name: String){
+        if (name.isNotEmpty()){
+
+            val methodType: MethodType = MethodType(name)
+
+            methodTypeViewModel.updateMethodType(methodType)
+
+            Toast.makeText(requireContext(),"Method type updated.", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun deleteEnvType(methodType: MethodType, what: String, title: String) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_, _ ->
+
+            methodTypeViewModel.deleteMethodType(methodType)
+            Toast.makeText(requireContext(),"$what deleted.", Toast.LENGTH_LONG).show()
+        }
+            .setNegativeButton("No"){_, _ -> }
+            .setTitle("Delete $title")
+            .setMessage("Are you sure you want to delete this $what ?")
+            .create().show()
+    }
+
 }

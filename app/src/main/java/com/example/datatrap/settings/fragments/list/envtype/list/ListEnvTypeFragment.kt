@@ -11,19 +11,17 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListEnvTypeBinding
 import com.example.datatrap.models.EnvType
-import com.example.datatrap.project.fragments.UpdateProjectFragmentDirections
 import com.example.datatrap.viewmodels.EnvTypeViewModel
 
 class ListEnvTypeFragment : Fragment() {
 
     private var _binding: FragmentListEnvTypeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: EnvTypeRecyclerAdapter
+    private lateinit var adapter: AnyRecyclerAdapter
     private lateinit var envTypeViewModel: EnvTypeViewModel
     private lateinit var envTypeList: List<EnvType>
 
@@ -33,7 +31,7 @@ class ListEnvTypeFragment : Fragment() {
         _binding = FragmentListEnvTypeBinding.inflate(inflater, container, false)
         envTypeViewModel = ViewModelProvider(this).get(EnvTypeViewModel::class.java)
 
-        adapter = EnvTypeRecyclerAdapter()
+        adapter = AnyRecyclerAdapter()
         binding.envTypeRecyclerview.adapter = adapter
         binding.envTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
@@ -43,20 +41,21 @@ class ListEnvTypeFragment : Fragment() {
         })
 
         binding.addEnvtypeFloatButton.setOnClickListener {
-            showAddDialog("New Environment Type", "Name", "Add new environment type?")
+            showAddDialog("New Environment Type", "Add new environment type?")
         }
 
-        adapter.setOnItemClickListener(object: EnvTypeRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update envType
                 val currName: String = envTypeList[position].envTypeName
-                showUpdateDialog("Update Environment Type", "Name", "Update environment type?", currName)
+                showUpdateDialog("Update Environment Type", "Update environment type?", currName)
             }
 
             override fun useLongClickListener(position: Int) {
                 // delete envType
                 val envType: EnvType = envTypeList[position]
-                deleteEnvType(envType)
+
+                deleteEnvType(envType, "Environment type", "Environment Type")
             }
         })
 
@@ -68,9 +67,9 @@ class ListEnvTypeFragment : Fragment() {
         _binding = null
     }
 
-    private fun showAddDialog(title: String, hint: String, message: String){
+    private fun showAddDialog(title: String, message: String){
         val input = EditText(requireContext())
-        input.hint = hint
+        input.hint = "Name"
         input.inputType = InputType.TYPE_CLASS_TEXT
 
         val builder = AlertDialog.Builder(requireContext())
@@ -100,10 +99,10 @@ class ListEnvTypeFragment : Fragment() {
         }
     }
 
-    private fun showUpdateDialog(title: String, hint: String, message: String, currName: String){
+    private fun showUpdateDialog(title: String, message: String, currName: String){
         val input = EditText(requireContext())
         input.setText(currName)
-        input.hint = hint
+        input.hint = "Name"
         input.inputType = InputType.TYPE_CLASS_TEXT
 
         val builder = AlertDialog.Builder(requireContext())
@@ -125,7 +124,7 @@ class ListEnvTypeFragment : Fragment() {
 
             val envType: EnvType = EnvType(name)
 
-            envTypeViewModel.insertEnvType(envType)
+            envTypeViewModel.updateEnvType(envType)
 
             Toast.makeText(requireContext(),"Environment type updated.", Toast.LENGTH_SHORT).show()
         }else{
@@ -133,19 +132,16 @@ class ListEnvTypeFragment : Fragment() {
         }
     }
 
-    private fun deleteEnvType(envType: EnvType) {
+    private fun deleteEnvType(envType: EnvType, what: String, title: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
             envTypeViewModel.deleteEnvType(envType)
-
-            Toast.makeText(requireContext(),"Environment type deleted.", Toast.LENGTH_LONG).show()
-            val action = UpdateProjectFragmentDirections.actionUpdateProjectFragmentToListAllProjectFragment()
-            findNavController().navigate(action)
+            Toast.makeText(requireContext(),"$what deleted.", Toast.LENGTH_LONG).show()
         }
             .setNegativeButton("No"){_, _ -> }
-            .setTitle("Delete Environment type?")
-            .setMessage("Are you sure you want to delete this Environment type?")
+            .setTitle("Delete $title")
+            .setMessage("Are you sure you want to delete this $what ?")
             .create().show()
     }
 }

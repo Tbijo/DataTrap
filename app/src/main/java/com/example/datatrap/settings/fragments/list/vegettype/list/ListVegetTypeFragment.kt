@@ -1,60 +1,148 @@
 package com.example.datatrap.settings.fragments.list.vegettype.list
 
 import android.os.Bundle
+import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentListVegetTypeBinding
+import com.example.datatrap.models.VegetType
+import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
+import com.example.datatrap.viewmodels.VegetTypeViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ListVegetTypeFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ListVegetTypeFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentListVegetTypeBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var adapter: AnyRecyclerAdapter
+    private lateinit var vegTypeViewModel: VegetTypeViewModel
+    private lateinit var vegTypeList: List<VegetType>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_veget_type, container, false)
+        savedInstanceState: Bundle?): View? {
+        _binding = FragmentListVegetTypeBinding.inflate(inflater, container, false)
+        vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
+
+        adapter = AnyRecyclerAdapter()
+        binding.vegTypeRecyclerview.adapter = adapter
+        binding.vegTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+
+        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner, Observer { vegTypes ->
+            adapter.setData(vegTypes)
+            vegTypeList = vegTypes
+        })
+
+        binding.addVegtypeFloatButton.setOnClickListener {
+            showAddDialog("New Vegetation Type", "Add new vegetation type?")
+        }
+
+        adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
+            override fun useClickListener(position: Int) {
+                // update veg Type
+                val currName: String = vegTypeList[position].vegetTypeName
+                showUpdateDialog("Update Vegetation Type", "Update vegetation type?", currName)
+            }
+
+            override fun useLongClickListener(position: Int) {
+                // delete veg Type
+                val vegType: VegetType = vegTypeList[position]
+                deleteEnvType(vegType, "Vegetation type", "Vegetation Type")
+            }
+        })
+
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListVegetTypeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListVegetTypeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
+
+    private fun showAddDialog(title: String, message: String){
+        val input = EditText(requireContext())
+        input.hint = "Name"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(title)
+            .setMessage(message)
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val name = input.text.toString()
+                insertVegType(name)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .create().show()
+    }
+
+    private fun insertVegType(name: String){
+        if (name.isNotEmpty()){
+
+            val vegType: VegetType = VegetType(name)
+
+            vegTypeViewModel.insertVegetType(vegType)
+
+            Toast.makeText(requireContext(),"New vegetation type added.", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun showUpdateDialog(title: String, message: String, currName: String){
+        val input = EditText(requireContext())
+        input.setText(currName)
+        input.hint = "Name"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle(title)
+            .setMessage(message)
+            .setView(input)
+            .setPositiveButton("OK") { _, _ ->
+                val name = input.text.toString()
+                updateVegType(name)
+            }
+            .setNegativeButton("Cancel") { dialog, _ ->
+                dialog.cancel()
+            }
+            .create().show()
+    }
+
+    private fun updateVegType(name: String){
+        if (name.isNotEmpty()){
+
+            val vegType: VegetType = VegetType(name)
+
+            vegTypeViewModel.updateVegetType(vegType)
+
+            Toast.makeText(requireContext(),"Vegetation type updated.", Toast.LENGTH_SHORT).show()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun deleteEnvType(vegType: VegetType, what: String, title: String) {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_, _ ->
+
+            vegTypeViewModel.deleteVegetType(vegType)
+            Toast.makeText(requireContext(),"$what deleted.", Toast.LENGTH_LONG).show()
+        }
+            .setNegativeButton("No"){_, _ -> }
+            .setTitle("Delete $title")
+            .setMessage("Are you sure you want to delete this $what ?")
+            .create().show()
+    }
+
 }

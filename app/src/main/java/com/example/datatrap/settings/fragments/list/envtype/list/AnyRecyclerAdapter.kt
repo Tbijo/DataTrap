@@ -4,11 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.SettingsRowBinding
-import com.example.datatrap.models.EnvType
 
-class EnvTypeRecyclerAdapter : RecyclerView.Adapter<EnvTypeRecyclerAdapter.MyViewHolder>() {
+class AnyRecyclerAdapter : RecyclerView.Adapter<AnyRecyclerAdapter.MyViewHolder>() {
 
-    private var envTypeList = emptyList<EnvType>()
+    private var anyList = emptyList<Any>()
 
     class MyViewHolder(val binding: SettingsRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
         init {
@@ -28,16 +27,16 @@ class EnvTypeRecyclerAdapter : RecyclerView.Adapter<EnvTypeRecyclerAdapter.MyVie
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currenItem = envTypeList[position]
-        holder.binding.tvSetName.text = currenItem.envTypeName
+        val currenItem = anyList[position]
+        holder.binding.tvSetName.text = currenItem.toString()
     }
 
     override fun getItemCount(): Int {
-        return envTypeList.size
+        return anyList.size
     }
 
-    fun setData(envType: List<EnvType>){
-        this.envTypeList = envType
+    fun setData(any: List<Any>){
+        this.anyList = any
         notifyDataSetChanged()
     }
 
