@@ -19,7 +19,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddOccasionFragment : Fragment() {
-
+/*Pridat take Photo a ziskanie teploty a pocasia z netu overit ci je pristup na net*/
     private var _binding: FragmentAddOccasionBinding? = null
     private val binding get() = _binding!!
     private lateinit var occasionViewModel: OccasionViewModel
@@ -30,13 +30,20 @@ class AddOccasionFragment : Fragment() {
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var vegTypeViewModel: VegetTypeViewModel
     private val args by navArgs<AddOccasionFragmentArgs>()
+
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
     private lateinit var metTypeList: List<MethodType>
     private lateinit var trapTypeList: List<TrapType>
     private lateinit var vegTypeList: List<VegetType>
+    private lateinit var envTypeNameList: MutableMap<String, Long>
+    private lateinit var methodNameList: MutableMap<String, Long>
+    private lateinit var metTypeNameList: MutableMap<String, Long>
+    private lateinit var trapTypeNameList: MutableMap<String, Long>
+    private lateinit var vegTypeNameList: MutableMap<String, Long>
 
     private var imageUri: Uri? = null
+    private var imgName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +58,29 @@ class AddOccasionFragment : Fragment() {
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
 
         envTypeList = envTypeViewModel.envTypeList.value!!
+        envTypeList.forEach {
+            envTypeNameList[it.envTypeName] = it.envTypeId
+        }
+
+        methodList = methodViewModel.methodList.value!!
+        methodList.forEach {
+            methodNameList[it.methodName] = it.methodId
+        }
+
+        metTypeList = metTypeViewModel.methodTypeList.value!!
+        metTypeList.forEach {
+            metTypeNameList[it.methodTypeName] = it.methodTypeId
+        }
+
+        trapTypeList = trapTypeViewModel.trapTypeList.value!!
+        trapTypeList.forEach {
+            trapTypeNameList[it.trapTypeName] = it.trapTypeId
+        }
+
+        vegTypeList = vegTypeViewModel.vegetTypeList.value!!
+        vegTypeList.forEach {
+            vegTypeNameList[it.vegetTypeName] = it.vegetTypeId
+        }
 
         binding.btnAddOccasion.setOnClickListener {
             insertOccasion()
@@ -66,43 +96,37 @@ class AddOccasionFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // env type adapter
-        val dropDownArrAdapEnvType = ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
+        val dropDownArrAdapEnvType = ArrayAdapter(requireContext(), R.layout.dropdown_names, envTypeNameList.keys.toList())
         binding.autoCompTvEnvType.setAdapter(dropDownArrAdapEnvType)
         // method adapter
-        val dropDownArrAdapMethod = ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
+        val dropDownArrAdapMethod = ArrayAdapter(requireContext(), R.layout.dropdown_names, methodNameList.keys.toList())
         binding.autoCompTvMethod.setAdapter(dropDownArrAdapMethod)
         // method type adapter
-        val dropDownArrAdapMethodType = ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
+        val dropDownArrAdapMethodType = ArrayAdapter(requireContext(), R.layout.dropdown_names, metTypeNameList.keys.toList())
         binding.autoCompTvMethodType.setAdapter(dropDownArrAdapMethodType)
         // trap type adapter
-        val dropDownArrAdapTrapType = ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
+        val dropDownArrAdapTrapType = ArrayAdapter(requireContext(), R.layout.dropdown_names, trapTypeNameList.keys.toList())
         binding.autoCompTvTrapType.setAdapter(dropDownArrAdapTrapType)
         // veget type adapter
-        val dropDownArrAdapVegType = ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
+        val dropDownArrAdapVegType = ArrayAdapter(requireContext(), R.layout.dropdown_names, vegTypeNameList.keys.toList())
         binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
-    }
-
-    private fun takePicture() {
-
     }
 
     private fun insertOccasion() {
         val occasionNum: Int = Integer.parseInt(binding.etOccasion.text.toString())
-        val method: String = binding.autoCompTvMethod.text.toString()
-        val methodType: String = binding.autoCompTvMethodType.text.toString()
-        val trapType: String = binding.autoCompTvTrapType.text.toString()
-        val envType: String? = binding.autoCompTvEnvType.text.toString()
-        val vegType: String? = binding.autoCompTvVegType.text.toString()
+        val method: Long = methodNameList.getValue(binding.autoCompTvMethod.text.toString())
+        val methodType: Long = metTypeNameList.getValue(binding.autoCompTvMethodType.text.toString())
+        val trapType: Long = trapTypeNameList.getValue(binding.autoCompTvTrapType.text.toString())
+        val envType: Long? = envTypeNameList.getValue(binding.autoCompTvEnvType.text.toString())
+        val vegType: Long? = vegTypeNameList.getValue(binding.autoCompTvVegType.text.toString())
 
-        val sdf = SimpleDateFormat("dd/M/yyyy")
-        val currentDate = sdf.format(Date())
-
-        // treba sem cas doplnit kvoli tomu aby sme mohli dostat pocasie v datume aj case
-        // ale v tabulke maju len datum tak som dal vlastnu val cas
         val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getTimeInstance() //or use getDateInstance()
+
+        val formatter = SimpleDateFormat.getDateInstance()
         val formatedDate = formatter.format(date)
-        val time = null
+
+        val formatterT = SimpleDateFormat.getTimeInstance()
+        val formatedTime = formatterT.format(date)
 
         val gotCaught = 0
         val numTraps = 0
@@ -111,19 +135,18 @@ class AddOccasionFragment : Fragment() {
         val weather: String? = null
         val leg: String = binding.etLeg.toString()
         val note: String? = binding.etOccasionNote.toString()
-        var img: String? = null
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
 
             if (imageUri != null){
-                img = "Nazov Fotky"
-                val picture = Picture(img, imageUri.toString(), binding.etOccPicNote.text.toString())
+                imgName = "Nastavi sa pri pridani FOTKY"
+                val picture = Picture(imgName!!, imageUri.toString(), binding.etOccPicNote.text.toString())
                 pictureViewModel.insertPicture(picture)
             }
 
             val occasion = Occasion(0, occasionNum, args.locality.localityId, args.session.sessionId,
-                method, methodType, trapType, envType, vegType, currentDate, "", gotCaught, numTraps,
-                numMice, temperature, weather, leg, note, img)
+                method, methodType, trapType, envType, vegType, formatedDate, formatedTime, gotCaught, numTraps,
+                numMice, temperature, weather, leg, note, imgName)
 
             occasionViewModel.insertOccasion(occasion)
             Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
@@ -136,17 +159,21 @@ class AddOccasionFragment : Fragment() {
 
     private fun checkInput(
         occasion: Int,
-        method: String,
-        methodType: String,
-        trapType: String,
+        method: Long,
+        methodType: Long,
+        trapType: Long,
         leg: String
     ): Boolean {
-        return occasion.toString().isNotEmpty() && method.isNotEmpty() && methodType.isNotEmpty() && trapType.isNotEmpty() && leg.isNotEmpty()
+        return occasion.toString().isNotEmpty() && method.toString().isNotEmpty() && methodType.toString().isNotEmpty() && trapType.toString().isNotEmpty() && leg.isNotEmpty()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun takePicture() {
+        imgName = null
     }
 
 }
