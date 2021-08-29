@@ -90,6 +90,10 @@ class AddOccasionFragment : Fragment() {
             takePicture()
         }
 
+        binding.tvOccPhoto.setOnClickListener {
+            // Ak vybral fotku ale chce ju zrusit
+        }
+
         return binding.root
     }
 

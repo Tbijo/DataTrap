@@ -144,6 +144,7 @@
         android:id="@+id/btn_occ_photo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
         android:text="Add Picture"
         app:layout_constraintBottom_toTopOf="@+id/tv_occ_photo"
         app:layout_constraintEnd_toEndOf="parent"
