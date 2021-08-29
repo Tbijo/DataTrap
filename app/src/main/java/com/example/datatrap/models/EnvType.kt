@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "env_types")
 data class EnvType(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val envTypeId: Long,
+
     @ColumnInfo(name = "EnvTypeName")
     val envTypeName: String
 )

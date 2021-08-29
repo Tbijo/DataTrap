@@ -7,10 +7,12 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "locality")
+@Entity(tableName = "localities")
 data class Locality(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val localityId: Long,
+
     @ColumnInfo(name = "LocalityName")
     val localityName: String,
 

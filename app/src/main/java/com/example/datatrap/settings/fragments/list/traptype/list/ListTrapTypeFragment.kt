@@ -48,8 +48,8 @@ class ListTrapTypeFragment : Fragment() {
         adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update trap Type
-                val currName: String = trapTypeList[position].trapTypeName
-                showUpdateDialog("Update Trap Type", "Update trap type?", currName)
+                val currTrapType: TrapType = trapTypeList[position]
+                showUpdateDialog("Update Trap Type", "Update trap type?", currTrapType)
             }
 
             override fun useLongClickListener(position: Int) {
@@ -90,7 +90,7 @@ class ListTrapTypeFragment : Fragment() {
     private fun insertTrapType(name: String){
         if (name.isNotEmpty()){
 
-            val trapType: TrapType = TrapType(name)
+            val trapType: TrapType = TrapType(0, name)
 
             trapTypeViewModel.insertTrapType(trapType)
 
@@ -100,9 +100,9 @@ class ListTrapTypeFragment : Fragment() {
         }
     }
 
-    private fun showUpdateDialog(title: String, message: String, currName: String){
+    private fun showUpdateDialog(title: String, message: String, trapType: TrapType){
         val input = EditText(requireContext())
-        input.setText(currName)
+        input.setText(trapType.trapTypeName)
         input.hint = "Name"
         input.inputType = InputType.TYPE_CLASS_TEXT
 
@@ -112,7 +112,7 @@ class ListTrapTypeFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateTrapType(name)
+                updateTrapType(trapType.trapTypeId, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -120,10 +120,10 @@ class ListTrapTypeFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateTrapType(name: String){
+    private fun updateTrapType(id: Long, name: String){
         if (name.isNotEmpty()){
 
-            val trapType: TrapType = TrapType(name)
+            val trapType: TrapType = TrapType(id, name)
 
             trapTypeViewModel.updateTrapType(trapType)
 

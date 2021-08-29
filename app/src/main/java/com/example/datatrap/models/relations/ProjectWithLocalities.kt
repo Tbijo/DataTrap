@@ -15,8 +15,8 @@ data class ProjectWithLocalities(
 
     // relation definujem v nom primarne kluce oboch tabuliek - na ktorych stlpcoch sa maju prepojit
     @Relation(
-        parentColumn = "ProjectName", // primarny kluc tabulky Projects
-        entityColumn = "LocalityName", // cudzi kluc tabulky Locality
+        parentColumn = "projectId", // primarny kluc tabulky Projects
+        entityColumn = "localityId", // cudzi kluc tabulky Locality
 
         // kedze tato relacia ma vlastnu tabulku N:M
         // treba povedat Room ktora tabulka specifikuje tuto relaciu (ProjectLocalityCrossRef)

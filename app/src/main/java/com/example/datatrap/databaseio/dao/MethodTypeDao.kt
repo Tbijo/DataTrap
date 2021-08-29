@@ -16,9 +16,6 @@ interface MethodTypeDao {
     @Delete
     suspend fun deleteMethodType(methodType: MethodType)
 
-    @Query("SELECT * FROM method_types WHERE MethodTypeName = :methodTypeName")
-    suspend fun getMethodType(methodTypeName: String): LiveData<MethodType>
-
     @Query("SELECT * FROM method_types")
     fun getMethodTypes(): LiveData<List<MethodType>>
 }

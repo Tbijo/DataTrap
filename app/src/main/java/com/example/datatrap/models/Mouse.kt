@@ -11,19 +11,19 @@ import kotlinx.parcelize.Parcelize
 data class Mouse(
     
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val mouseId: Long,
 
     @ColumnInfo(name = "Code")
     val code: Int?, //pazure
 
-    @ColumnInfo(name = "Species_code") // cudzi kluc
-    val speciesID: String,
+    // cudzi kluc
+    val speciesID: Long,
 
-    @ColumnInfo(name = "ProtocolName") // cudzi kluc
-    val protocolID: String?,
+    // cudzi kluc
+    val protocolID: Long?,
 
-    @ColumnInfo(name = "Occasion_ID") // cudzi kluc
-    val occasionID: Int,
+    // cudzi kluc
+    val occasionID: Long,
 
     @ColumnInfo(name = "Trap_ID")
     val trapID: Int, //samy zadavat
@@ -32,10 +32,10 @@ data class Mouse(
     val date: String,
 
     @ColumnInfo(name = "Catch_time")
-    val catchTime: Int?,
+    val catchTime: String?,
 
     @ColumnInfo(name = "Sex")
-    val sex: String?, //list male female?
+    val sex: String?, //list male female null
 
     @ColumnInfo(name = "Age")
     val age: String?, //vytvor list hodnot
@@ -96,6 +96,6 @@ data class Mouse(
     @ColumnInfo(name = "Note_sm")
     val note: String?,
 
-    @ColumnInfo(name = "Img_sm")
-    val img: Int?,
+    @ColumnInfo(name = "Img_sm") // cudzi kluc
+    val imgName: String?,
 ): Parcelable

@@ -15,6 +15,6 @@ interface ProjectLocalityDao {
     suspend fun deleteProjectLocalityCrossRef(projectLocalityCrossRef: ProjectLocalityCrossRef)
 
     @Transaction // kedze robime pristup k viacerym tabulkam treba anotovat aby nedoslo k viacerym pristupom naraz
-    @Query("SELECT * FROM projects WHERE ProjectName = :projectName")
-    fun getLocalitiesForProject(projectName: String): LiveData<List<ProjectWithLocalities>>
+    @Query("SELECT * FROM projects WHERE projectId = :projectId")
+    fun getLocalitiesForProject(projectId: Long): LiveData<List<ProjectWithLocalities>>
 }

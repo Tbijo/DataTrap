@@ -96,7 +96,7 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val longnitude = binding.tvLongnitude.text.toString()
 
         if (checkInput(localityName, localityDate, latitude, longnitude)){
-            val locality = Locality(localityName, localityDate,
+            val locality = Locality(args.locality.localityId, localityName, localityDate,
                 Integer.parseInt(latitude).toFloat(),
                 Integer.parseInt(longnitude).toFloat(),0, localityNote)
             localityViewModel.updateLocality(locality)

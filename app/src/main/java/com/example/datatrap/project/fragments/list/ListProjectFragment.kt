@@ -105,7 +105,7 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
             val sdf = SimpleDateFormat("dd/M/yyyy")
             val currentDate = sdf.format(Date())
 
-            val project: Project = Project(name, currentDate, 0, 0)
+            val project: Project = Project(0, name, currentDate, 0, 0)
 
             projectViewModel.insertProject(project)
 

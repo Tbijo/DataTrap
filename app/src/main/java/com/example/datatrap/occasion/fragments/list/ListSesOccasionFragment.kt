@@ -32,7 +32,7 @@ class ListSesOccasionFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        occasionViewModel.getOccasionsForSession(args.session.id).observe(viewLifecycleOwner, Observer {
+        occasionViewModel.getOccasionsForSession(args.session.sessionId).observe(viewLifecycleOwner, Observer {
             adapter.setData(it)
         })
 

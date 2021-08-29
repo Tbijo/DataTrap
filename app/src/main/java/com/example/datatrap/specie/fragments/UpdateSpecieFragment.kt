@@ -49,12 +49,12 @@ class UpdateSpecieFragment : Fragment() {
         binding.cbIsSmallMammal.isChecked = args.specie.isSmallMammal == 1
         binding.etNote.setText(args.specie.note)
 
-        if (args.specie.img != null){
+        if (args.specie.imgName != null){
             binding.tvPicture.text = getString(R.string.pictureAdded)
         }
 
         /*Vybrat jednu fotku z databazy a zobrazit nazov*/
-        binding.tvPicture.text = args.specie.img.toString()
+        binding.tvPicture.text = args.specie.imgName.toString()
 
         binding.btnPicture.setOnClickListener {
             updatePicture()
@@ -114,7 +114,7 @@ class UpdateSpecieFragment : Fragment() {
         val maxWeight = binding.etMaxWeight.text.toString()
         val note = binding.etNote.text.toString()
 
-        var img = args.specie.img
+        var img = args.specie.imgName
 
         if (checkInput(speciesCode, fullName, authority)){
 
@@ -124,7 +124,7 @@ class UpdateSpecieFragment : Fragment() {
                 pictureViewModel.insertPicture(picture)
             }
 
-            val specie = Specie(speciesCode, fullName, synonym, authority, description, isSmallMammal, Integer.parseInt(upperFingers), Integer.parseInt(minWeight).toFloat(), Integer.parseInt(maxWeight).toFloat(), note, img)
+            val specie = Specie(args.specie.specieId, speciesCode, fullName, synonym, authority, description, isSmallMammal, Integer.parseInt(upperFingers), Integer.parseInt(minWeight).toFloat(), Integer.parseInt(maxWeight).toFloat(), note, img)
 
             specieViewModel.updateSpecie(specie)
 

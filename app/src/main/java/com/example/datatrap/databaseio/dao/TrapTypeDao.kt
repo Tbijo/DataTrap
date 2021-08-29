@@ -16,9 +16,6 @@ interface TrapTypeDao {
     @Delete
     suspend fun deleteTrapType(trapType: TrapType)
 
-    @Query("SELECT * FROM trap_types WHERE TrapTypeName = :trapTypeName")
-    suspend fun getTrapType(trapTypeName: String): LiveData<TrapType>
-
     @Query("SELECT * FROM trap_types")
     fun getTrapTypes(): LiveData<List<TrapType>>
 }

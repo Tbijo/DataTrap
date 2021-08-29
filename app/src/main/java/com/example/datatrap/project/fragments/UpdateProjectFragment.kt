@@ -63,7 +63,7 @@ class UpdateProjectFragment : Fragment() {
         val numMouse = binding.etNumMouse.text.toString()
 
         if (checkInput(projectName, date, numLocal, numMouse)){
-            val project = Project(projectName, date, Integer.parseInt(numLocal), Integer.parseInt(numMouse))
+            val project = Project(args.project.projectId, projectName, date, Integer.parseInt(numLocal), Integer.parseInt(numMouse))
             projectViewModel.updateProject(project)
             Toast.makeText(requireContext(), "Project updated.", Toast.LENGTH_SHORT).show()
 

@@ -48,8 +48,8 @@ class ListVegetTypeFragment : Fragment() {
         adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update veg Type
-                val currName: String = vegTypeList[position].vegetTypeName
-                showUpdateDialog("Update Vegetation Type", "Update vegetation type?", currName)
+                val currVegetType: VegetType = vegTypeList[position]
+                showUpdateDialog("Update Vegetation Type", "Update vegetation type?", currVegetType)
             }
 
             override fun useLongClickListener(position: Int) {
@@ -89,7 +89,7 @@ class ListVegetTypeFragment : Fragment() {
     private fun insertVegType(name: String){
         if (name.isNotEmpty()){
 
-            val vegType: VegetType = VegetType(name)
+            val vegType: VegetType = VegetType(0, name)
 
             vegTypeViewModel.insertVegetType(vegType)
 
@@ -99,9 +99,9 @@ class ListVegetTypeFragment : Fragment() {
         }
     }
 
-    private fun showUpdateDialog(title: String, message: String, currName: String){
+    private fun showUpdateDialog(title: String, message: String, vegType: VegetType){
         val input = EditText(requireContext())
-        input.setText(currName)
+        input.setText(vegType.vegetTypeName)
         input.hint = "Name"
         input.inputType = InputType.TYPE_CLASS_TEXT
 
@@ -111,7 +111,7 @@ class ListVegetTypeFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateVegType(name)
+                updateVegType(vegType.vegetTypeId, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -119,10 +119,10 @@ class ListVegetTypeFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateVegType(name: String){
+    private fun updateVegType(id: Long, name: String){
         if (name.isNotEmpty()){
 
-            val vegType: VegetType = VegetType(name)
+            val vegType: VegetType = VegetType(id, name)
 
             vegTypeViewModel.updateVegetType(vegType)
 

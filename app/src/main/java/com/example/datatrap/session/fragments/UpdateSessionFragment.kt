@@ -76,7 +76,7 @@ class UpdateSessionFragment : Fragment() {
         val date = binding.etSessionDate.text.toString()
         if (checkIput(session, numOcc, date)){
 
-            val session = Session(args.session.id, Integer.parseInt(session), args.session.projectName, Integer.parseInt(numOcc), date)
+            val session = Session(args.session.sessionId, Integer.parseInt(session), args.session.projectId, Integer.parseInt(numOcc), date)
             sessionViewModel.updateSession(session)
 
             Toast.makeText(requireContext(), "Session Updated.", Toast.LENGTH_SHORT).show()

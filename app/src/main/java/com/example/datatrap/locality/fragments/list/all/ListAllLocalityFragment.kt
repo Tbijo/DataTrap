@@ -52,7 +52,7 @@ class ListAllLocalityFragment : Fragment() {
                 // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
                     val locality: Locality = localityList[position]
                     val project: Project = args.project
-                    val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectName, locality.localityName)
+                    val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectId, locality.localityId)
                     prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
                     Toast.makeText(requireContext(), "Combination created.", Toast.LENGTH_SHORT).show()
 

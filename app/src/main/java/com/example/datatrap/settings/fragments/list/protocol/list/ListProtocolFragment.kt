@@ -48,8 +48,8 @@ class ListProtocolFragment : Fragment() {
         adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update protocol
-                val currName: String = protocolList[position].protocolName
-                showUpdateDialog("Update Protocol", "Update protocol?", currName)
+                val currProtocol: Protocol = protocolList[position]
+                showUpdateDialog("Update Protocol", "Update protocol?", currProtocol)
             }
 
             override fun useLongClickListener(position: Int) {
@@ -90,7 +90,7 @@ class ListProtocolFragment : Fragment() {
     private fun insertProtocol(name: String){
         if (name.isNotEmpty()){
 
-            val protocol: Protocol = Protocol(name)
+            val protocol: Protocol = Protocol(0, name)
 
             protocolViewModel.insertProtocol(protocol)
 
@@ -100,9 +100,9 @@ class ListProtocolFragment : Fragment() {
         }
     }
 
-    private fun showUpdateDialog(title: String, message: String, currName: String){
+    private fun showUpdateDialog(title: String, message: String, prot: Protocol){
         val input = EditText(requireContext())
-        input.setText(currName)
+        input.setText(prot.protocolName)
         input.hint = "Name"
         input.inputType = InputType.TYPE_CLASS_TEXT
 
@@ -112,7 +112,7 @@ class ListProtocolFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateProtocol(name)
+                updateProtocol(prot.protocolId, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -120,10 +120,10 @@ class ListProtocolFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateProtocol(name: String){
+    private fun updateProtocol(id: Long, name: String){
         if (name.isNotEmpty()){
 
-            val protocol: Protocol = Protocol(name)
+            val protocol: Protocol = Protocol(id, name)
 
             protocolViewModel.updateProtocol(protocol)
 

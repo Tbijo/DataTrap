@@ -47,8 +47,8 @@ class ListEnvTypeFragment : Fragment() {
         adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update envType
-                val currName: String = envTypeList[position].envTypeName
-                showUpdateDialog("Update Environment Type", "Update environment type?", currName)
+                val currEnvType: EnvType = envTypeList[position]
+                showUpdateDialog("Update Environment Type", "Update environment type?", currEnvType)
             }
 
             override fun useLongClickListener(position: Int) {
@@ -89,7 +89,7 @@ class ListEnvTypeFragment : Fragment() {
     private fun insertEnvType(name: String){
         if (name.isNotEmpty()){
 
-            val envType: EnvType = EnvType(name)
+            val envType: EnvType = EnvType(0, name)
 
             envTypeViewModel.insertEnvType(envType)
 
@@ -99,9 +99,9 @@ class ListEnvTypeFragment : Fragment() {
         }
     }
 
-    private fun showUpdateDialog(title: String, message: String, currName: String){
+    private fun showUpdateDialog(title: String, message: String, envType: EnvType){
         val input = EditText(requireContext())
-        input.setText(currName)
+        input.setText(envType.envTypeName)
         input.hint = "Name"
         input.inputType = InputType.TYPE_CLASS_TEXT
 
@@ -111,7 +111,7 @@ class ListEnvTypeFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateEnvType(name)
+                updateEnvType(envType.envTypeId, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -119,10 +119,10 @@ class ListEnvTypeFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateEnvType(name: String){
+    private fun updateEnvType(id: Long, name: String){
         if (name.isNotEmpty()){
 
-            val envType: EnvType = EnvType(name)
+            val envType: EnvType = EnvType(id, name)
 
             envTypeViewModel.updateEnvType(envType)
 

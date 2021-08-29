@@ -11,13 +11,13 @@ import kotlinx.parcelize.Parcelize
 data class Session(
     
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val sessionId: Long,
 
     @ColumnInfo(name = "Session")
     val session: Int,
     
-    @ColumnInfo(name = "ProjectName") // cudzi kluc
-    val projectName: String?,
+    // cudzi kluc
+    val projectId: Long?,
 
     @ColumnInfo(name = "Num_occasion")
     val numOcc: Int,

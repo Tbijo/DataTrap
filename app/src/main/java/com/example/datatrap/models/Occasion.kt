@@ -7,38 +7,41 @@ import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "occasion")
+@Entity(tableName = "occasions")
 data class Occasion(
 
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val occasionId: Long,
 
     @ColumnInfo(name = "Occasion")
     val occasion: Int,
 
-    @ColumnInfo(name = "LocalityName") // cudzi kluc
-    val locality: String,
+    // cudzi kluc
+    val localityId: Long,
 
-    @ColumnInfo(name = "Session") // cudzi kluc
-    val session: Long,
+    // cudzi kluc
+    val sessionId: Long,
 
-    @ColumnInfo(name = "MethodName") // cudzi kluc
-    val method: String,
+    // cudzi kluc
+    val methodId: Long,
 
-    @ColumnInfo(name = "MethodTypeName") // cudzi kluc
-    val methodType: String,
+    // cudzi kluc
+    val methodTypeId: Long,
 
-    @ColumnInfo(name = "TrapTypeName") // cudzi kluc
-    val trapType: String,
+    // cudzi kluc
+    val trapTypeId: Long,
 
-    @ColumnInfo(name = "EnvTypeName") // cudzi kluc
-    val envType: String?,
+    // cudzi kluc
+    val envTypeId: Long?,
 
-    @ColumnInfo(name = "VegetTypeName") // cudzi kluc
-    val vegetType: String?,
+    // cudzi kluc
+    val vegetTypeId: Long?,
 
     @ColumnInfo(name = "Date")
     val date: String,
+
+    @ColumnInfo(name = "Time")
+    val time: String,
 
     @ColumnInfo(name = "Got_caught")
     val gotCaught: Int?, // boolean
@@ -61,6 +64,7 @@ data class Occasion(
     @ColumnInfo(name = "Note_occ")
     val note: String?,
 
+    // cudzi kluc
     @ColumnInfo(name = "Img_occ")
-    val img: String?
+    val imgName: String?
 ): Parcelable

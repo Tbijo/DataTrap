@@ -21,8 +21,4 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
     fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>{
         return occasionDao.getOccasionsForSession(idSession)
     }
-
-    fun countOccasionsOfSession(idSession: Long): LiveData<Int>{
-        return occasionDao.countOccasionsOfSession(idSession)
-    }
 }

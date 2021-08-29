@@ -31,7 +31,7 @@ class PictureViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getPictureById(pictureID: String): LiveData<Picture> {
-        return pictureRepository.getPictureById(pictureID)
+    fun getPictureById(pictureName: String): LiveData<Picture> {
+        return pictureRepository.getPictureById(pictureName)
     }
 }

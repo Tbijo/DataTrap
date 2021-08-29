@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "methods")
 data class Method(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val methodId: Long,
+
     @ColumnInfo(name = "MethodName")
     val methodName: String
 )

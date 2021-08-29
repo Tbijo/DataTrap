@@ -75,7 +75,7 @@ class AddSpecieFragment : Fragment() {
                 pictureViewModel.insertPicture(picture)
             }
 
-            val specie = Specie(speciesCode, fullName, synonym, authority, description, isSmallMammal, Integer.parseInt(upperFingers), Integer.parseInt(minWeight).toFloat(), Integer.parseInt(maxWeight).toFloat(), note, img)
+            val specie = Specie(0, speciesCode, fullName, synonym, authority, description, isSmallMammal, Integer.parseInt(upperFingers), Integer.parseInt(minWeight).toFloat(), Integer.parseInt(maxWeight).toFloat(), note, img)
 
             specieViewModel.insertSpecie(specie)
 

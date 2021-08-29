@@ -32,7 +32,7 @@ class ProjectLocalityViewModel(application: Application): AndroidViewModel(appli
         }
     }
 
-    fun getLocalitiesForProject(projectName: String): LiveData<List<ProjectWithLocalities>> {
-        return projectLocalityRepository.getLocalitiesForProject(projectName)
+    fun getLocalitiesForProject(projectId: Long): LiveData<List<ProjectWithLocalities>> {
+        return projectLocalityRepository.getLocalitiesForProject(projectId)
     }
 }

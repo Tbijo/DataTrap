@@ -13,6 +13,6 @@ interface PictureDao {
     @Delete
     suspend fun deletePicture(picture: Picture)
 
-    @Query("SELECT * FROM images WHERE Img_ID = :pictureID")
-    fun getPictureById(pictureID: String): LiveData<Picture>
+    @Query("SELECT * FROM images WHERE Img_name = :imgName")
+    fun getPictureById(imgName: String): LiveData<Picture>
 }

@@ -37,7 +37,11 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun getMiceForOccasion(idOccasion: Int): LiveData<List<Mouse>>{
+    fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{
         return mouseRepository.getMiceForOccasion(idOccasion)
+    }
+
+    fun searchMIce(code: Int): LiveData<List<Mouse>>{
+        return mouseRepository.searchMice(code)
     }
 }

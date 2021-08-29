@@ -18,7 +18,11 @@ class MouseRepository(private val mouseDao: MouseDao) {
         mouseDao.deleteMouse(mouse)
     }
 
-    fun getMiceForOccasion(idOccasion: Int): LiveData<List<Mouse>>{
+    fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{
         return mouseDao.getMiceForOccasion(idOccasion)
+    }
+
+    fun searchMice(code: Int): LiveData<List<Mouse>>{
+        return mouseDao.searchMice(code)
     }
 }

@@ -40,8 +40,4 @@ class OccasionViewModel(application: Application): AndroidViewModel(application)
     fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>{
         return occasionRepository.getOccasionsForSession(idSession)
     }
-
-    fun countOccasionsOfSession(idSession: Long): LiveData<Int>{
-        return occasionRepository.countOccasionsOfSession(idSession)
-    }
 }

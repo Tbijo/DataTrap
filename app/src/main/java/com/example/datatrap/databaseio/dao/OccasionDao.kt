@@ -16,13 +16,7 @@ interface OccasionDao {
     @Delete
     suspend fun deleteOccasion(occasion: Occasion)
 
-    @Query("SELECT * FROM occasion WHERE id = :idOccasion")
-    suspend fun getOccasion(idOccasion: Long): LiveData<Occasion>
-
-    @Query("SELECT * FROM occasion WHERE Session = :idSession")
+    @Query("SELECT * FROM occasions WHERE sessionId = :idSession")
     fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>
 
-    // zisti pocet akcii obsahujucich vybrane id sessiony
-    @Query("SELECT COUNT(*) FROM occasion WHERE Session = :idSession")
-    fun countOccasionsOfSession(idSession: Long): LiveData<Int>
 }

@@ -36,7 +36,7 @@ class ListPrjLocalityFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        prjLocalityViewModel.getLocalitiesForProject(args.project.projectName).observe(viewLifecycleOwner, Observer {
+        prjLocalityViewModel.getLocalitiesForProject(args.project.projectId).observe(viewLifecycleOwner, Observer {
             adapter.setData(it.first().localities)
             localityList = it.first().localities
         })
@@ -52,7 +52,7 @@ class ListPrjLocalityFragment : Fragment() {
             override fun useLongClickListener(position: Int) {
                 // vymazat kombinaciu projektu a vybranej lokality
                     val locality: Locality = localityList[position]
-                    val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectName, locality.localityName)
+                    val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, locality.localityId)
                     prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
             }
         })

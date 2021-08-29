@@ -41,7 +41,7 @@ class ListPrjSessionFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        sessionViewModel.getSessionsForProject(args.project.projectName).observe(viewLifecycleOwner, Observer { sessions ->
+        sessionViewModel.getSessionsForProject(args.project.projectId).observe(viewLifecycleOwner, Observer { sessions ->
             adapter.setData(sessions)
             sessionList = sessions
         })
@@ -99,7 +99,7 @@ class ListPrjSessionFragment : Fragment() {
             val sdf = SimpleDateFormat("dd/M/yyyy")
             val currentDate = sdf.format(Date())
 
-            val session: Session = Session(0, Integer.parseInt(name), args.project.projectName, 0, currentDate)
+            val session: Session = Session(0, Integer.parseInt(name), args.project.projectId, 0, currentDate)
 
             sessionViewModel.insertSession(session)
 

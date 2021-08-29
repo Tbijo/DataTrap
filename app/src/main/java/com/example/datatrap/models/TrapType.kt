@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "trap_types")
 data class TrapType(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val trapTypeId: Long,
+
     @ColumnInfo(name = "TrapTypeName")
     val trapTypeName: String
 )

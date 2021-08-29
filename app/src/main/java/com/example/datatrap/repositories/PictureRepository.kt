@@ -14,8 +14,8 @@ class PictureRepository(private val pictureDao: PictureDao) {
         pictureDao.deletePicture(picture)
     }
 
-    fun getPictureById(pictureID: String): LiveData<Picture>{
-        return pictureDao.getPictureById(pictureID)
+    fun getPictureById(pictureName: String): LiveData<Picture>{
+        return pictureDao.getPictureById(pictureName)
     }
 
 }

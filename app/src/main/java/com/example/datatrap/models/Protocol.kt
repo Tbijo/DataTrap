@@ -7,7 +7,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "protocols")
 data class Protocol(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val protocolId: Long,
+
     @ColumnInfo(name = "ProtocolName")
     val protocolName: String
 )

@@ -16,9 +16,6 @@ interface MethodDao {
     @Delete
     suspend fun deleteMethod(method: Method)
 
-    @Query("SELECT * FROM methods WHERE MethodName = :methodName")
-    suspend fun getMethod(methodName: String): LiveData<Method>
-
     @Query("SELECT * FROM methods")
     fun getMethods(): LiveData<List<Method>>
 }

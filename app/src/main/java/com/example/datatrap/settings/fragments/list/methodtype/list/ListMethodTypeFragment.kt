@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListMethodTypeBinding
+import com.example.datatrap.models.Method
 import com.example.datatrap.models.MethodType
 import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
 import com.example.datatrap.viewmodels.MethodTypeViewModel
@@ -49,8 +50,8 @@ class ListMethodTypeFragment : Fragment() {
         adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update method type
-                val currName: String = methodTypeList[position].methodTypeName
-                showUpdateDialog("Update Method Type", "Update method type?", currName)
+                val currMetType: MethodType = methodTypeList[position]
+                showUpdateDialog("Update Method Type", "Update method type?", currMetType)
             }
 
             override fun useLongClickListener(position: Int) {
@@ -90,7 +91,7 @@ class ListMethodTypeFragment : Fragment() {
     private fun insertMethodType(name: String){
         if (name.isNotEmpty()){
 
-            val methodType: MethodType = MethodType(name)
+            val methodType: MethodType = MethodType(0, name)
 
             methodTypeViewModel.insertMethodType(methodType)
 
@@ -100,9 +101,9 @@ class ListMethodTypeFragment : Fragment() {
         }
     }
 
-    private fun showUpdateDialog(title: String, message: String, currName: String){
+    private fun showUpdateDialog(title: String, message: String, methodType: MethodType){
         val input = EditText(requireContext())
-        input.setText(currName)
+        input.setText(methodType.methodTypeName)
         input.hint = "Name"
         input.inputType = InputType.TYPE_CLASS_TEXT
 
@@ -112,7 +113,7 @@ class ListMethodTypeFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateMethodType(name)
+                updateMethodType(methodType.methodTypeId, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -120,10 +121,10 @@ class ListMethodTypeFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateMethodType(name: String){
+    private fun updateMethodType(id: Long, name: String){
         if (name.isNotEmpty()){
 
-            val methodType: MethodType = MethodType(name)
+            val methodType: MethodType = MethodType(id, name)
 
             methodTypeViewModel.updateMethodType(methodType)
 

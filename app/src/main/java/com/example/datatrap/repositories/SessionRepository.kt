@@ -18,7 +18,7 @@ class SessionRepository(private val sessionDao: SessionDao) {
         sessionDao.deleteSession(session)
     }
 
-    fun getSessionsForProject(projectName: String): LiveData<List<Session>>{
-        return sessionDao.getSessionsForProject(projectName)
+    fun getSessionsForProject(projectId: Long): LiveData<List<Session>>{
+        return sessionDao.getSessionsForProject(projectId)
     }
 }

@@ -15,7 +15,7 @@ class ProjectLocalityRepository(private val projectLocalityDao: ProjectLocalityD
         projectLocalityDao.deleteProjectLocalityCrossRef(projectLocalityCrossRef)
     }
 
-    fun getLocalitiesForProject(projectName: String): LiveData<List<ProjectWithLocalities>>{
-        return projectLocalityDao.getLocalitiesForProject(projectName)
+    fun getLocalitiesForProject(projectId: Long): LiveData<List<ProjectWithLocalities>>{
+        return projectLocalityDao.getLocalitiesForProject(projectId)
     }
 }

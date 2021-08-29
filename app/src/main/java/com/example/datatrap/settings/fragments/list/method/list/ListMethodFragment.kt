@@ -47,8 +47,8 @@ class ListMethodFragment : Fragment() {
 
         adapter.setOnItemClickListener(object : AnyRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
-                val currName = methodList[position]
-                showUpdateDialog("Update Method", "Update method?", currName.methodName)
+                val currMethod = methodList[position]
+                showUpdateDialog("Update Method", "Update method?", currMethod)
             }
 
             override fun useLongClickListener(position: Int) {
@@ -88,7 +88,7 @@ class ListMethodFragment : Fragment() {
     private fun insertMethod(name: String){
         if (name.isNotEmpty()){
 
-            val method: Method = Method(name)
+            val method: Method = Method(0, name)
 
             methodViewModel.insertMethod(method)
 
@@ -98,9 +98,9 @@ class ListMethodFragment : Fragment() {
         }
     }
 
-    private fun showUpdateDialog(title: String, message: String, currName: String){
+    private fun showUpdateDialog(title: String, message: String, method: Method){
         val input = EditText(requireContext())
-        input.setText(currName)
+        input.setText(method.methodName)
         input.hint = "Name"
         input.inputType = InputType.TYPE_CLASS_TEXT
 
@@ -110,7 +110,7 @@ class ListMethodFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateMethod(name)
+                updateMethod(method.methodId, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -118,10 +118,10 @@ class ListMethodFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateMethod(name: String){
+    private fun updateMethod(id: Long, name: String){
         if (name.isNotEmpty()){
 
-            val method: Method = Method(name)
+            val method: Method = Method(id, name)
 
             methodViewModel.updateMethod(method)
 

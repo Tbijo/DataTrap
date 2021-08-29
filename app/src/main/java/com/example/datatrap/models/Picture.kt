@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 data class Picture(
 
     @PrimaryKey(autoGenerate = false)
-    @ColumnInfo(name = "Img_ID")
-    val imgID: String,
+    @ColumnInfo(name = "Img_name")
+    val imgName: String,
 
     @ColumnInfo(name = "Path")
     val path: String,

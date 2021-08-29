@@ -10,7 +10,9 @@ import kotlinx.parcelize.Parcelize
 @Entity(tableName = "species")
 data class Specie(
 
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val specieId: Long,
+
     @ColumnInfo(name = "Species_code")
     val speciesCode: String,
 
@@ -42,5 +44,5 @@ data class Specie(
     val note: String?,
 
     @ColumnInfo(name = "Img_sp")
-    val img: String?
+    val imgName: String?
 ): Parcelable

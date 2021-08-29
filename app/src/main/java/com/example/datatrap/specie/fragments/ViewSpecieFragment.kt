@@ -26,8 +26,8 @@ class ViewSpecieFragment : Fragment() {
         _binding = FragmentViewSpecieBinding.inflate(inflater, container, false)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
-        if (args.specie.img == null){
-            args.specie.img?.let {
+        if (args.specie.imgName == null){
+            args.specie.imgName?.let {
                 val picture: Picture? = pictureViewModel.getPictureById(it).value
                 binding.ivPicture.setImageURI(picture?.path?.toUri())
             }
