@@ -31,6 +31,7 @@ class AddOccasionFragment : Fragment() {
 
     private var _binding: FragmentAddOccasionBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<AddOccasionFragmentArgs>()
     private lateinit var occasionViewModel: OccasionViewModel
     private lateinit var pictureViewModel: PictureViewModel
     private lateinit var envTypeViewModel: EnvTypeViewModel
@@ -38,7 +39,6 @@ class AddOccasionFragment : Fragment() {
     private lateinit var metTypeViewModel: MethodTypeViewModel
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var vegTypeViewModel: VegetTypeViewModel
-    private val args by navArgs<AddOccasionFragmentArgs>()
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -108,6 +108,11 @@ class AddOccasionFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     override fun onResume() {
@@ -185,11 +190,6 @@ class AddOccasionFragment : Fragment() {
         val date = Calendar.getInstance().time
         val formatterT = SimpleDateFormat.getTimeInstance()
         return formatterT.format(date)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
     private fun getCurrentWeather(){
