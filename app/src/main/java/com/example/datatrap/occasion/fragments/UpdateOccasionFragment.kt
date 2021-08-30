@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class UpdateOccasionFragment : Fragment() {
-
+/*nastavit zoznami mien tak aby vybrane slovo bolo v zozname prve*/
     private var _binding: FragmentUpdateOccasionBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<UpdateOccasionFragmentArgs>()
@@ -39,6 +39,7 @@ class UpdateOccasionFragment : Fragment() {
     private lateinit var metTypeViewModel: MethodTypeViewModel
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var vegTypeViewModel: VegetTypeViewModel
+    private lateinit var localityViewModel: LocalityViewModel
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -69,6 +70,7 @@ class UpdateOccasionFragment : Fragment() {
         metTypeViewModel = ViewModelProvider(this).get(MethodTypeViewModel::class.java)
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
+        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
 
         envTypeList = envTypeViewModel.envTypeList.value!!
         envTypeList.forEach {
@@ -104,7 +106,7 @@ class UpdateOccasionFragment : Fragment() {
         }
 
         binding.btnGetWeather.setOnClickListener {
-            getCurrentWeather()
+            getHistoryWeather()
         }
 
         initializeCurrentOccasion()
@@ -130,7 +132,13 @@ class UpdateOccasionFragment : Fragment() {
     }
 
     private fun initializeCurrentOccasion(){
-
+        val image: Picture = pictureViewModel.getPictureById(args.occasion.imgName!!).value!!
+        binding.etLeg.setText(args.occasion.leg)
+        binding.etOccasionNote.setText(args.occasion.note)
+        binding.etTemperature.setText(args.occasion.temperature.toString())
+        binding.etWeather.setText(args.occasion.weather)
+        binding.tvOccPhoto.text = args.occasion.imgName
+        binding.tvOccPhoto.text = image.note
     }
 
     private fun deleteOccasion() {
@@ -169,17 +177,17 @@ class UpdateOccasionFragment : Fragment() {
     }
 
     private fun updateOccasion() {
-        val occasionNum: Int = args.newOccasionNumber
+        val occasionNum: Int = args.occasion.occasion
         val method: Long = methodNameList.getValue(binding.autoCompTvMethod.text.toString())
         val methodType: Long = metTypeNameList.getValue(binding.autoCompTvMethodType.text.toString())
         val trapType: Long = trapTypeNameList.getValue(binding.autoCompTvTrapType.text.toString())
         val envType: Long? = envTypeNameList.getValue(binding.autoCompTvEnvType.text.toString())
         val vegType: Long? = vegTypeNameList.getValue(binding.autoCompTvVegType.text.toString())
-        val date = getDate()
-        val time = getTime()
+        val date = args.occasion.date
+        val time = args.occasion.time
         val gotCaught = 0
-        val numTraps = 0
-        val numMice = 0
+        val numTraps = binding.etNumTraps.text
+        val numMice = args.occasion.numMice
         val leg: String = binding.etLeg.toString()
         val note: String? = binding.etOccasionNote.toString()
 
@@ -191,12 +199,12 @@ class UpdateOccasionFragment : Fragment() {
                 galleryAddPic(photoURI!!, title!!)
             }
 
-            val occasion = Occasion(0, occasionNum, args.locality.localityId, args.session.sessionId,
+            val occasion = Occasion(args.occasion.occasionId, occasionNum, args.occasion.localityId, args.occasion.sessionId,
                 method, methodType, trapType, envType, vegType, date, time, gotCaught, numTraps,
                 numMice, temperature, weatherGlob, leg, note, title)
 
-            occasionViewModel.insertOccasion(occasion)
-            Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
+            occasionViewModel.updateOccasion(occasion)
+            Toast.makeText(requireContext(), "Occasion updated.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()
         }else{
@@ -214,21 +222,18 @@ class UpdateOccasionFragment : Fragment() {
         return occasion.toString().isNotEmpty() && method.toString().isNotEmpty() && methodType.toString().isNotEmpty() && trapType.toString().isNotEmpty() && leg.isNotEmpty()
     }
 
-    private fun getDate(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getDateInstance()
-        return formatter.format(date)
-    }
-
-    private fun getTime():String{
-        val date = Calendar.getInstance().time
-        val formatterT = SimpleDateFormat.getTimeInstance()
-        return formatterT.format(date)
-    }
-
-    private fun getCurrentWeather(){
+    private fun getHistoryWeather(){
         val weather = Weather(requireContext())
-        weather.getCurrentWeatherByCoordinates(args.locality.x, args.locality.y, object: Weather.VolleyResponseListener{
+        val locality: Locality = localityViewModel.getLocality(args.occasion.localityId).value!!
+
+        val date = args.occasion.date
+        val time = args.occasion.time
+        val dateTimeString = "$date $time"
+        val parser = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
+        val output = parser.parse(dateTimeString)
+        val unixtime = output.time / 1000L
+
+        weather.getHistoricalWeatherByCoordinates(locality.x, locality.y, unixtime, object: Weather.VolleyResponseListener{
             override fun onResponse(temp: Int, weather: String) {
                 temperature = temp.toFloat()
                 binding.etTemperature.setText(temperature.toString())
@@ -284,8 +289,6 @@ class UpdateOccasionFragment : Fragment() {
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != Activity.RESULT_OK) {
-            // sem sa pojde ak pouzivatel nespravil fotku
-            // treba vymazat empty file ktora bola vytvorena
             val myFile: File = File(myPath)
             if (myFile.exists()) myFile.delete()
             binding.tvOccPhoto.text = getString(R.string.noPicture)
