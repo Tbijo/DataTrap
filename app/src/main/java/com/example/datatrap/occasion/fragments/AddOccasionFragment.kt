@@ -14,12 +14,13 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddOccasionBinding
 import com.example.datatrap.models.*
+import com.example.datatrap.occasion.fragments.weather.Weather
 import com.example.datatrap.viewmodels.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class AddOccasionFragment : Fragment() {
-/*Pridat take Photo a ziskanie teploty a pocasia z netu overit ci je pristup na net*/
+/*Pridat take Photo*/
     private var _binding: FragmentAddOccasionBinding? = null
     private val binding get() = _binding!!
     private lateinit var occasionViewModel: OccasionViewModel
@@ -44,6 +45,9 @@ class AddOccasionFragment : Fragment() {
 
     private var imageUri: Uri? = null
     private var imgName: String? = null
+
+    private var temperature: Float? = null
+    private var weatherGlob: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -90,8 +94,8 @@ class AddOccasionFragment : Fragment() {
             takePicture()
         }
 
-        binding.tvOccPhoto.setOnClickListener {
-            // Ak vybral fotku ale chce ju zrusit
+        binding.btnGetWeather.setOnClickListener {
+            getCurrentWeather()
         }
 
         return binding.root
@@ -117,26 +121,17 @@ class AddOccasionFragment : Fragment() {
     }
 
     private fun insertOccasion() {
-        val occasionNum: Int = Integer.parseInt(binding.etOccasion.text.toString())
+        val occasionNum: Int = args.newOccasionNumber
         val method: Long = methodNameList.getValue(binding.autoCompTvMethod.text.toString())
         val methodType: Long = metTypeNameList.getValue(binding.autoCompTvMethodType.text.toString())
         val trapType: Long = trapTypeNameList.getValue(binding.autoCompTvTrapType.text.toString())
         val envType: Long? = envTypeNameList.getValue(binding.autoCompTvEnvType.text.toString())
         val vegType: Long? = vegTypeNameList.getValue(binding.autoCompTvVegType.text.toString())
-
-        val date = Calendar.getInstance().time
-
-        val formatter = SimpleDateFormat.getDateInstance()
-        val formatedDate = formatter.format(date)
-
-        val formatterT = SimpleDateFormat.getTimeInstance()
-        val formatedTime = formatterT.format(date)
-
+        val date = getDate()
+        val time = getTime()
         val gotCaught = 0
         val numTraps = 0
         val numMice = 0
-        val temperature: Float? = null
-        val weather: String? = null
         val leg: String = binding.etLeg.toString()
         val note: String? = binding.etOccasionNote.toString()
 
@@ -149,8 +144,8 @@ class AddOccasionFragment : Fragment() {
             }
 
             val occasion = Occasion(0, occasionNum, args.locality.localityId, args.session.sessionId,
-                method, methodType, trapType, envType, vegType, formatedDate, formatedTime, gotCaught, numTraps,
-                numMice, temperature, weather, leg, note, imgName)
+                method, methodType, trapType, envType, vegType, date, time, gotCaught, numTraps,
+                numMice, temperature, weatherGlob, leg, note, imgName)
 
             occasionViewModel.insertOccasion(occasion)
             Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
@@ -171,9 +166,38 @@ class AddOccasionFragment : Fragment() {
         return occasion.toString().isNotEmpty() && method.toString().isNotEmpty() && methodType.toString().isNotEmpty() && trapType.toString().isNotEmpty() && leg.isNotEmpty()
     }
 
+    private fun getDate(): String{
+        val date = Calendar.getInstance().time
+        val formatter = SimpleDateFormat.getDateInstance()
+        return formatter.format(date)
+    }
+
+    private fun getTime():String{
+        val date = Calendar.getInstance().time
+        val formatterT = SimpleDateFormat.getTimeInstance()
+        return formatterT.format(date)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun getCurrentWeather(){
+        val weather = Weather(requireContext())
+        weather.getCurrentWeatherByCoordinates(args.locality.x, args.locality.y, object: Weather.VolleyResponseListener{
+            override fun onResponse(temp: Int, weather: String) {
+                temperature = temp.toFloat()
+                binding.etTemperature.setText(temperature.toString())
+                weatherGlob = weather
+                binding.etWeather.setText(weatherGlob)
+            }
+
+            override fun onError(message: String) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+            }
+
+        })
     }
 
     private fun takePicture() {

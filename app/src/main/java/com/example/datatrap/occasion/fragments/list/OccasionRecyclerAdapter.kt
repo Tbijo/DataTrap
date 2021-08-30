@@ -42,6 +42,10 @@ class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyV
         return occasionList.size
     }
 
+    fun getListSize(): Int{
+        return occasionList.size
+    }
+
     fun setData(occasions: List<Occasion>){
         this.occasionList = occasions
         notifyDataSetChanged()

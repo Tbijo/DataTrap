@@ -21,6 +21,8 @@ class ListSesOccasionFragment : Fragment() {
     private lateinit var adapter: OccasionRecyclerAdapter
     private val args by navArgs<ListSesOccasionFragmentArgs>()
 
+    private var newOccasionNumber: Int = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -36,8 +38,10 @@ class ListSesOccasionFragment : Fragment() {
             adapter.setData(it)
         })
 
+        newOccasionNumber = (adapter.getListSize() + 1)
+
         binding.addOccasionFloatButton.setOnClickListener {
-            val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToAddOccasionFragment(args.session, args.locality)
+            val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToAddOccasionFragment(args.session, args.locality, newOccasionNumber)
             findNavController().navigate(action)
         }
 

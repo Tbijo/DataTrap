@@ -8,6 +8,9 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <!--povolenie pre Volley-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <!--NA KAMERU-->
     <uses-feature android:name="android.hardware.camera"
         android:required="true" />
@@ -19,6 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DataTrap">
+
         <activity
             android:name=".project.ProjectActivity"
             android:exported="true" />
@@ -35,35 +39,15 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".AddMouseActivity"
-            android:exported="true" />
+            android:name=".about.AboutActivity"/>
         <activity
-            android:name=".SessionActivity"
-            android:exported="true" />
+            android:name=".bugreport.BugReportActivity"/>
         <activity
-            android:name=".OccasionActivity"
-            android:exported="true" />
+            android:name=".settings.SettingsActivity"/>
         <activity
-            android:name=".LocalityActivity"
-            android:exported="true" />
+            android:name=".specie.SpecieActivity"/>
         <activity
-            android:name=".MouseActivity"
-            android:exported="true" />
-        <activity
-            android:name=".AboutActivity"
-            android:exported="true" />
-        <activity
-            android:name=".BugReportActivity"
-            android:exported="true" />
-        <activity
-            android:name=".SettingsActivity"
-            android:exported="true" />
-        <activity
-            android:name=".SpecieActivity"
-            android:exported="true" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

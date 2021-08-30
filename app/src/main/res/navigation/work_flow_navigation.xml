@@ -164,6 +164,9 @@
         <argument
             android:name="locality"
             app:argType="com.example.datatrap.models.Locality" />
+        <argument
+            android:name="newOccasionNumber"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/updateOccasionFragment"

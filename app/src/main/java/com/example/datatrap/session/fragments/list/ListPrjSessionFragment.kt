@@ -32,7 +32,8 @@ class ListPrjSessionFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentListPrjSessionBinding.inflate(inflater, container, false)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
 
@@ -41,30 +42,38 @@ class ListPrjSessionFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        sessionViewModel.getSessionsForProject(args.project.projectId).observe(viewLifecycleOwner, Observer { sessions ->
-            adapter.setData(sessions)
-            sessionList = sessions
-        })
+        sessionViewModel.getSessionsForProject(args.project.projectId)
+            .observe(viewLifecycleOwner, Observer { sessions ->
+                adapter.setData(sessions)
+                sessionList = sessions
+            })
 
-        adapter.setOnItemClickListener(object : PrjSessionRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object : PrjSessionRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
                 // ideme do occasion
-                    val session: Session = sessionList[position]
-                    val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(session, args.locality)
-                    findNavController().navigate(action)
+                val session: Session = sessionList[position]
+                val action =
+                    ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(
+                        session,
+                        args.locality
+                    )
+                findNavController().navigate(action)
             }
 
             override fun useLongClickListener(position: Int) {
                 // uprava vybranej session
-                    val session: Session = sessionList[position]
-                    val action = ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(session)
-                    findNavController().navigate(action)
+                val session: Session = sessionList[position]
+                val action =
+                    ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(
+                        session
+                    )
+                findNavController().navigate(action)
             }
         })
 
         binding.addSessionFloatButton.setOnClickListener {
             // pridanie novej session
-            showAddDialog("New Session", "Session Number", "Add new session?")
+            showAddDialog("New Session", "Add new session?")
         }
 
         return binding.root
@@ -75,18 +84,12 @@ class ListPrjSessionFragment : Fragment() {
         _binding = null
     }
 
-    private fun showAddDialog(title: String, hint: String, message: String){
-        val input = EditText(requireContext())
-        input.hint = hint
-        input.inputType = InputType.TYPE_CLASS_NUMBER
-
+    private fun showAddDialog(title: String, message: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle(title)
             .setMessage(message)
-            .setView(input)
             .setPositiveButton("OK") { _, _ ->
-                val name = input.text.toString()
-                insertSession(name)
+                insertSession()
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -94,19 +97,17 @@ class ListPrjSessionFragment : Fragment() {
             .create().show()
     }
 
-    private fun insertSession(name: String){
-        if (name.isNotEmpty()){
-            val sdf = SimpleDateFormat("dd/M/yyyy")
-            val currentDate = sdf.format(Date())
+    private fun insertSession() {
+        val sdf = SimpleDateFormat("dd/M/yyyy")
+        val currentDate = sdf.format(Date())
 
-            val session: Session = Session(0, Integer.parseInt(name), args.project.projectId, 0, currentDate)
+        val session: Session =
+            Session(0, (sessionList.size + 1), args.project.projectId, 0, currentDate)
 
-            sessionViewModel.insertSession(session)
+        sessionViewModel.insertSession(session)
 
-            Toast.makeText(requireContext(),"New session added.", Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
-        }
+        Toast.makeText(requireContext(), "New session added.", Toast.LENGTH_SHORT).show()
+
     }
 
 }
