@@ -27,7 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class UpdateOccasionFragment : Fragment() {
-/*nastavit zoznami mien tak aby vybrane slovo bolo v zozname prve*/
+
     private var _binding: FragmentUpdateOccasionBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<UpdateOccasionFragmentArgs>()
@@ -109,7 +109,7 @@ class UpdateOccasionFragment : Fragment() {
             getHistoryWeather()
         }
 
-        initializeCurrentOccasion()
+        initCurrentOccasion()
 
         setHasOptionsMenu(true)
         return binding.root
@@ -131,14 +131,46 @@ class UpdateOccasionFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initializeCurrentOccasion(){
-        val image: Picture = pictureViewModel.getPictureById(args.occasion.imgName!!).value!!
+    private fun initCurrentOccasion(){
         binding.etLeg.setText(args.occasion.leg)
         binding.etOccasionNote.setText(args.occasion.note)
         binding.etTemperature.setText(args.occasion.temperature.toString())
         binding.etWeather.setText(args.occasion.weather)
         binding.tvOccPhoto.text = args.occasion.imgName
-        binding.tvOccPhoto.text = image.note
+        if (args.occasion.imgName != null){
+            val image: Picture? = pictureViewModel.getPictureById(args.occasion.imgName!!).value
+            if (image != null) {
+                binding.tvOccPhoto.text = image.note
+            }
+        }
+    }
+
+    private fun initAutoComp(){
+        envTypeNameList.forEach {
+            if (it.value == args.occasion.envTypeId){
+                binding.autoCompTvEnvType.setText(it.key, false)
+            }
+        }
+        methodNameList.forEach {
+            if (it.value == args.occasion.methodId){
+                binding.autoCompTvMethod.setText(it.key, false)
+            }
+        }
+        metTypeNameList.forEach {
+            if (it.value == args.occasion.methodTypeId){
+                binding.autoCompTvMethodType.setText(it.key, false)
+            }
+        }
+        trapTypeNameList.forEach {
+            if (it.value == args.occasion.trapTypeId){
+                binding.autoCompTvTrapType.setText(it.key, false)
+            }
+        }
+        vegTypeNameList.forEach {
+            if (it.value == args.occasion.vegetTypeId){
+                binding.autoCompTvVegType.setText(it.key, false)
+            }
+        }
     }
 
     private fun deleteOccasion() {
@@ -174,6 +206,8 @@ class UpdateOccasionFragment : Fragment() {
         // veget type adapter
         val dropDownArrAdapVegType = ArrayAdapter(requireContext(), R.layout.dropdown_names, vegTypeNameList.keys.toList())
         binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
+        //set values
+        initAutoComp()
     }
 
     private fun updateOccasion() {
@@ -193,7 +227,7 @@ class UpdateOccasionFragment : Fragment() {
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
 
-            if (title != null){
+            if (title != null || title != args.occasion.imgName){
                 val picture = Picture(title!!, photoURI.toString(), binding.etOccPicNote.text.toString())
                 pictureViewModel.insertPicture(picture)
                 galleryAddPic(photoURI!!, title!!)
