@@ -48,16 +48,16 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.search_menu, menu)
         val searchItem = menu.findItem(R.id.menu_search)
         val searchView = searchItem?.actionView as? SearchView
         searchView?.setOnQueryTextListener(this)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -66,12 +66,12 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null) {
-            searchForData(newText)
+            searchProjects(newText)
         }
         return true
     }
 
-    private fun searchForData(query: String?) {
+    private fun searchProjects(query: String?) {
         val searchQuery = "%$query%"
 
         projectViewModel.searchProjects(searchQuery).observe(viewLifecycleOwner, Observer { projects ->

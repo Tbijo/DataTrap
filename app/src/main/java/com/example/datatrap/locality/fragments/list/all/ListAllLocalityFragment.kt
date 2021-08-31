@@ -1,16 +1,16 @@
 package com.example.datatrap.locality.fragments.list.all
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListAllLocalityBinding
 import com.example.datatrap.locality.fragments.list.prj.PrjLocalityRecyclerAdapter
 import com.example.datatrap.models.Locality
@@ -19,7 +19,7 @@ import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 
-class ListAllLocalityFragment : Fragment() {
+class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentListAllLocalityBinding? = null
     private val binding get() = _binding!!
@@ -74,12 +74,40 @@ class ListAllLocalityFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        setHasOptionsMenu(true)
         return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchItem = menu.findItem(R.id.menu_search)
+        val searchView = searchItem?.actionView as? SearchView
+        searchView?.setOnQueryTextListener(this)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText != null) {
+            searchProjects(newText)
+        }
+        return true
+    }
+
+    private fun searchProjects(query: String?) {
+        val searchQuery = "%$query%"
+        localityViewModel.searchLocalities(searchQuery).observe(viewLifecycleOwner, Observer { localities ->
+            localities.let {
+                adapter.setData(it)
+            }
+        })
     }
 
 }
