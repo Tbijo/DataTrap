@@ -6,10 +6,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -95,10 +93,6 @@ class AddOccasionFragment : Fragment() {
             vegTypeNameList[it.vegetTypeName] = it.vegetTypeId
         }
 
-        binding.btnAddOccasion.setOnClickListener {
-            insertOccasion()
-        }
-
         binding.btnOccPhoto.setOnClickListener {
             takePicture()
         }
@@ -107,7 +101,19 @@ class AddOccasionFragment : Fragment() {
             getCurrentWeather()
         }
 
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.add_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_save -> insertOccasion()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {

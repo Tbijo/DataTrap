@@ -5,10 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.ViewModelProvider
@@ -36,15 +34,23 @@ class AddSpecieFragment : Fragment() {
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
-        binding.btnAddSpecie.setOnClickListener {
-            insertSpecie()
-        }
-
         binding.btnPicture.setOnClickListener {
             getPicture()
         }
 
+        setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.add_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_save -> insertSpecie()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {

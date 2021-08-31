@@ -6,15 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".occasion.fragments.AddOccasionFragment">
 
-    <Button
-        android:id="@+id/btn_add_occasion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Occasion"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout1"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
@@ -122,11 +113,13 @@
         android:id="@+id/et_occasion_note"
         android:layout_width="408dp"
         android:layout_height="48dp"
+        android:layout_marginBottom="40dp"
         android:ems="10"
         android:hint="Note"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/btn_occ_photo"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -154,13 +147,13 @@
         android:id="@+id/et_occ_pic_note"
         android:layout_width="407dp"
         android:layout_height="45dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="12dp"
         android:ems="10"
         android:hint="Picture Note"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/btn_add_occasion"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.75"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText

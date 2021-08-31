@@ -28,11 +28,6 @@ class UpdateSessionFragment : Fragment() {
 
         binding.etSession.setText(args.session.session)
         binding.etNumOcc.setText(args.session.numOcc)
-        binding.etSessionDate.setText(args.session.date)
-
-        binding.btnUpdateSession.setOnClickListener {
-            updateSession()
-        }
 
         setHasOptionsMenu(true)
         return binding.root
@@ -44,11 +39,12 @@ class UpdateSessionFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.delete_menu, menu)
+        inflater.inflate(R.menu.update_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
+            R.id.menu_save -> updateSession()
             R.id.menu_delete -> deleteSession()
         }
         return super.onOptionsItemSelected(item)
@@ -73,7 +69,7 @@ class UpdateSessionFragment : Fragment() {
     private fun updateSession() {
         val session = binding.etSession.text.toString()
         val numOcc = binding.etNumOcc.text.toString()
-        val date = binding.etSessionDate.text.toString()
+        val date = args.session.date
         if (checkIput(session, numOcc, date)){
 
             val session = Session(args.session.sessionId, Integer.parseInt(session), args.session.projectId, Integer.parseInt(numOcc), date)

@@ -52,10 +52,11 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_project.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_session.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/dropdown_names.xml" value="0.1" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_locality.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_occasion.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_project.xml" value="0.15942028985507245" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_session.xml" value="0.15942028985507245" />
-        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_specie.xml" value="0.2" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_specie.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_env_type.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_main.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_method.xml" value="0.12335359675785208" />
@@ -68,9 +69,9 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_specie.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_trap_type.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_veget_type.xml" value="0.12335359675785208" />
-        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_locality.xml" value="0.14356884057971014" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_locality.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_occasion.xml" value="0.264" />
-        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_project.xml" value="0.1" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_project.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_session.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_specie.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_view_specie.xml" value="0.264" />
@@ -78,6 +79,9 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/session_row.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/settings_row.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/specie_row.xml" value="0.264" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/add_menu.xml" value="0.1" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/drawer_menu.xml" value="0.1" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/update_menu.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/xml/file_paths.xml" value="0.1" />
         <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_about.xml" value="0.1" />
         <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_bug_report.xml" value="0.1" />

@@ -114,11 +114,13 @@
         android:id="@+id/et_occasion_note"
         android:layout_width="408dp"
         android:layout_height="48dp"
+        android:layout_marginBottom="24dp"
         android:ems="10"
         android:hint="Note"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toTopOf="@+id/btn_occ_photo"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.333"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
@@ -146,13 +148,13 @@
         android:id="@+id/et_occ_pic_note"
         android:layout_width="407dp"
         android:layout_height="45dp"
+        android:layout_marginBottom="32dp"
         android:ems="10"
         android:hint="Picture Note"
         android:inputType="textPersonName"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="630dp" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/et_weather"
@@ -187,14 +189,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_temperature" />
-
-    <Button
-        android:id="@+id/btn_update_occasion"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Update Occasion"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,10 +3,8 @@ package com.example.datatrap.locality.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -38,19 +36,12 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireContext())
 
-        binding.btnAddLocality.setOnClickListener {
-            // pridanie novej lokality do databazy
-            insertLocality()
-        }
-
         binding.btnGetCoordinates.setOnClickListener {
             // ziskanie aktualnych suradnic
             getCoordinates()
         }
 
-        // nastavit aktualny datum
-        setCurrentDate()
-
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -59,9 +50,20 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         _binding = null
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.add_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_save -> insertLocality()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun insertLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val localityDate = binding.etLocalityDate.text.toString()
+        val localityDate = getDate()
         val localityNote = binding.etLocalityNote.text.toString()
         val latitude = binding.tvLatitude.text.toString()
         val longnitude = binding.tvLongnitude.text.toString()
@@ -83,11 +85,10 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         return localityName.isNotEmpty() && localityDate.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
     }
 
-    @SuppressLint("SimpleDateFormat")
-    private fun setCurrentDate(){
-        val sdf = SimpleDateFormat("dd/M/yyyy")
-        val currentDate = sdf.format(Date())
-        binding.etLocalityDate.setText(currentDate)
+    private fun getDate(): String{
+        val date = Calendar.getInstance().time
+        val formatter = SimpleDateFormat.getDateInstance()
+        return formatter.format(date)
     }
 
     @SuppressLint("MissingPermission")

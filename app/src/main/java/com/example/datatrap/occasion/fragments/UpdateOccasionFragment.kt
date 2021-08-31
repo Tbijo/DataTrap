@@ -97,10 +97,6 @@ class UpdateOccasionFragment : Fragment() {
             vegTypeNameList[it.vegetTypeName] = it.vegetTypeId
         }
 
-        binding.btnUpdateOccasion.setOnClickListener {
-            updateOccasion()
-        }
-
         binding.btnOccPhoto.setOnClickListener {
             takePicture()
         }
@@ -121,11 +117,12 @@ class UpdateOccasionFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.delete_menu, menu)
+        inflater.inflate(R.menu.update_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
+            R.id.menu_save -> updateOccasion()
             R.id.menu_delete -> deleteOccasion()
         }
         return super.onOptionsItemSelected(item)

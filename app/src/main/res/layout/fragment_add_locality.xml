@@ -10,49 +10,26 @@
         android:id="@+id/et_locality_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="164dp"
         android:ems="10"
         android:hint="Locality Name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/et_locality_date"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:ems="10"
-        android:inputType="date"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_locality_name" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/et_locality_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="36dp"
         android:ems="10"
         android:hint="Note"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/btn_add_locality"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btn_add_locality"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="88dp"
-        android:text="Add Locality"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="514dp" />
 
     <Button
         android:id="@+id/btn_get_coordinates"
@@ -68,13 +45,13 @@
         android:id="@+id/textView3"
         android:layout_width="161dp"
         android:layout_height="36dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="32dp"
         android:text="Latitude:"
         android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_latitude"
         app:layout_constraintHorizontal_bias="0.179"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_locality_date" />
+        app:layout_constraintTop_toBottomOf="@+id/et_locality_name" />
 
     <TextView
         android:id="@+id/textView6"
@@ -92,11 +69,11 @@
         android:id="@+id/tv_latitude"
         android:layout_width="161dp"
         android:layout_height="36dp"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="32dp"
         android:text="0"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_locality_date" />
+        app:layout_constraintTop_toBottomOf="@+id/et_locality_name" />
 
     <TextView
         android:id="@+id/tv_longnitude"

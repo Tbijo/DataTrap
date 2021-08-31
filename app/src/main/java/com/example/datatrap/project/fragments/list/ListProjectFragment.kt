@@ -44,7 +44,6 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
         }
 
         setHasOptionsMenu(true)
-
         return binding.root
     }
 
@@ -100,12 +99,15 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
         .create().show()
     }
 
+    private fun getDate(): String{
+        val date = Calendar.getInstance().time
+        val formatter = SimpleDateFormat.getDateInstance()
+        return formatter.format(date)
+    }
+
     private fun insertProject(name: String){
         if (name.isNotEmpty()){
-            val sdf = SimpleDateFormat("dd/M/yyyy")
-            val currentDate = sdf.format(Date())
-
-            val project: Project = Project(0, name, currentDate, 0, 0)
+            val project: Project = Project(0, name, getDate(), 0, 0)
 
             projectViewModel.insertProject(project)
 

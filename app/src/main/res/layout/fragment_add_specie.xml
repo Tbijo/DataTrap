@@ -6,23 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".specie.fragments.AddSpecieFragment">
 
-    <Button
-        android:id="@+id/btn_add_specie"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Add Specie"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <EditText
         android:id="@+id/et_species_code"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="96dp"
         android:ems="10"
         android:hint="Species Code"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -33,8 +26,9 @@
         android:ems="10"
         android:hint="Full Name"
         android:inputType="textPersonName"
-        app:layout_constraintTop_toBottomOf="@+id/et_species_code"
-        tools:layout_editor_absoluteX="103dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_species_code" />
 
     <EditText
         android:id="@+id/et_synonym"

@@ -32,20 +32,17 @@ class UpdateProjectFragment : Fragment() {
         binding.etNumLocality.setText(args.project.numLocal)
         binding.etNumMouse.setText(args.project.numMice)
 
-        binding.btnUpdateProject.setOnClickListener {
-            updateProject()
-        }
-
         setHasOptionsMenu(true)
         return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.delete_menu, menu)
+        inflater.inflate(R.menu.update_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
+            R.id.menu_save -> updateProject()
             R.id.menu_delete -> deleteProject()
         }
         return super.onOptionsItemSelected(item)

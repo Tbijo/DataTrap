@@ -39,17 +39,12 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             LocationServices.getFusedLocationProviderClient(requireContext())
 
         binding.etLocalityName.setText(args.locality.localityName)
-        binding.etLocalityDate.setText(args.locality.date)
         binding.etLocalityNote.setText(args.locality.note)
         binding.etSessionNum.setText(args.locality.numSessions.toString())
         binding.tvLatitude.text = args.locality.x.toString()
         binding.tvLongnitude.text = args.locality.y.toString()
 
         binding.btnGetCoordinates.setOnClickListener {
-            updateLocality()
-        }
-
-        binding.btnUpdateLocality.setOnClickListener {
             getCoordinates()
         }
 
@@ -63,11 +58,12 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.delete_menu, menu)
+        inflater.inflate(R.menu.update_menu, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
+            R.id.menu_save -> updateLocality()
             R.id.menu_delete -> deleteLocality()
         }
         return super.onOptionsItemSelected(item)
@@ -90,7 +86,7 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private fun updateLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val localityDate = binding.etLocalityDate.text.toString()
+        val localityDate = args.locality.date
         val localityNote = binding.etLocalityNote.text.toString()
         val latitude = binding.tvLatitude.text.toString()
         val longnitude = binding.tvLongnitude.text.toString()
@@ -98,7 +94,7 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         if (checkInput(localityName, localityDate, latitude, longnitude)){
             val locality = Locality(args.locality.localityId, localityName, localityDate,
                 Integer.parseInt(latitude).toFloat(),
-                Integer.parseInt(longnitude).toFloat(),0, localityNote)
+                Integer.parseInt(longnitude).toFloat(),args.locality.numSessions, localityNote)
             localityViewModel.updateLocality(locality)
             Toast.makeText(requireContext(), "Locality updated.", Toast.LENGTH_SHORT).show()
 

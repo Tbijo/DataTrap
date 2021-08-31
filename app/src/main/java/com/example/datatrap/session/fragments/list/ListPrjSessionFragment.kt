@@ -32,8 +32,7 @@ class ListPrjSessionFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View? {
         _binding = FragmentListPrjSessionBinding.inflate(inflater, container, false)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
 
@@ -98,16 +97,19 @@ class ListPrjSessionFragment : Fragment() {
     }
 
     private fun insertSession() {
-        val sdf = SimpleDateFormat("dd/M/yyyy")
-        val currentDate = sdf.format(Date())
-
         val session: Session =
-            Session(0, (sessionList.size + 1), args.project.projectId, 0, currentDate)
+            Session(0, (sessionList.size + 1), args.project.projectId, 0, getDate())
 
         sessionViewModel.insertSession(session)
 
         Toast.makeText(requireContext(), "New session added.", Toast.LENGTH_SHORT).show()
 
+    }
+
+    private fun getDate(): String{
+        val date = Calendar.getInstance().time
+        val formatter = SimpleDateFormat.getDateInstance()
+        return formatter.format(date)
     }
 
 }
