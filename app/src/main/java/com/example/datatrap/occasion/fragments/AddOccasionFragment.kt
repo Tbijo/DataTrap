@@ -1,18 +1,13 @@
 package com.example.datatrap.occasion.fragments
 
-import android.app.Activity
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.FileProvider
+import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -20,8 +15,6 @@ import com.example.datatrap.databinding.FragmentAddOccasionBinding
 import com.example.datatrap.models.*
 import com.example.datatrap.occasion.fragments.weather.Weather
 import com.example.datatrap.viewmodels.*
-import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,7 +24,6 @@ class AddOccasionFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<AddOccasionFragmentArgs>()
     private lateinit var occasionViewModel: OccasionViewModel
-    private lateinit var pictureViewModel: PictureViewModel
     private lateinit var envTypeViewModel: EnvTypeViewModel
     private lateinit var methodViewModel: MethodViewModel
     private lateinit var metTypeViewModel: MethodTypeViewModel
@@ -49,24 +41,27 @@ class AddOccasionFragment : Fragment() {
     private lateinit var trapTypeNameList: MutableMap<String, Long>
     private lateinit var vegTypeNameList: MutableMap<String, Long>
 
-    private var myPath: String? = null
-    private  var photoURI: Uri? = null
-    private var title: String? = null
-
     private var temperature: Float? = null
     private var weatherGlob: String? = null
+
+    private lateinit var sharedViewModel: SharedViewModel
+    private var imgName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentAddOccasionBinding.inflate(inflater, container, false)
         occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
-        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
         envTypeViewModel = ViewModelProvider(this).get(EnvTypeViewModel::class.java)
         methodViewModel = ViewModelProvider(this).get(MethodViewModel::class.java)
         metTypeViewModel = ViewModelProvider(this).get(MethodTypeViewModel::class.java)
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
+
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        sharedViewModel.dataToShare.observe(requireActivity(), Observer<String> {
+            imgName = it
+        })
 
         envTypeList = envTypeViewModel.envTypeList.value!!
         envTypeList.forEach {
@@ -93,27 +88,26 @@ class AddOccasionFragment : Fragment() {
             vegTypeNameList[it.vegetTypeName] = it.vegetTypeId
         }
 
-        binding.btnOccPhoto.setOnClickListener {
-            takePicture()
-        }
-
-        binding.btnGetWeather.setOnClickListener {
-            getCurrentWeather()
-        }
-
         setHasOptionsMenu(true)
         return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.add_menu, menu)
+        inflater.inflate(R.menu.occasion_menu, menu)
+        menu[R.id.menu_delete].isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.menu_save -> insertOccasion()
+            R.id.menu_camera -> goToCamera()
+            R.id.menu_weather -> getCurrentWeather()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun goToCamera(){
+
     }
 
     override fun onDestroy() {
@@ -150,22 +144,16 @@ class AddOccasionFragment : Fragment() {
         val date = getDate()
         val time = getTime()
         val gotCaught = 0
-        val numTraps = 0
+        val numTraps = binding.etNumTraps.text.toString()
         val numMice = 0
         val leg: String = binding.etLeg.toString()
         val note: String? = binding.etOccasionNote.toString()
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
 
-            if (title != null){
-                val picture = Picture(title!!, photoURI.toString(), binding.etOccPicNote.text.toString())
-                pictureViewModel.insertPicture(picture)
-                galleryAddPic(photoURI!!, title!!)
-            }
-
             val occasion = Occasion(0, occasionNum, args.locality.localityId, args.session.sessionId,
-                method, methodType, trapType, envType, vegType, date, time, gotCaught, numTraps,
-                numMice, temperature, weatherGlob, leg, note, title)
+                method, methodType, trapType, envType, vegType, date, time, gotCaught, Integer.parseInt(numTraps),
+                numMice, temperature, weatherGlob, leg, note, imgName)
 
             occasionViewModel.insertOccasion(occasion)
             Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
@@ -213,70 +201,6 @@ class AddOccasionFragment : Fragment() {
             }
 
         })
-    }
-
-    private fun takePicture() {
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
-                val photoFile: File? = try {
-                    createImageFile()
-                } catch (ex: IOException) {
-                    Toast.makeText(requireContext(), "File was not created.", Toast.LENGTH_LONG).show()
-                    null
-                }
-                photoFile?.also {
-                    photoURI = FileProvider.getUriForFile(
-                        requireContext(),
-                        "com.example.datatrap.fileprovider",
-                        it
-                    )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    resultLauncher.launch(takePictureIntent)
-                }
-            }
-        }
-    }
-
-    @Throws(IOException::class)
-    private fun createImageFile(): File {
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getDateTimeInstance()
-        val formatedDate = formatter.format(date)
-        val storageDir: File? = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        return File.createTempFile(
-            "Occasion_${formatedDate}_",
-            ".jpg",
-            storageDir
-        ).apply {
-            myPath = absolutePath
-            binding.tvOccPhoto.text = "Specie_$formatedDate"
-            title = "Occasion_$formatedDate"
-        }
-    }
-
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode != Activity.RESULT_OK) {
-            // sem sa pojde ak pouzivatel nespravil fotku
-            // treba vymazat empty file ktora bola vytvorena
-            val myFile: File = File(myPath)
-            if (myFile.exists()) myFile.delete()
-            binding.tvOccPhoto.text = getString(R.string.noPicture)
-            title = null
-            photoURI = null
-            myPath = null
-            Toast.makeText(requireContext(), "Empty File deleted.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun galleryAddPic(imageUri:Uri, title:String) {
-        val bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri)
-        MediaStore.Images.Media.insertImage(
-            requireContext().contentResolver,
-            bitmap,
-            title,
-            "Image of $title"
-        )
-        Toast.makeText(requireContext(), "Picture Added to Gallery", Toast.LENGTH_SHORT).show()
     }
 
 }
