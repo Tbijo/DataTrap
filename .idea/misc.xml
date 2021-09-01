@@ -58,7 +58,8 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_project.xml" value="0.15942028985507245" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_session.xml" value="0.15942028985507245" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_specie.xml" value="0.264" />
-        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_get_picture.xml" value="0.1" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_get_picture.xml" value="0.264" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_get_picture_specie.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_env_type.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_main.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_method.xml" value="0.12335359675785208" />
@@ -71,6 +72,9 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_specie.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_trap_type.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_veget_type.xml" value="0.12335359675785208" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_take_photo.xml" value="0.264" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_take_photo_mouse.xml" value="0.1" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_take_photo_occasion.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_locality.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_occasion.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_project.xml" value="0.264" />
@@ -87,6 +91,7 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/occasion_menu.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/occasion_update_menu.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/search_menu.xml" value="0.1" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/specie_menu.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/update_menu.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/xml/file_paths.xml" value="0.1" />
         <entry key="..\:/Users/tibor/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_about.xml" value="0.1" />

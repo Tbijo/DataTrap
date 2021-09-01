@@ -35,7 +35,11 @@
     <fragment
         android:id="@+id/addSpecieFragment"
         android:name="com.example.datatrap.specie.fragments.AddSpecieFragment"
-        android:label="AddSpecieFragment" />
+        android:label="AddSpecieFragment" >
+        <action
+            android:id="@+id/action_addSpecieFragment_to_getPictureFragment"
+            app:destination="@id/getPictureFragment" />
+    </fragment>
     <fragment
         android:id="@+id/updateSpecieFragment"
         android:name="com.example.datatrap.specie.fragments.UpdateSpecieFragment"
@@ -43,6 +47,9 @@
         <argument
             android:name="specie"
             app:argType="com.example.datatrap.models.Specie" />
+        <action
+            android:id="@+id/action_updateSpecieFragment_to_getPictureFragment"
+            app:destination="@id/getPictureFragment" />
     </fragment>
     <activity
         android:id="@+id/bugReportActivity"
@@ -69,5 +76,14 @@
         <argument
             android:name="specie"
             app:argType="com.example.datatrap.models.Specie" />
+    </fragment>
+    <fragment
+        android:id="@+id/getPictureFragment"
+        android:name="com.example.datatrap.picture.fragments.GetPictureSpecieFragment"
+        android:label="fragment_get_picture"
+        tools:layout="@layout/fragment_get_picture_specie" >
+        <argument
+            android:name="hasPicture"
+            app:argType="boolean" />
     </fragment>
 </navigation>

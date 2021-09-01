@@ -107,7 +107,8 @@ class AddOccasionFragment : Fragment() {
     }
 
     private fun goToCamera(){
-
+        val action = AddOccasionFragmentDirections.actionAddOccasionFragmentToTakePhotoFragment("AddOccasionFragment")
+        findNavController().navigate(action)
     }
 
     override fun onDestroy() {

@@ -16,7 +16,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
-import com.example.datatrap.databinding.FragmentTakePhotoBinding
+import com.example.datatrap.databinding.FragmentTakePhotoOccasionBinding
 import com.example.datatrap.models.Picture
 import com.example.datatrap.viewmodels.PictureViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
@@ -25,9 +25,9 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TakePhotoFragment : Fragment() {
+class TakePhotoOccasionFragment : Fragment() {
 
-    private var _binding: FragmentTakePhotoBinding? = null
+    private var _binding: FragmentTakePhotoOccasionBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var pictureViewModel: PictureViewModel
@@ -40,7 +40,7 @@ class TakePhotoFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
-        _binding = FragmentTakePhotoBinding.inflate(inflater, container, false)
+        _binding = FragmentTakePhotoOccasionBinding.inflate(inflater, container, false)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
