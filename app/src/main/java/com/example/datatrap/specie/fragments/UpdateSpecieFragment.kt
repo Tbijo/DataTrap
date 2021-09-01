@@ -65,11 +65,7 @@ class UpdateSpecieFragment : Fragment() {
 
     private fun goToCamera(){
         // overenie ci mame alebo nemame fotku
-        var action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureFragment(true)
-        if (imgName == null){
-            action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureFragment(false)
-        }
-
+        val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureFragment(imgName)
         findNavController().navigate(action)
     }
 

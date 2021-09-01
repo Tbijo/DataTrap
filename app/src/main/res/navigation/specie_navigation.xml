@@ -83,7 +83,8 @@
         android:label="fragment_get_picture"
         tools:layout="@layout/fragment_get_picture_specie" >
         <argument
-            android:name="hasPicture"
-            app:argType="boolean" />
+            android:name="picName"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>

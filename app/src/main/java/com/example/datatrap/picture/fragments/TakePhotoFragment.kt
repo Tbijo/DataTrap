@@ -13,10 +13,12 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
-import com.example.datatrap.databinding.FragmentTakePhotoOccasionBinding
+import com.example.datatrap.databinding.FragmentTakePhotoBinding
 import com.example.datatrap.models.Picture
 import com.example.datatrap.viewmodels.PictureViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
@@ -25,27 +27,58 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TakePhotoOccasionFragment : Fragment() {
+class TakePhotoFragment : Fragment() {
 
-    private var _binding: FragmentTakePhotoOccasionBinding? = null
+    private var _binding: FragmentTakePhotoBinding? = null
     private val binding get() = _binding!!
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var pictureViewModel: PictureViewModel
+    private val args by navArgs<TakePhotoFragmentArgs>()
 
-    private var myPath: String? = null
-    private  var photoURI: Uri? = null
-    private var title: String? = null
-    private var imgName: String? = null
+    private var picPath: String? = null
+    private var picUri: Uri? = null
+    private var picName: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
-        _binding = FragmentTakePhotoOccasionBinding.inflate(inflater, container, false)
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        _binding = FragmentTakePhotoBinding.inflate(inflater, container, false)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
+        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        binding.btnOccPhoto.setOnClickListener {
-            takePicture()
+        if (args.picName != null){
+            // ak mame fotku tak ju nacitame
+            binding.tvTakePicture.text = getString(R.string.pictureAdded)
+            val picture: Picture? = pictureViewModel.getPictureById(args.picName!!).value
+            binding.ivTakePicture.setImageURI(picture?.path?.toUri())
+            picName = args.picName
+        }else{
+            binding.tvTakePicture.text = getString(R.string.noPicture)
+        }
+
+        binding.btnTakePicture.setOnClickListener {
+            when(args.fragmentName){
+                "Occasion" -> takePicture("Occasion")
+                "Mouse" -> takePicture("Mouse")
+            }
+        }
+
+        binding.btnAddPicture.setOnClickListener {
+            // ak je vsetko v poriadku treba
+            // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze
+            // pridat novu fotku do galerie
+            // poslat novy nazov a odist
+            if (args.picName != picName && picName != null){
+                val picture = Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
+                pictureViewModel.insertPicture(picture)
+                galleryAddPic(picUri!!, picName!!)
+                sharedViewModel.setData(picName!!)
+            }else{
+                // v pripade povodnej fotky len poslat povodny nazov a odist
+                sharedViewModel.setData(picName!!)
+            }
+
+            findNavController().navigateUp()
         }
 
         return binding.root
@@ -56,35 +89,22 @@ class TakePhotoOccasionFragment : Fragment() {
         _binding = null
     }
 
-    private fun setData(imgName: String){
-        sharedViewModel.setData(imgName)
-        findNavController().navigateUp()
-    }
-
-    private fun checkInsert(){
-        if (title != null){
-            val picture = Picture(title!!, photoURI.toString(), binding.etOccPicNote.text.toString())
-            pictureViewModel.insertPicture(picture)
-            galleryAddPic(photoURI!!, title!!)
-        }
-    }
-
-    private fun takePicture() {
+    private fun takePicture(what: String) {
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
             takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
                 val photoFile: File? = try {
-                    createImageFile()
+                    createImageFile(what)
                 } catch (ex: IOException) {
                     Toast.makeText(requireContext(), "File was not created.", Toast.LENGTH_LONG).show()
                     null
                 }
                 photoFile?.also {
-                    photoURI = FileProvider.getUriForFile(
+                    picUri = FileProvider.getUriForFile(
                         requireContext(),
                         "com.example.datatrap.fileprovider",
                         it
                     )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, picUri)
                     resultLauncher.launch(takePictureIntent)
                 }
             }
@@ -92,33 +112,35 @@ class TakePhotoOccasionFragment : Fragment() {
     }
 
     @Throws(IOException::class)
-    private fun createImageFile(): File {
+    private fun createImageFile(what: String): File {
         val date = Calendar.getInstance().time
         val formatter = SimpleDateFormat.getDateTimeInstance()
-        val formatedDate = formatter.format(date)
+        val dateTime = formatter.format(date)
         val storageDir: File? = activity?.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         return File.createTempFile(
-            "Occasion_${formatedDate}_",
+            "${what}_${dateTime}_",
             ".jpg",
             storageDir
         ).apply {
-            myPath = absolutePath
-            binding.tvOccPhoto.text = "Specie_$formatedDate"
-            title = "Occasion_$formatedDate"
+            picPath = absolutePath
+            picName = nameWithoutExtension
         }
     }
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode != Activity.RESULT_OK) {
-            // sem sa pojde ak pouzivatel nespravil fotku
+            // sem sa pojde ak pouzivatel neprijal fotku
             // treba vymazat empty file ktora bola vytvorena
-            val myFile: File = File(myPath)
+            val myFile: File = File(picPath)
             if (myFile.exists()) myFile.delete()
-            binding.tvOccPhoto.text = getString(R.string.noPicture)
-            title = null
-            photoURI = null
-            myPath = null
+            binding.tvTakePicture.text = getString(R.string.noPicture)
+            picUri = null
+            picPath = null
+            picName = null
             Toast.makeText(requireContext(), "Empty File deleted.", Toast.LENGTH_SHORT).show()
+        }else{
+            binding.ivTakePicture.setImageURI(picUri)
+            binding.tvTakePicture.text = getString(R.string.pictureAdded)
         }
     }
 

@@ -50,7 +50,7 @@ class AddSpecieFragment : Fragment() {
     }
 
     private fun goToCamera(){
-        val action = AddSpecieFragmentDirections.actionAddSpecieFragmentToGetPictureFragment(false)
+        val action = AddSpecieFragmentDirections.actionAddSpecieFragmentToGetPictureFragment(null)
         findNavController().navigate(action)
     }
 

@@ -107,7 +107,7 @@ class AddOccasionFragment : Fragment() {
     }
 
     private fun goToCamera(){
-        val action = AddOccasionFragmentDirections.actionAddOccasionFragmentToTakePhotoFragment("AddOccasionFragment")
+        val action = AddOccasionFragmentDirections.actionAddOccasionFragmentToTakePhotoFragment("Occasion", null)
         findNavController().navigate(action)
     }
 

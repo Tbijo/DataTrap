@@ -47,7 +47,7 @@ class UpdateOccasionFragment : Fragment() {
     private var weatherGlob: String? = null
 
     private lateinit var sharedViewModel: SharedViewModel
-    private var imgName: String? = null
+    private var imgName: String? = args.occasion.imgName
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -117,7 +117,7 @@ class UpdateOccasionFragment : Fragment() {
     }
 
     private fun goToCamera(){
-        val action = UpdateOccasionFragmentDirections.actionUpdateOccasionFragmentToTakePhotoFragment("UpdateOccasionFragment")
+        val action = UpdateOccasionFragmentDirections.actionUpdateOccasionFragmentToTakePhotoFragment("Occasion", imgName)
         findNavController().navigate(action)
     }
 

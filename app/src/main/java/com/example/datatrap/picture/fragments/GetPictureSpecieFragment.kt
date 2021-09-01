@@ -10,13 +10,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentGetPictureSpecieBinding
 import com.example.datatrap.models.Picture
 import com.example.datatrap.viewmodels.PictureViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 class GetPictureSpecieFragment : Fragment() {
 
@@ -36,24 +40,43 @@ class GetPictureSpecieFragment : Fragment() {
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
+        if (args.picName != null){
+            // ak mame fotku tak hu nacitame
+            binding.tvGetPicture.text = getString(R.string.pictureAdded)
+            val picture: Picture? = pictureViewModel.getPictureById(args.picName!!).value
+            binding.ivGetPicture.setImageURI(picture?.path?.toUri())
+            picName = args.picName
+        }else{
+            binding.tvGetPicture.text = getString(R.string.noPicture)
+        }
+
+        binding.btnGetPicture.setOnClickListener {
+            // zohnat novu fotku
+            getPicture()
+        }
+
+        binding.btnAddPicture.setOnClickListener {
+            // ak je vsetko v poriadku treba
+            // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze
+            // poslat novy nazov a odist
+            if (picName != args.picName && picName != null){
+                val picture = Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
+                pictureViewModel.insertPicture(picture)
+                sharedViewModel.setData(picName!!)
+            }else{
+                // v pripade povodnej fotky len poslat povodny nazov a odist
+                sharedViewModel.setData(args.picName!!)
+            }
+
+            findNavController().navigateUp()
+        }
+
         return binding.root
     }
 
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    private fun setData(imgName: String){
-        sharedViewModel.setData(imgName)
-    }
-
-    private fun checkInput(){
-        if (picUri != null){
-            img = "specie_$speciesCode"
-            val picture = Picture(img, picUri.toString(), null)
-            pictureViewModel.insertPicture(picture)
-        }
     }
 
     private fun getPicture(){
@@ -63,8 +86,14 @@ class GetPictureSpecieFragment : Fragment() {
 
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
+            // pouzivatel akceptoval fotku
             picUri = result.data?.data
-            binding.tvPicture.text = getString(R.string.pictureAdded)
+            val date = Calendar.getInstance().time
+            val formatter = SimpleDateFormat.getDateTimeInstance()
+            val dateTime = formatter.format(date)
+            picName = "Specie_$dateTime"
+            binding.ivGetPicture.setImageURI(picUri)
+            binding.tvGetPicture.text = getString(R.string.pictureAdded)
         }
     }
 

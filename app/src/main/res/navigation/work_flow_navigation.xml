@@ -168,8 +168,8 @@
             android:name="newOccasionNumber"
             app:argType="integer" />
         <action
-            android:id="@+id/action_addOccasionFragment_to_takePhotoOccasionFragment"
-            app:destination="@id/takePhotoOccasionFragment" />
+            android:id="@+id/action_addOccasionFragment_to_takePhotoFragment"
+            app:destination="@id/takePhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateOccasionFragment"
@@ -180,8 +180,8 @@
             android:name="occasion"
             app:argType="com.example.datatrap.models.Occasion" />
         <action
-            android:id="@+id/action_updateOccasionFragment_to_takePhotoOccasionFragment"
-            app:destination="@id/takePhotoOccasionFragment" />
+            android:id="@+id/action_updateOccasionFragment_to_takePhotoFragment"
+            app:destination="@id/takePhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/listOccMouseFragment"
@@ -208,12 +208,19 @@
         <argument
             android:name="mouse"
             app:argType="com.example.datatrap.models.Mouse" />
+        <action
+            android:id="@+id/action_updateMouseFragment_to_takePhotoFragment"
+            app:destination="@id/takePhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/addNewMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.AddNewMouseFragment"
         android:label="fragment_add_new_mouse"
-        tools:layout="@layout/fragment_add_new_mouse" />
+        tools:layout="@layout/fragment_add_new_mouse" >
+        <action
+            android:id="@+id/action_addNewMouseFragment_to_takePhotoFragment"
+            app:destination="@id/takePhotoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/recaptureMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.RecaptureMouseFragment"
@@ -224,12 +231,16 @@
             app:argType="com.example.datatrap.models.Mouse" />
     </fragment>
     <fragment
-        android:id="@+id/takePhotoOccasionFragment"
-        android:name="com.example.datatrap.picture.fragments.TakePhotoOccasionFragment"
-        android:label="fragment_take_photo_occasion"
-        tools:layout="@layout/fragment_take_photo_occasion" >
+        android:id="@+id/takePhotoFragment"
+        android:name="com.example.datatrap.picture.fragments.TakePhotoFragment"
+        android:label="fragment_take_photo"
+        tools:layout="@layout/fragment_take_photo" >
         <argument
-            android:name="hasPicture"
-            app:argType="boolean" />
+            android:name="fragmentName"
+            app:argType="string" />
+        <argument
+            android:name="picName"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 </navigation>
