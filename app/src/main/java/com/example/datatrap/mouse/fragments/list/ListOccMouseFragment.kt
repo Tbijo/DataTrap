@@ -1,60 +1,101 @@
 package com.example.datatrap.mouse.fragments.list
 
 import android.os.Bundle
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentListOccMouseBinding
+import com.example.datatrap.models.Mouse
+import com.example.datatrap.viewmodels.MouseViewModel
+import com.example.datatrap.viewmodels.SpecieViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [ListOccMouseFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class ListOccMouseFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentListOccMouseBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var mouseViewModel: MouseViewModel
+    private lateinit var specieViewModel: SpecieViewModel
+    private lateinit var adapter: MouseRecyclerAdapter
+    private val args by navArgs<ListOccMouseFragmentArgs>()
+    private lateinit var mouseList: List<Mouse>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_list_occ_mouse, container, false)
+        savedInstanceState: Bundle?): View? {
+        _binding = FragmentListOccMouseBinding.inflate(inflater, container, false)
+        mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
+        specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
+
+        adapter = MouseRecyclerAdapter()
+        val recyclerView = binding.mouseRecyclerview
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        mouseViewModel.getMiceForOccasion(args.occasion.occasionId).observe(viewLifecycleOwner, Observer { mice ->
+            adapter.setData(mice, specieViewModel.specieList.value!!)
+            mouseList = mice
+        })
+
+        adapter.setOnItemClickListener(object : MouseRecyclerAdapter.MyClickListener{
+            override fun useClickListener(position: Int) {
+                //view
+                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToViewMouseFragment(mouseList[position])
+                findNavController().navigate(action)
+            }
+
+            override fun useLongClickListener(position: Int) {
+                //update
+                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(mouseList[position], args.occasion)
+                findNavController().navigate(action)
+            }
+
+        })
+
+        binding.addMouseFloatButton.setOnClickListener {
+            // pridat novu mys
+            val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToAddNewMouseFragment(args.occasion)
+            findNavController().navigate(action)
+        }
+
+        setHasOptionsMenu(true)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ListOccMouseFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ListOccMouseFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_menu, menu)
+        val searchItem = menu.findItem(R.id.menu_search)
+        val searchView = searchItem?.actionView as? SearchView
+        searchView?.setOnQueryTextListener(this)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        return true
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        if (newText != null) {
+            searchMice(Integer.parseInt(newText))
+        }
+        return true
+    }
+
+    private fun searchMice(query: Int) {
+        mouseViewModel.searchMice(query).observe(viewLifecycleOwner, Observer { localities ->
+            localities.let {
+                adapter.setData(it, specieViewModel.specieList.value!!)
+            }
+        })
+    }
+
 }

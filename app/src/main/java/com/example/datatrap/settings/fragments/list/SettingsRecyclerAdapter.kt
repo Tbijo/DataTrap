@@ -27,7 +27,7 @@ class SettingsRecyclerAdapter : RecyclerView.Adapter<SettingsRecyclerAdapter.MyV
         val actionTraType = ListMainFragmentDirections.actionListMainFragmentToListTrapTypeFragment()
         val actionVegType = ListMainFragmentDirections.actionListMainFragmentToListVegetTypeFragment()
 
-        holder.binding.settingsRow.setOnClickListener {
+        holder.binding.root.setOnClickListener {
             when(currenItem){
                 "Environment Type" -> holder.binding.settingsRow.findNavController().navigate(actionEnType)
                 "Method" -> holder.binding.settingsRow.findNavController().navigate(actionMethod)

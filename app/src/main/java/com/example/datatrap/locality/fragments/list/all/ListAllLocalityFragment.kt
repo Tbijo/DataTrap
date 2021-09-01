@@ -96,12 +96,12 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null) {
-            searchProjects(newText)
+            searchLocalities(newText)
         }
         return true
     }
 
-    private fun searchProjects(query: String?) {
+    private fun searchLocalities(query: String?) {
         val searchQuery = "%$query%"
         localityViewModel.searchLocalities(searchQuery).observe(viewLifecycleOwner, Observer { localities ->
             localities.let {

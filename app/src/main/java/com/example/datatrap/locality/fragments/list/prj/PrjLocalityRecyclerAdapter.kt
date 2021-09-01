@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.LocalityRowBinding
 import com.example.datatrap.models.Locality
 
-class PrjLocalityRecyclerAdapter : RecyclerView.Adapter<PrjLocalityRecyclerAdapter.MyViewHolder>()  {
+class PrjLocalityRecyclerAdapter : RecyclerView.Adapter<PrjLocalityRecyclerAdapter.MyViewHolder>() {
 
     private var localityList = emptyList<Locality>()
 

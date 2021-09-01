@@ -200,6 +200,9 @@
         <action
             android:id="@+id/action_listOccMouseFragment_to_recaptureMouseFragment"
             app:destination="@id/recaptureMouseFragment" />
+        <action
+            android:id="@+id/action_listOccMouseFragment_to_viewMouseFragment"
+            app:destination="@id/viewMouseFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateMouseFragment"
@@ -211,6 +214,9 @@
         <action
             android:id="@+id/action_updateMouseFragment_to_takePhotoFragment"
             app:destination="@id/takePhotoFragment" />
+        <argument
+            android:name="occasion"
+            app:argType="com.example.datatrap.models.Occasion" />
     </fragment>
     <fragment
         android:id="@+id/addNewMouseFragment"
@@ -220,6 +226,9 @@
         <action
             android:id="@+id/action_addNewMouseFragment_to_takePhotoFragment"
             app:destination="@id/takePhotoFragment" />
+        <argument
+            android:name="occasion"
+            app:argType="com.example.datatrap.models.Occasion" />
     </fragment>
     <fragment
         android:id="@+id/recaptureMouseFragment"
@@ -242,5 +251,14 @@
             android:name="picName"
             app:argType="string"
             app:nullable="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewMouseFragment"
+        android:name="com.example.datatrap.mouse.fragments.ViewMouseFragment"
+        android:label="fragment_view_mouse"
+        tools:layout="@layout/fragment_view_mouse" >
+        <argument
+            android:name="mouse"
+            app:argType="com.example.datatrap.models.Mouse" />
     </fragment>
 </navigation>

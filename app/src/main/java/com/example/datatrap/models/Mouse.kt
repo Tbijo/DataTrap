@@ -25,6 +25,9 @@ data class Mouse(
     // cudzi kluc
     val occasionID: Long,
 
+    // cudzi kluc
+    val localityID: Long,
+
     @ColumnInfo(name = "Trap_ID")
     val trapID: Int, //samy zadavat
 

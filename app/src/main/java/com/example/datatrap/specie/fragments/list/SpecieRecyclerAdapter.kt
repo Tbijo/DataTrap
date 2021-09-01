@@ -25,7 +25,7 @@ class SpecieRecyclerAdapter : RecyclerView.Adapter<SpecieRecyclerAdapter.MyViewH
         holder.binding.specieRow.setOnClickListener {
             // tu sa pojde pozriet specie
             val action = ListSpecieFragmentDirections.actionListSpecieFragmentToViewSpecieFragment(currenItem)
-            holder.binding.specieRow.findNavController().navigate(action)
+            holder.binding.root.findNavController().navigate(action)
         }
 
         holder.binding.specieRow.setOnLongClickListener {

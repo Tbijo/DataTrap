@@ -27,13 +27,13 @@ class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyV
         holder.binding.occasionRow.setOnClickListener {
             // tu sa pojde do Mouse s occasion
             val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToListOccMouseFragment(currenItem)
-            holder.binding.occasionRow.findNavController().navigate(action)
+            holder.binding.root.findNavController().navigate(action)
         }
 
         holder.binding.occasionRow.setOnLongClickListener {
             // tu sa pojde do update occasion
             val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToUpdateOccasionFragment(currenItem)
-            holder.binding.occasionRow.findNavController().navigate(action)
+            holder.binding.root.findNavController().navigate(action)
             true
         }
     }
