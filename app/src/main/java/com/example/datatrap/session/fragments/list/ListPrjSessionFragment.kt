@@ -1,12 +1,10 @@
 package com.example.datatrap.session.fragments.list
 
 import android.os.Bundle
-import android.text.InputType
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
@@ -14,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListPrjSessionBinding
 import com.example.datatrap.models.Session
 import com.example.datatrap.viewmodels.SessionViewModel

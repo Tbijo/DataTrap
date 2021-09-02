@@ -43,7 +43,7 @@ class AddNewMouseFragment : Fragment() {
     private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
-    private var code: Int = 0
+    private var code: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -122,7 +122,7 @@ class AddNewMouseFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.mouse_menu, menu)
-        menu.getItem(R.id.menu_delete).isVisible = false
+        menu.findItem(R.id.menu_delete).isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -178,8 +178,8 @@ class AddNewMouseFragment : Fragment() {
         }
     }
 
-    private fun checkInput(code: Int, specieID: Long, trapID: Int): Boolean {
-        return code > 0 && specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
+    private fun checkInput(code: Int?, specieID: Long, trapID: Int): Boolean {
+        return code != null && specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
     }
 
     private fun getDate(): String{

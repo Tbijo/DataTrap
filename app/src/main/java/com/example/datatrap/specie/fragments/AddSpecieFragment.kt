@@ -38,7 +38,7 @@ class AddSpecieFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.specie_menu, menu)
-        menu[R.id.menu_delete].isVisible = false
+        menu.findItem(R.id.menu_delete).isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

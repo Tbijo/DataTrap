@@ -51,7 +51,7 @@ class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
             override fun useLongClickListener(position: Int) {
                 //update
-                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(mouseList[position], args.occasion)
+                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(mouseList[position])
                 findNavController().navigate(action)
             }
 
@@ -73,10 +73,22 @@ class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_menu, menu)
+        inflater.inflate(R.menu.mouse_list_menu, menu)
         val searchItem = menu.findItem(R.id.menu_search)
         val searchView = searchItem?.actionView as? SearchView
         searchView?.setOnQueryTextListener(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_recapture -> goToRecapture()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun goToRecapture(){
+        val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToRecaptureMouseFragment()
+        findNavController().navigate(action)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

@@ -214,9 +214,6 @@
         <action
             android:id="@+id/action_updateMouseFragment_to_takePhotoFragment"
             app:destination="@id/takePhotoFragment" />
-        <argument
-            android:name="occasion"
-            app:argType="com.example.datatrap.models.Occasion" />
     </fragment>
     <fragment
         android:id="@+id/addNewMouseFragment"
@@ -234,11 +231,7 @@
         android:id="@+id/recaptureMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.RecaptureMouseFragment"
         android:label="fragment_recapture_mouse"
-        tools:layout="@layout/fragment_recapture_mouse" >
-        <argument
-            android:name="mouse"
-            app:argType="com.example.datatrap.models.Mouse" />
-    </fragment>
+        tools:layout="@layout/fragment_recapture_mouse" />
     <fragment
         android:id="@+id/takePhotoFragment"
         android:name="com.example.datatrap.picture.fragments.TakePhotoFragment"
