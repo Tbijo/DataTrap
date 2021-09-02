@@ -21,4 +21,7 @@ interface MouseDao {
 
     @Query("SELECT * FROM sm WHERE Code = :code")
     fun searchMice(code: Int): LiveData<List<Mouse>>
+
+    @Query("SELECT COUNT(*) FROM sm WHERE localityID = :localityId")
+    fun countMiceForLocality(localityId: Long): LiveData<Int>
 }

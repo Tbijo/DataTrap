@@ -2,6 +2,7 @@ package com.example.datatrap.mouse.fragments
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -38,7 +39,11 @@ class AddNewMouseFragment : Fragment() {
     private lateinit var mapSpecie: MutableMap<String, Long>
     private lateinit var mapProtocol: MutableMap<String?, Long>
 
-    var imgName: String? = null
+    private var sex: String? = null
+    private var imgName: String? = null
+    private var age: String? = null
+    private var captureID: String? = null
+    private var code: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,7 +60,7 @@ class AddNewMouseFragment : Fragment() {
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
         listProtocol = protocolViewModel.procolList.value!!
         listProtocol.forEach {
-            mapProtocol.put(it.protocolName, it.protocolId)
+            mapProtocol[it.protocolName] = it.protocolId
         }
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
@@ -63,8 +68,51 @@ class AddNewMouseFragment : Fragment() {
             imgName = it
         })
 
+        mouseViewModel.countMiceForLocality(args.occasion.localityId).observe(viewLifecycleOwner, Observer {
+            code = it
+        })
+
+        binding.rgSex.setOnCheckedChangeListener{ radioGroup, checkedId ->
+            sex = when(checkedId){
+                R.id.rb_male -> "Male"
+                R.id.rb_female -> "Female"
+                R.id.rb_null_sex -> null
+                else -> null
+            }
+        }
+
+        binding.rgAge.setOnCheckedChangeListener { radioGroup, checkedId ->
+            age = when(checkedId){
+                R.id.rb_adult -> "Adult"
+                R.id.rb_juvenile -> "Juvenile"
+                R.id.rb_subadult -> "Subadult"
+                R.id.rb_null_age -> null
+                else -> null
+            }
+        }
+
+        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, checkedId ->
+            captureID = when(checkedId){
+                R.id.rb_captured -> "Captured"
+                R.id.rb_died -> "Died"
+                R.id.rb_escaped -> "Escaped"
+                R.id.rb_released -> "Released"
+                R.id.rb_null_capture -> null
+                else -> null
+            }
+        }
+
         setHasOptionsMenu(true)
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
+        binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
+
+        val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
+        binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
     }
 
     override fun onDestroy() {
@@ -91,32 +139,28 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun insertMouse() {
-        val code: Int = countMouseByLocality() + 1 //pazure(špecifický kód jedinca)
-        val speciesID: Long
-        val protocolID: Long?
-        val trapID: Int //samy zadavat //TEXT
-        val sex: String? //list male female null
-        val age: String? //list Juvenile, Subadult a Adult alebo NULL
-        val gravitidy: Int? //bool
-        val lactating: Int? //bool
-        val sexActive: Int? //bool
-        val weight: Float?
-        val captureID: String? //list Died, Captured & Released, Escaped a NULL
-        val body: Float?
-        val tail: Float?
-        val feet: Float?
-        val ear: Float?
-        val testesLength: Float?
-        val testesWidth: Float?
+        val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
+        val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
+        val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
+        val lactating: Int? = if (binding.cbLactating.isChecked) 1 else 0
+        val sexActive: Int? = if (binding.cbSexActive.isChecked) 1 else 0
+        val trapID: Int = Integer.parseInt(binding.etTrapId.text.toString())
+        val weight: Float? = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
+        val body: Float? = Integer.parseInt(binding.etBody.text.toString()).toFloat()
+        val tail: Float? = Integer.parseInt(binding.etTail.text.toString()).toFloat()
+        val feet: Float? = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
+        val ear: Float? = Integer.parseInt(binding.etEar.text.toString()).toFloat()
+        val testesLength: Float? = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
+        val testesWidth: Float? = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
         //počet embryí v oboch rohoch maternice a ich priemer
-        val embryoRight: Int?
-        val embryoLeft: Int?
-        val embryoDiameter: Float?
-        val MC: Int? //bool
+        val embryoRight: Int? = Integer.parseInt(binding.etEmbryoRight.text.toString())
+        val embryoLeft: Int? = Integer.parseInt(binding.etEmbryoLeft.text.toString())
+        val embryoDiameter: Float? = Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
+        val MC: Int? = if (binding.cbMc.isChecked) 1 else 0
         //počet placentálnych polypov
-        val MCright: Int?
-        val MCleft: Int?
-        val note: String?
+        val MCright: Int? = Integer.parseInt(binding.etMcRight.text.toString())
+        val MCleft: Int? = Integer.parseInt(binding.etMcLeft.text.toString())
+        val note: String? = binding.etMouseNote.text.toString()
 
         if (checkInput(code, speciesID, trapID)){
             val mouse = Mouse(0, code, speciesID, protocolID, args.occasion.occasionId,
@@ -135,7 +179,7 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun checkInput(code: Int, specieID: Long, trapID: Int): Boolean {
-        return code.toString().isNotEmpty() && specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
+        return code > 0 && specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
     }
 
     private fun getDate(): String{

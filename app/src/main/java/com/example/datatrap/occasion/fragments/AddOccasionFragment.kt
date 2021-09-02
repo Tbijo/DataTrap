@@ -35,11 +35,11 @@ class AddOccasionFragment : Fragment() {
     private lateinit var metTypeList: List<MethodType>
     private lateinit var trapTypeList: List<TrapType>
     private lateinit var vegTypeList: List<VegetType>
-    private lateinit var envTypeNameList: MutableMap<String, Long>
-    private lateinit var methodNameList: MutableMap<String, Long>
-    private lateinit var metTypeNameList: MutableMap<String, Long>
-    private lateinit var trapTypeNameList: MutableMap<String, Long>
-    private lateinit var vegTypeNameList: MutableMap<String, Long>
+    private lateinit var envTypeNameMap: MutableMap<String, Long>
+    private lateinit var methodNameMap: MutableMap<String, Long>
+    private lateinit var metTypeNameMap: MutableMap<String, Long>
+    private lateinit var trapTypeNameMap: MutableMap<String, Long>
+    private lateinit var vegTypeNameMap: MutableMap<String, Long>
 
     private var temperature: Float? = null
     private var weatherGlob: String? = null
@@ -65,27 +65,27 @@ class AddOccasionFragment : Fragment() {
 
         envTypeList = envTypeViewModel.envTypeList.value!!
         envTypeList.forEach {
-            envTypeNameList[it.envTypeName] = it.envTypeId
+            envTypeNameMap[it.envTypeName] = it.envTypeId
         }
 
         methodList = methodViewModel.methodList.value!!
         methodList.forEach {
-            methodNameList[it.methodName] = it.methodId
+            methodNameMap[it.methodName] = it.methodId
         }
 
         metTypeList = metTypeViewModel.methodTypeList.value!!
         metTypeList.forEach {
-            metTypeNameList[it.methodTypeName] = it.methodTypeId
+            metTypeNameMap[it.methodTypeName] = it.methodTypeId
         }
 
         trapTypeList = trapTypeViewModel.trapTypeList.value!!
         trapTypeList.forEach {
-            trapTypeNameList[it.trapTypeName] = it.trapTypeId
+            trapTypeNameMap[it.trapTypeName] = it.trapTypeId
         }
 
         vegTypeList = vegTypeViewModel.vegetTypeList.value!!
         vegTypeList.forEach {
-            vegTypeNameList[it.vegetTypeName] = it.vegetTypeId
+            vegTypeNameMap[it.vegetTypeName] = it.vegetTypeId
         }
 
         setHasOptionsMenu(true)
@@ -119,29 +119,29 @@ class AddOccasionFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // env type adapter
-        val dropDownArrAdapEnvType = ArrayAdapter(requireContext(), R.layout.dropdown_names, envTypeNameList.keys.toList())
+        val dropDownArrAdapEnvType = ArrayAdapter(requireContext(), R.layout.dropdown_names, envTypeNameMap.keys.toList())
         binding.autoCompTvEnvType.setAdapter(dropDownArrAdapEnvType)
         // method adapter
-        val dropDownArrAdapMethod = ArrayAdapter(requireContext(), R.layout.dropdown_names, methodNameList.keys.toList())
+        val dropDownArrAdapMethod = ArrayAdapter(requireContext(), R.layout.dropdown_names, methodNameMap.keys.toList())
         binding.autoCompTvMethod.setAdapter(dropDownArrAdapMethod)
         // method type adapter
-        val dropDownArrAdapMethodType = ArrayAdapter(requireContext(), R.layout.dropdown_names, metTypeNameList.keys.toList())
+        val dropDownArrAdapMethodType = ArrayAdapter(requireContext(), R.layout.dropdown_names, metTypeNameMap.keys.toList())
         binding.autoCompTvMethodType.setAdapter(dropDownArrAdapMethodType)
         // trap type adapter
-        val dropDownArrAdapTrapType = ArrayAdapter(requireContext(), R.layout.dropdown_names, trapTypeNameList.keys.toList())
+        val dropDownArrAdapTrapType = ArrayAdapter(requireContext(), R.layout.dropdown_names, trapTypeNameMap.keys.toList())
         binding.autoCompTvTrapType.setAdapter(dropDownArrAdapTrapType)
         // veget type adapter
-        val dropDownArrAdapVegType = ArrayAdapter(requireContext(), R.layout.dropdown_names, vegTypeNameList.keys.toList())
+        val dropDownArrAdapVegType = ArrayAdapter(requireContext(), R.layout.dropdown_names, vegTypeNameMap.keys.toList())
         binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
     }
 
     private fun insertOccasion() {
         val occasionNum: Int = args.newOccasionNumber
-        val method: Long = methodNameList.getValue(binding.autoCompTvMethod.text.toString())
-        val methodType: Long = metTypeNameList.getValue(binding.autoCompTvMethodType.text.toString())
-        val trapType: Long = trapTypeNameList.getValue(binding.autoCompTvTrapType.text.toString())
-        val envType: Long? = envTypeNameList.getValue(binding.autoCompTvEnvType.text.toString())
-        val vegType: Long? = vegTypeNameList.getValue(binding.autoCompTvVegType.text.toString())
+        val method: Long = methodNameMap.getValue(binding.autoCompTvMethod.text.toString())
+        val methodType: Long = metTypeNameMap.getValue(binding.autoCompTvMethodType.text.toString())
+        val trapType: Long = trapTypeNameMap.getValue(binding.autoCompTvTrapType.text.toString())
+        val envType: Long? = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
+        val vegType: Long? = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
         val date = getDate()
         val time = getTime()
         val gotCaught = 0
