@@ -84,10 +84,24 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_menu, menu)
+        inflater.inflate(R.menu.list_locality_menu, menu)
         val searchItem = menu.findItem(R.id.menu_search)
         val searchView = searchItem?.actionView as? SearchView
         searchView?.setOnQueryTextListener(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_map -> goToMap()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun goToMap(){
+        val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToLocalityMapFragment(
+            localityList.toTypedArray()
+        )
+        findNavController().navigate(action)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

@@ -104,7 +104,11 @@
         android:id="@+id/localityMapFragment"
         android:name="com.example.datatrap.locality.fragments.LocalityMapFragment"
         android:label="fragment_locality_map"
-        tools:layout="@layout/fragment_locality_map" />
+        tools:layout="@layout/fragment_locality_map" >
+        <argument
+            android:name="localities"
+            app:argType="com.example.datatrap.models.Locality[]" />
+    </fragment>
     <fragment
         android:id="@+id/listPrjSessionFragment"
         android:name="com.example.datatrap.session.fragments.list.ListPrjSessionFragment"
