@@ -174,6 +174,7 @@ class UpdateMouseFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.mouse_menu, menu)
+        menu.findItem(R.id.menu_rat).isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

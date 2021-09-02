@@ -8,6 +8,12 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/menu_rat"
+        android:title="Rat Num."
+        android:icon="@drawable/ic_rat"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/menu_camera"
         android:title="Camera"
         android:icon="@drawable/ic_photo"

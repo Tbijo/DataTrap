@@ -43,7 +43,8 @@ class AddNewMouseFragment : Fragment() {
     private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
-    private var code: Int? = null
+    private var code: Int = 0
+    private var speciesID: Long = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -128,9 +129,26 @@ class AddNewMouseFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.menu_save -> insertMouse()
+            R.id.menu_rat -> showDrawnRat()
             R.id.menu_camera -> goToCamera()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showDrawnRat(){
+        if (speciesID > 0 && code > 0){
+            var specie: Specie? = null
+            listSpecie.forEach {
+                if (it.specieId == speciesID){
+                    specie = it
+                }
+            }
+            val fragman = requireActivity().supportFragmentManager
+            val floatFrag = DrawnFragment(code, specie?.upperFingers!!)
+            floatFrag.show(fragman, "FloatFragMouseCode")
+        }else{
+            Toast.makeText(requireContext(), "Choose a specie.", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun goToCamera() {
@@ -139,7 +157,7 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun insertMouse() {
-        val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
+        speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
         val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
         val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
         val lactating: Int? = if (binding.cbLactating.isChecked) 1 else 0
@@ -178,8 +196,8 @@ class AddNewMouseFragment : Fragment() {
         }
     }
 
-    private fun checkInput(code: Int?, specieID: Long, trapID: Int): Boolean {
-        return code != null && specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
+    private fun checkInput(code: Int, specieID: Long, trapID: Int): Boolean {
+        return code > 0 && specieID > 0 && trapID.toString().isNotEmpty()
     }
 
     private fun getDate(): String{

@@ -3,7 +3,6 @@ package com.example.datatrap.mouse.fragments.list
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -13,14 +12,12 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListOccMouseBinding
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.viewmodels.MouseViewModel
-import com.example.datatrap.viewmodels.SpecieViewModel
 
-class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
+class ListOccMouseFragment : Fragment() {
 
     private var _binding: FragmentListOccMouseBinding? = null
     private val binding get() = _binding!!
     private lateinit var mouseViewModel: MouseViewModel
-    private lateinit var specieViewModel: SpecieViewModel
     private lateinit var adapter: MouseRecyclerAdapter
     private val args by navArgs<ListOccMouseFragmentArgs>()
     private lateinit var mouseList: List<Mouse>
@@ -30,15 +27,14 @@ class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListOccMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
-        specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
 
-        adapter = MouseRecyclerAdapter()
+        adapter = MouseRecyclerAdapter(this)
         val recyclerView = binding.mouseRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         mouseViewModel.getMiceForOccasion(args.occasion.occasionId).observe(viewLifecycleOwner, Observer { mice ->
-            adapter.setData(mice, specieViewModel.specieList.value!!)
+            adapter.setData(mice)
             mouseList = mice
         })
 
@@ -63,7 +59,6 @@ class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
             findNavController().navigate(action)
         }
 
-        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -74,9 +69,6 @@ class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.mouse_list_menu, menu)
-        val searchItem = menu.findItem(R.id.menu_search)
-        val searchView = searchItem?.actionView as? SearchView
-        searchView?.setOnQueryTextListener(this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -89,25 +81,6 @@ class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     private fun goToRecapture(){
         val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToRecaptureMouseFragment()
         findNavController().navigate(action)
-    }
-
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return true
-    }
-
-    override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText != null) {
-            searchMice(Integer.parseInt(newText))
-        }
-        return true
-    }
-
-    private fun searchMice(query: Int) {
-        mouseViewModel.searchMice(query).observe(viewLifecycleOwner, Observer { localities ->
-            localities.let {
-                adapter.setData(it, specieViewModel.specieList.value!!)
-            }
-        })
     }
 
 }

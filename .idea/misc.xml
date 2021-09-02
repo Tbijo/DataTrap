@@ -48,7 +48,15 @@
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/delete_menu.xml" value="0.26296296296296295" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/drawer_menu.xml" value="0.25" />
         <entry key="..\:/GitHub/DataTrap/app/src/main/res/menu/search_menu.xml" value="0.1" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_add.xml" value="0.20092592592592592" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_cloud.xml" value="0.20092592592592592" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_delete.xml" value="0.23796296296296296" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_email.xml" value="0.20092592592592592" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_info.xml" value="0.20092592592592592" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_photo.xml" value="0.20092592592592592" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_save.xml" value="0.20092592592592592" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_settings.xml" value="0.20092592592592592" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/drawable/ic_storage.xml" value="0.20092592592592592" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_about.xml" value="0.1598731884057971" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_project.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/activity_session.xml" value="0.25416666666666665" />
@@ -59,6 +67,7 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_project.xml" value="0.15942028985507245" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_session.xml" value="0.15942028985507245" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_add_specie.xml" value="0.264" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_drawn.xml" value="0.10462962962962963" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_get_picture.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_get_picture_specie.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_all_locality.xml" value="0.12335359675785208" />
@@ -75,6 +84,7 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_specie.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_trap_type.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_veget_type.xml" value="0.12335359675785208" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_recapture_mouse.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_take_photo.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_take_photo_mouse.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_take_photo_occasion.xml" value="0.264" />
@@ -84,7 +94,7 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_project.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_session.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_update_specie.xml" value="0.264" />
-        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_view_mouse.xml" value="0.12335359675785208" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_view_mouse.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_view_specie.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/locality_row.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/mouse_row.xml" value="0.264" />

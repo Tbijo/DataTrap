@@ -2,15 +2,18 @@ package com.example.datatrap.mouse.fragments.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.MouseRowBinding
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.Specie
+import com.example.datatrap.viewmodels.SpecieViewModel
 
-class MouseRecyclerAdapter : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHolder>() {
+class MouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHolder>() {
 
     private var mouseList = emptyList<Mouse>()
-    private var specieList = emptyList<Specie>()
+    private val specieViewModel: SpecieViewModel = ViewModelProvider(owner).get(SpecieViewModel::class.java)
 
     class MyViewHolder(val binding: MouseRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
         init {
@@ -30,11 +33,11 @@ class MouseRecyclerAdapter : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHol
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+        val specieList = specieViewModel.specieList.value!!
         val currenItem = mouseList[position]
+
         holder.binding.tvIdIndividual.text = currenItem.code.toString()
 
-        /*co je lepsie skakat do databazy a postupne vytahovat specie code*/
-        /*alebo si sem dat list vsetkych a vytahovat z neho takto*/
         specieList.forEach {
             if (it.specieId == currenItem.speciesID){
                 holder.binding.tvMouseSpecieCode.text = it.speciesCode
@@ -49,9 +52,8 @@ class MouseRecyclerAdapter : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHol
         return mouseList.size
     }
 
-    fun setData(mice: List<Mouse>, species: List<Specie>){
+    fun setData(mice: List<Mouse>){
         this.mouseList = mice
-        this.specieList = species
         notifyDataSetChanged()
     }
 
