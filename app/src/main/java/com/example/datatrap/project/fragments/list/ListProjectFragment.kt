@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProjectBinding
@@ -53,10 +54,22 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.search_menu, menu)
+        inflater.inflate(R.menu.list_project_menu, menu)
         val searchItem = menu.findItem(R.id.menu_search)
         val searchView = searchItem?.actionView as? SearchView
         searchView?.setOnQueryTextListener(this)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_logout -> logOut()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun logOut(){
+        val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToMainActivity()
+        findNavController().navigate(action)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

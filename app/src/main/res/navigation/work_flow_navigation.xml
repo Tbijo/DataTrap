@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_listAllProjectFragment_to_listPrjLocalityFragment"
             app:destination="@id/listPrjLocalityFragment" />
+        <action
+            android:id="@+id/action_listAllProjectFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
     <fragment
         android:id="@+id/updateProjectFragment"
@@ -258,4 +261,9 @@
             android:name="mouse"
             app:argType="com.example.datatrap.models.Mouse" />
     </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.example.datatrap.main.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
 </navigation>
