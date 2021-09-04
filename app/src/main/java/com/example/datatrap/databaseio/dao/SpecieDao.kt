@@ -16,6 +16,9 @@ interface SpecieDao {
     @Delete
     suspend fun deleteSpecie(specie: Specie)
 
+    @Query("SELECT * FROM species WHERE specieId = :specieId")
+    fun getSpecie(specieId: Long): LiveData<Specie>
+
     // pouzije sa pri fragmente na vyber pri pridavani mouse
         // ale vyberu sa len ich nazvy vo view
     @Query("SELECT * FROM species")

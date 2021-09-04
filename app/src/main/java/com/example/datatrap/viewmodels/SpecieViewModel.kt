@@ -39,6 +39,10 @@ class SpecieViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun getSpecie(specieId: Long): LiveData<Specie>{
+        return specieRepository.getSpecie(specieId)
+    }
+
     fun searchSpecies(specieCode: String): LiveData<List<Specie>>{
         return specieRepository.searchSpecies(specieCode)
     }

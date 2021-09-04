@@ -18,6 +18,10 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
         occasionDao.deleteOccasion(occasion)
     }
 
+    fun getOccasion(occasionId: Long): LiveData<Occasion>{
+        return occasionDao.getOccasion(occasionId)
+    }
+
     fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>{
         return occasionDao.getOccasionsForSession(idSession)
     }

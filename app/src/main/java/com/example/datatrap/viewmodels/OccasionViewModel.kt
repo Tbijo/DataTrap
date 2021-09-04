@@ -37,6 +37,10 @@ class OccasionViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
+    fun getOccasion(occasionId: Long): LiveData<Occasion>{
+        return occasionRepository.getOccasion(occasionId)
+    }
+
     fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>{
         return occasionRepository.getOccasionsForSession(idSession)
     }

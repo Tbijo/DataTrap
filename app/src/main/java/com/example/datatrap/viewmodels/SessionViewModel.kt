@@ -37,6 +37,10 @@ class SessionViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
+    fun getSession(sessionId: Long): LiveData<Session>{
+        return sessionRepository.getSession(sessionId)
+    }
+
     fun getSessionsForProject(projectId: Long): LiveData<List<Session>>{
         return sessionRepository.getSessionsForProject(projectId)
     }

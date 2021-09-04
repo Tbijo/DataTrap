@@ -44,7 +44,7 @@ data class Mouse(
     val age: String?, //vytvor list hodnot
 
     @ColumnInfo(name = "Gravidity")
-    val gravitidy: Int?, //bool
+    val gravidity: Int?, //bool
 
     @ColumnInfo(name = "Lactating")
     val lactating: Int?, //bool

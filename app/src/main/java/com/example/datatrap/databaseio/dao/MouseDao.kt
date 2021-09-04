@@ -19,6 +19,9 @@ interface MouseDao {
     @Query("SELECT * FROM sm WHERE occasionID = :idOccasion")
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>
 
+    @Query("SELECT * FROM sm WHERE Code = :code ORDER BY localityID")
+    fun getMiceForCode(code: Int): LiveData<List<Mouse>>
+
     // pre recapture
     @Query("SELECT * FROM sm WHERE Code = :code LIMIT 20")
     fun searchMice(code: Int): LiveData<List<Mouse>>

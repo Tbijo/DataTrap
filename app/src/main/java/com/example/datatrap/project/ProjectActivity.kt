@@ -10,8 +10,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.ActivityProjectBinding
+import com.example.datatrap.myinterfaces.OnActiveFragment
 
-class ProjectActivity : AppCompatActivity() {
+class ProjectActivity : AppCompatActivity(), OnActiveFragment {
 
     private lateinit var binding: ActivityProjectBinding
     private lateinit var navController: NavController
@@ -34,4 +35,8 @@ class ProjectActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed(){}
+
+    override fun setTitle(title: String) {
+        supportActionBar?.title = title
+    }
 }

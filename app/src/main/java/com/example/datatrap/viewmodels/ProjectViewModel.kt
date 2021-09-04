@@ -39,6 +39,10 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
+    fun getProject(projectId: Long): LiveData<Project>{
+        return projectRepository.getProject(projectId)
+    }
+
     fun searchProjects(projectName: String): LiveData<List<Project>>{
         return projectRepository.searchProjects(projectName)
     }

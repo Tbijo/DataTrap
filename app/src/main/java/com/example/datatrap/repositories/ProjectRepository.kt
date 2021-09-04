@@ -18,6 +18,10 @@ class ProjectRepository(private val projectDao: ProjectDao) {
         projectDao.deleteProject(project)
     }
 
+    fun getProject(projectId: Long): LiveData<Project>{
+        return projectDao.getProject(projectId)
+    }
+
     val projectList: LiveData<List<Project>> = projectDao.getProjects()
 
     fun searchProjects(projectName: String): LiveData<List<Project>>{
