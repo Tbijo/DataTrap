@@ -262,13 +262,16 @@
         android:label="activity_main"
         tools:layout="@layout/activity_main" />
     <fragment
-        android:id="@+id/recaptureMouseFragment2"
+        android:id="@+id/recaptureMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.listrecapture.RecaptureMouseFragment"
         android:label="fragment_recapture_mouse"
         tools:layout="@layout/fragment_recapture_mouse" >
         <argument
             android:name="mouse"
             app:argType="com.example.datatrap.models.Mouse" />
+        <argument
+            android:name="occasion"
+            app:argType="com.example.datatrap.models.Occasion" />
     </fragment>
     <fragment
         android:id="@+id/recaptureListMouseFragment"
@@ -276,7 +279,10 @@
         android:label="fragment_recapture_list_mouse"
         tools:layout="@layout/fragment_recapture_list_mouse" >
         <action
-            android:id="@+id/action_recaptureListMouseFragment_to_recaptureMouseFragment2"
-            app:destination="@id/recaptureMouseFragment2" />
+            android:id="@+id/action_recaptureListMouseFragment_to_recaptureMouseFragment"
+            app:destination="@id/recaptureMouseFragment" />
+        <argument
+            android:name="occasion"
+            app:argType="com.example.datatrap.models.Occasion" />
     </fragment>
 </navigation>

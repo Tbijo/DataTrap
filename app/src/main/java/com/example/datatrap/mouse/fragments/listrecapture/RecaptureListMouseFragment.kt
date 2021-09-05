@@ -8,6 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentRecaptureListMouseBinding
@@ -19,6 +20,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentRecaptureListMouseBinding? = null
     private val binding get() = _binding!!
+    private val args by navArgs<RecaptureListMouseFragmentArgs>()
     private lateinit var mouseViewModel: MouseViewModel
     private lateinit var adapter: MouseRecyclerAdapter
     private var mouseList: List<Mouse> = emptyList()
@@ -37,7 +39,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         adapter.setOnItemClickListener(object: MouseRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 val mouse = mouseList[position]
-                val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment2(mouse)
+                val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occasion)
                 findNavController().navigate(action)
             }
 

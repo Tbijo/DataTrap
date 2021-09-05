@@ -21,7 +21,7 @@ import com.example.datatrap.viewmodels.SharedViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
 
 class RecaptureMouseFragment : Fragment() {
-/* treba sem poslat lokalitu a occasion v ktorej prebehlo recapture*/
+
     private var _binding: FragmentRecaptureMouseBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<RecaptureMouseFragmentArgs>()
@@ -215,8 +215,8 @@ class RecaptureMouseFragment : Fragment() {
         val note: String? = binding.etMouseNote.text.toString()
 
         if (checkInput(speciesID, trapID)){
-            val mouse = Mouse(0, args.mouse.code, speciesID, protocolID, args.mouse.occasionID,
-                args.mouse.localityID, trapID, args.mouse.date, args.mouse.catchTime, sex, age, gravitidy, lactating, sexActive,
+            val mouse = Mouse(0, args.mouse.code, speciesID, protocolID, args.occasion.occasionId,
+                args.occasion.localityId, trapID, args.mouse.date, args.mouse.catchTime, sex, age, gravitidy, lactating, sexActive,
                 weight, recapture = 1, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 

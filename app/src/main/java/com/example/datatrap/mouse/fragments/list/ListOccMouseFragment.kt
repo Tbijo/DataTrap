@@ -79,7 +79,7 @@ class ListOccMouseFragment : Fragment() {
     }
 
     private fun goToRecapture(){
-        val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToRecaptureMouseFragment()
+        val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToRecaptureListMouseFragment(args.occasion)
         findNavController().navigate(action)
     }
 
