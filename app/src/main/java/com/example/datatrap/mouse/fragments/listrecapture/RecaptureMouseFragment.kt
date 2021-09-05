@@ -1,30 +1,30 @@
-package com.example.datatrap.mouse.fragments
+package com.example.datatrap.mouse.fragments.listrecapture
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
-import com.example.datatrap.databinding.FragmentUpdateMouseBinding
+import com.example.datatrap.databinding.FragmentRecaptureMouseBinding
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.Protocol
 import com.example.datatrap.models.Specie
+import com.example.datatrap.mouse.fragments.UpdateMouseFragmentDirections
 import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.ProtocolViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
 
-class UpdateMouseFragment : Fragment() {
-
-    private var _binding: FragmentUpdateMouseBinding? = null
+class RecaptureMouseFragment : Fragment() {
+/* treba sem poslat lokalitu a occasion v ktorej prebehlo recapture*/
+    private var _binding: FragmentRecaptureMouseBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<UpdateMouseFragmentArgs>()
+    private val args by navArgs<RecaptureMouseFragmentArgs>()
     private lateinit var mouseViewModel: MouseViewModel
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var protocolViewModel: ProtocolViewModel
@@ -43,7 +43,7 @@ class UpdateMouseFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
-        _binding = FragmentUpdateMouseBinding.inflate(inflater, container, false)
+        _binding = FragmentRecaptureMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
@@ -174,38 +174,23 @@ class UpdateMouseFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.mouse_menu, menu)
         menu.findItem(R.id.menu_rat).isVisible = false
+        menu.findItem(R.id.menu_delete).isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
-            R.id.menu_save -> updateMouse()
+            R.id.menu_save -> recaptureMouse()
             R.id.menu_camera -> goToCamera()
-            R.id.menu_delete -> deleteMouse()
         }
         return super.onOptionsItemSelected(item)
     }
 
     private fun goToCamera() {
-        val action = UpdateMouseFragmentDirections.actionUpdateMouseFragmentToTakePhotoFragment("Mouse", args.mouse.imgName)
+        val action = UpdateMouseFragmentDirections.actionUpdateMouseFragmentToTakePhotoFragment("Mouse", imgName)
         findNavController().navigate(action)
     }
 
-    private fun deleteMouse(){
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Yes"){_, _ ->
-
-            mouseViewModel.deleteMouse(args.mouse)
-
-            Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
-            findNavController().navigateUp()
-        }
-            .setNegativeButton("No"){_, _ -> }
-            .setTitle("Delete Mouse?")
-            .setMessage("Are you sure you want to delete this mouse?")
-            .create().show()
-    }
-
-    private fun updateMouse() {
+    private fun recaptureMouse() {
         val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
         val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
         val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
@@ -230,14 +215,14 @@ class UpdateMouseFragment : Fragment() {
         val note: String? = binding.etMouseNote.text.toString()
 
         if (checkInput(speciesID, trapID)){
-            val mouse = Mouse(args.mouse.mouseId, args.mouse.code, speciesID, protocolID, args.mouse.occasionID,
+            val mouse = Mouse(0, args.mouse.code, speciesID, protocolID, args.mouse.occasionID,
                 args.mouse.localityID, trapID, args.mouse.date, args.mouse.catchTime, sex, age, gravitidy, lactating, sexActive,
-                weight, args.mouse.recapture, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
+                weight, recapture = 1, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 
-            mouseViewModel.updateMouse(mouse)
+            mouseViewModel.insertMouse(mouse)
 
-            Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()
         }else{

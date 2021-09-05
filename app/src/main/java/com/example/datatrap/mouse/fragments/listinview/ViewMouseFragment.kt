@@ -1,4 +1,4 @@
-package com.example.datatrap.mouse.fragments
+package com.example.datatrap.mouse.fragments.listinview
 
 import android.content.Context
 import android.os.Bundle

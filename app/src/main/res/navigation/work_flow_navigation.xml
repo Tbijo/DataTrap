@@ -205,11 +205,11 @@
             android:id="@+id/action_listOccMouseFragment_to_addNewMouseFragment"
             app:destination="@id/addNewMouseFragment" />
         <action
-            android:id="@+id/action_listOccMouseFragment_to_recaptureMouseFragment"
-            app:destination="@id/recaptureMouseFragment" />
-        <action
             android:id="@+id/action_listOccMouseFragment_to_viewMouseFragment"
             app:destination="@id/viewMouseFragment" />
+        <action
+            android:id="@+id/action_listOccMouseFragment_to_recaptureListMouseFragment"
+            app:destination="@id/recaptureListMouseFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateMouseFragment"
@@ -235,11 +235,6 @@
             app:argType="com.example.datatrap.models.Occasion" />
     </fragment>
     <fragment
-        android:id="@+id/recaptureMouseFragment"
-        android:name="com.example.datatrap.mouse.fragments.RecaptureMouseFragment"
-        android:label="fragment_recapture_mouse"
-        tools:layout="@layout/fragment_recapture_mouse" />
-    <fragment
         android:id="@+id/takePhotoFragment"
         android:name="com.example.datatrap.picture.fragments.TakePhotoFragment"
         android:label="fragment_take_photo"
@@ -254,7 +249,7 @@
     </fragment>
     <fragment
         android:id="@+id/viewMouseFragment"
-        android:name="com.example.datatrap.mouse.fragments.ViewMouseFragment"
+        android:name="com.example.datatrap.mouse.fragments.listinview.ViewMouseFragment"
         android:label="fragment_view_mouse"
         tools:layout="@layout/fragment_view_mouse" >
         <argument
@@ -266,4 +261,22 @@
         android:name="com.example.datatrap.main.MainActivity"
         android:label="activity_main"
         tools:layout="@layout/activity_main" />
+    <fragment
+        android:id="@+id/recaptureMouseFragment2"
+        android:name="com.example.datatrap.mouse.fragments.listrecapture.RecaptureMouseFragment"
+        android:label="fragment_recapture_mouse"
+        tools:layout="@layout/fragment_recapture_mouse" >
+        <argument
+            android:name="mouse"
+            app:argType="com.example.datatrap.models.Mouse" />
+    </fragment>
+    <fragment
+        android:id="@+id/recaptureListMouseFragment"
+        android:name="com.example.datatrap.mouse.fragments.listrecapture.RecaptureListMouseFragment"
+        android:label="fragment_recapture_list_mouse"
+        tools:layout="@layout/fragment_recapture_list_mouse" >
+        <action
+            android:id="@+id/action_recaptureListMouseFragment_to_recaptureMouseFragment2"
+            app:destination="@id/recaptureMouseFragment2" />
+    </fragment>
 </navigation>
