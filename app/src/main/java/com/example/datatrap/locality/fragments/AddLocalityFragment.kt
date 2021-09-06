@@ -2,10 +2,12 @@ package com.example.datatrap.locality.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
@@ -21,12 +23,11 @@ import java.util.*
 
 class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
-    /*Este by bolo treba dat nejaku kontrolu ci je GPS zapate*/
-
     private var _binding: FragmentAddLocalityBinding? = null
     private val binding get() = _binding!!
     private lateinit var localityViewModel: LocalityViewModel
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationManager: LocationManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +36,7 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireContext())
+        locationManager = requireContext().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
 
         binding.btnGetCoordinates.setOnClickListener {
             // ziskanie aktualnych suradnic
@@ -93,15 +95,19 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     @SuppressLint("MissingPermission")
     private fun getCoordinates() {
-        if (hasLocationPermission()) {
-            // ak mame povolenie mozme zobrazit suradnice
-            fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                binding.tvLatitude.text = location.latitude.toString()
-                binding.tvLongnitude.text = location.longitude.toString()
+        if (isGPSon()){
+            if (hasLocationPermission()) {
+                // ak mame povolenie mozme zobrazit suradnice
+                fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                    binding.tvLatitude.text = location.latitude.toString()
+                    binding.tvLongnitude.text = location.longitude.toString()
+                }
+            } else {
+                // ak nie tak si ho vyziadame
+                requestLocationPermission()
             }
-        } else {
-            // ak nie tak si ho vyziadame
-            requestLocationPermission()
+        }else{
+            Toast.makeText(requireContext(), "Turn GPS on.", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -148,5 +154,9 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             // inak len vyzadujeme permission
             requestLocationPermission()
         }
+    }
+
+    private fun isGPSon(): Boolean{
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 }
