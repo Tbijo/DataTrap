@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/project_drawerlayout"
+    tools:openDrawer="start"
     tools:context=".project.ProjectActivity">
+    <!--openDrawer start aby som videl ako to vyzera v nahlade-->
+    <!--ak to bude ukazovat aj v apke odstranit-->
 
     <fragment
         android:id="@+id/project_fragmentContainerView"
@@ -25,6 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        app:headerLayout="@layout/drawer_header"
         app:menu="@menu/drawer_menu"/>
 
 </androidx.drawerlayout.widget.DrawerLayout>
