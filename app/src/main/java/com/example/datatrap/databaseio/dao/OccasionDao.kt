@@ -19,7 +19,7 @@ interface OccasionDao {
     @Query("SELECT * FROM occasions WHERE occasionId = :occasionId")
     fun getOccasion(occasionId: Long): LiveData<Occasion>
 
-    @Query("SELECT * FROM occasions WHERE sessionId = :idSession")
+    @Query("SELECT * FROM occasions WHERE sessionID = :idSession")
     fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>
 
 }

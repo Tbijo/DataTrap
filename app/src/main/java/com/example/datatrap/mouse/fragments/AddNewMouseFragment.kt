@@ -69,7 +69,7 @@ class AddNewMouseFragment : Fragment() {
             imgName = it
         })
 
-        mouseViewModel.countMiceForLocality(args.occasion.localityId).observe(viewLifecycleOwner, Observer {
+        mouseViewModel.countMiceForLocality(args.occasion.localityID).observe(viewLifecycleOwner, Observer {
             code = it
         })
 
@@ -182,7 +182,7 @@ class AddNewMouseFragment : Fragment() {
 
         if (checkInput(code, speciesID, trapID)){
             val mouse = Mouse(0, code, speciesID, protocolID, args.occasion.occasionId,
-                args.occasion.localityId, trapID, getDate(), getTime(), sex, age, gravitidy, lactating, sexActive,
+                args.occasion.localityID, trapID, getDate(), getTime(), sex, age, gravitidy, lactating, sexActive,
                 weight, recapture = 0, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 

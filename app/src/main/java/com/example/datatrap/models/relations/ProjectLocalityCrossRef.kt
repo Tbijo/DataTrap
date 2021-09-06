@@ -1,10 +1,17 @@
 package com.example.datatrap.models.relations
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
+import com.example.datatrap.models.Locality
+import com.example.datatrap.models.Project
 
 // len v pripade many-to-many tabulky anotujem triedu lebo vytvaram samostatnu tabulku a budem davat do nej data
 // treba nastavit entity z dvoma klucmi
-@Entity(primaryKeys = ["projectId", "localityId"])
+@Entity(primaryKeys = ["projectId", "localityId"], foreignKeys = [
+    ForeignKey(entity = Project::class, parentColumns = ["projectId"], childColumns = ["projectId"], onDelete = CASCADE),
+    ForeignKey(entity = Locality::class, parentColumns = ["localityId"], childColumns = ["localityId"], onDelete = CASCADE)
+])
 data class ProjectLocalityCrossRef(
     // bude obsahovat primarne kluce oboch tabuliek
     // ani jeden z nich vsak nebude primarny kluc lebo ich kombinacia bude

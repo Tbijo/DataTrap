@@ -76,10 +76,10 @@ class ViewMouseFragment : Fragment() {
         })
 
         var session: Session? = null
-        sessionViewModel.getSession(occasion!!.sessionId).observe(viewLifecycleOwner, Observer {
+        sessionViewModel.getSession(occasion!!.sessionID).observe(viewLifecycleOwner, Observer {
             session = it
         })
-        projectViewModel.getProject(session?.projectId!!).observe(viewLifecycleOwner, Observer {
+        projectViewModel.getProject(session?.projectID!!).observe(viewLifecycleOwner, Observer {
             binding.tvMouseProjectName.text = it.projectName
         })
 

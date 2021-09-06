@@ -131,27 +131,27 @@ class UpdateOccasionFragment : Fragment() {
 
     private fun initAutoComp(){
         envTypeNameMap.forEach {
-            if (it.value == args.occasion.envTypeId){
+            if (it.value == args.occasion.envTypeID){
                 binding.autoCompTvEnvType.setText(it.key, false)
             }
         }
         methodNameMap.forEach {
-            if (it.value == args.occasion.methodId){
+            if (it.value == args.occasion.methodID){
                 binding.autoCompTvMethod.setText(it.key, false)
             }
         }
         metTypeNameMap.forEach {
-            if (it.value == args.occasion.methodTypeId){
+            if (it.value == args.occasion.methodTypeID){
                 binding.autoCompTvMethodType.setText(it.key, false)
             }
         }
         trapTypeNameMap.forEach {
-            if (it.value == args.occasion.trapTypeId){
+            if (it.value == args.occasion.trapTypeID){
                 binding.autoCompTvTrapType.setText(it.key, false)
             }
         }
         vegTypeNameMap.forEach {
-            if (it.value == args.occasion.vegetTypeId){
+            if (it.value == args.occasion.vegetTypeID){
                 binding.autoCompTvVegType.setText(it.key, false)
             }
         }
@@ -211,7 +211,7 @@ class UpdateOccasionFragment : Fragment() {
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
 
-            val occasion = Occasion(args.occasion.occasionId, occasionNum, args.occasion.localityId, args.occasion.sessionId,
+            val occasion = Occasion(args.occasion.occasionId, occasionNum, args.occasion.localityID, args.occasion.sessionID,
                 method, methodType, trapType, envType, vegType, date, time, gotCaught, Integer.parseInt(numTraps),
                 numMice, temperature, weatherGlob, leg, note, imgName)
 
@@ -236,7 +236,7 @@ class UpdateOccasionFragment : Fragment() {
 
     private fun getHistoryWeather(){
         val weather = Weather(requireContext())
-        val locality: Locality = localityViewModel.getLocality(args.occasion.localityId).value!!
+        val locality: Locality = localityViewModel.getLocality(args.occasion.localityID).value!!
 
         val date = args.occasion.date
         val time = args.occasion.time

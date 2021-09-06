@@ -3,11 +3,18 @@ package com.example.datatrap.models
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-@Entity(tableName = "sm")
+@Entity(tableName = "sm", foreignKeys = [
+    ForeignKey(entity = Specie::class, parentColumns = ["specieId"], childColumns = ["speciesID"], onDelete = CASCADE),
+    ForeignKey(entity = Protocol::class, parentColumns = ["protocolId"], childColumns = ["protocolID"], onDelete = CASCADE),
+    ForeignKey(entity = Occasion::class, parentColumns = ["occasionId"], childColumns = ["occasionID"], onDelete = CASCADE),
+    ForeignKey(entity = Locality::class, parentColumns = ["localityId"], childColumns = ["localityID"], onDelete = CASCADE)
+])
 data class Mouse(
     
     @PrimaryKey(autoGenerate = true)

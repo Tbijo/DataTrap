@@ -216,7 +216,7 @@ class RecaptureMouseFragment : Fragment() {
 
         if (checkInput(speciesID, trapID)){
             val mouse = Mouse(0, args.mouse.code, speciesID, protocolID, args.occasion.occasionId,
-                args.occasion.localityId, trapID, args.mouse.date, args.mouse.catchTime, sex, age, gravitidy, lactating, sexActive,
+                args.occasion.localityID, trapID, args.mouse.date, args.mouse.catchTime, sex, age, gravitidy, lactating, sexActive,
                 weight, recapture = 1, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 
