@@ -1,5 +1,8 @@
 package com.example.datatrap.occasion.fragments
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -188,20 +191,36 @@ class AddOccasionFragment : Fragment() {
     }
 
     private fun getCurrentWeather(){
-        val weather = Weather(requireContext())
-        weather.getCurrentWeatherByCoordinates(args.locality.x, args.locality.y, object: Weather.VolleyResponseListener{
-            override fun onResponse(temp: Int, weather: String) {
-                temperature = temp.toFloat()
-                binding.etTemperature.setText(temperature.toString())
-                weatherGlob = weather
-                binding.etWeather.setText(weatherGlob)
-            }
+        if (isOnline(requireContext())){
+            val weather = Weather(requireContext())
+            weather.getCurrentWeatherByCoordinates(args.locality.x, args.locality.y, object: Weather.VolleyResponseListener{
+                override fun onResponse(temp: Int, weather: String) {
+                    temperature = temp.toFloat()
+                    binding.etTemperature.setText(temperature.toString())
+                    weatherGlob = weather
+                    binding.etWeather.setText(weatherGlob)
+                }
 
-            override fun onError(message: String) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-            }
+                override fun onError(message: String) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+                }
 
-        })
+            })
+        }else{
+            Toast.makeText(requireContext(), "Connect to Internet.", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun isOnline(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val n = cm.activeNetwork
+        if (n != null) {
+            val nc = cm.getNetworkCapabilities(n)
+            return nc!!.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || nc.hasTransport(
+                NetworkCapabilities.TRANSPORT_WIFI
+            )
+        }
+        return false
     }
 
 }

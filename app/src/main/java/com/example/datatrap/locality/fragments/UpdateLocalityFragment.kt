@@ -3,6 +3,7 @@ package com.example.datatrap.locality.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.Context
 import android.location.LocationManager
 import android.os.Bundle
 import android.view.*
@@ -28,7 +29,6 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private lateinit var localityViewModel: LocalityViewModel
     private val args by navArgs<UpdateLocalityFragmentArgs>()
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var locationManager: LocationManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +38,6 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireContext())
-        locationManager = requireContext().getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
 
         binding.etLocalityName.setText(args.locality.localityName)
         binding.etLocalityNote.setText(args.locality.note)
@@ -117,7 +116,7 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     @SuppressLint("MissingPermission")
     private fun getCoordinates() {
-        if (isGPSon()){
+        if (isGPSon(requireContext())){
             if (hasLocationPermission()) {
                 // ak mame povolenie mozme zobrazit suradnice
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
@@ -178,7 +177,8 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
     }
 
-    private fun isGPSon(): Boolean{
+    private fun isGPSon(context: Context): Boolean{
+        val locationManager = context.getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
