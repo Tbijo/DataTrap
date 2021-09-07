@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 data class EnvType(
 
     @PrimaryKey(autoGenerate = true)
-    val envTypeId: Long,
+    var envTypeId: Long,
 
     @ColumnInfo(name = "EnvTypeName")
-    val envTypeName: String
+    var envTypeName: String
 )

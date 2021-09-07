@@ -64,43 +64,54 @@ class UpdateMouseFragment : Fragment() {
             imgName = it
         })
 
-        binding.rgSex.setOnCheckedChangeListener{ radioGroup, checkedId ->
-            sex = when(checkedId){
-                R.id.rb_male -> "Male"
-                R.id.rb_female -> "Female"
-                R.id.rb_null_sex -> null
-                else -> null
-            }
-        }
+        setListeners()
 
-        binding.rgAge.setOnCheckedChangeListener { radioGroup, checkedId ->
-            age = when(checkedId){
-                R.id.rb_adult -> "Adult"
-                R.id.rb_juvenile -> "Juvenile"
-                R.id.rb_subadult -> "Subadult"
-                R.id.rb_null_age -> null
-                else -> null
-            }
-        }
-
-        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, checkedId ->
-            captureID = when(checkedId){
-                R.id.rb_captured -> "Captured"
-                R.id.rb_died -> "Died"
-                R.id.rb_escaped -> "Escaped"
-                R.id.rb_released -> "Released"
-                R.id.rb_null_capture -> null
-                else -> null
-            }
-        }
-
-        initMouse()
+        initMouseValuesToView()
 
         setHasOptionsMenu(true)
         return binding.root
     }
 
-    private fun initMouse(){
+    override fun onResume() {
+        super.onResume()
+        val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
+        binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
+
+        val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
+        binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
+
+        mapSpecie.forEach {
+            if (it.value == args.mouse.speciesID){
+                binding.autoCompTvSpecie.setText(it.key, false)
+            }
+        }
+        mapProtocol.forEach {
+            if (it.value == args.mouse.protocolID){
+                binding.autoCompTvProtocol.setText(it.key, false)
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.mouse_menu, menu)
+        menu.findItem(R.id.menu_rat).isVisible = false
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_save -> updateMouse()
+            R.id.menu_camera -> goToCamera()
+            R.id.menu_delete -> deleteMouse()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun initMouseValuesToView(){
         binding.cbGravit.isChecked = args.mouse.gravidity == 1
         binding.cbLactating.isChecked = args.mouse.lactating == 1
         binding.cbSexActive.isChecked = args.mouse.sexActive == 1
@@ -143,47 +154,36 @@ class UpdateMouseFragment : Fragment() {
         }
     }
 
-    private fun initAutoComp(){
-        mapSpecie.forEach {
-            if (it.value == args.mouse.speciesID){
-                binding.autoCompTvSpecie.setText(it.key, false)
+    private fun setListeners(){
+        binding.rgSex.setOnCheckedChangeListener{ radioGroup, checkedId ->
+            sex = when(checkedId){
+                R.id.rb_male -> "Male"
+                R.id.rb_female -> "Female"
+                R.id.rb_null_sex -> null
+                else -> null
             }
         }
-        mapProtocol.forEach {
-            if (it.value == args.mouse.protocolID){
-                binding.autoCompTvProtocol.setText(it.key, false)
+
+        binding.rgAge.setOnCheckedChangeListener { radioGroup, checkedId ->
+            age = when(checkedId){
+                R.id.rb_adult -> "Adult"
+                R.id.rb_juvenile -> "Juvenile"
+                R.id.rb_subadult -> "Subadult"
+                R.id.rb_null_age -> null
+                else -> null
             }
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
-        binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
-
-        val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
-        binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
-
-        initAutoComp()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.mouse_menu, menu)
-        menu.findItem(R.id.menu_rat).isVisible = false
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
-            R.id.menu_save -> updateMouse()
-            R.id.menu_camera -> goToCamera()
-            R.id.menu_delete -> deleteMouse()
+        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, checkedId ->
+            captureID = when(checkedId){
+                R.id.rb_captured -> "Captured"
+                R.id.rb_died -> "Died"
+                R.id.rb_escaped -> "Escaped"
+                R.id.rb_released -> "Released"
+                R.id.rb_null_capture -> null
+                else -> null
+            }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun goToCamera() {
@@ -194,21 +194,11 @@ class UpdateMouseFragment : Fragment() {
     private fun deleteMouse(){
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
-
             // zmensit numMice projektu do ktoreho sa pridava tato mys
-            val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
-            val project: Project = projectViewModel.getProject(session.projectID!!).value!!
-            val updatedProject: Project = Project(project.projectId, project.projectName, project.date, project.numLocal, (project.numMice - 1))
-            projectViewModel.updateProject(updatedProject)
+            updateProjectNumMice()
 
             // zmensit numMice occasion do ktorej sa pridava tato mys
-            val updatedOccasion: Occasion = Occasion(args.occasion.occasionId, args.occasion.occasion,
-                args.occasion.localityID, args.occasion.sessionID, args.occasion.methodID, args.occasion.methodTypeID,
-                args.occasion.trapTypeID, args.occasion.envTypeID, args.occasion.vegetTypeID, args.occasion.date,
-                args.occasion.time, args.occasion.gotCaught, args.occasion.numTraps, (args.occasion.numMice!! - 1),
-                args.occasion.temperature, args.occasion.weather, args.occasion.leg, args.occasion.note,
-                args.occasion.imgName)
-            occasionViewModel.updateOccasion(updatedOccasion)
+            updateOccasionNumMice()
 
             mouseViewModel.deleteMouse(args.mouse)
 
@@ -219,6 +209,19 @@ class UpdateMouseFragment : Fragment() {
             .setTitle("Delete Mouse?")
             .setMessage("Are you sure you want to delete this mouse?")
             .create().show()
+    }
+
+    private fun updateProjectNumMice(){
+        val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
+        val updatedProject: Project = projectViewModel.getProject(session.projectID!!).value!!
+        updatedProject.numMice = (updatedProject.numMice - 1)
+        projectViewModel.updateProject(updatedProject)
+    }
+
+    private fun updateOccasionNumMice(){
+        val updatedOccasion: Occasion = args.occasion
+        updatedOccasion.numMice = (updatedOccasion.numMice?.minus(1))
+        occasionViewModel.updateOccasion(updatedOccasion)
     }
 
     private fun updateMouse() {
@@ -246,10 +249,31 @@ class UpdateMouseFragment : Fragment() {
         val note: String? = binding.etMouseNote.text.toString()
 
         if (checkInput(speciesID, trapID)){
-            val mouse = Mouse(args.mouse.mouseId, args.mouse.code, speciesID, protocolID, args.mouse.occasionID,
-                args.mouse.localityID, trapID, args.mouse.date, args.mouse.catchTime, sex, age, gravitidy, lactating, sexActive,
-                weight, args.mouse.recapture, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
-                embryoDiameter, MC, MCright, MCleft, note, imgName)
+            val mouse: Mouse = args.mouse
+            mouse.speciesID = speciesID
+            mouse.protocolID = protocolID
+            mouse.trapID = trapID
+            mouse.sex = sex
+            mouse.age = age
+            mouse.gravidity = gravitidy
+            mouse.lactating = lactating
+            mouse.sexActive = sexActive
+            mouse.weight = weight
+            mouse.captureID = captureID
+            mouse.body = body
+            mouse.tail = tail
+            mouse.feet = feet
+            mouse.ear = ear
+            mouse.testesLength = testesLength
+            mouse.testesWidth = testesWidth
+            mouse.embryoRight = embryoRight
+            mouse.embryoLeft = embryoLeft
+            mouse.embryoDiameter = embryoDiameter
+            mouse.MC = MC
+            mouse.MCright = MCright
+            mouse.MCleft = MCleft
+            mouse.note = note
+            mouse.imgName = imgName
 
             mouseViewModel.updateMouse(mouse)
 

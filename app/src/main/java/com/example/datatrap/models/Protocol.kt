@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 data class Protocol(
 
     @PrimaryKey(autoGenerate = true)
-    val protocolId: Long,
+    var protocolId: Long,
 
     @ColumnInfo(name = "ProtocolName")
-    val protocolName: String
+    var protocolName: String
 )

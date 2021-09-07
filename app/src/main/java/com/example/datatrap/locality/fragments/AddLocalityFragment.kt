@@ -70,10 +70,13 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val longnitude = binding.tvLongnitude.text.toString()
 
         if (checkInput(localityName, localityDate, latitude, longnitude)){
+
             val locality = Locality(0, localityName, localityDate,
                 Integer.parseInt(latitude).toFloat(),
                 Integer.parseInt(longnitude).toFloat(),0, localityNote)
+
             localityViewModel.insertLocality(locality)
+
             Toast.makeText(requireContext(), "New locality added.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()
@@ -159,4 +162,5 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val locationManager = context.getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
+
 }

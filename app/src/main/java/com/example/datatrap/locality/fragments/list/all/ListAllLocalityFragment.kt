@@ -52,17 +52,11 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
-                // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
-                val locality: Locality = localityList[position]
-                val project: Project = args.project
-                val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectId, locality.localityId)
-
                 // zvacsit pocet localit v projekte
-                val updatedProject: Project = Project(args.project.projectId, args.project.projectName, args.project.date, (args.project.numLocal + 1), args.project.numMice)
-                projectViewModel.updateProject(updatedProject)
+                updateProjectNumLocal()
 
-                // vytvorit kombinaciu
-                prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
+                // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
+                insertCombination(position)
 
                 Toast.makeText(requireContext(), "Combination created.", Toast.LENGTH_SHORT).show()
 
@@ -107,13 +101,6 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun goToMap(){
-        val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToLocalityMapFragment(
-            localityList.toTypedArray()
-        )
-        findNavController().navigate(action)
-    }
-
     override fun onQueryTextSubmit(query: String?): Boolean {
         return true
     }
@@ -123,6 +110,27 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
             searchLocalities(newText)
         }
         return true
+    }
+
+    private fun insertCombination(position: Int){
+        val locality: Locality = localityList[position]
+        val project: Project = args.project
+        val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectId, locality.localityId)
+        // vytvorit kombinaciu
+        prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
+    }
+
+    private fun goToMap(){
+        val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToLocalityMapFragment(
+            localityList.toTypedArray()
+        )
+        findNavController().navigate(action)
+    }
+
+    private fun updateProjectNumLocal(){
+        val updatedProject: Project = args.project
+        updatedProject.numLocal = (updatedProject.numLocal + 1)
+        projectViewModel.updateProject(updatedProject)
     }
 
     private fun searchLocalities(query: String?) {

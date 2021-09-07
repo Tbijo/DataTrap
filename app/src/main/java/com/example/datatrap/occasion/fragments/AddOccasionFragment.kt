@@ -8,7 +8,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.view.get
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -111,11 +110,6 @@ class AddOccasionFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun goToCamera(){
-        val action = AddOccasionFragmentDirections.actionAddOccasionFragmentToTakePhotoFragment("Occasion", null)
-        findNavController().navigate(action)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
@@ -140,6 +134,11 @@ class AddOccasionFragment : Fragment() {
         binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
     }
 
+    private fun goToCamera(){
+        val action = AddOccasionFragmentDirections.actionAddOccasionFragmentToTakePhotoFragment("Occasion", null)
+        findNavController().navigate(action)
+    }
+
     private fun insertOccasion() {
         val occasionNum: Int = args.newOccasionNumber
         val method: Long = methodNameMap.getValue(binding.autoCompTvMethod.text.toString())
@@ -156,23 +155,28 @@ class AddOccasionFragment : Fragment() {
         val note: String? = binding.etOccasionNote.toString()
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
+            // zvacsit numOcc v Session
+            updateSessionNumOcc()
 
+            // ulozit occasion
             val occasion = Occasion(0, occasionNum, args.locality.localityId, args.session.sessionId,
                 method, methodType, trapType, envType, vegType, date, time, gotCaught, Integer.parseInt(numTraps),
                 numMice, temperature, weatherGlob, leg, note, imgName)
 
-            // zvacsit numOcc v Session
-            val updatedSession: Session = Session(args.session.sessionId, args.session.session, args.session.projectID, (args.session.numOcc + 1), args.session.date)
-            sessionViewModel.updateSession(updatedSession)
-
-            // ulozit occasion
             occasionViewModel.insertOccasion(occasion)
+
             Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun updateSessionNumOcc(){
+        val updatedSession: Session = args.session
+        updatedSession.numOcc = (updatedSession.numOcc + 1)
+        sessionViewModel.updateSession(updatedSession)
     }
 
     private fun checkInput(

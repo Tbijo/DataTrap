@@ -11,23 +11,23 @@ import kotlinx.parcelize.Parcelize
 data class Locality(
 
     @PrimaryKey(autoGenerate = true)
-    val localityId: Long,
+    var localityId: Long,
 
     @ColumnInfo(name = "LocalityName")
-    val localityName: String,
+    var localityName: String,
 
     @ColumnInfo(name = "Date")
-    val date: String,
+    var date: String,
 
     @ColumnInfo(name = "X")
-    val x: Float, // latitude
+    var x: Float, // latitude
 
     @ColumnInfo(name = "Y")
-    val y: Float, // longitude
+    var y: Float, // longitude
 
     @ColumnInfo(name = "Num_ses")
-    val numSessions: Int,
+    var numSessions: Int,
 
     @ColumnInfo(name = "Note_loc")
-    val note: String?
+    var note: String?
 ): Parcelable

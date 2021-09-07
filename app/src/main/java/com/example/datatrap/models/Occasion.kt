@@ -21,60 +21,60 @@ import kotlinx.parcelize.Parcelize
 data class Occasion(
 
     @PrimaryKey(autoGenerate = true)
-    val occasionId: Long,
+    var occasionId: Long,
 
     @ColumnInfo(name = "Occasion")
-    val occasion: Int,
+    var occasion: Int,
 
     // cudzi kluc
-    val localityID: Long,
+    var localityID: Long,
 
     // cudzi kluc
-    val sessionID: Long,
+    var sessionID: Long,
 
     // cudzi kluc
-    val methodID: Long,
+    var methodID: Long,
 
     // cudzi kluc
-    val methodTypeID: Long,
+    var methodTypeID: Long,
 
     // cudzi kluc
-    val trapTypeID: Long,
+    var trapTypeID: Long,
 
     // cudzi kluc
-    val envTypeID: Long?,
+    var envTypeID: Long?,
 
     // cudzi kluc
-    val vegetTypeID: Long?,
+    var vegetTypeID: Long?,
 
     @ColumnInfo(name = "Date")
-    val date: String,
+    var date: String,
 
     @ColumnInfo(name = "Time")
-    val time: String,
+    var time: String,
 
     @ColumnInfo(name = "Got_caught")
-    val gotCaught: Int?, // boolean
+    var gotCaught: Int?, // boolean
 
     @ColumnInfo(name = "No_traps")
-    val numTraps: Int?,
+    var numTraps: Int?,
 
     @ColumnInfo(name = "Num_mice")
-    val numMice: Int?,
+    var numMice: Int?,
 
     @ColumnInfo(name = "Temperature")
-    val temperature: Float?,
+    var temperature: Float?,
 
     @ColumnInfo(name = "Weather")
-    val weather: String?,
+    var weather: String?,
 
     @ColumnInfo(name = "Leg")
-    val leg: String,
+    var leg: String,
 
     @ColumnInfo(name = "Note_occ")
-    val note: String?,
+    var note: String?,
 
     // cudzi kluc
     @ColumnInfo(name = "Img_occ")
-    val imgName: String?
+    var imgName: String?
 ): Parcelable

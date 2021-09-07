@@ -85,7 +85,6 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun searchProjects(query: String?) {
         val searchQuery = "%$query%"
-
         projectViewModel.searchProjects(searchQuery).observe(viewLifecycleOwner, Observer { projects ->
             projects.let {
                 adapter.setData(it)

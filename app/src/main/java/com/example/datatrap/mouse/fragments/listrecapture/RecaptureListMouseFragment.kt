@@ -38,9 +38,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
         adapter.setOnItemClickListener(object: MouseRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
-                val mouse = mouseList[position]
-                val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occasion)
-                findNavController().navigate(action)
+                goToRecaptureMouse(position)
             }
 
             override fun useLongClickListener(position: Int) {
@@ -84,6 +82,12 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
                 mouseList = it
             }
         })
+    }
+
+    private fun goToRecaptureMouse(position: Int){
+        val mouse = mouseList[position]
+        val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occasion)
+        findNavController().navigate(action)
     }
 
 }

@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 data class VegetType(
 
     @PrimaryKey(autoGenerate = true)
-    val vegetTypeId: Long,
+    var vegetTypeId: Long,
 
     @ColumnInfo(name = "VegetTypeName")
-    val vegetTypeName: String
+    var vegetTypeName: String
 )

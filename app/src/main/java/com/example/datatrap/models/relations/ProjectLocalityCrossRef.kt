@@ -16,8 +16,8 @@ data class ProjectLocalityCrossRef(
     // bude obsahovat primarne kluce oboch tabuliek
     // ani jeden z nich vsak nebude primarny kluc lebo ich kombinacia bude
 
-    val projectId: Long, // primarny kluc tabulky project
-    val localityId: Long // primarny kluc tabulky locality
+    var projectId: Long, // primarny kluc tabulky project
+    var localityId: Long // primarny kluc tabulky locality
 
     // ak chceme vsetky projekty ktore su vo vztahu s lokalitou treba na to pomocnu triedu      -   LocalityWithProjects
     // ak chceme vsetky lokality ktore su vo vztahu s projektom treba na to tiez pomocnu triedu -   ProjectWithLocalities - ja som chcel len toto

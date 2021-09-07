@@ -11,38 +11,38 @@ import kotlinx.parcelize.Parcelize
 data class Specie(
 
     @PrimaryKey(autoGenerate = true)
-    val specieId: Long,
+    var specieId: Long,
 
     @ColumnInfo(name = "Species_code")
-    val speciesCode: String,
+    var speciesCode: String,
 
     @ColumnInfo(name = "Full_name")
-    val fullName: String,
+    var fullName: String,
 
     @ColumnInfo(name = "Synonym")
-    val synonym: String?,
+    var synonym: String?,
 
     @ColumnInfo(name = "Authority")
-    val authority: String,
+    var authority: String,
 
     @ColumnInfo(name = "Description")
-    val description: String?,
+    var description: String?,
 
     @ColumnInfo(name = "Is_small_mammal")
-    val isSmallMammal: Int, //boolean
+    var isSmallMammal: Int, //boolean
 
     @ColumnInfo(name = "Upper_fingers")
-    val upperFingers: Int?,
+    var upperFingers: Int?,
 
     @ColumnInfo(name = "Min_weight")
-    val minWeight: Float?, //kontrloly pri vstupoch
+    var minWeight: Float?, //kontrloly pri vstupoch
 
     @ColumnInfo(name = "Max_weight")
-    val maxWeight: Float?, //kontrloly pri vstupoch
+    var maxWeight: Float?, //kontrloly pri vstupoch
 
     @ColumnInfo(name = "Note_sp")
-    val note: String?,
+    var note: String?,
 
     @ColumnInfo(name = "Img_sp")
-    val imgName: String?
+    var imgName: String?
 ): Parcelable

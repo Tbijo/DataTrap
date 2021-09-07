@@ -11,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateSessionBinding
 import com.example.datatrap.models.Locality
-import com.example.datatrap.models.Session
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
 
@@ -30,8 +29,7 @@ class UpdateSessionFragment : Fragment() {
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
 
-        binding.etSession.setText(args.session.session)
-        binding.etNumOcc.setText(args.session.numOcc)
+        initSessionValuesToView()
 
         setHasOptionsMenu(true)
         return binding.root
@@ -54,14 +52,17 @@ class UpdateSessionFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun initSessionValuesToView(){
+        binding.etSession.setText(args.session.session)
+        binding.etNumOcc.setText(args.session.numOcc)
+    }
+
     private fun deleteSession() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
             // znizit numSess v lokalite
-            val locality: Locality = localityViewModel.getLocality(args.locality.localityId).value!!
-            val updatedLocality: Locality = Locality(locality.localityId, locality.localityName, locality.date, locality.x, locality.y, (locality.numSessions - 1), locality.note)
-            localityViewModel.updateLocality(updatedLocality)
+            updateLocalityNumSes()
 
             // vymazat session
             sessionViewModel.deleteSession(args.session)
@@ -76,13 +77,23 @@ class UpdateSessionFragment : Fragment() {
             .create().show()
     }
 
+    private fun updateLocalityNumSes(){
+        val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId).value!!
+        updatedLocality.numSessions = (updatedLocality.numSessions - 1)
+        localityViewModel.updateLocality(updatedLocality)
+    }
+
     private fun updateSession() {
-        val session = binding.etSession.text.toString()
+        val sessionNum = binding.etSession.text.toString()
         val numOcc = binding.etNumOcc.text.toString()
         val date = args.session.date
-        if (checkIput(session, numOcc, date)){
+        if (checkIput(sessionNum, numOcc, date)){
 
-            val session = Session(args.session.sessionId, Integer.parseInt(session), args.session.projectID, Integer.parseInt(numOcc), date)
+            val session = args.session
+            session.session = Integer.parseInt(sessionNum)
+            session.numOcc = Integer.parseInt(numOcc)
+            session.date = date
+
             sessionViewModel.updateSession(session)
 
             Toast.makeText(requireContext(), "Session Updated.", Toast.LENGTH_SHORT).show()

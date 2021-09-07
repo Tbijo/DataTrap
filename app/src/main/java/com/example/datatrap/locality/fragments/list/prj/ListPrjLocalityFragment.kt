@@ -46,23 +46,18 @@ class ListPrjLocalityFragment : Fragment() {
         })
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
-            // presun do sessionov s projektom a lokalitou
+
             override fun useClickListener(position: Int) {
-                    val locality: Locality = localityList[position]
-                    val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(args.project, locality)
-                    findNavController().navigate(action)
+                // presun do sessionov s projektom a lokalitou
+                goToSession(position)
             }
 
             override fun useLongClickListener(position: Int) {
+                // znizit stlpec numLocal v projekte
+                updateProjectNumLocal()
+
                 // vymazat kombinaciu projektu a vybranej lokality
-                val locality: Locality = localityList[position]
-                val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, locality.localityId)
-
-                // znizit stlpec numLocal
-                val updatedProject: Project = Project(args.project.projectId, args.project.projectName, args.project.date, (args.project.numLocal - 1), args.project.numMice)
-                projectViewModel.updateProject(updatedProject)
-
-                prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
+                deleteCombination(position)
             }
         })
 
@@ -78,6 +73,24 @@ class ListPrjLocalityFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun goToSession(position: Int){
+        val locality: Locality = localityList[position]
+        val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(args.project, locality)
+        findNavController().navigate(action)
+    }
+
+    private fun deleteCombination(position: Int){
+        val locality: Locality = localityList[position]
+        val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, locality.localityId)
+        prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
+    }
+
+    private fun updateProjectNumLocal(){
+        val updatedProject: Project = args.project
+        updatedProject.numLocal = (updatedProject.numLocal - 1)
+        projectViewModel.updateProject(updatedProject)
     }
 
 }

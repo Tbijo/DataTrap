@@ -102,15 +102,19 @@ class ListPrjSessionFragment : Fragment() {
             Session(0, (sessionList.size + 1), args.project.projectId, 0, getDate())
 
         // zvacsit numSes v lokalite
-        val locality: Locality = localityViewModel.getLocality(args.locality.localityId).value!!
-        val updatedLocality: Locality = Locality(locality.localityId, locality.localityName, locality.date, locality.x, locality.y, (locality.numSessions + 1), locality.note)
-        localityViewModel.updateLocality(updatedLocality)
+        updateLocalityNumSess()
 
         // ulozit session
         sessionViewModel.insertSession(session)
 
         Toast.makeText(requireContext(), "New session added.", Toast.LENGTH_SHORT).show()
 
+    }
+
+    private fun updateLocalityNumSess(){
+        val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId).value!!
+        updatedLocality.numSessions = (updatedLocality.numSessions + 1)
+        localityViewModel.updateLocality(updatedLocality)
     }
 
     private fun getDate(): String{

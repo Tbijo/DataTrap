@@ -11,7 +11,7 @@ data class ProjectWithLocalities(
 
     // embeded dame pre tabulku ktora obsahuje v sebe akoby instancie druhej tabulky
     @Embedded
-    val project: Project,
+    var project: Project,
 
     // relation definujem v nom primarne kluce oboch tabuliek - na ktorych stlpcoch sa maju prepojit
     @Relation(
@@ -24,6 +24,6 @@ data class ProjectWithLocalities(
         associateBy = Junction(ProjectLocalityCrossRef::class)
     )
     // narozdiel od one to one treba sem dat list hodnot lebo jeden project moze mat viacero lokalit
-    val localities: List<Locality>
+    var localities: List<Locality>
 
 )

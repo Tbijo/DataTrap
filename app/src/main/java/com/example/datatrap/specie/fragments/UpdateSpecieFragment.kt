@@ -30,21 +30,13 @@ class UpdateSpecieFragment : Fragment() {
     ): View? {
         _binding = FragmentUpdateSpecieBinding.inflate(inflater, container, false)
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
+
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
             imgName = it
         })
 
-        binding.etSpeciesCode.setText(args.specie.speciesCode)
-        binding.etFullName.setText(args.specie.fullName)
-        binding.etAuthority.setText(args.specie.authority)
-        binding.etDescription.setText(args.specie.description)
-        binding.etSynonym.setText(args.specie.synonym)
-        binding.etUpperFingers.setText(args.specie.upperFingers.toString())
-        binding.etMaxWeight.setText(args.specie.maxWeight.toString())
-        binding.etMinWeight.setText(args.specie.maxWeight.toString())
-        binding.cbIsSmallMammal.isChecked = args.specie.isSmallMammal == 1
-        binding.etNote.setText(args.specie.note)
+        initSpecieValuesToView()
 
         setHasOptionsMenu(true)
         return binding.root
@@ -63,10 +55,28 @@ class UpdateSpecieFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
     private fun goToCamera(){
         // overenie ci mame alebo nemame fotku
         val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureFragment(imgName)
         findNavController().navigate(action)
+    }
+
+    private fun initSpecieValuesToView(){
+        binding.etSpeciesCode.setText(args.specie.speciesCode)
+        binding.etFullName.setText(args.specie.fullName)
+        binding.etAuthority.setText(args.specie.authority)
+        binding.etDescription.setText(args.specie.description)
+        binding.etSynonym.setText(args.specie.synonym)
+        binding.etUpperFingers.setText(args.specie.upperFingers.toString())
+        binding.etMaxWeight.setText(args.specie.maxWeight.toString())
+        binding.etMinWeight.setText(args.specie.maxWeight.toString())
+        binding.cbIsSmallMammal.isChecked = args.specie.isSmallMammal == 1
+        binding.etNote.setText(args.specie.note)
     }
 
     private fun deleteSpecie() {
@@ -85,11 +95,6 @@ class UpdateSpecieFragment : Fragment() {
             .create().show()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
     private fun updateSpecie() {
         val speciesCode = binding.etSpeciesCode.text.toString()
         val fullName = binding.etFullName.text.toString()
@@ -106,7 +111,18 @@ class UpdateSpecieFragment : Fragment() {
 
         if (checkInput(speciesCode, fullName, authority)){
 
-            val specie = Specie(args.specie.specieId, speciesCode, fullName, synonym, authority, description, isSmallMammal, Integer.parseInt(upperFingers), Integer.parseInt(minWeight).toFloat(), Integer.parseInt(maxWeight).toFloat(), note, imgName)
+            val specie: Specie = args.specie
+            specie.speciesCode = speciesCode
+            specie.fullName = fullName
+            specie.synonym = synonym
+            specie.authority = authority
+            specie.description = description
+            specie.isSmallMammal = isSmallMammal
+            specie.upperFingers = Integer.parseInt(upperFingers)
+            specie.minWeight = Integer.parseInt(minWeight).toFloat()
+            specie.maxWeight = Integer.parseInt(maxWeight).toFloat()
+            specie.note = note
+            specie.imgName = imgName
 
             specieViewModel.updateSpecie(specie)
 

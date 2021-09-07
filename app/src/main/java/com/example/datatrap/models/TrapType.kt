@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 data class TrapType(
 
     @PrimaryKey(autoGenerate = true)
-    val trapTypeId: Long,
+    var trapTypeId: Long,
 
     @ColumnInfo(name = "TrapTypeName")
-    val trapTypeName: String
+    var trapTypeName: String
 )

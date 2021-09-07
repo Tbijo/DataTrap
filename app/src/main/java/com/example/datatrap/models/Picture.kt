@@ -9,11 +9,11 @@ data class Picture(
 
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "Img_name")
-    val imgName: String,
+    var imgName: String,
 
     @ColumnInfo(name = "Path")
-    val path: String,
+    var path: String,
 
     @ColumnInfo(name = "Note_img")
-    val note: String?
+    var note: String?
 )

@@ -47,11 +47,7 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireContext())
 
-        binding.etLocalityName.setText(args.locality.localityName)
-        binding.etLocalityNote.setText(args.locality.note)
-        binding.etSessionNum.setText(args.locality.numSessions.toString())
-        binding.tvLatitude.text = args.locality.x.toString()
-        binding.tvLongnitude.text = args.locality.y.toString()
+        initLocalityValuesToView()
 
         binding.btnGetCoordinates.setOnClickListener {
             getCoordinates()
@@ -78,17 +74,20 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun initLocalityValuesToView(){
+        binding.etLocalityName.setText(args.locality.localityName)
+        binding.etLocalityNote.setText(args.locality.note)
+        binding.etSessionNum.setText(args.locality.numSessions.toString())
+        binding.tvLatitude.text = args.locality.x.toString()
+        binding.tvLongnitude.text = args.locality.y.toString()
+    }
+
     private fun deleteLocality() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
             // zmensit numLocal vo vsetkych projektoch ktore su vo vztahu s vymazavanou lokalitou
-            val updateProjectList: List<Project> = prjLocalityViewModel.getProjectsForLocality(args.locality.localityId).value?.first()?.projects!!
-
-            updateProjectList.forEach {
-                val updatedProject = Project(it.projectId, it.projectName, it.date, (it.numLocal - 1), it.numMice)
-                projectViewModel.updateProject(updatedProject)
-            }
+            updateProjectsNumLocal()
 
             // odstranit lokalitu
             localityViewModel.deleteLocality(args.locality)
@@ -102,6 +101,15 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             .create().show()
     }
 
+    private fun updateProjectsNumLocal(){
+        val updateProjectList: List<Project> = prjLocalityViewModel.getProjectsForLocality(args.locality.localityId).value?.first()?.projects!!
+
+        updateProjectList.forEach {
+            it.numLocal = (it.numLocal - 1)
+            projectViewModel.updateProject(it)
+        }
+    }
+
     private fun updateLocality() {
         val localityName = binding.etLocalityName.text.toString()
         val localityDate = args.locality.date
@@ -110,10 +118,16 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val longnitude = binding.tvLongnitude.text.toString()
 
         if (checkInput(localityName, localityDate, latitude, longnitude)){
-            val locality = Locality(args.locality.localityId, localityName, localityDate,
-                Integer.parseInt(latitude).toFloat(),
-                Integer.parseInt(longnitude).toFloat(),args.locality.numSessions, localityNote)
+            val locality: Locality = args.locality
+
+            locality.localityName = localityName
+            locality.date = localityDate
+            locality.x = Integer.parseInt(latitude).toFloat()
+            locality.y = Integer.parseInt(longnitude).toFloat()
+            locality.note = localityNote
+
             localityViewModel.updateLocality(locality)
+
             Toast.makeText(requireContext(), "Locality updated.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()

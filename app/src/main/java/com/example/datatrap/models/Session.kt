@@ -15,17 +15,17 @@ import kotlinx.parcelize.Parcelize
 data class Session(
 
     @PrimaryKey(autoGenerate = true)
-    val sessionId: Long,
+    var sessionId: Long,
 
     @ColumnInfo(name = "Session")
-    val session: Int,
+    var session: Int,
     
     // cudzi kluc
-    val projectID: Long?,
+    var projectID: Long?,
 
     @ColumnInfo(name = "Num_occasion")
-    val numOcc: Int,
+    var numOcc: Int,
 
     @ColumnInfo(name = "Date")
-    val date: String
+    var date: String
 ): Parcelable

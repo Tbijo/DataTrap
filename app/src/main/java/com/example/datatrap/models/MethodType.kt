@@ -8,8 +8,8 @@ import androidx.room.PrimaryKey
 data class MethodType(
 
     @PrimaryKey(autoGenerate = true)
-    val methodTypeId: Long,
+    var methodTypeId: Long,
 
     @ColumnInfo(name = "MethodTypeName")
-    val methodTypeName: String
+    var methodTypeName: String
 )

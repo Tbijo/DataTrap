@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -27,6 +26,7 @@ class AddSpecieFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentAddSpecieBinding.inflate(inflater, container, false)
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
+
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
             imgName = it
@@ -75,7 +75,9 @@ class AddSpecieFragment : Fragment() {
 
         if (checkInput(speciesCode, fullName, authority)){
 
-            val specie = Specie(0, speciesCode, fullName, synonym, authority, description, isSmallMammal, Integer.parseInt(upperFingers), Integer.parseInt(minWeight).toFloat(), Integer.parseInt(maxWeight).toFloat(), note, imgName)
+            val specie = Specie(0, speciesCode, fullName, synonym, authority, description,
+                isSmallMammal, Integer.parseInt(upperFingers), Integer.parseInt(minWeight).toFloat(),
+                Integer.parseInt(maxWeight).toFloat(), note, imgName)
 
             specieViewModel.insertSpecie(specie)
 

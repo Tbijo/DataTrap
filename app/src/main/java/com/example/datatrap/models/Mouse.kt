@@ -18,94 +18,94 @@ import kotlinx.parcelize.Parcelize
 data class Mouse(
     
     @PrimaryKey(autoGenerate = true)
-    val mouseId: Long,
+    var mouseId: Long,
 
     @ColumnInfo(name = "Code")
-    val code: Int?, //pazure
+    var code: Int?, //pazure
 
     // cudzi kluc
-    val speciesID: Long,
+    var speciesID: Long,
 
     // cudzi kluc
-    val protocolID: Long?,
+    var protocolID: Long?,
 
     // cudzi kluc
-    val occasionID: Long,
+    var occasionID: Long,
 
     // cudzi kluc
-    val localityID: Long,
+    var localityID: Long,
 
     @ColumnInfo(name = "Trap_ID")
-    val trapID: Int, //samy zadavat
+    var trapID: Int, //samy zadavat
 
     @ColumnInfo(name = "Date")
-    val date: String,
+    var date: String,
 
     @ColumnInfo(name = "Catch_time")
-    val catchTime: String?,
+    var catchTime: String?,
 
     @ColumnInfo(name = "Sex")
-    val sex: String?, //list male female null
+    var sex: String?, //list male female null
 
     @ColumnInfo(name = "Age")
-    val age: String?, //vytvor list hodnot
+    var age: String?, //vytvor list hodnot
 
     @ColumnInfo(name = "Gravidity")
-    val gravidity: Int?, //bool
+    var gravidity: Int?, //bool
 
     @ColumnInfo(name = "Lactating")
-    val lactating: Int?, //bool
+    var lactating: Int?, //bool
 
     @ColumnInfo(name = "Sex_active")
-    val sexActive: Int?, //bool
+    var sexActive: Int?, //bool
 
     @ColumnInfo(name = "Weight")
-    val weight: Float?,
+    var weight: Float?,
 
     @ColumnInfo(name = "Recapture")
-    val recapture: Int?, //bool
+    var recapture: Int?, //bool
 
     @ColumnInfo(name = "Capture_ID")
-    val captureID: String?, //vytvor list hodnot
+    var captureID: String?, //vytvor list hodnot
 
     @ColumnInfo(name = "Body")
-    val body: Float?,
+    var body: Float?,
 
     @ColumnInfo(name = "Tail")
-    val tail: Float?,
+    var tail: Float?,
 
     @ColumnInfo(name = "Feet")
-    val feet: Float?,
+    var feet: Float?,
 
     @ColumnInfo(name = "Ear")
-    val ear: Float?,
+    var ear: Float?,
 
     @ColumnInfo(name = "Testes_length")
-    val testesLength: Float?,
+    var testesLength: Float?,
 
     @ColumnInfo(name = "Testes_width")
-    val testesWidth: Float?,
+    var testesWidth: Float?,
 
     @ColumnInfo(name = "Embryo_right")
-    val embryoRight: Int?,
+    var embryoRight: Int?,
 
     @ColumnInfo(name = "Embryo_left")
-    val embryoLeft: Int?,
+    var embryoLeft: Int?,
 
     @ColumnInfo(name = "Embryo_diameter")
-    val embryoDiameter: Float?,
+    var embryoDiameter: Float?,
 
-    val MC: Int?, //bool
+    var MC: Int?, //bool
 
     @ColumnInfo(name = "MC_right")
-    val MCright: Int?,
+    var MCright: Int?,
 
     @ColumnInfo(name = "MC_left")
-    val MCleft: Int?,
+    var MCleft: Int?,
 
     @ColumnInfo(name = "Note_sm")
-    val note: String?,
+    var note: String?,
 
     @ColumnInfo(name = "Img_sm") // cudzi kluc
-    val imgName: String?,
+    var imgName: String?,
 ): Parcelable

@@ -96,7 +96,7 @@ class UpdateOccasionFragment : Fragment() {
             vegTypeNameMap[it.vegetTypeName] = it.vegetTypeId
         }
 
-        initCurrentOccasion()
+        initOccasionValuesToView()
 
         setHasOptionsMenu(true)
         return binding.root
@@ -121,20 +121,25 @@ class UpdateOccasionFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun goToCamera(){
-        val action = UpdateOccasionFragmentDirections.actionUpdateOccasionFragmentToTakePhotoFragment("Occasion", imgName)
-        findNavController().navigate(action)
-    }
+    override fun onResume() {
+        super.onResume()
+        // env type adapter
+        val dropDownArrAdapEnvType = ArrayAdapter(requireContext(), R.layout.dropdown_names, envTypeNameMap.keys.toList())
+        binding.autoCompTvEnvType.setAdapter(dropDownArrAdapEnvType)
+        // method adapter
+        val dropDownArrAdapMethod = ArrayAdapter(requireContext(), R.layout.dropdown_names, methodNameMap.keys.toList())
+        binding.autoCompTvMethod.setAdapter(dropDownArrAdapMethod)
+        // method type adapter
+        val dropDownArrAdapMethodType = ArrayAdapter(requireContext(), R.layout.dropdown_names, metTypeNameMap.keys.toList())
+        binding.autoCompTvMethodType.setAdapter(dropDownArrAdapMethodType)
+        // trap type adapter
+        val dropDownArrAdapTrapType = ArrayAdapter(requireContext(), R.layout.dropdown_names, trapTypeNameMap.keys.toList())
+        binding.autoCompTvTrapType.setAdapter(dropDownArrAdapTrapType)
+        // veget type adapter
+        val dropDownArrAdapVegType = ArrayAdapter(requireContext(), R.layout.dropdown_names, vegTypeNameMap.keys.toList())
+        binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
 
-    private fun initCurrentOccasion(){
-        binding.etLeg.setText(args.occasion.leg)
-        binding.etOccasionNote.setText(args.occasion.note)
-        binding.etTemperature.setText(args.occasion.temperature.toString())
-        binding.etWeather.setText(args.occasion.weather)
-        imgName = args.occasion.imgName
-    }
-
-    private fun initAutoComp(){
+        //set values
         envTypeNameMap.forEach {
             if (it.value == args.occasion.envTypeID){
                 binding.autoCompTvEnvType.setText(it.key, false)
@@ -162,14 +167,25 @@ class UpdateOccasionFragment : Fragment() {
         }
     }
 
+    private fun goToCamera(){
+        val action = UpdateOccasionFragmentDirections.actionUpdateOccasionFragmentToTakePhotoFragment("Occasion", imgName)
+        findNavController().navigate(action)
+    }
+
+    private fun initOccasionValuesToView(){
+        binding.etLeg.setText(args.occasion.leg)
+        binding.etOccasionNote.setText(args.occasion.note)
+        binding.etTemperature.setText(args.occasion.temperature.toString())
+        binding.etWeather.setText(args.occasion.weather)
+        imgName = args.occasion.imgName
+    }
+
     private fun deleteOccasion() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
             // zmensit numOcc v session
-            val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
-            val updatedSession: Session = Session(session.sessionId, session.session, session.projectID, (session.numOcc - 1), session.date)
-            sessionViewModel.updateSession(updatedSession)
+            updateSessionNumOcc()
 
             // vymazat occasion
             occasionViewModel.deleteOccasion(args.occasion)
@@ -184,27 +200,6 @@ class UpdateOccasionFragment : Fragment() {
             .create().show()
     }
 
-    override fun onResume() {
-        super.onResume()
-        // env type adapter
-        val dropDownArrAdapEnvType = ArrayAdapter(requireContext(), R.layout.dropdown_names, envTypeNameMap.keys.toList())
-        binding.autoCompTvEnvType.setAdapter(dropDownArrAdapEnvType)
-        // method adapter
-        val dropDownArrAdapMethod = ArrayAdapter(requireContext(), R.layout.dropdown_names, methodNameMap.keys.toList())
-        binding.autoCompTvMethod.setAdapter(dropDownArrAdapMethod)
-        // method type adapter
-        val dropDownArrAdapMethodType = ArrayAdapter(requireContext(), R.layout.dropdown_names, metTypeNameMap.keys.toList())
-        binding.autoCompTvMethodType.setAdapter(dropDownArrAdapMethodType)
-        // trap type adapter
-        val dropDownArrAdapTrapType = ArrayAdapter(requireContext(), R.layout.dropdown_names, trapTypeNameMap.keys.toList())
-        binding.autoCompTvTrapType.setAdapter(dropDownArrAdapTrapType)
-        // veget type adapter
-        val dropDownArrAdapVegType = ArrayAdapter(requireContext(), R.layout.dropdown_names, vegTypeNameMap.keys.toList())
-        binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
-        //set values
-        initAutoComp()
-    }
-
     private fun updateOccasion() {
         val occasionNum: Int = args.occasion.occasion
         val method: Long = methodNameMap.getValue(binding.autoCompTvMethod.text.toString())
@@ -212,27 +207,42 @@ class UpdateOccasionFragment : Fragment() {
         val trapType: Long = trapTypeNameMap.getValue(binding.autoCompTvTrapType.text.toString())
         val envType: Long? = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
         val vegType: Long? = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
-        val date = args.occasion.date
-        val time = args.occasion.time
         val gotCaught = if (binding.cbGotCaught.isChecked) 1 else 0
         val numTraps = binding.etNumTraps.text.toString()
-        val numMice = args.occasion.numMice
         val leg: String = binding.etLeg.toString()
         val note: String? = binding.etOccasionNote.toString()
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
 
-            val occasion = Occasion(args.occasion.occasionId, occasionNum, args.occasion.localityID, args.occasion.sessionID,
-                method, methodType, trapType, envType, vegType, date, time, gotCaught, Integer.parseInt(numTraps),
-                numMice, temperature, weatherGlob, leg, note, imgName)
+            val occasion: Occasion = args.occasion
+            occasion.occasion = occasionNum
+            occasion.methodID = method
+            occasion.methodTypeID = methodType
+            occasion.trapTypeID = trapType
+            occasion.envTypeID = envType
+            occasion.vegetTypeID = vegType
+            occasion.gotCaught = gotCaught
+            occasion.numTraps = Integer.parseInt(numTraps)
+            occasion.temperature = temperature
+            occasion.weather = weatherGlob
+            occasion.leg = leg
+            occasion.note = note
+            occasion.imgName = imgName
 
             occasionViewModel.updateOccasion(occasion)
+
             Toast.makeText(requireContext(), "Occasion updated.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun updateSessionNumOcc(){
+        val updatedSession: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
+        updatedSession.numOcc = (updatedSession.numOcc - 1)
+        sessionViewModel.updateSession(updatedSession)
     }
 
     private fun checkInput(

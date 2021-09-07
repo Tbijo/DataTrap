@@ -26,6 +26,17 @@ class ViewSpecieFragment : Fragment() {
         _binding = FragmentViewSpecieBinding.inflate(inflater, container, false)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
+        initSpecieValuesToView()
+
+        return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
+
+    private fun initSpecieValuesToView(){
         if (args.specie.imgName == null){
             args.specie.imgName?.let {
                 val picture: Picture? = pictureViewModel.getPictureById(it).value
@@ -41,13 +52,6 @@ class ViewSpecieFragment : Fragment() {
         binding.tvNumberUpperFinger.text = args.specie.upperFingers.toString()
         binding.tvSpecieCodeView.text = args.specie.speciesCode
         binding.tvSynonymum.text = args.specie.synonym
-
-        return binding.root
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
     }
 
 }

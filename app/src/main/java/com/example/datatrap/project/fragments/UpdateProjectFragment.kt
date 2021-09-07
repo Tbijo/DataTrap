@@ -27,10 +27,7 @@ class UpdateProjectFragment : Fragment() {
         _binding = FragmentUpdateProjectBinding.inflate(inflater, container, false)
         projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
-        binding.etProjectName.setText(args.project.projectName)
-        binding.etDate.setText(args.project.date)
-        binding.etNumLocality.setText(args.project.numLocal)
-        binding.etNumMouse.setText(args.project.numMice)
+        initProjectValuesToView()
 
         setHasOptionsMenu(true)
         return binding.root
@@ -53,15 +50,28 @@ class UpdateProjectFragment : Fragment() {
         _binding = null
     }
 
+    private fun initProjectValuesToView(){
+        binding.etProjectName.setText(args.project.projectName)
+        binding.etDate.setText(args.project.date)
+        binding.etNumLocality.setText(args.project.numLocal)
+        binding.etNumMouse.setText(args.project.numMice)
+    }
+
     private fun updateProject() {
         val projectName = binding.etProjectName.text.toString()
         val date = binding.etDate.text.toString()
         val numLocal = binding.etNumLocality.text.toString()
-        val numMouse = binding.etNumMouse.text.toString()
+        val numMice = binding.etNumMouse.text.toString()
 
-        if (checkInput(projectName, date, numLocal, numMouse)){
-            val project = Project(args.project.projectId, projectName, date, Integer.parseInt(numLocal), Integer.parseInt(numMouse))
+        if (checkInput(projectName, date, numLocal, numMice)){
+            val project: Project = args.project
+            project.projectName = projectName
+            project.date = date
+            project.numLocal = Integer.parseInt(numLocal)
+            project.numMice = Integer.parseInt(numMice)
+
             projectViewModel.updateProject(project)
+
             Toast.makeText(requireContext(), "Project updated.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()

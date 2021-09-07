@@ -74,35 +74,7 @@ class AddNewMouseFragment : Fragment() {
             code = it
         })
 
-        binding.rgSex.setOnCheckedChangeListener{ radioGroup, checkedId ->
-            sex = when(checkedId){
-                R.id.rb_male -> "Male"
-                R.id.rb_female -> "Female"
-                R.id.rb_null_sex -> null
-                else -> null
-            }
-        }
-
-        binding.rgAge.setOnCheckedChangeListener { radioGroup, checkedId ->
-            age = when(checkedId){
-                R.id.rb_adult -> "Adult"
-                R.id.rb_juvenile -> "Juvenile"
-                R.id.rb_subadult -> "Subadult"
-                R.id.rb_null_age -> null
-                else -> null
-            }
-        }
-
-        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, checkedId ->
-            captureID = when(checkedId){
-                R.id.rb_captured -> "Captured"
-                R.id.rb_died -> "Died"
-                R.id.rb_escaped -> "Escaped"
-                R.id.rb_released -> "Released"
-                R.id.rb_null_capture -> null
-                else -> null
-            }
-        }
+        setListeners()
 
         setHasOptionsMenu(true)
         return binding.root
@@ -134,6 +106,38 @@ class AddNewMouseFragment : Fragment() {
             R.id.menu_camera -> goToCamera()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setListeners(){
+        binding.rgSex.setOnCheckedChangeListener{ radioGroup, checkedId ->
+            sex = when(checkedId){
+                R.id.rb_male -> "Male"
+                R.id.rb_female -> "Female"
+                R.id.rb_null_sex -> null
+                else -> null
+            }
+        }
+
+        binding.rgAge.setOnCheckedChangeListener { radioGroup, checkedId ->
+            age = when(checkedId){
+                R.id.rb_adult -> "Adult"
+                R.id.rb_juvenile -> "Juvenile"
+                R.id.rb_subadult -> "Subadult"
+                R.id.rb_null_age -> null
+                else -> null
+            }
+        }
+
+        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, checkedId ->
+            captureID = when(checkedId){
+                R.id.rb_captured -> "Captured"
+                R.id.rb_died -> "Died"
+                R.id.rb_escaped -> "Escaped"
+                R.id.rb_released -> "Released"
+                R.id.rb_null_capture -> null
+                else -> null
+            }
+        }
     }
 
     private fun showDrawnRat(){
@@ -182,24 +186,17 @@ class AddNewMouseFragment : Fragment() {
         val note: String? = binding.etMouseNote.text.toString()
 
         if (checkInput(code, speciesID, trapID)){
+
+            // zvacsit numMice projektu do ktoreho sa pridava tato mys
+            updateProjectNumMice()
+
+            // zvacsit numMice occasion do ktorej sa pridava tato mys
+            updateOccasionNumMice()
+
             val mouse = Mouse(0, code, speciesID, protocolID, args.occasion.occasionId,
                 args.occasion.localityID, trapID, getDate(), getTime(), sex, age, gravitidy, lactating, sexActive,
                 weight, recapture = 0, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
-
-            // zvacsit numMice projektu do ktoreho sa pridava tato mys
-            val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
-            val project: Project = projectViewModel.getProject(session.projectID!!).value!!
-            val updatedProject: Project = Project(project.projectId, project.projectName, project.date, project.numLocal, (project.numMice + 1))
-            projectViewModel.updateProject(updatedProject)
-
-            // zvacsit numMice occasion do ktorej sa pridava tato mys
-            val updatedOccasion: Occasion = Occasion(args.occasion.occasionId, args.occasion.occasion,
-            args.occasion.localityID, args.occasion.sessionID, args.occasion.methodID, args.occasion.methodTypeID,
-            args.occasion.trapTypeID, args.occasion.envTypeID, args.occasion.vegetTypeID, args.occasion.date,
-            args.occasion.time, args.occasion.gotCaught, args.occasion.numTraps, (args.occasion.numMice!! + 1), args.occasion.temperature, args.occasion.weather,
-            args.occasion.leg, args.occasion.note, args.occasion.imgName)
-            occasionViewModel.updateOccasion(updatedOccasion)
 
             // ulozit mys
             mouseViewModel.insertMouse(mouse)
@@ -210,6 +207,22 @@ class AddNewMouseFragment : Fragment() {
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun updateProjectNumMice(){
+        val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
+        val updatedProject: Project = projectViewModel.getProject(session.projectID!!).value!!
+
+        updatedProject.numMice = (updatedProject.numMice + 1)
+
+        projectViewModel.updateProject(updatedProject)
+    }
+
+    private fun updateOccasionNumMice(){
+        val updatedOccasion: Occasion = args.occasion
+        updatedOccasion.numMice = (updatedOccasion.numMice?.plus(1))
+
+        occasionViewModel.updateOccasion(updatedOccasion)
     }
 
     private fun checkInput(code: Int, specieID: Long, trapID: Int): Boolean {

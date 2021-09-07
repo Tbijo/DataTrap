@@ -11,17 +11,17 @@ import kotlinx.parcelize.Parcelize
 data class Project(
 
     @PrimaryKey(autoGenerate = true)
-    val projectId: Long,
+    var projectId: Long,
 
     @ColumnInfo(name = "ProjectName")
-    val projectName: String,
+    var projectName: String,
 
     @ColumnInfo(name = "Date")
-    val date: String,
+    var date: String,
 
     @ColumnInfo(name = "Num_local")
-    val numLocal: Int,
+    var numLocal: Int,
 
     @ColumnInfo(name = "Num_mice")
-    val numMice: Int
+    var numMice: Int
 ): Parcelable

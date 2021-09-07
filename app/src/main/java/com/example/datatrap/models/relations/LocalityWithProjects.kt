@@ -9,13 +9,13 @@ import com.example.datatrap.models.Project
 data class LocalityWithProjects(
 
     @Embedded
-    val locality: Locality,
+    var locality: Locality,
 
     @Relation(
         parentColumn = "localityId",
         entityColumn = "projectId",
         associateBy = Junction(ProjectLocalityCrossRef::class)
     )
-    val projects: List<Project>
+    var projects: List<Project>
 
 )
