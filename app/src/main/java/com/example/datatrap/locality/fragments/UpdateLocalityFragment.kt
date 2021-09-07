@@ -16,7 +16,10 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateLocalityBinding
 import com.example.datatrap.models.Locality
+import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.LocalityViewModel
+import com.example.datatrap.viewmodels.ProjectLocalityViewModel
+import com.example.datatrap.viewmodels.ProjectViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import pub.devrel.easypermissions.AppSettingsDialog
@@ -27,6 +30,8 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private var _binding: FragmentUpdateLocalityBinding? = null
     private val binding get() = _binding!!
     private lateinit var localityViewModel: LocalityViewModel
+    private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
+    private lateinit var projectViewModel: ProjectViewModel
     private val args by navArgs<UpdateLocalityFragmentArgs>()
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -36,6 +41,9 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         _binding = FragmentUpdateLocalityBinding.inflate(inflater, container, false)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
+        prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
+        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
+
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(requireContext())
 
@@ -74,6 +82,15 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
+            // zmensit numLocal vo vsetkych projektoch ktore su vo vztahu s vymazavanou lokalitou
+            val updateProjectList: List<Project> = prjLocalityViewModel.getProjectsForLocality(args.locality.localityId).value?.first()?.projects!!
+
+            updateProjectList.forEach {
+                val updatedProject = Project(it.projectId, it.projectName, it.date, (it.numLocal - 1), it.numMice)
+                projectViewModel.updateProject(updatedProject)
+            }
+
+            // odstranit lokalitu
             localityViewModel.deleteLocality(args.locality)
 
             Toast.makeText(requireContext(),"Locality deleted.", Toast.LENGTH_LONG).show()

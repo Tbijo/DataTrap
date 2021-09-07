@@ -12,13 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateMouseBinding
-import com.example.datatrap.models.Mouse
-import com.example.datatrap.models.Protocol
-import com.example.datatrap.models.Specie
-import com.example.datatrap.viewmodels.MouseViewModel
-import com.example.datatrap.viewmodels.ProtocolViewModel
-import com.example.datatrap.viewmodels.SharedViewModel
-import com.example.datatrap.viewmodels.SpecieViewModel
+import com.example.datatrap.models.*
+import com.example.datatrap.viewmodels.*
 
 class UpdateMouseFragment : Fragment() {
 
@@ -29,6 +24,9 @@ class UpdateMouseFragment : Fragment() {
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var protocolViewModel: ProtocolViewModel
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var projectViewModel: ProjectViewModel
+    private lateinit var sessionViewModel: SessionViewModel
+    private lateinit var occasionViewModel: OccasionViewModel
 
     private lateinit var listSpecie: List<Specie>
     private lateinit var listProtocol: List<Protocol>
@@ -44,6 +42,9 @@ class UpdateMouseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateMouseBinding.inflate(inflater, container, false)
+        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
+        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
+        occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
@@ -193,6 +194,21 @@ class UpdateMouseFragment : Fragment() {
     private fun deleteMouse(){
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
+
+            // zmensit numMice projektu do ktoreho sa pridava tato mys
+            val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
+            val project: Project = projectViewModel.getProject(session.projectID!!).value!!
+            val updatedProject: Project = Project(project.projectId, project.projectName, project.date, project.numLocal, (project.numMice - 1))
+            projectViewModel.updateProject(updatedProject)
+
+            // zmensit numMice occasion do ktorej sa pridava tato mys
+            val updatedOccasion: Occasion = Occasion(args.occasion.occasionId, args.occasion.occasion,
+                args.occasion.localityID, args.occasion.sessionID, args.occasion.methodID, args.occasion.methodTypeID,
+                args.occasion.trapTypeID, args.occasion.envTypeID, args.occasion.vegetTypeID, args.occasion.date,
+                args.occasion.time, args.occasion.gotCaught, args.occasion.numTraps, (args.occasion.numMice!! - 1),
+                args.occasion.temperature, args.occasion.weather, args.occasion.leg, args.occasion.note,
+                args.occasion.imgName)
+            occasionViewModel.updateOccasion(updatedOccasion)
 
             mouseViewModel.deleteMouse(args.mouse)
 

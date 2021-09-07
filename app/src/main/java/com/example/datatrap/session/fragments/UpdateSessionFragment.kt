@@ -10,7 +10,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateSessionBinding
+import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Session
+import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
 
 class UpdateSessionFragment : Fragment() {
@@ -18,6 +20,7 @@ class UpdateSessionFragment : Fragment() {
     private var _binding: FragmentUpdateSessionBinding? = null
     private val binding get() = _binding!!
     private lateinit var sessionViewModel: SessionViewModel
+    private lateinit var localityViewModel: LocalityViewModel
     private val args by navArgs<UpdateSessionFragmentArgs>()
 
     override fun onCreateView(
@@ -25,6 +28,7 @@ class UpdateSessionFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateSessionBinding.inflate(inflater, container, false)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
+        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
 
         binding.etSession.setText(args.session.session)
         binding.etNumOcc.setText(args.session.numOcc)
@@ -54,6 +58,12 @@ class UpdateSessionFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
+            // znizit numSess v lokalite
+            val locality: Locality = localityViewModel.getLocality(args.locality.localityId).value!!
+            val updatedLocality: Locality = Locality(locality.localityId, locality.localityName, locality.date, locality.x, locality.y, (locality.numSessions - 1), locality.note)
+            localityViewModel.updateLocality(updatedLocality)
+
+            // vymazat session
             sessionViewModel.deleteSession(args.session)
 
             Toast.makeText(requireContext(),"Session deleted.", Toast.LENGTH_LONG).show()

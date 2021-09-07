@@ -12,14 +12,17 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
 import com.example.datatrap.models.Locality
+import com.example.datatrap.models.Project
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
+import com.example.datatrap.viewmodels.ProjectViewModel
 
 class ListPrjLocalityFragment : Fragment() {
 
     private var _binding: FragmentListPrjLocalityBinding? = null
     private val binding get() = _binding!!
     private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
+    private lateinit var projectViewModel: ProjectViewModel
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListPrjLocalityFragmentArgs>()
     private lateinit var localityList: List<Locality>
@@ -30,6 +33,7 @@ class ListPrjLocalityFragment : Fragment() {
 
         _binding = FragmentListPrjLocalityBinding.inflate(inflater, container, false)
         prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
+        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
         adapter = PrjLocalityRecyclerAdapter()
         val recyclerView = binding.prjLocalityRecyclerview
@@ -51,9 +55,14 @@ class ListPrjLocalityFragment : Fragment() {
 
             override fun useLongClickListener(position: Int) {
                 // vymazat kombinaciu projektu a vybranej lokality
-                    val locality: Locality = localityList[position]
-                    val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, locality.localityId)
-                    prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
+                val locality: Locality = localityList[position]
+                val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, locality.localityId)
+
+                // znizit stlpec numLocal
+                val updatedProject: Project = Project(args.project.projectId, args.project.projectName, args.project.date, (args.project.numLocal - 1), args.project.numMice)
+                projectViewModel.updateProject(updatedProject)
+
+                prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
             }
         })
 

@@ -47,7 +47,7 @@ class ListOccMouseFragment : Fragment() {
 
             override fun useLongClickListener(position: Int) {
                 //update
-                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(mouseList[position])
+                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(mouseList[position], args.occasion)
                 findNavController().navigate(action)
             }
 

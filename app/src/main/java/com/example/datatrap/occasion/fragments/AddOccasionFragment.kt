@@ -32,6 +32,7 @@ class AddOccasionFragment : Fragment() {
     private lateinit var metTypeViewModel: MethodTypeViewModel
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var vegTypeViewModel: VegetTypeViewModel
+    private lateinit var sessionViewModel: SessionViewModel
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -60,6 +61,7 @@ class AddOccasionFragment : Fragment() {
         metTypeViewModel = ViewModelProvider(this).get(MethodTypeViewModel::class.java)
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
+        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer<String> {
@@ -159,6 +161,11 @@ class AddOccasionFragment : Fragment() {
                 method, methodType, trapType, envType, vegType, date, time, gotCaught, Integer.parseInt(numTraps),
                 numMice, temperature, weatherGlob, leg, note, imgName)
 
+            // zvacsit numOcc v Session
+            val updatedSession: Session = Session(args.session.sessionId, args.session.session, args.session.projectID, (args.session.numOcc + 1), args.session.date)
+            sessionViewModel.updateSession(updatedSession)
+
+            // ulozit occasion
             occasionViewModel.insertOccasion(occasion)
             Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
 

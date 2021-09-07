@@ -138,6 +138,9 @@
         <argument
             android:name="session"
             app:argType="com.example.datatrap.models.Session" />
+        <argument
+            android:name="locality"
+            app:argType="com.example.datatrap.models.Locality" />
     </fragment>
     <fragment
         android:id="@+id/listSesOccasionFragment"
@@ -221,6 +224,9 @@
         <action
             android:id="@+id/action_updateMouseFragment_to_takePhotoFragment"
             app:destination="@id/takePhotoFragment" />
+        <argument
+            android:name="occasion"
+            app:argType="com.example.datatrap.models.Occasion" />
     </fragment>
     <fragment
         android:id="@+id/addNewMouseFragment"

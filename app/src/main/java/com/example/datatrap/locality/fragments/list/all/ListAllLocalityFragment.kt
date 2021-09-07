@@ -18,6 +18,7 @@ import com.example.datatrap.models.Project
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
+import com.example.datatrap.viewmodels.ProjectViewModel
 
 class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -25,6 +26,7 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
     private val binding get() = _binding!!
     private lateinit var localityViewModel: LocalityViewModel
     private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
+    private lateinit var projectViewModel: ProjectViewModel
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListAllLocalityFragmentArgs>()
     private lateinit var localityList: List<Locality>
@@ -36,6 +38,7 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         _binding = FragmentListAllLocalityBinding.inflate(inflater, container, false)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
         prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
+        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
         adapter = PrjLocalityRecyclerAdapter()
         val recyclerView = binding.localityRecyclerview
@@ -50,20 +53,27 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
-                    val locality: Locality = localityList[position]
-                    val project: Project = args.project
-                    val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectId, locality.localityId)
-                    prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
-                    Toast.makeText(requireContext(), "Combination created.", Toast.LENGTH_SHORT).show()
+                val locality: Locality = localityList[position]
+                val project: Project = args.project
+                val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectId, locality.localityId)
 
-                    findNavController().navigateUp()
+                // zvacsit pocet localit v projekte
+                val updatedProject: Project = Project(args.project.projectId, args.project.projectName, args.project.date, (args.project.numLocal + 1), args.project.numMice)
+                projectViewModel.updateProject(updatedProject)
+
+                // vytvorit kombinaciu
+                prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
+
+                Toast.makeText(requireContext(), "Combination created.", Toast.LENGTH_SHORT).show()
+
+                findNavController().navigateUp()
             }
 
             override fun useLongClickListener(position: Int) {
                 // tu sa pojde upravit alebo vymazat lokalita
-                    val locality: Locality = localityList[position]
-                    val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToUpdateLocalityFragment(locality)
-                    findNavController().navigate(action)
+                val locality: Locality = localityList[position]
+                val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToUpdateLocalityFragment(locality)
+                findNavController().navigate(action)
             }
 
         })

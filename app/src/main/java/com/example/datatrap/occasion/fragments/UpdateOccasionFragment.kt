@@ -33,6 +33,7 @@ class UpdateOccasionFragment : Fragment() {
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var vegTypeViewModel: VegetTypeViewModel
     private lateinit var localityViewModel: LocalityViewModel
+    private lateinit var sessionViewModel: SessionViewModel
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -63,6 +64,7 @@ class UpdateOccasionFragment : Fragment() {
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
+        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer<String> {
@@ -164,6 +166,12 @@ class UpdateOccasionFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
+            // zmensit numOcc v session
+            val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
+            val updatedSession: Session = Session(session.sessionId, session.session, session.projectID, (session.numOcc - 1), session.date)
+            sessionViewModel.updateSession(updatedSession)
+
+            // vymazat occasion
             occasionViewModel.deleteOccasion(args.occasion)
 
             Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()

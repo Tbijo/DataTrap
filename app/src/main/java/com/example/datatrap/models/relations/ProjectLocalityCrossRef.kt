@@ -20,5 +20,5 @@ data class ProjectLocalityCrossRef(
     val localityId: Long // primarny kluc tabulky locality
 
     // ak chceme vsetky projekty ktore su vo vztahu s lokalitou treba na to pomocnu triedu      -   LocalityWithProjects
-    // ak chceme vsetky lokality ktore su vo vztahu s projektom treba na to tiez pomocnu triedu -   ProjectWithLocalities - ja chcem len toto
+    // ak chceme vsetky lokality ktore su vo vztahu s projektom treba na to tiez pomocnu triedu -   ProjectWithLocalities - ja som chcel len toto
 )

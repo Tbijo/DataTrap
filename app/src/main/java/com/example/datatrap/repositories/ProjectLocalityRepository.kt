@@ -2,6 +2,7 @@ package com.example.datatrap.repositories
 
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.ProjectLocalityDao
+import com.example.datatrap.models.relations.LocalityWithProjects
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.models.relations.ProjectWithLocalities
 
@@ -17,5 +18,9 @@ class ProjectLocalityRepository(private val projectLocalityDao: ProjectLocalityD
 
     fun getLocalitiesForProject(projectId: Long): LiveData<List<ProjectWithLocalities>>{
         return projectLocalityDao.getLocalitiesForProject(projectId)
+    }
+
+    fun getProjectsForLocality(localityId: Long): LiveData<List<LocalityWithProjects>>{
+        return projectLocalityDao.getProjectsForLocality(localityId)
     }
 }

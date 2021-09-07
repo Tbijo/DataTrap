@@ -13,7 +13,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListPrjSessionBinding
+import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Session
+import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -23,6 +25,7 @@ class ListPrjSessionFragment : Fragment() {
     private var _binding: FragmentListPrjSessionBinding? = null
     private val binding get() = _binding!!
     private lateinit var sessionViewModel: SessionViewModel
+    private lateinit var localityViewModel: LocalityViewModel
     private lateinit var adapter: PrjSessionRecyclerAdapter
     private val args by navArgs<ListPrjSessionFragmentArgs>()
     private lateinit var sessionList: List<Session>
@@ -32,6 +35,7 @@ class ListPrjSessionFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListPrjSessionBinding.inflate(inflater, container, false)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
+        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
 
         adapter = PrjSessionRecyclerAdapter()
         val recyclerView = binding.prjSessionRecyclerview
@@ -61,7 +65,7 @@ class ListPrjSessionFragment : Fragment() {
                 val session: Session = sessionList[position]
                 val action =
                     ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(
-                        session
+                        session, args.locality
                     )
                 findNavController().navigate(action)
             }
@@ -97,6 +101,12 @@ class ListPrjSessionFragment : Fragment() {
         val session: Session =
             Session(0, (sessionList.size + 1), args.project.projectId, 0, getDate())
 
+        // zvacsit numSes v lokalite
+        val locality: Locality = localityViewModel.getLocality(args.locality.localityId).value!!
+        val updatedLocality: Locality = Locality(locality.localityId, locality.localityName, locality.date, locality.x, locality.y, (locality.numSessions + 1), locality.note)
+        localityViewModel.updateLocality(updatedLocality)
+
+        // ulozit session
         sessionViewModel.insertSession(session)
 
         Toast.makeText(requireContext(), "New session added.", Toast.LENGTH_SHORT).show()
