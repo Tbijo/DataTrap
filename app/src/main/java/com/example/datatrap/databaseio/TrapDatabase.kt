@@ -4,17 +4,19 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.datatrap.databaseio.dao.*
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.databaseio.dao.ProjectLocalityDao
 import com.example.datatrap.models.*
+import java.util.concurrent.Executors
 
 @Database(entities = [
     EnvType::class, Locality::class, Method::class, MethodType::class,
     Occasion::class, Picture::class, Project::class, Protocol::class,
     Session::class, Specie::class, TrapType::class, VegetType::class,
-    Mouse::class, ProjectLocalityCrossRef::class
-                     ], version = 1, exportSchema = false)
+    Mouse::class, ProjectLocalityCrossRef::class, User::class
+                     ], version = 2, exportSchema = false)
 abstract class TrapDatabase: RoomDatabase() {
     abstract fun envTypeDao(): EnvTypeDao
     abstract fun localityDao(): LocalityDao
@@ -30,6 +32,7 @@ abstract class TrapDatabase: RoomDatabase() {
     abstract fun trapTypeDao(): TrapTypeDao
     abstract fun vegetTypeDao(): VegetTypeDao
     abstract fun projectLocalityDao(): ProjectLocalityDao
+    abstract fun userDao(): UserDao
 
     companion object{
         @Volatile
@@ -46,6 +49,18 @@ abstract class TrapDatabase: RoomDatabase() {
                     TrapDatabase::class.java,
                     "trap_database"
                 ).fallbackToDestructiveMigration()
+                    .addCallback(object: Callback(){
+                        override fun onCreate(db: SupportSQLiteDatabase) {
+                            super.onCreate(db)
+                            val IOEXECUTOR = Executors.newSingleThreadExecutor()
+                            fun ioThread(f : () -> Unit) {
+                                IOEXECUTOR.execute(f)
+                            }
+                            ioThread {
+                                getDatabase(context).userDao().initInsertUser(User(0, "root", "toor", 0))
+                            }
+                        }
+                    })
                     .build()
                 INSTANCE = instance
                 return instance

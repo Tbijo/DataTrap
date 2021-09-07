@@ -10,11 +10,12 @@
         android:id="@+id/et_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="316dp"
         android:ems="10"
         android:hint="User Name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,9 +35,34 @@
         android:id="@+id/btn_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Log In"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_password" />
+        app:layout_constraintTop_toBottomOf="@+id/rg_team" />
+
+    <RadioGroup
+        android:id="@+id/rg_team"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_password">
+
+        <RadioButton
+            android:id="@+id/rb_even"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Even Team" />
+
+        <RadioButton
+            android:id="@+id/rb_odd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Odd Team" />
+    </RadioGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>
