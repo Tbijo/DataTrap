@@ -220,6 +220,19 @@ class RecaptureMouseFragment : Fragment() {
                 weight, recapture = 1, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 
+            // zmenit pohlavie vsetkym predch. mysiam ak sa zmenilo
+            if (args.mouse.sex != sex){
+                val updateMouseList: List<Mouse> = mouseViewModel.getMiceForCode(args.mouse.code!!).value!!
+                updateMouseList.forEach {
+                    val updatedMouse = Mouse(it.mouseId, it.code, it.speciesID, it.protocolID, it.occasionID,
+                        it.localityID, it.trapID, it.date, it.catchTime, sex, it.age, it.gravidity, it.lactating, it.sexActive,
+                        it.weight, it.recapture, it.captureID, it.body, it.tail, it.feet, it.ear, it.testesLength,
+                        it.testesWidth, it.embryoRight, it.embryoLeft, it.embryoDiameter, it.MC, it.MCright, it.MCleft, it.note, it.imgName)
+                    mouseViewModel.updateMouse(updatedMouse)
+                }
+            }
+
+            // recapture mouse
             mouseViewModel.insertMouse(mouse)
 
             Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
