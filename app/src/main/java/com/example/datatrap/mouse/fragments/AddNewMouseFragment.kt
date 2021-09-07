@@ -109,32 +109,32 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun setListeners(){
-        binding.rgSex.setOnCheckedChangeListener{ radioGroup, checkedId ->
-            sex = when(checkedId){
-                R.id.rb_male -> "Male"
-                R.id.rb_female -> "Female"
-                R.id.rb_null_sex -> null
+        binding.rgSex.setOnCheckedChangeListener{ radioGroup, radioButtonId ->
+            sex = when(radioButtonId){
+                binding.rbMale.id -> "Male"
+                binding.rbFemale.id -> "Female"
+                binding.rbNullSex.id -> null
                 else -> null
             }
         }
 
-        binding.rgAge.setOnCheckedChangeListener { radioGroup, checkedId ->
-            age = when(checkedId){
-                R.id.rb_adult -> "Adult"
-                R.id.rb_juvenile -> "Juvenile"
-                R.id.rb_subadult -> "Subadult"
-                R.id.rb_null_age -> null
+        binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            age = when(radioButtonId){
+                binding.rbAdult.id -> "Adult"
+                binding.rbJuvenile.id -> "Juvenile"
+                binding.rbSubadult.id -> "Subadult"
+                binding.rbNullAge.id -> null
                 else -> null
             }
         }
 
-        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, checkedId ->
-            captureID = when(checkedId){
-                R.id.rb_captured -> "Captured"
-                R.id.rb_died -> "Died"
-                R.id.rb_escaped -> "Escaped"
-                R.id.rb_released -> "Released"
-                R.id.rb_null_capture -> null
+        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            captureID = when(radioButtonId){
+                binding.rbCaptured.id -> "Captured"
+                binding.rbDied.id -> "Died"
+                binding.rbEscaped.id -> "Escaped"
+                binding.rbReleased.id -> "Released"
+                binding.rbNullCapture.id -> null
                 else -> null
             }
         }

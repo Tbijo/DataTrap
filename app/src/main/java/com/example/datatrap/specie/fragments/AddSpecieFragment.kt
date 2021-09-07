@@ -19,7 +19,9 @@ class AddSpecieFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var sharedViewModel: SharedViewModel
+
     private var imgName: String? = null
+    private var upperFingers: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,6 +33,14 @@ class AddSpecieFragment : Fragment() {
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
             imgName = it
         })
+
+        binding.rgUpperFingers.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            upperFingers = when (radioButtonId){
+                binding.rb4.id -> 4
+                binding.rb5.id -> 5
+                else -> null
+            }
+        }
 
         setHasOptionsMenu(true)
         return binding.root
@@ -68,7 +78,6 @@ class AddSpecieFragment : Fragment() {
 
         val isSmallMammal: Int = if (binding.cbIsSmallMammal.isChecked) 1 else 0
 
-        val upperFingers = binding.etUpperFingers.text.toString()
         val minWeight = binding.etMinWeight.text.toString()
         val maxWeight = binding.etMaxWeight.text.toString()
         val note = binding.etNote.text.toString()
@@ -76,7 +85,7 @@ class AddSpecieFragment : Fragment() {
         if (checkInput(speciesCode, fullName, authority)){
 
             val specie = Specie(0, speciesCode, fullName, synonym, authority, description,
-                isSmallMammal, Integer.parseInt(upperFingers), Integer.parseInt(minWeight).toFloat(),
+                isSmallMammal, upperFingers, Integer.parseInt(minWeight).toFloat(),
                 Integer.parseInt(maxWeight).toFloat(), note, imgName)
 
             specieViewModel.insertSpecie(specie)

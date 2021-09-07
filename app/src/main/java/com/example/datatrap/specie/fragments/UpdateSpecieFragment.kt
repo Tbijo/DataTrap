@@ -22,7 +22,9 @@ class UpdateSpecieFragment : Fragment() {
     private val args by navArgs<UpdateSpecieFragmentArgs>()
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var sharedViewModel: SharedViewModel
+
     private var imgName: String? = args.specie.imgName
+    private var upperFingers: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +37,14 @@ class UpdateSpecieFragment : Fragment() {
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
             imgName = it
         })
+
+        binding.rgUpperFingers.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            upperFingers = when (radioButtonId){
+                binding.rb4.id -> 4
+                binding.rb5.id -> 5
+                else -> null
+            }
+        }
 
         initSpecieValuesToView()
 
@@ -72,7 +82,12 @@ class UpdateSpecieFragment : Fragment() {
         binding.etAuthority.setText(args.specie.authority)
         binding.etDescription.setText(args.specie.description)
         binding.etSynonym.setText(args.specie.synonym)
-        binding.etUpperFingers.setText(args.specie.upperFingers.toString())
+
+        when(args.specie.upperFingers){
+            4 -> binding.rb4.isChecked = true
+            5 -> binding.rb5.isChecked = true
+        }
+
         binding.etMaxWeight.setText(args.specie.maxWeight.toString())
         binding.etMinWeight.setText(args.specie.maxWeight.toString())
         binding.cbIsSmallMammal.isChecked = args.specie.isSmallMammal == 1
@@ -104,7 +119,6 @@ class UpdateSpecieFragment : Fragment() {
 
         val isSmallMammal: Int = if (binding.cbIsSmallMammal.isChecked) 1 else 0
 
-        val upperFingers = binding.etUpperFingers.text.toString()
         val minWeight = binding.etMinWeight.text.toString()
         val maxWeight = binding.etMaxWeight.text.toString()
         val note = binding.etNote.text.toString()
@@ -118,7 +132,7 @@ class UpdateSpecieFragment : Fragment() {
             specie.authority = authority
             specie.description = description
             specie.isSmallMammal = isSmallMammal
-            specie.upperFingers = Integer.parseInt(upperFingers)
+            specie.upperFingers = upperFingers
             specie.minWeight = Integer.parseInt(minWeight).toFloat()
             specie.maxWeight = Integer.parseInt(maxWeight).toFloat()
             specie.note = note

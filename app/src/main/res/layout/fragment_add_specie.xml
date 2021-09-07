@@ -74,17 +74,6 @@
         app:layout_constraintTop_toBottomOf="@+id/et_description" />
 
     <EditText
-        android:id="@+id/et_upper_fingers"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Upper Fingers"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cb_is_small_mammal" />
-
-    <EditText
         android:id="@+id/et_min_weight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -92,8 +81,9 @@
         android:hint="Minimal Weight"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_upper_fingers" />
+        app:layout_constraintTop_toBottomOf="@+id/rg_upper_fingers" />
 
     <EditText
         android:id="@+id/et_max_weight"
@@ -116,5 +106,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_max_weight" />
+
+    <RadioGroup
+        android:id="@+id/rg_upper_fingers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_is_small_mammal">
+
+        <RadioButton
+            android:id="@+id/rb_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="4" />
+
+        <RadioButton
+            android:id="@+id/rb_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="5" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
