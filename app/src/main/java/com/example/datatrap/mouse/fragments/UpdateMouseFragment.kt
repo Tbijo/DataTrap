@@ -260,13 +260,36 @@ class UpdateMouseFragment : Fragment() {
             mouse.note = binding.etMouseNote.text.toString()
             mouse.imgName = imgName
 
-            mouseViewModel.updateMouse(mouse)
+            // update mouse
+            checkWeightAndSave(mouse)
+
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun checkWeightAndSave(mouse: Mouse) {
+        val specie: Specie = specieViewModel.getSpecie(mouse.speciesID).value!!
+
+        if (mouse.weight!! > specie.maxWeight!! || mouse.weight!! < specie.minWeight!!){
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setPositiveButton("Yes"){_, _ ->
+                mouseViewModel.insertMouse(mouse)
+
+                Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
+
+                findNavController().navigateUp()
+            }
+                .setNegativeButton("No"){_, _ -> }
+                .setTitle("Warning: Mouse Weight")
+                .setMessage("Mouse weight out of bounds, save anyway?")
+                .create().show()
+        }else{
+            mouseViewModel.insertMouse(mouse)
 
             Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
     }
 
