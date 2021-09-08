@@ -205,12 +205,7 @@ class UpdateOccasionFragment : Fragment() {
         val method: Long = methodNameMap.getValue(binding.autoCompTvMethod.text.toString())
         val methodType: Long = metTypeNameMap.getValue(binding.autoCompTvMethodType.text.toString())
         val trapType: Long = trapTypeNameMap.getValue(binding.autoCompTvTrapType.text.toString())
-        val envType: Long? = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
-        val vegType: Long? = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
-        val gotCaught = if (binding.cbGotCaught.isChecked) 1 else 0
-        val numTraps = binding.etNumTraps.text.toString()
         val leg: String = binding.etLeg.toString()
-        val note: String? = binding.etOccasionNote.toString()
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
 
@@ -219,14 +214,14 @@ class UpdateOccasionFragment : Fragment() {
             occasion.methodID = method
             occasion.methodTypeID = methodType
             occasion.trapTypeID = trapType
-            occasion.envTypeID = envType
-            occasion.vegetTypeID = vegType
-            occasion.gotCaught = gotCaught
-            occasion.numTraps = Integer.parseInt(numTraps)
+            occasion.leg = leg
+            occasion.envTypeID = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
+            occasion.vegetTypeID = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
+            occasion.gotCaught = if (binding.cbGotCaught.isChecked) 1 else 0
+            occasion.numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
             occasion.temperature = temperature
             occasion.weather = weatherGlob
-            occasion.leg = leg
-            occasion.note = note
+            occasion.note = binding.etOccasionNote.toString()
             occasion.imgName = imgName
 
             occasionViewModel.updateOccasion(occasion)

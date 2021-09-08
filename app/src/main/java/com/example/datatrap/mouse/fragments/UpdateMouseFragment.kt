@@ -228,54 +228,36 @@ class UpdateMouseFragment : Fragment() {
     private fun updateMouse() {
         val code: Int? = Integer.parseInt(binding.etMouseCodeUpdate.text.toString())
         val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
-        val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
-        val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
-        val lactating: Int? = if (binding.cbLactating.isChecked) 1 else 0
-        val sexActive: Int? = if (binding.cbSexActive.isChecked) 1 else 0
         val trapID: Int = Integer.parseInt(binding.etTrapId.text.toString())
-        val weight: Float? = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
-        val body: Float? = Integer.parseInt(binding.etBody.text.toString()).toFloat()
-        val tail: Float? = Integer.parseInt(binding.etTail.text.toString()).toFloat()
-        val feet: Float? = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
-        val ear: Float? = Integer.parseInt(binding.etEar.text.toString()).toFloat()
-        val testesLength: Float? = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
-        val testesWidth: Float? = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
-        //počet embryí v oboch rohoch maternice a ich priemer
-        val embryoRight: Int? = Integer.parseInt(binding.etEmbryoRight.text.toString())
-        val embryoLeft: Int? = Integer.parseInt(binding.etEmbryoLeft.text.toString())
-        val embryoDiameter: Float? = Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
-        val MC: Int? = if (binding.cbMc.isChecked) 1 else 0
-        //počet placentálnych polypov
-        val MCright: Int? = Integer.parseInt(binding.etMcRight.text.toString())
-        val MCleft: Int? = Integer.parseInt(binding.etMcLeft.text.toString())
-        val note: String? = binding.etMouseNote.text.toString()
 
         if (checkInput(code, speciesID, trapID)){
             val mouse: Mouse = args.mouse
             mouse.code = code
             mouse.speciesID = speciesID
-            mouse.protocolID = protocolID
             mouse.trapID = trapID
             mouse.sex = sex
             mouse.age = age
-            mouse.gravidity = gravitidy
-            mouse.lactating = lactating
-            mouse.sexActive = sexActive
-            mouse.weight = weight
             mouse.captureID = captureID
-            mouse.body = body
-            mouse.tail = tail
-            mouse.feet = feet
-            mouse.ear = ear
-            mouse.testesLength = testesLength
-            mouse.testesWidth = testesWidth
-            mouse.embryoRight = embryoRight
-            mouse.embryoLeft = embryoLeft
-            mouse.embryoDiameter = embryoDiameter
-            mouse.MC = MC
-            mouse.MCright = MCright
-            mouse.MCleft = MCleft
-            mouse.note = note
+            mouse.protocolID = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
+            mouse.gravidity = if (binding.cbGravit.isChecked) 1 else 0
+            mouse.lactating = if (binding.cbLactating.isChecked) 1 else 0
+            mouse.sexActive = if (binding.cbSexActive.isChecked) 1 else 0
+            mouse.weight = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
+            mouse.body = Integer.parseInt(binding.etBody.text.toString()).toFloat()
+            mouse.tail = Integer.parseInt(binding.etTail.text.toString()).toFloat()
+            mouse.feet = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
+            mouse.ear = Integer.parseInt(binding.etEar.text.toString()).toFloat()
+            mouse.testesLength = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
+            mouse.testesWidth = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
+            //počet embryí v oboch rohoch maternice a ich priemer
+            mouse.embryoRight = Integer.parseInt(binding.etEmbryoRight.text.toString())
+            mouse.embryoLeft = Integer.parseInt(binding.etEmbryoLeft.text.toString())
+            mouse.embryoDiameter = Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
+            mouse.MC = if (binding.cbMc.isChecked) 1 else 0
+            //počet placentálnych polypov
+            mouse.MCright = Integer.parseInt(binding.etMcRight.text.toString())
+            mouse.MCleft = Integer.parseInt(binding.etMcLeft.text.toString())
+            mouse.note = binding.etMouseNote.text.toString()
             mouse.imgName = imgName
 
             mouseViewModel.updateMouse(mouse)

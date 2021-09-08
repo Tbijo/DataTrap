@@ -113,7 +113,6 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun updateLocality() {
         val localityName = binding.etLocalityName.text.toString()
         val localityDate = args.locality.date
-        val localityNote = binding.etLocalityNote.text.toString()
         val latitude = binding.tvLatitude.text.toString()
         val longnitude = binding.tvLongnitude.text.toString()
 
@@ -124,7 +123,7 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             locality.date = localityDate
             locality.x = Integer.parseInt(latitude).toFloat()
             locality.y = Integer.parseInt(longnitude).toFloat()
-            locality.note = localityNote
+            locality.note = binding.etLocalityNote.text.toString()
 
             localityViewModel.updateLocality(locality)
 

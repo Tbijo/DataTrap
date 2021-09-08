@@ -185,11 +185,11 @@ class AddNewMouseFragment : Fragment() {
     private fun insertMouse() {
         code = Integer.parseInt(binding.etCodeMouseAdd.text.toString())
         speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
+        val trapID: Int = Integer.parseInt(binding.etTrapId.text.toString())
         val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
         val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
         val lactating: Int? = if (binding.cbLactating.isChecked) 1 else 0
         val sexActive: Int? = if (binding.cbSexActive.isChecked) 1 else 0
-        val trapID: Int = Integer.parseInt(binding.etTrapId.text.toString())
         val weight: Float? = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
         val body: Float? = Integer.parseInt(binding.etBody.text.toString()).toFloat()
         val tail: Float? = Integer.parseInt(binding.etTail.text.toString()).toFloat()

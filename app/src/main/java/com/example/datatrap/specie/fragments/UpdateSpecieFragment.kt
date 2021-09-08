@@ -113,29 +113,21 @@ class UpdateSpecieFragment : Fragment() {
     private fun updateSpecie() {
         val speciesCode = binding.etSpeciesCode.text.toString()
         val fullName = binding.etFullName.text.toString()
-        val synonym = binding.etSynonym.text.toString()
         val authority = binding.etAuthority.text.toString()
-        val description = binding.etDescription.text.toString()
-
-        val isSmallMammal: Int = if (binding.cbIsSmallMammal.isChecked) 1 else 0
-
-        val minWeight = binding.etMinWeight.text.toString()
-        val maxWeight = binding.etMaxWeight.text.toString()
-        val note = binding.etNote.text.toString()
 
         if (checkInput(speciesCode, fullName, authority)){
 
             val specie: Specie = args.specie
             specie.speciesCode = speciesCode
             specie.fullName = fullName
-            specie.synonym = synonym
             specie.authority = authority
-            specie.description = description
-            specie.isSmallMammal = isSmallMammal
+            specie.synonym = binding.etSynonym.text.toString()
+            specie.description = binding.etDescription.text.toString()
+            specie.isSmallMammal = if (binding.cbIsSmallMammal.isChecked) 1 else 0
             specie.upperFingers = upperFingers
-            specie.minWeight = Integer.parseInt(minWeight).toFloat()
-            specie.maxWeight = Integer.parseInt(maxWeight).toFloat()
-            specie.note = note
+            specie.minWeight = Integer.parseInt(binding.etMinWeight.text.toString()).toFloat()
+            specie.maxWeight = Integer.parseInt(binding.etMaxWeight.text.toString()).toFloat()
+            specie.note = binding.etNote.text.toString()
             specie.imgName = imgName
 
             specieViewModel.updateSpecie(specie)
