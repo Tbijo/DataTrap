@@ -57,7 +57,7 @@ abstract class TrapDatabase: RoomDatabase() {
                                 IOEXECUTOR.execute(f)
                             }
                             ioThread {
-                                getDatabase(context).userDao().initInsertUser(User(0, "root", "toor", 0))
+                                getDatabase(context).userDao().initInsertUser(User(0, "root", "toor", 0, 0))
                             }
                         }
                     })

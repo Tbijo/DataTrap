@@ -39,6 +39,14 @@ class UserViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun getActiveUser(): LiveData<User>{
+        return userRepository.getActiveUser()
+    }
+
+    fun getActiveUsers(): LiveData<List<User>>{
+        return userRepository.getActiveUsers()
+    }
+
     fun checkUser(userName: String, password: String): LiveData<User>{
         return userRepository.checkUser(userName, password)
     }

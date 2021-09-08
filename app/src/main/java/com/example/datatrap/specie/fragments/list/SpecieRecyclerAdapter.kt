@@ -19,7 +19,7 @@ class SpecieRecyclerAdapter : RecyclerView.Adapter<SpecieRecyclerAdapter.MyViewH
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = specieList[position]
-        holder.binding.tvSpecieCode.text = currenItem.speciesCode
+        holder.binding.tvCode.text = currenItem.speciesCode
         holder.binding.tvLatin.text = currenItem.fullName
 
         holder.binding.specieRow.setOnClickListener {

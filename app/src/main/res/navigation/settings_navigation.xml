@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_listMainFragment_to_projectActivity"
             app:destination="@id/projectActivity" />
+        <action
+            android:id="@+id/action_listMainFragment_to_listUsersFragment"
+            app:destination="@id/listUsersFragment" />
     </fragment>
     <activity
         android:id="@+id/specieActivity"
@@ -88,4 +91,30 @@
         android:name="com.example.datatrap.project.ProjectActivity"
         android:label="activity_project"
         tools:layout="@layout/activity_project" />
+    <fragment
+        android:id="@+id/listUsersFragment"
+        android:name="com.example.datatrap.settings.fragments.list.user.list.ListUsersFragment"
+        android:label="fragment_list_users"
+        tools:layout="@layout/fragment_list_users" >
+        <action
+            android:id="@+id/action_listUsersFragment_to_addUserFragment"
+            app:destination="@id/addUserFragment" />
+        <action
+            android:id="@+id/action_listUsersFragment_to_updateUserFragment"
+            app:destination="@id/updateUserFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addUserFragment"
+        android:name="com.example.datatrap.settings.fragments.list.user.AddUserFragment"
+        android:label="fragment_add_user"
+        tools:layout="@layout/fragment_add_user" />
+    <fragment
+        android:id="@+id/updateUserFragment"
+        android:name="com.example.datatrap.settings.fragments.list.user.UpdateUserFragment"
+        android:label="fragment_update_user"
+        tools:layout="@layout/fragment_update_user" >
+        <argument
+            android:name="user"
+            app:argType="com.example.datatrap.models.User" />
+    </fragment>
 </navigation>

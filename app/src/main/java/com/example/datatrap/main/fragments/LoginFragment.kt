@@ -54,7 +54,13 @@ class LoginFragment : Fragment() {
     private fun checkAuthority(userName: String, pass: String, team: Int?) {
         val user: User? = userViewModel.checkUser(userName, pass).value
         if (user != null){
+            // skontrolovat ci uz nie su iny pouzivatelia aktivny
+            // ak su treba nastavit aktivitu na 0
+            inactiveAllUsers()
+            // nastavit parny alebo neparny team
             user.team = team!!
+            // tento pouzivatel je teraz aktivny vzdy moze byt len jeden
+            user.isActive = 1
             userViewModel.updateUser(user)
             Toast.makeText(requireContext(), "Log in successful.", Toast.LENGTH_SHORT).show()
             val action = LoginFragmentDirections.actionLoginFragmentToProjectActivity()
@@ -66,6 +72,16 @@ class LoginFragment : Fragment() {
 
     private fun checkInput(userName: String, pass: String, team: Int?): Boolean {
         return userName.isNotEmpty() && pass.isNotEmpty() && team.toString().isNotEmpty()
+    }
+
+    private fun inactiveAllUsers(){
+        val activeUserList: List<User>? = userViewModel.getActiveUsers().value
+        if (activeUserList?.isNotEmpty() == true){
+            activeUserList.forEach {
+                it.isActive = 0
+                userViewModel.updateUser(it)
+            }
+        }
     }
 
     override fun onDestroy() {

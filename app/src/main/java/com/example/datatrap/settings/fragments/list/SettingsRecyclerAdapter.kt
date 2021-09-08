@@ -8,7 +8,7 @@ import com.example.datatrap.databinding.SettingsRowBinding
 
 class SettingsRecyclerAdapter : RecyclerView.Adapter<SettingsRecyclerAdapter.MyViewHolder>() {
 
-    private var settingsList = listOf("Environment Type", "Method", "Method Type", "Protocol", "Trap Type", "Vegetation Type")
+    private var settingsList = listOf("Environment Type", "Method", "Method Type", "Protocol", "Trap Type", "Vegetation Type", "User")
 
     class MyViewHolder(val binding: SettingsRowBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -20,21 +20,36 @@ class SettingsRecyclerAdapter : RecyclerView.Adapter<SettingsRecyclerAdapter.MyV
         val currenItem = settingsList[position]
         holder.binding.tvSetName.text = currenItem[position].toString()
 
-        val actionEnType = ListMainFragmentDirections.actionListMainFragmentToListEnvTypeFragment()
-        val actionMethod = ListMainFragmentDirections.actionListMainFragmentToListMethodFragment()
-        val actionMetType = ListMainFragmentDirections.actionListMainFragmentToListMethodTypeFragment()
-        val actionProt = ListMainFragmentDirections.actionListMainFragmentToListProtocolFragment()
-        val actionTraType = ListMainFragmentDirections.actionListMainFragmentToListTrapTypeFragment()
-        val actionVegType = ListMainFragmentDirections.actionListMainFragmentToListVegetTypeFragment()
-
         holder.binding.root.setOnClickListener {
             when(currenItem){
-                "Environment Type" -> holder.binding.settingsRow.findNavController().navigate(actionEnType)
-                "Method" -> holder.binding.settingsRow.findNavController().navigate(actionMethod)
-                "Method Type" -> holder.binding.settingsRow.findNavController().navigate(actionMetType)
-                "Protocol" -> holder.binding.settingsRow.findNavController().navigate(actionProt)
-                "Trap Type" -> holder.binding.settingsRow.findNavController().navigate(actionTraType)
-                "Vegetation Type" -> holder.binding.settingsRow.findNavController().navigate(actionVegType)
+                "Environment Type" -> {
+                    val actionEnType = ListMainFragmentDirections.actionListMainFragmentToListEnvTypeFragment()
+                    holder.binding.settingsRow.findNavController().navigate(actionEnType)
+                }
+                "Method" -> {
+                    val actionMethod = ListMainFragmentDirections.actionListMainFragmentToListMethodFragment()
+                    holder.binding.settingsRow.findNavController().navigate(actionMethod)
+                }
+                "Method Type" -> {
+                    val actionMetType = ListMainFragmentDirections.actionListMainFragmentToListMethodTypeFragment()
+                    holder.binding.settingsRow.findNavController().navigate(actionMetType)
+                }
+                "Protocol" -> {
+                    val actionProt = ListMainFragmentDirections.actionListMainFragmentToListProtocolFragment()
+                    holder.binding.settingsRow.findNavController().navigate(actionProt)
+                }
+                "Trap Type" -> {
+                    val actionTraType = ListMainFragmentDirections.actionListMainFragmentToListTrapTypeFragment()
+                    holder.binding.settingsRow.findNavController().navigate(actionTraType)
+                }
+                "Vegetation Type" -> {
+                    val actionVegType = ListMainFragmentDirections.actionListMainFragmentToListVegetTypeFragment()
+                    holder.binding.settingsRow.findNavController().navigate(actionVegType)
+                }
+                "User" -> {
+                    val actionUser = ListMainFragmentDirections.actionListMainFragmentToListUsersFragment()
+                    holder.binding.settingsRow.findNavController().navigate(actionUser)
+                }
             }
         }
     }

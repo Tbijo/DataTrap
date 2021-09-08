@@ -5,26 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="24sp"
-    android:id="@+id/specie_row">
+    android:id="@+id/user_row">
 
     <TextView
-        android:id="@+id/tv_code"
+        android:id="@+id/tv_user_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="AAG"
+        android:text="Anna"
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_latin"
+        android:id="@+id/tv_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="Agregius Nulis"
+        android:layout_marginStart="16dp"
+        android:text="Is Active"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_code"
+        app:layout_constraintStart_toEndOf="@+id/tv_user_name"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

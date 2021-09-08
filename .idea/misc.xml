@@ -84,8 +84,10 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_ses_occasion.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_specie.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_trap_type.xml" value="0.12335359675785208" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_users.xml" value="0.1825337331334333" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_list_veget_type.xml" value="0.12335359675785208" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_login.xml" value="0.4" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_login2.xml" value="0.4" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_recapture_mouse.xml" value="0.4" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_take_photo.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/fragment_take_photo_mouse.xml" value="0.1" />
@@ -105,6 +107,7 @@
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/session_row.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/settings_row.xml" value="0.264" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/specie_row.xml" value="0.264" />
+        <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/layout/user_row.xml" value="0.4" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/add_menu.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/drawer_menu.xml" value="0.1" />
         <entry key="..\:/Users/User2/Documents/GitHub/DataTrap/app/src/main/res/menu/list_locality_menu.xml" value="0.1" />
