@@ -1,60 +1,76 @@
 package com.example.datatrap.settings.fragments.list.user
 
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentAddUserBinding
+import com.example.datatrap.models.User
+import com.example.datatrap.viewmodels.UserViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AddUserFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AddUserFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentAddUserBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var userViewModel: UserViewModel
+
+    private var team: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_user, container, false)
+        savedInstanceState: Bundle?): View? {
+        _binding = FragmentAddUserBinding.inflate(inflater, container, false)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+
+        binding.rgTeamAdd.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            team = when(radioButtonId){
+                binding.rbEven.id -> 0
+                binding.rbOdd.id -> 1
+                else -> null
+            }
+        }
+
+        setHasOptionsMenu(true)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AddUserFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AddUserFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.add_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_save -> insertUser()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun insertUser() {
+        val userName = binding.etUserNameAdd.text.toString()
+        val password = binding.etPasswordAdd.text.toString()
+
+        if (checkInput(userName, password)){
+            val user: User = User(0, userName, password, team!!, 0)
+            userViewModel.insertUser(user)
+
+            Toast.makeText(requireContext(), "New user added.", Toast.LENGTH_SHORT).show()
+
+            findNavController().navigateUp()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun checkInput(userName: String, password: String): Boolean{
+        return userName.isNotEmpty() && password.isNotEmpty()
+    }
+
 }

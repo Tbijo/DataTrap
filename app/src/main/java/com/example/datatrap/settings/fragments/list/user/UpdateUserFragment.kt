@@ -1,60 +1,112 @@
 package com.example.datatrap.settings.fragments.list.user
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
+import com.example.datatrap.databinding.FragmentUpdateUserBinding
+import com.example.datatrap.models.User
+import com.example.datatrap.viewmodels.UserViewModel
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [UpdateUserFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class UpdateUserFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentUpdateUserBinding? = null
+    private val binding get() = _binding!!
+    private lateinit var userViewModel: UserViewModel
+    private val args by navArgs<UpdateUserFragmentArgs>()
+
+    private var team: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_update_user, container, false)
+        savedInstanceState: Bundle?): View? {
+        _binding = FragmentUpdateUserBinding.inflate(inflater, container, false)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+
+        initUserValuseToView()
+
+        binding.rgTeamUpdate.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            team = when(radioButtonId){
+                binding.rbEven.id -> 0
+                binding.rbOdd.id -> 1
+                else -> null
+            }
+        }
+
+        setHasOptionsMenu(true)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment UpdateUserFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            UpdateUserFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.update_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_save -> updateUser()
+            R.id.menu_delete -> deleteUser()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteUser() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_, _ ->
+
+            userViewModel.deleteUser(args.user)
+
+            Toast.makeText(requireContext(),"User deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
+        }
+            .setNegativeButton("No"){_, _ -> }
+            .setTitle("Delete user?")
+            .setMessage("Are you sure you want to delete this user?")
+            .create().show()
+    }
+
+    private fun updateUser() {
+        val userName = binding.etUserNameUpdate.text.toString()
+        val password = binding.etPasswordUpdate.text.toString()
+
+        if (checkInput(userName, password)){
+            val user: User = args.user
+            user.userName = userName
+            user.password = password
+            user.team = team!!
+
+            userViewModel.updateUser(user)
+
+            Toast.makeText(requireContext(), "User updated.", Toast.LENGTH_SHORT).show()
+
+            findNavController().navigateUp()
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun checkInput(userName: String, password: String): Boolean{
+        return userName.isNotEmpty() && password.isNotEmpty()
+    }
+
+    private fun initUserValuseToView() {
+        binding.etUserNameUpdate.setText(args.user.userName)
+        binding.etPasswordUpdate.setText(args.user.password)
+
+        when(args.user.team){
+            0 -> binding.rbEven.isChecked = true
+            1 -> binding.rbOdd.isChecked = true
+        }
+    }
+
 }

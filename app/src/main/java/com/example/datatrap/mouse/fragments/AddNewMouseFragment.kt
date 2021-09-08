@@ -28,6 +28,8 @@ class AddNewMouseFragment : Fragment() {
     private lateinit var projectViewModel: ProjectViewModel
     private lateinit var sessionViewModel: SessionViewModel
     private lateinit var occasionViewModel: OccasionViewModel
+    private lateinit var userViewModel: UserViewModel
+
     private val sexList: List<String?> = listOf("Male", "Female", null)
     private val ageList: List<String?> = listOf("Juvenile", "Subadult", "Adult", null)
     private val captureIdList: List<String?> = listOf("Died", "Captured", "Released", "Escaped", null)
@@ -52,6 +54,7 @@ class AddNewMouseFragment : Fragment() {
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
         occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
         listSpecie = specieViewModel.specieList.value!!
@@ -72,6 +75,18 @@ class AddNewMouseFragment : Fragment() {
 
         mouseViewModel.countMiceForLocality(args.occasion.localityID).observe(viewLifecycleOwner, Observer {
             code = it
+            // nastavenie kodu podla teamu
+            if (userViewModel.getActiveUser().value?.team == 0){
+                // parny team treba len parne cisla
+                if (code % 2 != 0){
+                    code += 1
+                }
+            }else{
+                // neparny team len neparne cisla
+                if (code % 2 == 0){
+                    code += 1
+                }
+            }
         })
 
         setListeners()

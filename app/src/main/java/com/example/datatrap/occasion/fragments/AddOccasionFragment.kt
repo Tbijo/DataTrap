@@ -32,6 +32,7 @@ class AddOccasionFragment : Fragment() {
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var vegTypeViewModel: VegetTypeViewModel
     private lateinit var sessionViewModel: SessionViewModel
+    private lateinit var userViewModel: UserViewModel
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -61,6 +62,7 @@ class AddOccasionFragment : Fragment() {
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
+        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer<String> {
@@ -91,6 +93,9 @@ class AddOccasionFragment : Fragment() {
         vegTypeList.forEach {
             vegTypeNameMap[it.vegetTypeName] = it.vegetTypeId
         }
+
+        // nastavit leg na meno usera
+        binding.etLeg.setText(userViewModel.getActiveUser().value?.userName)
 
         setHasOptionsMenu(true)
         return binding.root

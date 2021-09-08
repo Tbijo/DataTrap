@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -41,19 +42,28 @@ class ListUsersFragment : Fragment() {
             override fun useClickListener(position: Int) {
                 // nastavit vybraneho pouzivatela ako aktivneho
                 // a predchadzajuceho neaktivneho
-                inactiveAllUsers()
-                val user: User = userList[position]
-                user.isActive = 1
-                userViewModel.updateUser(user)
+                // nepovolit manipulaciu s rootom
+                if (userList[position].userName != "root" && userList[position].password != "toor"){
+                    inactiveAllUsers()
+                    val user: User = userList[position]
+                    user.isActive = 1
+                    userViewModel.updateUser(user)
+                }else{
+                    Toast.makeText(requireContext(), "Unable to access root.", Toast.LENGTH_LONG).show()
+                }
             }
 
             override fun useLongClickListener(position: Int) {
                 // update pouzivatela
+                // nepovolit manipulaciu s rootom
                 val user: User = userList[position]
-                val action = ListUsersFragmentDirections.actionListUsersFragmentToUpdateUserFragment(user)
-                findNavController().navigate(action)
+                if (user.userName != "root" && user.password != "toor"){
+                    val action = ListUsersFragmentDirections.actionListUsersFragmentToUpdateUserFragment(user)
+                    findNavController().navigate(action)
+                }else{
+                    Toast.makeText(requireContext(), "Unable to access root.", Toast.LENGTH_LONG).show()
+                }
             }
-
         })
 
         binding.addUserFloatButton.setOnClickListener {
