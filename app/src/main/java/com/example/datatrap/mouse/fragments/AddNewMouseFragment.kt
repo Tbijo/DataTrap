@@ -76,6 +76,7 @@ class AddNewMouseFragment : Fragment() {
         mouseViewModel.countMiceForLocality(args.occasion.localityID).observe(viewLifecycleOwner, Observer {
             code = it
             // nastavenie kodu podla teamu
+            // moze sa stat ze sa cisla bud budu preskakovat alebo sa budu opakovat
             if (userViewModel.getActiveUser().value?.team == 0){
                 // parny team treba len parne cisla
                 if (code % 2 != 0){
@@ -87,6 +88,7 @@ class AddNewMouseFragment : Fragment() {
                     code += 1
                 }
             }
+            binding.etCodeMouseAdd.setText(code.toString())
         })
 
         setListeners()
@@ -156,16 +158,20 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun showDrawnRat(){
-        if (speciesID > 0 && code > 0){
-            var specie: Specie? = null
-            listSpecie.forEach {
-                if (it.specieId == speciesID){
-                    specie = it
+        if (speciesID > 0){
+            if (code in 1..9999){
+                var specie: Specie? = null
+                listSpecie.forEach {
+                    if (it.specieId == speciesID){
+                        specie = it
+                    }
                 }
+                val fragman = requireActivity().supportFragmentManager
+                val floatFrag = DrawnFragment(code, specie?.upperFingers!!)
+                floatFrag.show(fragman, "FloatFragMouseCode")
+            }else{
+                Toast.makeText(requireContext(), "Code out of bounds. Chose your own.", Toast.LENGTH_LONG).show()
             }
-            val fragman = requireActivity().supportFragmentManager
-            val floatFrag = DrawnFragment(code, specie?.upperFingers!!)
-            floatFrag.show(fragman, "FloatFragMouseCode")
         }else{
             Toast.makeText(requireContext(), "Choose a specie.", Toast.LENGTH_LONG).show()
         }
@@ -177,6 +183,7 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun insertMouse() {
+        code = Integer.parseInt(binding.etCodeMouseAdd.text.toString())
         speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
         val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
         val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0

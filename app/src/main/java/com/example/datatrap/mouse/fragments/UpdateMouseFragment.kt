@@ -117,6 +117,7 @@ class UpdateMouseFragment : Fragment() {
         binding.cbSexActive.isChecked = args.mouse.sexActive == 1
         binding.cbMc.isChecked = args.mouse.MC == 1
 
+        binding.etMouseCodeUpdate.setText(args.mouse.code.toString())
         binding.etWeight.setText(args.mouse.weight.toString())
         binding.etBody.setText(args.mouse.body.toString())
         binding.etTail.setText(args.mouse.tail.toString())
@@ -225,6 +226,7 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun updateMouse() {
+        val code: Int? = Integer.parseInt(binding.etMouseCodeUpdate.text.toString())
         val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
         val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
         val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
@@ -248,8 +250,9 @@ class UpdateMouseFragment : Fragment() {
         val MCleft: Int? = Integer.parseInt(binding.etMcLeft.text.toString())
         val note: String? = binding.etMouseNote.text.toString()
 
-        if (checkInput(speciesID, trapID)){
+        if (checkInput(code, speciesID, trapID)){
             val mouse: Mouse = args.mouse
+            mouse.code = code
             mouse.speciesID = speciesID
             mouse.protocolID = protocolID
             mouse.trapID = trapID
@@ -285,8 +288,8 @@ class UpdateMouseFragment : Fragment() {
         }
     }
 
-    private fun checkInput(specieID: Long, trapID: Int): Boolean {
-        return specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
+    private fun checkInput(code: Int?, specieID: Long, trapID: Int): Boolean {
+        return code.toString().isNotEmpty() && specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
     }
 
 }
