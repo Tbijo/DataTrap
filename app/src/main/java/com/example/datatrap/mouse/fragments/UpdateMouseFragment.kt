@@ -37,6 +37,7 @@ class UpdateMouseFragment : Fragment() {
     private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
+    private var isMale: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -157,11 +158,18 @@ class UpdateMouseFragment : Fragment() {
 
     private fun setListeners(){
         binding.rgSex.setOnCheckedChangeListener{ radioGroup, radioButtonId ->
-            sex = when(radioButtonId){
-                binding.rbMale.id -> "Male"
-                binding.rbFemale.id -> "Female"
-                binding.rbNullSex.id -> null
-                else -> null
+            when(radioButtonId){
+                binding.rbMale.id -> {
+                    sex = "Male"
+                    isMale = true
+                    hideNonMaleFields()
+                }
+                binding.rbFemale.id -> {
+                    sex = "Female"
+                    isMale = false
+                    showNonMaleFields()
+                }
+                binding.rbNullSex.id -> sex = null
             }
         }
 
@@ -185,6 +193,24 @@ class UpdateMouseFragment : Fragment() {
                 else -> null
             }
         }
+    }
+
+    private fun hideNonMaleFields(){
+        binding.etEmbryoRight.visibility = View.INVISIBLE
+        binding.etEmbryoLeft.visibility = View.INVISIBLE
+        binding.etEmbryoDiameter.visibility = View.INVISIBLE
+        binding.cbMc.visibility = View.INVISIBLE
+        binding.etMcRight.visibility = View.INVISIBLE
+        binding.etMcLeft.visibility = View.INVISIBLE
+    }
+
+    private fun showNonMaleFields(){
+        binding.etEmbryoRight.visibility = View.VISIBLE
+        binding.etEmbryoLeft.visibility = View.VISIBLE
+        binding.etEmbryoDiameter.visibility = View.VISIBLE
+        binding.cbMc.visibility = View.VISIBLE
+        binding.etMcRight.visibility = View.VISIBLE
+        binding.etMcLeft.visibility = View.VISIBLE
     }
 
     private fun goToCamera() {
@@ -250,13 +276,13 @@ class UpdateMouseFragment : Fragment() {
             mouse.testesLength = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
             mouse.testesWidth = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
             //počet embryí v oboch rohoch maternice a ich priemer
-            mouse.embryoRight = Integer.parseInt(binding.etEmbryoRight.text.toString())
-            mouse.embryoLeft = Integer.parseInt(binding.etEmbryoLeft.text.toString())
-            mouse.embryoDiameter = Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
-            mouse.MC = if (binding.cbMc.isChecked) 1 else 0
+            mouse.embryoRight = if (isMale) null else Integer.parseInt(binding.etEmbryoRight.text.toString())
+            mouse.embryoLeft = if (isMale) null else Integer.parseInt(binding.etEmbryoLeft.text.toString())
+            mouse.embryoDiameter = if (isMale) null else Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
+            mouse.MC = if (isMale) null else { if (binding.cbMc.isChecked) 1 else 0 }
             //počet placentálnych polypov
-            mouse.MCright = Integer.parseInt(binding.etMcRight.text.toString())
-            mouse.MCleft = Integer.parseInt(binding.etMcLeft.text.toString())
+            mouse.MCright = if (isMale) null else Integer.parseInt(binding.etMcRight.text.toString())
+            mouse.MCleft = if (isMale) null else Integer.parseInt(binding.etMcLeft.text.toString())
             mouse.note = binding.etMouseNote.text.toString()
             mouse.imgName = imgName
 
