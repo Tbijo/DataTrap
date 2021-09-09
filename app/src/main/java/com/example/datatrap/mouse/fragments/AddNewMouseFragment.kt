@@ -76,7 +76,7 @@ class AddNewMouseFragment : Fragment() {
         })
 
         mouseViewModel.countMiceForLocality(args.occasion.localityID).observe(viewLifecycleOwner, Observer {
-            code = it
+            code = it + 1 // single
             // nastavenie kodu podla teamu
             // moze sa stat ze sa cisla bud budu preskakovat alebo sa budu opakovat
             if (userViewModel.getActiveUser().value?.team == 0){

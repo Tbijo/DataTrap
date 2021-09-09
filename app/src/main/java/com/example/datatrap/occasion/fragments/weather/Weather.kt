@@ -8,7 +8,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class Weather(val context: Context) {
-    private val OWM_API_KEY = "4570b0b29f2816fb902d22e3b66781b2"
+    private val OWM_API_KEY = "ba1d923dba4826c58fda121fb5e7a9de"
     private val OWM_API_KEY_URL = "&appid=$OWM_API_KEY"
     private val UNITS = "&units=metric"
 
