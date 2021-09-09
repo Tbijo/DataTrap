@@ -1,31 +1,23 @@
 package com.example.datatrap.locality.fragments
 
-import android.Manifest
-import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.content.Context
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateLocalityBinding
+import com.example.datatrap.locality.fragments.gps.GPSProvider
 import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
 
-class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+class UpdateLocalityFragment : Fragment(){
 
     private var _binding: FragmentUpdateLocalityBinding? = null
     private val binding get() = _binding!!
@@ -33,19 +25,17 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
     private lateinit var projectViewModel: ProjectViewModel
     private val args by navArgs<UpdateLocalityFragmentArgs>()
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var gpsProvider: GPSProvider
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
-
         _binding = FragmentUpdateLocalityBinding.inflate(inflater, container, false)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
         prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
         projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireContext())
+        gpsProvider = GPSProvider(requireContext(), requireActivity(), this)
 
         initLocalityValuesToView()
 
@@ -144,75 +134,13 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         return localityName.isNotEmpty() && localityDate.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getCoordinates() {
-        if (isGPSon(requireContext())){
-            if (hasLocationPermission()) {
-                // ak mame povolenie mozme zobrazit suradnice
-                fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                    // null check
-                    with(location){
-                        binding.tvLatitude.text = latitude.toString()
-                        binding.tvLongnitude.text = longitude.toString()
-                    }
-                }
-            } else {
-                // ak nie tak si ho vyziadame
-                requestLocationPermission()
+    private fun getCoordinates(){
+        gpsProvider.getCoordinates(object : GPSProvider.CoordinatesListener{
+            override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
+                binding.tvLatitude.text = latitude.toString()
+                binding.tvLongnitude.text = longitude.toString()
             }
-        }else{
-            Toast.makeText(requireContext(), "Turn GPS on.", Toast.LENGTH_LONG).show()
-        }
-    }
-
-    // tato funkcia vrati true ak su povolenia dane a false ak nie su
-    private fun hasLocationPermission() =
-        EasyPermissions.hasPermissions(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION    // sem pojdu permissiony ktore chceme skontrolovat ci su povolene
-        )
-
-    // vyziadanie si povoleni
-    private fun requestLocationPermission() {
-        EasyPermissions.requestPermissions(
-            this,
-            "This app can not work without Location Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
-            1,
-            Manifest.permission.ACCESS_FINE_LOCATION    // co chceme povolit
-        )
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        // musime len poslat vsetky parametre aby kniznica EasyPermissions vedela pracovat s nasimi runtime permissions
-        // posledny parameter je tento fragment
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    // bude zavolana ked pouzivatel da povolenie
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        Toast.makeText(requireContext(), "Permission Granted.", Toast.LENGTH_SHORT).show()
-    }
-
-    // bude zavolana ked pouzivatel zamietne povolenie
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            // ak tato funkcia vrati true znamena to ze uzivatel permanentne zablokoval ziadanu permission
-            // tak mu dame nastavenia aby ich potom sam manualne povolil
-            AppSettingsDialog.Builder(requireActivity()).build().show()
-        } else {
-            // inak len vyzadujeme permission
-            requestLocationPermission()
-        }
-    }
-
-    private fun isGPSon(context: Context): Boolean{
-        val locationManager = context.getSystemService(AppCompatActivity.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        })
     }
 
 }

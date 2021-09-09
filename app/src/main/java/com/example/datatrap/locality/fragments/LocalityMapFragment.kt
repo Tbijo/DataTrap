@@ -1,5 +1,6 @@
 package com.example.datatrap.locality.fragments
 
+import android.annotation.SuppressLint
 import androidx.fragment.app.Fragment
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,7 +18,10 @@ class LocalityMapFragment : Fragment() {
 
     private val args by navArgs<LocalityMapFragmentArgs>()
 
+    @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
+
+        googleMap.isMyLocationEnabled = true
 
         args.localities.forEach {
             val locality = LatLng(it.x.toDouble(), it.y.toDouble())
@@ -28,9 +32,7 @@ class LocalityMapFragment : Fragment() {
         val lastlon = args.localities.last().y.toDouble()
         val lastLatLon = LatLng(lastLat, lastlon)
         // bolo by treba nastavit najblizsiu takto sa nastavi najnovsia
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLon, 16F))
-
-        
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLon, 13F))
     }
 
     override fun onCreateView(
