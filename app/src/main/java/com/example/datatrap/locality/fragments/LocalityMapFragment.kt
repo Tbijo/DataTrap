@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
-import com.example.datatrap.databinding.FragmentLocalityMapBinding
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
@@ -16,37 +15,34 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class LocalityMapFragment : Fragment() {
 
-    private var _binding: FragmentLocalityMapBinding? = null
-    private val binding get() = _binding!!
     private val args by navArgs<LocalityMapFragmentArgs>()
 
     private val callback = OnMapReadyCallback { googleMap ->
-        /**
-         * Manipulates the map once available.
-         * This callback is triggered when the map is ready to be used.
-         * This is where we can add markers or lines, add listeners or move the camera.
-         * In this case, we just add a marker near Sydney, Australia.
-         * If Google Play services is not installed on the device, the user will be prompted to
-         * install it inside the SupportMapFragment. This method will only be triggered once the
-         * user has installed Google Play services and returned to the app.
-         */
-        val sydney = LatLng(-34.0, 151.0)
-        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+
+        args.localities.forEach {
+            val locality = LatLng(it.x.toDouble(), it.y.toDouble())
+            googleMap.addMarker(MarkerOptions().position(locality).title(it.localityName))
+        }
+
+        val lastLat = args.localities.last().x.toDouble()
+        val lastlon = args.localities.last().y.toDouble()
+        val lastLatLon = LatLng(lastLat, lastlon)
+        // bolo by treba nastavit najblizsiu takto sa nastavi najnovsia
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLon, 16F))
+
+        
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
-        _binding = FragmentLocalityMapBinding.inflate(inflater, container, false)
+        val view: View = inflater.inflate(R.layout.fragment_locality_map, container, false)
 
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(callback)
+
+        return view
     }
+
 }

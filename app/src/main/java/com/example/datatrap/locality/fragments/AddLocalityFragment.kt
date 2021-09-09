@@ -101,8 +101,11 @@ class AddLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             if (hasLocationPermission()) {
                 // ak mame povolenie mozme zobrazit suradnice
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                    binding.tvLatitude.text = location.latitude.toString()
-                    binding.tvLongnitude.text = location.longitude.toString()
+                    // null check
+                    with(location){
+                        binding.tvLatitude.text = latitude.toString()
+                        binding.tvLongnitude.text = longitude.toString()
+                    }
                 }
             } else {
                 // ak nie tak si ho vyziadame

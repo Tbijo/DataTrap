@@ -114,15 +114,15 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         val localityName = binding.etLocalityName.text.toString()
         val localityDate = args.locality.date
         val latitude = binding.tvLatitude.text.toString()
-        val longnitude = binding.tvLongnitude.text.toString()
+        val longitude = binding.tvLongnitude.text.toString()
 
-        if (checkInput(localityName, localityDate, latitude, longnitude)){
+        if (checkInput(localityName, localityDate, latitude, longitude)){
             val locality: Locality = args.locality
 
             locality.localityName = localityName
             locality.date = localityDate
             locality.x = Integer.parseInt(latitude).toFloat()
-            locality.y = Integer.parseInt(longnitude).toFloat()
+            locality.y = Integer.parseInt(longitude).toFloat()
             locality.note = binding.etLocalityNote.text.toString()
 
             localityViewModel.updateLocality(locality)
@@ -150,8 +150,11 @@ class UpdateLocalityFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             if (hasLocationPermission()) {
                 // ak mame povolenie mozme zobrazit suradnice
                 fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
-                    binding.tvLatitude.text = location.latitude.toString()
-                    binding.tvLongnitude.text = location.longitude.toString()
+                    // null check
+                    with(location){
+                        binding.tvLatitude.text = latitude.toString()
+                        binding.tvLongnitude.text = longitude.toString()
+                    }
                 }
             } else {
                 // ak nie tak si ho vyziadame
