@@ -17,7 +17,6 @@ import com.example.datatrap.databinding.FragmentAddOccasionBinding
 import com.example.datatrap.models.*
 import com.example.datatrap.occasion.fragments.weather.Weather
 import com.example.datatrap.viewmodels.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AddOccasionFragment : Fragment() {
@@ -151,8 +150,6 @@ class AddOccasionFragment : Fragment() {
         val trapType: Long = trapTypeNameMap.getValue(binding.autoCompTvTrapType.text.toString())
         val envType: Long? = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
         val vegType: Long? = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
-        val date = getDate()
-        val time = getTime()
         val gotCaught = 0
         val numTraps = binding.etNumTraps.text.toString()
         val numMice = 0
@@ -165,8 +162,8 @@ class AddOccasionFragment : Fragment() {
 
             // ulozit occasion
             val occasion = Occasion(0, occasionNum, args.locality.localityId, args.session.sessionId,
-                method, methodType, trapType, envType, vegType, date, time, gotCaught, Integer.parseInt(numTraps),
-                numMice, temperature, weatherGlob, leg, note, imgName)
+                method, methodType, trapType, envType, vegType, Calendar.getInstance().time, gotCaught,
+                Integer.parseInt(numTraps), numMice, temperature, weatherGlob, leg, note, imgName)
 
             occasionViewModel.insertOccasion(occasion)
 
@@ -192,18 +189,6 @@ class AddOccasionFragment : Fragment() {
         leg: String
     ): Boolean {
         return occasion.toString().isNotEmpty() && method.toString().isNotEmpty() && methodType.toString().isNotEmpty() && trapType.toString().isNotEmpty() && leg.isNotEmpty()
-    }
-
-    private fun getDate(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getDateInstance()
-        return formatter.format(date)
-    }
-
-    private fun getTime():String{
-        val date = Calendar.getInstance().time
-        val formatterT = SimpleDateFormat.getTimeInstance()
-        return formatterT.format(date)
     }
 
     private fun getCurrentWeather(){

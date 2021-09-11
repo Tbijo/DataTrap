@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.LocalityRowBinding
 import com.example.datatrap.models.Locality
+import java.text.SimpleDateFormat
 
 class PrjLocalityRecyclerAdapter : RecyclerView.Adapter<PrjLocalityRecyclerAdapter.MyViewHolder>() {
 
@@ -30,7 +31,7 @@ class PrjLocalityRecyclerAdapter : RecyclerView.Adapter<PrjLocalityRecyclerAdapt
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = localityList[position]
         holder.binding.tvName.text = currenItem.localityName
-        holder.binding.tvDate.text = currenItem.date
+        holder.binding.tvDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.localityDateTime)
         holder.binding.tvNumSes.text = currenItem.numSessions.toString()
     }
 

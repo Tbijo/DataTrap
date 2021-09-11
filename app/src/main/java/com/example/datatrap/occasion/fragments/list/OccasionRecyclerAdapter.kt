@@ -6,6 +6,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.OccasionRowBinding
 import com.example.datatrap.models.Occasion
+import java.text.SimpleDateFormat
 
 class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyViewHolder>() {
 
@@ -20,7 +21,7 @@ class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyV
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = occasionList[position]
         holder.binding.tvOccasion.text = currenItem.occasion.toString()
-        holder.binding.tvOccDate.text = currenItem.date
+        holder.binding.tvOccDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.occasionDateTim)
         holder.binding.tvNumMouse.text = currenItem.numMice.toString()
         holder.binding.tvNumTraps.text = currenItem.numTraps.toString()
 

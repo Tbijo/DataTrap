@@ -17,7 +17,6 @@ import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Session
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
-import java.text.SimpleDateFormat
 import java.util.*
 
 class ListPrjSessionFragment : Fragment() {
@@ -99,7 +98,7 @@ class ListPrjSessionFragment : Fragment() {
 
     private fun insertSession() {
         val session: Session =
-            Session(0, (sessionList.size + 1), args.project.projectId, 0, getDate())
+            Session(0, (sessionList.size + 1), args.project.projectId, 0, Calendar.getInstance().time)
 
         // zvacsit numSes v lokalite
         updateLocalityNumSess()
@@ -115,12 +114,6 @@ class ListPrjSessionFragment : Fragment() {
         val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId).value!!
         updatedLocality.numSessions = (updatedLocality.numSessions + 1)
         localityViewModel.updateLocality(updatedLocality)
-    }
-
-    private fun getDate(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getDateInstance()
-        return formatter.format(date)
     }
 
 }

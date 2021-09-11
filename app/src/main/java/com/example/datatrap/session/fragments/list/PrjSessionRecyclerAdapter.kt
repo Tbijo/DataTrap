@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.SessionRowBinding
 import com.example.datatrap.models.Session
+import java.text.SimpleDateFormat
 
 class PrjSessionRecyclerAdapter : RecyclerView.Adapter<PrjSessionRecyclerAdapter.MyViewHolder>() {
 
@@ -30,7 +31,7 @@ class PrjSessionRecyclerAdapter : RecyclerView.Adapter<PrjSessionRecyclerAdapter
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = sessionList[position]
         holder.binding.tvSession.text = currenItem.session.toString()
-        holder.binding.tvSessionDate.text = currenItem.date
+        holder.binding.tvSessionDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.sessionDateTime)
         holder.binding.tvNumOcc.text = currenItem.numOcc.toString()
     }
 

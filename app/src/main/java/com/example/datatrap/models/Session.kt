@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 @Entity(tableName = "sessions", foreignKeys = [
@@ -26,6 +27,5 @@ data class Session(
     @ColumnInfo(name = "Num_occasion")
     var numOcc: Int,
 
-    @ColumnInfo(name = "Date")
-    var date: String
+    var sessionDateTime: Date
 ): Parcelable

@@ -26,6 +26,10 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.getMiceForCode(code)
     }
 
+    fun getOldMiceForLocality(localityId: Long): LiveData<List<Mouse>>{
+        return mouseDao.getOldMiceForLocality(localityId)
+    }
+
     fun searchMice(code: Int): LiveData<List<Mouse>>{
         return mouseDao.searchMice(code)
     }

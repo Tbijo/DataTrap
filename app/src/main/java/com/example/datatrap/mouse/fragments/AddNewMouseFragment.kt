@@ -13,8 +13,8 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddNewMouseBinding
 import com.example.datatrap.models.*
+import com.example.datatrap.mouse.fragments.generator.CodeGenerator
 import com.example.datatrap.viewmodels.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AddNewMouseFragment : Fragment() {
@@ -31,10 +31,6 @@ class AddNewMouseFragment : Fragment() {
     private lateinit var occasionViewModel: OccasionViewModel
     private lateinit var userViewModel: UserViewModel
 
-    private val sexList: List<String?> = listOf("Male", "Female", null)
-    private val ageList: List<String?> = listOf("Juvenile", "Subadult", "Adult", null)
-    private val captureIdList: List<String?> = listOf("Died", "Captured", "Released", "Escaped", null)
-
     private lateinit var listSpecie: List<Specie>
     private lateinit var listProtocol: List<Protocol>
     private lateinit var mapSpecie: MutableMap<String, Long>
@@ -47,6 +43,8 @@ class AddNewMouseFragment : Fragment() {
     private var code: Int = 0
     private var speciesID: Long = 0
     private var isMale: Boolean = false
+    private var specie: Specie? = null
+    private var oldCode: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,21 +74,8 @@ class AddNewMouseFragment : Fragment() {
         })
 
         mouseViewModel.countMiceForLocality(args.occasion.localityID).observe(viewLifecycleOwner, Observer {
-            code = it + 1 // single
-            // nastavenie kodu podla teamu
-            // moze sa stat ze sa cisla bud budu preskakovat alebo sa budu opakovat
-            if (userViewModel.getActiveUser().value?.team == 0){
-                // parny team treba len parne cisla
-                if (code % 2 != 0){
-                    code += 1
-                }
-            }else{
-                // neparny team len neparne cisla
-                if (code % 2 == 0){
-                    code += 1
-                }
-            }
-            binding.etCodeMouseAdd.setText(code.toString())
+            code = it + 1
+            oldCode = code
         })
 
         setListeners()
@@ -164,6 +149,19 @@ class AddNewMouseFragment : Fragment() {
                 else -> null
             }
         }
+
+        binding.autoCompTvSpecie.setOnItemClickListener { parent, view, position, id ->
+            val name: String = parent.getItemAtPosition(position) as String
+            listSpecie.forEach {
+                if (it.speciesCode == name){
+                    specie = it
+                }
+            }
+            val team: Int? = userViewModel.getActiveUser().value?.team
+            val codeGen = CodeGenerator(this, oldCode, specie?.upperFingers!!, team, args.occasion.localityID)
+            code = codeGen.generateCode()
+            binding.etCodeMouseAdd.setText(code.toString())
+        }
     }
 
     private fun hideNonMaleFields(){
@@ -185,20 +183,11 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun showDrawnRat(){
-        if (speciesID > 0){
-            if (code in 1..9999){
-                var specie: Specie? = null
-                listSpecie.forEach {
-                    if (it.specieId == speciesID){
-                        specie = it
-                    }
-                }
-                val fragman = requireActivity().supportFragmentManager
-                val floatFrag = DrawnFragment(code, specie?.upperFingers!!)
-                floatFrag.show(fragman, "FloatFragMouseCode")
-            }else{
-                Toast.makeText(requireContext(), "Code out of bounds. Chose your own.", Toast.LENGTH_LONG).show()
-            }
+        speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
+        if (speciesID > 0 && code > 0){
+            val fragman = requireActivity().supportFragmentManager
+            val floatFrag = DrawnFragment(code, specie?.upperFingers!!)
+            floatFrag.show(fragman, "FloatFragMouseCode")
         }else{
             Toast.makeText(requireContext(), "Choose a specie.", Toast.LENGTH_LONG).show()
         }
@@ -243,7 +232,7 @@ class AddNewMouseFragment : Fragment() {
             updateOccasionNumMice()
 
             val mouse = Mouse(0, code, speciesID, protocolID, args.occasion.occasionId,
-                args.occasion.localityID, trapID, getDate(), getTime(), sex, age, gravitidy, lactating, sexActive,
+                args.occasion.localityID, trapID, Calendar.getInstance().time, sex, age, gravitidy, lactating, sexActive,
                 weight, recapture = 0, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 
@@ -256,9 +245,8 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun checkWeightAndSave(mouse: Mouse) {
-        val specie: Specie = specieViewModel.getSpecie(mouse.speciesID).value!!
 
-        if (mouse.weight!! > specie.maxWeight!! || mouse.weight!! < specie.minWeight!!){
+        if (mouse.weight!! > specie?.maxWeight!! || mouse.weight!! < specie?.minWeight!!){
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes"){_, _ ->
                 mouseViewModel.insertMouse(mouse)
@@ -298,18 +286,6 @@ class AddNewMouseFragment : Fragment() {
 
     private fun checkInput(code: Int, specieID: Long, trapID: Int): Boolean {
         return code > 0 && specieID > 0 && trapID.toString().isNotEmpty()
-    }
-
-    private fun getDate(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getDateInstance()
-        return formatter.format(date)
-    }
-
-    private fun getTime(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getTimeInstance()
-        return formatter.format(date)
     }
 
 }

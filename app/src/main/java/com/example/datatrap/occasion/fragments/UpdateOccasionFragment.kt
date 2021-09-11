@@ -18,7 +18,6 @@ import com.example.datatrap.databinding.FragmentUpdateOccasionBinding
 import com.example.datatrap.models.*
 import com.example.datatrap.occasion.fragments.weather.Weather
 import com.example.datatrap.viewmodels.*
-import java.text.SimpleDateFormat
 
 class UpdateOccasionFragment : Fragment() {
 
@@ -255,12 +254,7 @@ class UpdateOccasionFragment : Fragment() {
             val weather = Weather(requireContext())
             val locality: Locality = localityViewModel.getLocality(args.occasion.localityID).value!!
 
-            val date = args.occasion.date
-            val time = args.occasion.time
-            val dateTimeString = "$date $time"
-            val parser = SimpleDateFormat("dd.MM.yyyy HH:mm:ss")
-            val output = parser.parse(dateTimeString)
-            val unixtime = output.time / 1000L
+            val unixtime = args.occasion.occasionDateTim.time / 1000L
 
             weather.getHistoricalWeatherByCoordinates(locality.x, locality.y, unixtime, object: Weather.VolleyResponseListener{
                 override fun onResponse(temp: Int, weather: String) {

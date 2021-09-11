@@ -102,15 +102,12 @@ class UpdateLocalityFragment : Fragment(){
 
     private fun updateLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val localityDate = args.locality.date
         val latitude = binding.tvLatitude.text.toString()
         val longitude = binding.tvLongnitude.text.toString()
 
-        if (checkInput(localityName, localityDate, latitude, longitude)){
+        if (checkInput(localityName, latitude, longitude)){
             val locality: Locality = args.locality
-
             locality.localityName = localityName
-            locality.date = localityDate
             locality.x = Integer.parseInt(latitude).toFloat()
             locality.y = Integer.parseInt(longitude).toFloat()
             locality.note = binding.etLocalityNote.text.toString()
@@ -127,11 +124,10 @@ class UpdateLocalityFragment : Fragment(){
 
     private fun checkInput(
         localityName: String,
-        localityDate: String,
         latitude: String,
         longnitude: String
     ): Boolean {
-        return localityName.isNotEmpty() && localityDate.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
+        return localityName.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
     }
 
     private fun getCoordinates(){

@@ -52,21 +52,19 @@ class UpdateProjectFragment : Fragment() {
 
     private fun initProjectValuesToView(){
         binding.etProjectName.setText(args.project.projectName)
-        binding.etDate.setText(args.project.date)
         binding.etNumLocality.setText(args.project.numLocal)
         binding.etNumMouse.setText(args.project.numMice)
     }
 
     private fun updateProject() {
         val projectName = binding.etProjectName.text.toString()
-        val date = binding.etDate.text.toString()
         val numLocal = binding.etNumLocality.text.toString()
         val numMice = binding.etNumMouse.text.toString()
 
-        if (checkInput(projectName, date, numLocal, numMice)){
+        if (checkInput(projectName, numLocal, numMice)){
             val project: Project = args.project
             project.projectName = projectName
-            project.date = date
+            project.projectDateTime = args.project.projectDateTime
             project.numLocal = Integer.parseInt(numLocal)
             project.numMice = Integer.parseInt(numMice)
 
@@ -80,8 +78,8 @@ class UpdateProjectFragment : Fragment() {
         }
     }
 
-    private fun checkInput(projectName: String, date: String, numLocal: String, numMouse: String): Boolean {
-        return projectName.isNotEmpty() && date.isNotEmpty() && numLocal.isNotEmpty() && numMouse.isNotEmpty()
+    private fun checkInput(projectName: String, numLocal: String, numMouse: String): Boolean {
+        return projectName.isNotEmpty() && numLocal.isNotEmpty() && numMouse.isNotEmpty()
     }
 
     private fun deleteProject() {

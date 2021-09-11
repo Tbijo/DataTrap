@@ -6,6 +6,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.ProjectRowBinding
 import com.example.datatrap.models.Project
+import java.text.SimpleDateFormat
 
 class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyViewHolder>() {
 
@@ -22,7 +23,7 @@ class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyVie
         holder.binding.tvProjectName.text = currenItem.projectName
         holder.binding.tvNumLocality.text = currenItem.numLocal.toString()
         holder.binding.tvNumMice.text = currenItem.numMice.toString()
-        holder.binding.tvProjectDate.text = currenItem.date
+        holder.binding.tvProjectDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.projectDateTime)
 
         holder.binding.projectRow.setOnClickListener {
             // tu sa prejde na locality s projektom

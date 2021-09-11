@@ -86,13 +86,11 @@ class UpdateSessionFragment : Fragment() {
     private fun updateSession() {
         val sessionNum = binding.etSession.text.toString()
         val numOcc = binding.etNumOcc.text.toString()
-        val date = args.session.date
-        if (checkIput(sessionNum, numOcc, date)){
+        if (checkIput(sessionNum, numOcc)){
 
             val session = args.session
             session.session = Integer.parseInt(sessionNum)
             session.numOcc = Integer.parseInt(numOcc)
-            session.date = date
 
             sessionViewModel.updateSession(session)
 
@@ -104,8 +102,8 @@ class UpdateSessionFragment : Fragment() {
         }
     }
 
-    private fun checkIput(session: String, numOcc: String, date: String): Boolean {
-        return session.isNotEmpty() && numOcc.isNotEmpty() && date.isNotEmpty()
+    private fun checkIput(session: String, numOcc: String): Boolean {
+        return session.isNotEmpty() && numOcc.isNotEmpty()
     }
 
 }

@@ -17,6 +17,7 @@ import com.example.datatrap.models.Occasion
 import com.example.datatrap.models.Session
 import com.example.datatrap.myinterfaces.OnActiveFragment
 import com.example.datatrap.viewmodels.*
+import java.text.SimpleDateFormat
 
 class ViewMouseFragment : Fragment() {
 
@@ -68,7 +69,6 @@ class ViewMouseFragment : Fragment() {
         binding.recyclerMouse.adapter = adapter
         binding.recyclerMouse.layoutManager = LinearLayoutManager(requireContext())
 
-
         adapter.setData(fillList())
 
         return binding.root
@@ -116,7 +116,7 @@ class ViewMouseFragment : Fragment() {
                     newId = locality!!.localityId
                     localName = locality!!.localityName
                 }
-                maleLog = "Catch DateTime - ${it.date} ${it.catchTime} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Sex. Active - $sexActive"
+                maleLog = "Catch DateTime - ${it.catchDateTime} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Sex. Active - $sexActive"
                 logList.add(maleLog)
             }
             return logList
@@ -131,7 +131,7 @@ class ViewMouseFragment : Fragment() {
                     newId = locality!!.localityId
                     localName = locality!!.localityName
                 }
-                femaleLog = "Catch DateTime - ${it.date} ${it.catchTime} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Gravidity - ${it.gravidity} Lactating - ${it.lactating} Sex. Active - $sexActive"
+                femaleLog = "Catch DateTime - ${it.catchDateTime} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Gravidity - ${it.gravidity} Lactating - ${it.lactating} Sex. Active - $sexActive"
                 logList.add(femaleLog)
             }
             return logList
@@ -143,7 +143,7 @@ class ViewMouseFragment : Fragment() {
         binding.tvBodyLength.text = args.mouse.body.toString()
         binding.tvTailLength.text = args.mouse.tail.toString()
         binding.tvFeetLength.text = args.mouse.feet.toString()
-        binding.tvCatchTime.text = "${args.mouse.date} ${args.mouse.catchTime}"
+        binding.tvCatchTime.text = SimpleDateFormat.getDateTimeInstance().format(args.mouse.catchDateTime)
         binding.tvEar.text = args.mouse.ear.toString()
         binding.tvGravidity.text = if (args.mouse.gravidity == 1) "Yes" else "No"
         binding.tvLactating.text = if (args.mouse.lactating == 1) "Yes" else "No"

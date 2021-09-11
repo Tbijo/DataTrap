@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 @Entity(tableName = "occasions", foreignKeys = [
@@ -47,11 +48,7 @@ data class Occasion(
     // cudzi kluc
     var vegetTypeID: Long?,
 
-    @ColumnInfo(name = "Date")
-    var date: String,
-
-    @ColumnInfo(name = "Time")
-    var time: String,
+    var occasionDateTim: Date,
 
     @ColumnInfo(name = "Got_caught")
     var gotCaught: Int?, // boolean

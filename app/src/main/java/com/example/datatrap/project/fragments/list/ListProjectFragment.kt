@@ -18,7 +18,6 @@ import com.example.datatrap.models.Project
 import com.example.datatrap.models.User
 import com.example.datatrap.viewmodels.ProjectViewModel
 import com.example.datatrap.viewmodels.UserViewModel
-import java.text.SimpleDateFormat
 import java.util.*
 
 class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -118,15 +117,9 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
         .create().show()
     }
 
-    private fun getDate(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getDateInstance()
-        return formatter.format(date)
-    }
-
     private fun insertProject(name: String){
         if (name.isNotEmpty()){
-            val project: Project = Project(0, name, getDate(), 0, 0)
+            val project: Project = Project(0, name, Calendar.getInstance().time, 0, 0)
 
             projectViewModel.insertProject(project)
 

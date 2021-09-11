@@ -43,7 +43,7 @@ class MouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<Mo
             }
         }
 
-        holder.binding.tvCatchDateTime.text = "${currenItem.date} ${currenItem.catchTime}"
+        holder.binding.tvCatchDateTime.text = "${currenItem.catchDateTime}"
 
     }
 

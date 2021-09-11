@@ -19,7 +19,6 @@ import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.ProtocolViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
-import java.text.SimpleDateFormat
 import java.util.*
 
 class RecaptureMouseFragment : Fragment() {
@@ -229,8 +228,7 @@ class RecaptureMouseFragment : Fragment() {
             mouse.occasionID = args.occasion.occasionId
             mouse.localityID = args.occasion.localityID
             mouse.trapID = trapID
-            mouse.date = getDate()
-            mouse.catchTime = getTime()
+            mouse.catchDateTime = Calendar.getInstance().time
             mouse.sex = sex
             mouse.age = age
             mouse.gravidity = gravitidy
@@ -276,18 +274,6 @@ class RecaptureMouseFragment : Fragment() {
                 mouseViewModel.updateMouse(it)
             }
         }
-    }
-
-    private fun getDate(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getDateInstance()
-        return formatter.format(date)
-    }
-
-    private fun getTime(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getTimeInstance()
-        return formatter.format(date)
     }
 
 }

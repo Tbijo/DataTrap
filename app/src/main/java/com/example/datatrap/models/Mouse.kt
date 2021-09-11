@@ -7,6 +7,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 @Entity(tableName = "sm", foreignKeys = [
@@ -16,7 +17,7 @@ import kotlinx.parcelize.Parcelize
     ForeignKey(entity = Locality::class, parentColumns = ["localityId"], childColumns = ["localityID"], onDelete = CASCADE)
 ])
 data class Mouse(
-    
+
     @PrimaryKey(autoGenerate = true)
     var mouseId: Long,
 
@@ -38,11 +39,7 @@ data class Mouse(
     @ColumnInfo(name = "Trap_ID")
     var trapID: Int, //samy zadavat
 
-    @ColumnInfo(name = "Date")
-    var date: String,
-
-    @ColumnInfo(name = "Catch_time")
-    var catchTime: String?,
+    var catchDateTime: Date,
 
     @ColumnInfo(name = "Sex")
     var sex: String?, //list male female null

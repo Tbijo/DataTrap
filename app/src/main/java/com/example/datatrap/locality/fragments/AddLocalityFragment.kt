@@ -11,7 +11,6 @@ import com.example.datatrap.databinding.FragmentAddLocalityBinding
 import com.example.datatrap.locality.fragments.gps.GPSProvider
 import com.example.datatrap.models.Locality
 import com.example.datatrap.viewmodels.LocalityViewModel
-import java.text.SimpleDateFormat
 import java.util.*
 
 class AddLocalityFragment : Fragment() {
@@ -56,14 +55,13 @@ class AddLocalityFragment : Fragment() {
 
     private fun insertLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val localityDate = getDate()
         val localityNote = binding.etLocalityNote.text.toString()
         val latitude = binding.tvLatitude.text.toString()
         val longnitude = binding.tvLongnitude.text.toString()
 
-        if (checkInput(localityName, localityDate, latitude, longnitude)){
+        if (checkInput(localityName, latitude, longnitude)){
 
-            val locality = Locality(0, localityName, localityDate,
+            val locality = Locality(0, localityName, Calendar.getInstance().time,
                 Integer.parseInt(latitude).toFloat(),
                 Integer.parseInt(longnitude).toFloat(),0, localityNote)
 
@@ -77,14 +75,8 @@ class AddLocalityFragment : Fragment() {
         }
     }
 
-    private fun checkInput(localityName: String, localityDate: String, latitude: String, longnitude: String): Boolean {
-        return localityName.isNotEmpty() && localityDate.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
-    }
-
-    private fun getDate(): String{
-        val date = Calendar.getInstance().time
-        val formatter = SimpleDateFormat.getDateInstance()
-        return formatter.format(date)
+    private fun checkInput(localityName: String, latitude: String, longnitude: String): Boolean {
+        return localityName.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
     }
 
     private fun getCoordinates(){

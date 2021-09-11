@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 @Entity(tableName = "localities")
@@ -17,7 +18,7 @@ data class Locality(
     var localityName: String,
 
     @ColumnInfo(name = "Date")
-    var date: String,
+    var localityDateTime: Date,
 
     @ColumnInfo(name = "X")
     var x: Float, // latitude
