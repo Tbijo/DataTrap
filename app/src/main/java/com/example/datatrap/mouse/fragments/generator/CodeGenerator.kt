@@ -22,6 +22,7 @@ class CodeGenerator(fragment: Fragment, private var code: Int, private val finge
     }
     private val codeRange = 1..9999
     private val badRangeFor4 = arrayOf(500..599, 900..999, 5000..5999, 9000..9999).toList()
+    private var isCycle2 = 0
 
     private fun has4Fingers(f: Int): Boolean{
         return (f == 4)
@@ -31,16 +32,10 @@ class CodeGenerator(fragment: Fragment, private var code: Int, private val finge
         return (code in codeRange)
     }
     private fun checkCodeRange(){
-        while (!isInCodeRange(code)){
+        if (!isInCodeRange(code) && isCycle2 < 2){
             // ak code nie je v intervale tak
-            // zober najstarsi dostupny code zo zoznamu
-            // a potom ho vymaz aby ak nevyhovovalo sa nastavi dalsie
-            code = mouseList.first().code!!
-            mouseList.removeFirst()
-            if (mouseList.isEmpty()){
-                // nejako lepsie vyriesit ak budu vsetky code obsadene
-                return
-            }
+            code = 1
+            isCycle2 += 1
         }
     }
 
@@ -48,65 +43,72 @@ class CodeGenerator(fragment: Fragment, private var code: Int, private val finge
         // volny bude vtedy ak datetime je starsi ako 2 roky
         // a potom treba pozriet ci ma recapture 1
         activeMouseList.forEach{
-            if (it.code == code)
-            return false
+            if (it.code == code){
+                return true
+            }
         }
-        return true
+        return false
     }
     private fun checkCodeFreeInLocality(){
-        val oldCode = code
-        while (!isCodeFreeInLocality(code)){
-            code += 1
-        }
-        if (oldCode != code){
-            checkCodeRange()
-            checkCodeFreeInLocality()
+        if (isCycle2 < 2){
+            val oldCode = code
+            while (isCodeFreeInLocality(code)){
+                code += 1
+            }
+            if (oldCode != code){
+                checkCodeRange()
+                checkCodeFreeInLocality()
+            }
         }
     }
 
     private fun checkBadRangesFor4Fingers(){
-        val oldCode = code
+        if (isCycle2 < 2){
+            val oldCode = code
 
-        run myLoop@{
-            badRangeFor4.forEach {
-                if (code in it){
-                    code = it.last + 1
-                    return@myLoop
+            run myLoop@{
+                badRangeFor4.forEach {
+                    if (code in it){
+                        code = it.last + 1
+                        return@myLoop
+                    }
                 }
             }
-        }
 
-        if (oldCode != code){
-            checkCodeRange()
-            checkCodeFreeInLocality()
-            checkBadRangesFor4Fingers()
+            if (oldCode != code){
+                checkCodeRange()
+                checkCodeFreeInLocality()
+                checkBadRangesFor4Fingers()
+            }
         }
     }
 
     private fun checkNumberEvenOrOddForTeam(team: Int){
-        if (team == 0){
-            if (code % 2 == 0){
-                Log.d("CodeGenerator", "Generation Complete")
-            }else{
-                code += 1
-                checkCodeRange()
-                checkCodeFreeInLocality()
-                if (has4Fingers(fingers)){
-                    checkBadRangesFor4Fingers()
+        if (isCycle2 < 2){
+            if (team == 0){
+                if (code % 2 == 0){
+                    Log.d("CodeGenerator", "Generation Complete")
+                }else{
+                    code += 1
+                    checkCodeRange()
+                    checkCodeFreeInLocality()
+                    if (has4Fingers(fingers)){
+                        checkBadRangesFor4Fingers()
+                    }
+                    checkNumberEvenOrOddForTeam(team)
                 }
-                checkNumberEvenOrOddForTeam(team)
-            }
-        }else{
-            if (code % 2 != 0){
-                Log.d("CodeGenerator", "Generation Complete")
             }else{
-                code += 1
-                checkCodeRange()
-                checkCodeFreeInLocality()
-                if (has4Fingers(fingers)){
-                    checkBadRangesFor4Fingers()
+                if (code % 2 != 0){
+                    Log.d("CodeGenerator", "Generation Complete")
+                }else{
+                    code += 1
+                    checkCodeRange()
+                    checkCodeFreeInLocality()
+                    if (has4Fingers(fingers)){
+                        checkBadRangesFor4Fingers()
+                    }
+                    checkNumberEvenOrOddForTeam(team)
                 }
-                checkNumberEvenOrOddForTeam(team)
             }
         }
     }
@@ -118,7 +120,10 @@ class CodeGenerator(fragment: Fragment, private var code: Int, private val finge
             checkBadRangesFor4Fingers()
         }
         checkNumberEvenOrOddForTeam(team!!)
-        return code
+        if (isCycle2 < 2){
+            return code
+        }
+        return 0
     }
 
 }

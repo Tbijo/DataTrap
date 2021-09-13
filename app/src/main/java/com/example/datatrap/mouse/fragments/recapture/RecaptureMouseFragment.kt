@@ -1,4 +1,4 @@
-package com.example.datatrap.mouse.fragments.listrecapture
+package com.example.datatrap.mouse.fragments.recapture
 
 import android.os.Bundle
 import android.view.*

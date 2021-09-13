@@ -32,19 +32,13 @@ class MouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<Mo
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val specieList = specieViewModel.specieList.value!!
         val currenItem = mouseList[position]
 
         holder.binding.tvIdIndividual.text = currenItem.code.toString()
 
-        specieList.forEach {
-            if (it.specieId == currenItem.speciesID){
-                holder.binding.tvMouseSpecieCode.text = it.speciesCode
-            }
-        }
+        holder.binding.tvMouseSpecieCode.text = specieViewModel.getSpecie(currenItem.speciesID).value?.speciesCode
 
         holder.binding.tvCatchDateTime.text = "${currenItem.catchDateTime}"
-
     }
 
     override fun getItemCount(): Int {

@@ -151,15 +151,18 @@ class AddNewMouseFragment : Fragment() {
         }
 
         binding.autoCompTvSpecie.setOnItemClickListener { parent, view, position, id ->
-            val name: String = parent.getItemAtPosition(position) as String
+            val specieCode: String = parent.getItemAtPosition(position) as String
             listSpecie.forEach {
-                if (it.speciesCode == name){
+                if (it.speciesCode == specieCode){
                     specie = it
                 }
             }
             val team: Int? = userViewModel.getActiveUser().value?.team
             val codeGen = CodeGenerator(this, oldCode, specie?.upperFingers!!, team, args.occasion.localityID)
             code = codeGen.generateCode()
+            if(code == 0){
+                Toast.makeText(requireContext(), "No code is available.", Toast.LENGTH_LONG).show()
+            }
             binding.etCodeMouseAdd.setText(code.toString())
         }
     }

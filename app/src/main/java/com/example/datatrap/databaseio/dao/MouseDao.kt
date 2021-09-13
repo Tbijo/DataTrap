@@ -19,6 +19,8 @@ interface MouseDao {
     @Query("SELECT * FROM sm WHERE occasionID = :idOccasion")
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>
 
+    // zobrazenie predchadzajucich udajov o mysi
+    // na zmenenie pohlavia ak sa pri prvom chyteni zle zadalo a pri druhom cyteni je uz starsi tak to lepsie vidiet
     @Query("SELECT * FROM sm WHERE Code = :code ORDER BY localityID")
     fun getMiceForCode(code: Int): LiveData<List<Mouse>>
 

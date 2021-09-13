@@ -1,4 +1,4 @@
-package com.example.datatrap.mouse.fragments.listrecapture
+package com.example.datatrap.mouse.fragments.recapture.list
 
 import android.os.Bundle
 import android.view.*
@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentRecaptureListMouseBinding
 import com.example.datatrap.models.Mouse
-import com.example.datatrap.mouse.fragments.list.MouseRecyclerAdapter
 import com.example.datatrap.viewmodels.MouseViewModel
 
 class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -22,7 +21,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     private val binding get() = _binding!!
     private val args by navArgs<RecaptureListMouseFragmentArgs>()
     private lateinit var mouseViewModel: MouseViewModel
-    private lateinit var adapter: MouseRecyclerAdapter
+    private lateinit var adapter: RecaptureMouseRecyclerAdapter
     private var mouseList: List<Mouse> = emptyList()
 
     override fun onCreateView(
@@ -31,12 +30,12 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         _binding = FragmentRecaptureListMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
-        adapter = MouseRecyclerAdapter(this)
+        adapter = RecaptureMouseRecyclerAdapter(this)
         val recyclerView = binding.recaptureRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter.setOnItemClickListener(object: MouseRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object: RecaptureMouseRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 goToRecaptureMouse(position)
             }
