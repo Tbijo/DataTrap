@@ -15,6 +15,9 @@ import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.Protocol
 import com.example.datatrap.models.Specie
 import com.example.datatrap.mouse.fragments.UpdateMouseFragmentDirections
+import com.example.datatrap.myenums.CaptureID
+import com.example.datatrap.myenums.MouseAge
+import com.example.datatrap.myenums.TrapID
 import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.ProtocolViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
@@ -40,6 +43,7 @@ class RecaptureMouseFragment : Fragment() {
     private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
+    private var isMale: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,6 +84,9 @@ class RecaptureMouseFragment : Fragment() {
         val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
         binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
 
+        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, TrapID.values())
+        binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
+
         mapSpecie.forEach {
             if (it.value == args.mouse.speciesID){
                 binding.autoCompTvSpecie.setText(it.key, false)
@@ -90,6 +97,8 @@ class RecaptureMouseFragment : Fragment() {
                 binding.autoCompTvProtocol.setText(it.key, false)
             }
         }
+
+        binding.autoCompTvTrapId.setText(args.mouse.trapID)
     }
 
     override fun onDestroy() {
@@ -121,7 +130,6 @@ class RecaptureMouseFragment : Fragment() {
         binding.etBody.setText(args.mouse.body.toString())
         binding.etTail.setText(args.mouse.tail.toString())
         binding.etFeet.setText(args.mouse.feet.toString())
-        binding.etTrapId.setText(args.mouse.trapID.toString())
         binding.etEar.setText(args.mouse.ear.toString())
         binding.etTestesLength.setText(args.mouse.testesLength.toString())
         binding.etTestesWidth.setText(args.mouse.testesWidth.toString())
@@ -133,42 +141,61 @@ class RecaptureMouseFragment : Fragment() {
         binding.etMcLeft.setText(args.mouse.MCleft.toString())
 
         when(args.mouse.sex){
-            "Male" -> binding.rbMale.isChecked = true
-            "Female" -> binding.rbFemale.isChecked = true
+            "Male" -> {
+                binding.rbMale.isChecked = true
+                isMale = true
+                showNonMaleFields()
+            }
+            "Female" -> {
+                binding.rbFemale.isChecked = true
+                isMale = false
+                hideNonMaleFields()
+            }
             null -> binding.rbNullSex.isChecked = true
         }
 
         when(args.mouse.age){
-            "Adult" -> binding.rbAdult.isChecked = true
-            "Subadult" -> binding.rbSubadult.isChecked = true
-            "Juvenile" -> binding.rbJuvenile.isChecked = true
+            MouseAge.Adult.name -> binding.rbAdult.isChecked = true
+            MouseAge.Subadult.name -> binding.rbSubadult.isChecked = true
+            MouseAge.Juvenile.name -> binding.rbJuvenile.isChecked = true
             null -> binding.rbNullAge.isChecked = true
         }
 
         when(args.mouse.captureID){
-            "Captured" -> binding.rbCaptured.isChecked = true
-            "Died" -> binding.rbDied.isChecked = true
-            "Escaped" -> binding.rbEscaped.isChecked = true
-            "Released" -> binding.rbReleased.isChecked = true
+            CaptureID.Captured.name -> binding.rbCaptured.isChecked = true
+            CaptureID.Died.name -> binding.rbDied.isChecked = true
+            CaptureID.Escaped.name -> binding.rbEscaped.isChecked = true
+            CaptureID.Released.name -> binding.rbReleased.isChecked = true
             null -> binding.rbNullCapture.isChecked = true
         }
     }
 
     private fun setListeners(){
         binding.rgSex.setOnCheckedChangeListener{ radioGroup, checkedId ->
-            sex = when(checkedId){
-                R.id.rb_male -> "Male"
-                R.id.rb_female -> "Female"
-                R.id.rb_null_sex -> null
-                else -> null
+            when(checkedId){
+                R.id.rb_male -> {
+                    sex = "Male"
+                    showNonMaleFields()
+                    isMale = true
+                }
+                R.id.rb_female -> {
+                    sex =  "Female"
+                    hideNonMaleFields()
+                    isMale = false
+                }
+                R.id.rb_null_sex -> {
+                    sex = null
+                    isMale = false
+                    showNonMaleFields()
+                }
             }
         }
 
         binding.rgAge.setOnCheckedChangeListener { radioGroup, checkedId ->
             age = when(checkedId){
-                R.id.rb_adult -> "Adult"
-                R.id.rb_juvenile -> "Juvenile"
-                R.id.rb_subadult -> "Subadult"
+                R.id.rb_adult -> MouseAge.Adult.name
+                R.id.rb_juvenile -> MouseAge.Juvenile.name
+                R.id.rb_subadult -> MouseAge.Subadult.name
                 R.id.rb_null_age -> null
                 else -> null
             }
@@ -176,14 +203,32 @@ class RecaptureMouseFragment : Fragment() {
 
         binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, checkedId ->
             captureID = when(checkedId){
-                R.id.rb_captured -> "Captured"
-                R.id.rb_died -> "Died"
-                R.id.rb_escaped -> "Escaped"
-                R.id.rb_released -> "Released"
+                R.id.rb_captured -> CaptureID.Captured.name
+                R.id.rb_died -> CaptureID.Died.name
+                R.id.rb_escaped -> CaptureID.Escaped.name
+                R.id.rb_released -> CaptureID.Released.name
                 R.id.rb_null_capture -> null
                 else -> null
             }
         }
+    }
+
+    private fun hideNonMaleFields(){
+        binding.etEmbryoRight.visibility = View.INVISIBLE
+        binding.etEmbryoLeft.visibility = View.INVISIBLE
+        binding.etEmbryoDiameter.visibility = View.INVISIBLE
+        binding.cbMc.visibility = View.INVISIBLE
+        binding.etMcRight.visibility = View.INVISIBLE
+        binding.etMcLeft.visibility = View.INVISIBLE
+    }
+
+    private fun showNonMaleFields(){
+        binding.etEmbryoRight.visibility = View.VISIBLE
+        binding.etEmbryoLeft.visibility = View.VISIBLE
+        binding.etEmbryoDiameter.visibility = View.VISIBLE
+        binding.cbMc.visibility = View.VISIBLE
+        binding.etMcRight.visibility = View.VISIBLE
+        binding.etMcLeft.visibility = View.VISIBLE
     }
 
     private fun goToCamera() {
@@ -193,29 +238,30 @@ class RecaptureMouseFragment : Fragment() {
 
     private fun recaptureMouse() {
         val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
-        val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
-        val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
-        val lactating: Int? = if (binding.cbLactating.isChecked) 1 else 0
-        val sexActive: Int? = if (binding.cbSexActive.isChecked) 1 else 0
-        val trapID: Int = Integer.parseInt(binding.etTrapId.text.toString())
-        val weight: Float? = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
-        val body: Float? = Integer.parseInt(binding.etBody.text.toString()).toFloat()
-        val tail: Float? = Integer.parseInt(binding.etTail.text.toString()).toFloat()
-        val feet: Float? = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
-        val ear: Float? = Integer.parseInt(binding.etEar.text.toString()).toFloat()
-        val testesLength: Float? = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
-        val testesWidth: Float? = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
-        //počet embryí v oboch rohoch maternice a ich priemer
-        val embryoRight: Int? = Integer.parseInt(binding.etEmbryoRight.text.toString())
-        val embryoLeft: Int? = Integer.parseInt(binding.etEmbryoLeft.text.toString())
-        val embryoDiameter: Float? = Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
-        val MC: Int? = if (binding.cbMc.isChecked) 1 else 0
-        //počet placentálnych polypov
-        val MCright: Int? = Integer.parseInt(binding.etMcRight.text.toString())
-        val MCleft: Int? = Integer.parseInt(binding.etMcLeft.text.toString())
-        val note: String? = binding.etMouseNote.text.toString()
+        val trapID: String = binding.autoCompTvTrapId.text.toString()
 
         if (checkInput(speciesID, trapID)){
+
+            val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
+            val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
+            val lactating: Int? = if (binding.cbLactating.isChecked) 1 else 0
+            val sexActive: Int? = if (binding.cbSexActive.isChecked) 1 else 0
+            val weight: Float? = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
+            val body: Float? = Integer.parseInt(binding.etBody.text.toString()).toFloat()
+            val tail: Float? = Integer.parseInt(binding.etTail.text.toString()).toFloat()
+            val feet: Float? = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
+            val ear: Float? = Integer.parseInt(binding.etEar.text.toString()).toFloat()
+            val testesLength: Float? = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
+            val testesWidth: Float? = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
+            //počet embryí v oboch rohoch maternice a ich priemer
+            val embryoRight: Int? = if (isMale) null else Integer.parseInt(binding.etEmbryoRight.text.toString())
+            val embryoLeft: Int? = if (isMale) null else Integer.parseInt(binding.etEmbryoLeft.text.toString())
+            val embryoDiameter: Float? = if (isMale) null else Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
+            val MC: Int? = if (isMale) null else { if (binding.cbMc.isChecked) 1 else 0 }
+            //počet placentálnych polypov
+            val MCright: Int? = if (isMale) null else Integer.parseInt(binding.etMcRight.text.toString())
+            val MCleft: Int? = if (isMale) null else Integer.parseInt(binding.etMcLeft.text.toString())
+            val note: String? = binding.etMouseNote.text.toString()
 
             // zmenit pohlavie vsetkym predch. mysiam ak sa zmenilo
             changeSexIfNecesary()
@@ -228,7 +274,7 @@ class RecaptureMouseFragment : Fragment() {
             mouse.protocolID = protocolID
             mouse.occasionID = args.occasion.occasionId
             mouse.localityID = args.occasion.localityID
-            mouse.trapID = " "
+            mouse.trapID = trapID
             mouse.catchDateTime = Calendar.getInstance().time
             mouse.sex = sex
             mouse.age = age
@@ -263,8 +309,8 @@ class RecaptureMouseFragment : Fragment() {
         }
     }
 
-    private fun checkInput(specieID: Long, trapID: Int): Boolean {
-        return specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
+    private fun checkInput(specieID: Long, trapID: String): Boolean {
+        return specieID.toString().isNotEmpty() && trapID.isNotEmpty()
     }
 
     private fun changeSexIfNecesary(){

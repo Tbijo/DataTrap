@@ -28,6 +28,26 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout7"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="Trap ID"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
+
+        <AutoCompleteTextView
+            android:id="@+id/auto_comp_tv_trap_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="none"
+            tools:ignore="DuplicateClickableBoundsCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout6"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
@@ -35,8 +55,9 @@
         android:layout_marginTop="8dp"
         android:hint="Protocol"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout7">
 
         <AutoCompleteTextView
             android:id="@+id/auto_comp_tv_protocol"
@@ -45,18 +66,6 @@
             android:layout_weight="1"
             android:inputType="none" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <EditText
-        android:id="@+id/et_trap_id"
-        android:layout_width="299dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Trap ID"
-        android:inputType="number"
-        app:layout_constraintEnd_toStartOf="@+id/et_ear"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_tail" />
 
     <RadioGroup
         android:id="@+id/rg_sex"
@@ -260,9 +269,8 @@
         android:hint="Ear"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/et_trap_id"
-        app:layout_constraintTop_toBottomOf="@+id/et_feet" />
+        app:layout_constraintStart_toEndOf="@+id/et_embryo_diameter"
+        app:layout_constraintTop_toBottomOf="@+id/et_embryo_left" />
 
     <EditText
         android:id="@+id/et_testes_length"
@@ -274,7 +282,7 @@
         app:layout_constraintEnd_toStartOf="@+id/et_testes_width"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_trap_id" />
+        app:layout_constraintTop_toBottomOf="@+id/et_tail" />
 
     <EditText
         android:id="@+id/et_testes_width"
@@ -286,7 +294,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/et_testes_length"
-        app:layout_constraintTop_toBottomOf="@+id/et_ear" />
+        app:layout_constraintTop_toBottomOf="@+id/et_feet" />
 
     <EditText
         android:id="@+id/et_embryo_right"
@@ -331,22 +339,19 @@
         android:ems="10"
         android:hint="Embryo Diameter"
         android:inputType="numberDecimal"
-        app:layout_constraintEnd_toStartOf="@+id/et_mouse_note"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_embryo_right" />
 
     <EditText
         android:id="@+id/et_mouse_note"
-        android:layout_width="299dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Note"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/et_embryo_diameter"
-        app:layout_constraintTop_toBottomOf="@+id/et_embryo_left" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_mc_left" />
 
     <EditText
         android:id="@+id/et_mc_right"
@@ -370,7 +375,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/et_mc_right"
-        app:layout_constraintTop_toBottomOf="@+id/et_mouse_note" />
+        app:layout_constraintTop_toBottomOf="@+id/et_ear" />
 
     <EditText
         android:id="@+id/et_code_mouse_add"

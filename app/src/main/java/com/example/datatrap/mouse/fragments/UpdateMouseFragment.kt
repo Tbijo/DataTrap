@@ -13,6 +13,9 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateMouseBinding
 import com.example.datatrap.models.*
+import com.example.datatrap.myenums.CaptureID
+import com.example.datatrap.myenums.MouseAge
+import com.example.datatrap.myenums.TrapID
 import com.example.datatrap.viewmodels.*
 
 class UpdateMouseFragment : Fragment() {
@@ -81,6 +84,9 @@ class UpdateMouseFragment : Fragment() {
         val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
         binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
 
+        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, TrapID.values())
+        binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
+
         mapSpecie.forEach {
             if (it.value == args.mouse.speciesID){
                 binding.autoCompTvSpecie.setText(it.key, false)
@@ -91,6 +97,8 @@ class UpdateMouseFragment : Fragment() {
                 binding.autoCompTvProtocol.setText(it.key, false)
             }
         }
+
+        binding.autoCompTvTrapId.setText(args.mouse.trapID)
     }
 
     override fun onDestroy() {
@@ -123,7 +131,6 @@ class UpdateMouseFragment : Fragment() {
         binding.etBody.setText(args.mouse.body.toString())
         binding.etTail.setText(args.mouse.tail.toString())
         binding.etFeet.setText(args.mouse.feet.toString())
-        binding.etTrapId.setText(args.mouse.trapID.toString())
         binding.etEar.setText(args.mouse.ear.toString())
         binding.etTestesLength.setText(args.mouse.testesLength.toString())
         binding.etTestesWidth.setText(args.mouse.testesWidth.toString())
@@ -135,23 +142,31 @@ class UpdateMouseFragment : Fragment() {
         binding.etMcLeft.setText(args.mouse.MCleft.toString())
 
         when(args.mouse.sex){
-            "Male" -> binding.rbMale.isChecked = true
-            "Female" -> binding.rbFemale.isChecked = true
+            "Male" -> {
+                binding.rbMale.isChecked = true
+                isMale = true
+                showNonMaleFields()
+            }
+            "Female" -> {
+                binding.rbFemale.isChecked = true
+                isMale = false
+                hideNonMaleFields()
+            }
             null -> binding.rbNullSex.isChecked = true
         }
 
         when(args.mouse.age){
-            "Adult" -> binding.rbAdult.isChecked = true
-            "Subadult" -> binding.rbSubadult.isChecked = true
-            "Juvenile" -> binding.rbJuvenile.isChecked = true
+            MouseAge.Adult.name -> binding.rbAdult.isChecked = true
+            MouseAge.Subadult.name -> binding.rbSubadult.isChecked = true
+            MouseAge.Juvenile.name -> binding.rbJuvenile.isChecked = true
             null -> binding.rbNullAge.isChecked = true
         }
 
         when(args.mouse.captureID){
-            "Captured" -> binding.rbCaptured.isChecked = true
-            "Died" -> binding.rbDied.isChecked = true
-            "Escaped" -> binding.rbEscaped.isChecked = true
-            "Released" -> binding.rbReleased.isChecked = true
+            CaptureID.Captured.name -> binding.rbCaptured.isChecked = true
+            CaptureID.Died.name -> binding.rbDied.isChecked = true
+            CaptureID.Escaped.name -> binding.rbEscaped.isChecked = true
+            CaptureID.Released.name -> binding.rbReleased.isChecked = true
             null -> binding.rbNullCapture.isChecked = true
         }
     }
@@ -169,15 +184,19 @@ class UpdateMouseFragment : Fragment() {
                     isMale = false
                     showNonMaleFields()
                 }
-                binding.rbNullSex.id -> sex = null
+                binding.rbNullSex.id -> {
+                    sex = null
+                    isMale = false
+                    showNonMaleFields()
+                }
             }
         }
 
         binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
             age = when(radioButtonId){
-                binding.rbAdult.id -> "Adult"
-                binding.rbJuvenile.id -> "Juvenile"
-                binding.rbSubadult.id -> "Subadult"
+                binding.rbAdult.id -> MouseAge.Adult.name
+                binding.rbJuvenile.id -> MouseAge.Juvenile.name
+                binding.rbSubadult.id -> MouseAge.Subadult.name
                 binding.rbNullAge.id -> null
                 else -> null
             }
@@ -185,10 +204,10 @@ class UpdateMouseFragment : Fragment() {
 
         binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
             captureID = when(radioButtonId){
-                binding.rbCaptured.id -> "Captured"
-                binding.rbDied.id -> "Died"
-                binding.rbEscaped.id -> "Escaped"
-                binding.rbReleased.id -> "Released"
+                binding.rbCaptured.id -> CaptureID.Captured.name
+                binding.rbDied.id -> CaptureID.Died.name
+                binding.rbEscaped.id -> CaptureID.Escaped.name
+                binding.rbReleased.id -> CaptureID.Released.name
                 binding.rbNullCapture.id -> null
                 else -> null
             }
@@ -252,13 +271,11 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun updateMouse() {
-        val code: Int? = Integer.parseInt(binding.etMouseCodeUpdate.text.toString())
         val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
-        val trapID: Int = Integer.parseInt(binding.etTrapId.text.toString())
+        val trapID: String = binding.autoCompTvTrapId.text.toString()
 
-        if (checkInput(code, speciesID, trapID)){
+        if (checkInput(speciesID, trapID)){
             val mouse: Mouse = args.mouse
-            mouse.code = code
             mouse.speciesID = speciesID
             mouse.trapID = trapID
             mouse.sex = sex
@@ -319,8 +336,8 @@ class UpdateMouseFragment : Fragment() {
         }
     }
 
-    private fun checkInput(code: Int?, specieID: Long, trapID: Int): Boolean {
-        return code.toString().isNotEmpty() && specieID.toString().isNotEmpty() && trapID.toString().isNotEmpty()
+    private fun checkInput(specieID: Long, trapID: String): Boolean {
+        return specieID.toString().isNotEmpty() && trapID.isNotEmpty()
     }
 
 }
