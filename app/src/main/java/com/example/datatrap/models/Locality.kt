@@ -17,6 +17,8 @@ data class Locality(
     @ColumnInfo(name = "LocalityName")
     var localityName: String,
 
+    var deviceID: String,
+
     @ColumnInfo(name = "Date")
     var localityDateTime: Date,
 

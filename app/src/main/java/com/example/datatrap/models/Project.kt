@@ -17,6 +17,8 @@ data class Project(
     @ColumnInfo(name = "ProjectName")
     var projectName: String,
 
+    var deviceID: String,
+
     var projectDateTime: Date,
 
     @ColumnInfo(name = "Num_local")

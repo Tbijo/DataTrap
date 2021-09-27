@@ -20,6 +20,8 @@ data class Session(
 
     @ColumnInfo(name = "Session")
     var session: Int,
+
+    var deviceID: String,
     
     // cudzi kluc
     var projectID: Long?,

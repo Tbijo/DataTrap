@@ -1,6 +1,7 @@
 package com.example.datatrap.project.fragments.list
 
 import android.os.Bundle
+import android.provider.Settings
 import android.text.InputType
 import android.view.*
 import android.widget.EditText
@@ -119,7 +120,8 @@ class ListAllProjectFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun insertProject(name: String){
         if (name.isNotEmpty()){
-            val project: Project = Project(0, name, Calendar.getInstance().time, 0, 0)
+            val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
+            val project: Project = Project(0, name, deviceID, Calendar.getInstance().time, 0, 0)
 
             projectViewModel.insertProject(project)
 

@@ -27,6 +27,8 @@ data class Occasion(
     @ColumnInfo(name = "Occasion")
     var occasion: Int,
 
+    var deviceID: String,
+
     // cudzi kluc
     var localityID: Long,
 

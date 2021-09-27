@@ -1,6 +1,7 @@
 package com.example.datatrap.locality.fragments
 
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
@@ -58,10 +59,11 @@ class AddLocalityFragment : Fragment() {
         val localityNote = binding.etLocalityNote.text.toString()
         val latitude = binding.tvLatitude.text.toString()
         val longnitude = binding.tvLongnitude.text.toString()
+        val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
         if (checkInput(localityName, latitude, longnitude)){
 
-            val locality = Locality(0, localityName, Calendar.getInstance().time,
+            val locality = Locality(0, localityName, deviceID, Calendar.getInstance().time,
                 Integer.parseInt(latitude).toFloat(),
                 Integer.parseInt(longnitude).toFloat(),0, localityNote)
 

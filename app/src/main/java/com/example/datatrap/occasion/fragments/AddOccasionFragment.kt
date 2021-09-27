@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
@@ -155,13 +156,14 @@ class AddOccasionFragment : Fragment() {
         val numMice = 0
         val leg: String = binding.etLeg.toString()
         val note: String? = binding.etOccasionNote.toString()
+        val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
             // zvacsit numOcc v Session
             updateSessionNumOcc()
 
             // ulozit occasion
-            val occasion = Occasion(0, occasionNum, args.locality.localityId, args.session.sessionId,
+            val occasion = Occasion(0, occasionNum, deviceID, args.locality.localityId, args.session.sessionId,
                 method, methodType, trapType, envType, vegType, Calendar.getInstance().time, gotCaught,
                 Integer.parseInt(numTraps), numMice, temperature, weatherGlob, leg, note, imgName)
 

@@ -2,6 +2,7 @@ package com.example.datatrap.mouse.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.provider.Settings
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -225,6 +226,7 @@ class AddNewMouseFragment : Fragment() {
         val MCright: Int? = if (isMale) null else Integer.parseInt(binding.etMcRight.text.toString())
         val MCleft: Int? = if (isMale) null else Integer.parseInt(binding.etMcLeft.text.toString())
         val note: String? = binding.etMouseNote.text.toString()
+        val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
         if (checkInput(code, speciesID, trapID)){
 
@@ -234,8 +236,8 @@ class AddNewMouseFragment : Fragment() {
             // zvacsit numMice occasion do ktorej sa pridava tato mys
             updateOccasionNumMice()
 
-            val mouse = Mouse(0, code, speciesID, protocolID, args.occasion.occasionId,
-                args.occasion.localityID, trapID, Calendar.getInstance().time, sex, age, gravitidy, lactating, sexActive,
+            val mouse = Mouse(0, code, deviceID, null, speciesID, protocolID, args.occasion.occasionId,
+                args.occasion.localityID, " ", Calendar.getInstance().time, sex, age, gravitidy, lactating, sexActive,
                 weight, recapture = 0, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 

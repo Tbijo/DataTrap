@@ -1,6 +1,7 @@
 package com.example.datatrap.session.fragments.list
 
 import android.os.Bundle
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -97,8 +98,9 @@ class ListPrjSessionFragment : Fragment() {
     }
 
     private fun insertSession() {
+        val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
         val session: Session =
-            Session(0, (sessionList.size + 1), args.project.projectId, 0, Calendar.getInstance().time)
+            Session(0, (sessionList.size + 1), deviceID, args.project.projectId, 0, Calendar.getInstance().time)
 
         // zvacsit numSes v lokalite
         updateLocalityNumSess()

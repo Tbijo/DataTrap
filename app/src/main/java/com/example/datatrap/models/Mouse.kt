@@ -24,6 +24,10 @@ data class Mouse(
     @ColumnInfo(name = "Code")
     var code: Int?, //pazure
 
+    var deviceID: String,
+
+    var primeMouseID: Long?,
+
     // cudzi kluc
     var speciesID: Long,
 
@@ -37,7 +41,7 @@ data class Mouse(
     var localityID: Long,
 
     @ColumnInfo(name = "Trap_ID")
-    var trapID: Int, //samy zadavat
+    var trapID: String,
 
     var catchDateTime: Date,
 

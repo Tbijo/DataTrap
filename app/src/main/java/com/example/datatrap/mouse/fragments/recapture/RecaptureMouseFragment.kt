@@ -223,11 +223,12 @@ class RecaptureMouseFragment : Fragment() {
             // recapture mouse
             val mouse: Mouse = args.mouse
             mouse.mouseId = 0
+            mouse.primeMouseID = args.mouse.mouseId
             mouse.speciesID = speciesID
             mouse.protocolID = protocolID
             mouse.occasionID = args.occasion.occasionId
             mouse.localityID = args.occasion.localityID
-            mouse.trapID = trapID
+            mouse.trapID = " "
             mouse.catchDateTime = Calendar.getInstance().time
             mouse.sex = sex
             mouse.age = age
