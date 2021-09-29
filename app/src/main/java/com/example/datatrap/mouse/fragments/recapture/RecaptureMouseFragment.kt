@@ -1,5 +1,6 @@
 package com.example.datatrap.mouse.fragments.recapture
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.*
 import android.widget.ArrayAdapter
@@ -241,28 +242,6 @@ class RecaptureMouseFragment : Fragment() {
         val trapID: String = binding.autoCompTvTrapId.text.toString()
 
         if (checkInput(speciesID, trapID)){
-
-            val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
-            val gravitidy: Int? = if (binding.cbGravit.isChecked) 1 else 0
-            val lactating: Int? = if (binding.cbLactating.isChecked) 1 else 0
-            val sexActive: Int? = if (binding.cbSexActive.isChecked) 1 else 0
-            val weight: Float? = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
-            val body: Float? = Integer.parseInt(binding.etBody.text.toString()).toFloat()
-            val tail: Float? = Integer.parseInt(binding.etTail.text.toString()).toFloat()
-            val feet: Float? = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
-            val ear: Float? = Integer.parseInt(binding.etEar.text.toString()).toFloat()
-            val testesLength: Float? = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
-            val testesWidth: Float? = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
-            //počet embryí v oboch rohoch maternice a ich priemer
-            val embryoRight: Int? = if (isMale) null else Integer.parseInt(binding.etEmbryoRight.text.toString())
-            val embryoLeft: Int? = if (isMale) null else Integer.parseInt(binding.etEmbryoLeft.text.toString())
-            val embryoDiameter: Float? = if (isMale) null else Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
-            val MC: Int? = if (isMale) null else { if (binding.cbMc.isChecked) 1 else 0 }
-            //počet placentálnych polypov
-            val MCright: Int? = if (isMale) null else Integer.parseInt(binding.etMcRight.text.toString())
-            val MCleft: Int? = if (isMale) null else Integer.parseInt(binding.etMcLeft.text.toString())
-            val note: String? = binding.etMouseNote.text.toString()
-
             // zmenit pohlavie vsetkym predch. mysiam ak sa zmenilo
             changeSexIfNecesary()
 
@@ -271,41 +250,64 @@ class RecaptureMouseFragment : Fragment() {
             mouse.mouseId = 0
             mouse.primeMouseID = args.mouse.mouseId
             mouse.speciesID = speciesID
-            mouse.protocolID = protocolID
+            mouse.protocolID = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
             mouse.occasionID = args.occasion.occasionId
             mouse.localityID = args.occasion.localityID
             mouse.trapID = trapID
             mouse.catchDateTime = Calendar.getInstance().time
             mouse.sex = sex
             mouse.age = age
-            mouse.gravidity = gravitidy
-            mouse.lactating = lactating
-            mouse.sexActive = sexActive
-            mouse.weight = weight
+            mouse.gravidity = if (binding.cbGravit.isChecked) 1 else 0
+            mouse.lactating = if (binding.cbLactating.isChecked) 1 else 0
+            mouse.sexActive = if (binding.cbSexActive.isChecked) 1 else 0
+            mouse.weight = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
             mouse.recapture = 1
             mouse.captureID = captureID
-            mouse.body = body
-            mouse.tail = tail
-            mouse.feet = feet
-            mouse.ear = ear
-            mouse.testesLength = testesLength
-            mouse.testesWidth = testesWidth
-            mouse.embryoRight = embryoRight
-            mouse.embryoLeft = embryoLeft
-            mouse.embryoDiameter = embryoDiameter
-            mouse.MC = MC
-            mouse.MCright = MCright
-            mouse.MCleft = MCleft
-            mouse.note = note
+            mouse.body = Integer.parseInt(binding.etBody.text.toString()).toFloat()
+            mouse.tail = Integer.parseInt(binding.etTail.text.toString()).toFloat()
+            mouse.feet = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
+            mouse.ear = Integer.parseInt(binding.etEar.text.toString()).toFloat()
+            mouse.testesLength = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
+            mouse.testesWidth = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
+            //počet embryí v oboch rohoch maternice a ich priemer
+            mouse.embryoRight = if (isMale) null else Integer.parseInt(binding.etEmbryoRight.text.toString())
+            mouse.embryoLeft = if (isMale) null else Integer.parseInt(binding.etEmbryoLeft.text.toString())
+            mouse.embryoDiameter = if (isMale) null else Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
+            mouse.MC = if (isMale) null else { if (binding.cbMc.isChecked) 1 else 0 }
+            //počet placentálnych polypov
+            mouse.MCright = if (isMale) null else Integer.parseInt(binding.etMcRight.text.toString())
+            mouse.MCleft = if (isMale) null else Integer.parseInt(binding.etMcLeft.text.toString())
+            mouse.note = binding.etMouseNote.text.toString()
             mouse.imgName = imgName
 
+            checkWeightAndSave(mouse)
+        }else{
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun checkWeightAndSave(mouse: Mouse) {
+        val specie: Specie = specieViewModel.getSpecie(mouse.speciesID).value!!
+
+        if (mouse.weight!! > specie.maxWeight!! || mouse.weight!! < specie.minWeight!!){
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setPositiveButton("Yes"){_, _ ->
+                mouseViewModel.insertMouse(mouse)
+
+                Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
+
+                findNavController().navigateUp()
+            }
+                .setNegativeButton("No"){_, _ -> }
+                .setTitle("Warning: Mouse Weight")
+                .setMessage("Mouse weight out of bounds, save anyway?")
+                .create().show()
+        }else{
             mouseViewModel.insertMouse(mouse)
 
             Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
 
             findNavController().navigateUp()
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
     }
 
