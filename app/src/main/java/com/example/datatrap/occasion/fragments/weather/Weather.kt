@@ -2,10 +2,12 @@ package com.example.datatrap.occasion.fragments.weather
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.*
 
 class Weather(val context: Context) {
     private val OWM_API_KEY = "ba1d923dba4826c58fda121fb5e7a9de"
@@ -25,6 +27,12 @@ class Weather(val context: Context) {
     private val DATE_TIME_URL = "&dt=" // len do poslednych piatich dni
 
     private val QUERRY_CURRENT_WEATHER_COOR = "https://api.openweathermap.org/data/2.5/weather?"
+
+    private val MILLIS_IN_SECOND = 1000L
+    private val SECONDS_IN_MINUTE = 60
+    private val MINUTES_IN_HOUR = 60
+    private val HOURS_IN_DAY = 24
+    private val FIVE_DAYS = 5 * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * MILLIS_IN_SECOND
 
     fun getCurrentWeatherByCoordinates(sirka : Float, dlzka : Float, listener: VolleyResponseListener){
 
@@ -58,6 +66,12 @@ class Weather(val context: Context) {
     }
 
     fun getHistoricalWeatherByCoordinates(sirka : Float, dlzka : Float, unixTime: Long, listener: VolleyResponseListener){
+
+        val currentTime = Calendar.getInstance().time.time
+        if (currentTime - unixTime >= FIVE_DAYS){
+            Toast.makeText(context, "Occasion is older than 5 days.", Toast.LENGTH_LONG).show()
+            return
+        }
 
         val url =
             QUERRY_HISTORY_WEATHER_COOR + SIRKA_URL + sirka + DLZKA_URL + dlzka + DATE_TIME_URL + unixTime + UNITS + OWM_API_KEY_URL

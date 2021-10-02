@@ -9,17 +9,16 @@ import java.util.*
 
 class CodeGenerator(fragment: Fragment, private var code: Int, private val fingers: Int, private val team: Int?, localityId: Long) {
 
+    private val MILLIS_IN_SECOND = 1000L
+    private val SECONDS_IN_MINUTE = 60
+    private val MINUTES_IN_HOUR = 60
+    private val HOURS_IN_DAY = 24
+    private val DAYS_IN_YEAR = 365
+    private val MILLISECONDS_IN_2_YEAR: Long = 2 * MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR
+
     private val mouseViewModel = ViewModelProvider(fragment).get(MouseViewModel::class.java)
-    private val mouseList: MutableList<Mouse> = mouseViewModel.getOldMiceForLocality(localityId).value!!.toMutableList()
-    // list obsadenych ID mysi
-    private val activeMouseList: List<Mouse> = mouseList.filter {
-        // v liste ostanu len zaznami mladsie ako dva roky
-        //63158400000
-        //63072000000 // vsetko toto je trvanie dvoch rokov preco to ma dve hodnoty
-        //63158400000
-        //63072000000
-        (Calendar.getInstance().time.time - it.catchDateTime.time) <= 63072000000
-    }
+    private val mouseList: List<Mouse> = mouseViewModel.getActiveMiceOfLocality(localityId, Calendar.getInstance().time.time, MILLISECONDS_IN_2_YEAR).value!!
+
     private val codeRange = 1..9999
     private val badRangeFor4 = arrayOf(500..599, 900..999, 5000..5999, 9000..9999).toList()
     private var isCycle2 = 0
@@ -42,7 +41,7 @@ class CodeGenerator(fragment: Fragment, private var code: Int, private val finge
     private fun isCodeFreeInLocality(code: Int): Boolean{
         // volny bude vtedy ak datetime je starsi ako 2 roky
         // a potom treba pozriet ci ma recapture 1
-        activeMouseList.forEach{
+        mouseList.forEach{
             if (it.code == code){
                 return true
             }

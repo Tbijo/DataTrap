@@ -37,20 +37,24 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
+    fun getMouse(idMouse: Long): LiveData<Mouse>{
+        return mouseRepository.getMouse(idMouse)
+    }
+
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{
         return mouseRepository.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForCode(code: Int): LiveData<List<Mouse>>{
-        return mouseRepository.getMiceForCode(code)
+    fun getMiceForRecapture(code: Int): LiveData<List<Mouse>>{
+        return mouseRepository.getMiceForRecapture(code)
     }
 
-    fun getOldMiceForLocality(localityId: Long): LiveData<List<Mouse>>{
-        return mouseRepository.getOldMiceForLocality(localityId)
+    fun getMiceForLog(idMouse: Long): LiveData<List<Mouse>>{
+        return mouseRepository.getMiceForLog(idMouse)
     }
 
-    fun searchMice(code: Int): LiveData<List<Mouse>>{
-        return mouseRepository.searchMice(code)
+    fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>{
+        return mouseRepository.getActiveMiceOfLocality(localityId, currentTime, twoYears)
     }
 
     fun countMiceForLocality(localityId: Long): LiveData<Int>{

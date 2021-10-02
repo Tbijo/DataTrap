@@ -95,7 +95,7 @@ class ViewMouseFragment : Fragment() {
     private fun fillList(): List<String>{
         val logList = mutableListOf<String>()
         var mouseList = emptyList<Mouse>()
-        mouseViewModel.getMiceForCode(args.mouse.code!!).observe(viewLifecycleOwner, Observer {
+        mouseViewModel.getMiceForLog(args.mouse.mouseId).observe(viewLifecycleOwner, Observer {
             mouseList = it
         })
 
@@ -161,5 +161,4 @@ class ViewMouseFragment : Fragment() {
         binding.tvMcLeft.text = args.mouse.MCleft.toString()
         binding.tvMcRight.text = args.mouse.MCright.toString()
     }
-
 }

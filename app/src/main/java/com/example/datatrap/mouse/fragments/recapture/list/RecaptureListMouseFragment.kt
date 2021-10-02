@@ -75,7 +75,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun searchMice(code: Int) {
-        mouseViewModel.searchMice(code).observe(viewLifecycleOwner, Observer { mice ->
+        mouseViewModel.getMiceForRecapture(code).observe(viewLifecycleOwner, Observer { mice ->
             mice.let {
                 adapter.setData(it)
                 mouseList = it

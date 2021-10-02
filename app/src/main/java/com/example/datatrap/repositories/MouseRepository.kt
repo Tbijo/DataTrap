@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.MouseDao
 import com.example.datatrap.models.Mouse
@@ -18,20 +19,24 @@ class MouseRepository(private val mouseDao: MouseDao) {
         mouseDao.deleteMouse(mouse)
     }
 
+    fun getMouse(idMouse: Long): LiveData<Mouse>{
+        return mouseDao.getMouse(idMouse)
+    }
+
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{
         return mouseDao.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForCode(code: Int): LiveData<List<Mouse>>{
-        return mouseDao.getMiceForCode(code)
+    fun getMiceForRecapture(code: Int): LiveData<List<Mouse>>{
+        return mouseDao.getMiceForRecapture(code)
     }
 
-    fun getOldMiceForLocality(localityId: Long): LiveData<List<Mouse>>{
-        return mouseDao.getOldMiceForLocality(localityId)
+    fun getMiceForLog(idMouse: Long): LiveData<List<Mouse>>{
+        return mouseDao.getMiceForLog(idMouse)
     }
 
-    fun searchMice(code: Int): LiveData<List<Mouse>>{
-        return mouseDao.searchMice(code)
+    fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>{
+        return mouseDao.getActiveMiceOfLocality(localityId, currentTime, twoYears)
     }
 
     fun countMiceForLocality(localityId: Long): LiveData<Int>{

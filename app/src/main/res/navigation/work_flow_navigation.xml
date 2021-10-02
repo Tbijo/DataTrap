@@ -278,6 +278,9 @@
         <argument
             android:name="occasion"
             app:argType="com.example.datatrap.models.Occasion" />
+        <action
+            android:id="@+id/action_recaptureMouseFragment_to_takePhotoFragment"
+            app:destination="@id/takePhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/recaptureListMouseFragment"

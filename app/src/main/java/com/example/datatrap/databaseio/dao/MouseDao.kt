@@ -16,21 +16,21 @@ interface MouseDao {
     @Delete
     suspend fun deleteMouse(mouse: Mouse)
 
+    @Query("SELECT * FROM sm WHERE mouseId = :idMouse")
+    fun getMouse(idMouse: Long): LiveData<Mouse>
+
     @Query("SELECT * FROM sm WHERE occasionID = :idOccasion")
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>
 
-    // zobrazenie predchadzajucich udajov o mysi
-    // na zmenenie pohlavia ak sa pri prvom chyteni zle zadalo a pri druhom cyteni je uz starsi tak to lepsie vidiet
-    @Query("SELECT * FROM sm WHERE Code = :code ORDER BY localityID")
-    fun getMiceForCode(code: Int): LiveData<List<Mouse>>
+    @Query("SELECT * FROM sm WHERE Code = :code ORDER BY catchDateTime DESC LIMIT 100")
+    fun getMiceForRecapture(code: Int): LiveData<List<Mouse>>
 
-    @Query("SELECT * FROM sm WHERE localityID = :localityId ORDER BY catchDateTime DESC")
-    fun getOldMiceForLocality(localityId: Long): LiveData<List<Mouse>>
+    @Query("SELECT * FROM sm WHERE primeMouseID = :idMouse")
+    fun getMiceForLog(idMouse: Long): LiveData<List<Mouse>>
 
-    // pre recapture
-    @Query("SELECT * FROM sm WHERE Code = :code")
-    fun searchMice(code: Int): LiveData<List<Mouse>>
+    @Query("SELECT * FROM sm WHERE localityID = :localityId AND Code IS NOT NULL AND (:currentTime - catchDateTime) < :twoYears")
+    fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>
 
-    @Query("SELECT COUNT(*) FROM sm WHERE localityID = :localityId")
+    @Query("SELECT COUNT(Code) FROM sm WHERE localityID = :localityId AND Code IS NOT NULL AND Recapture = 0")
     fun countMiceForLocality(localityId: Long): LiveData<Int>
 }

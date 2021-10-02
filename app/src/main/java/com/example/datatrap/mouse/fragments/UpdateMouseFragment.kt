@@ -13,9 +13,9 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateMouseBinding
 import com.example.datatrap.models.*
-import com.example.datatrap.myenums.CaptureID
-import com.example.datatrap.myenums.MouseAge
-import com.example.datatrap.myenums.TrapID
+import com.example.datatrap.myenums.EnumCaptureID
+import com.example.datatrap.myenums.EnumMouseAge
+import com.example.datatrap.myenums.EnumTrapID
 import com.example.datatrap.viewmodels.*
 
 class UpdateMouseFragment : Fragment() {
@@ -84,7 +84,7 @@ class UpdateMouseFragment : Fragment() {
         val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
         binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
 
-        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, TrapID.values())
+        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, EnumTrapID.myValues())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
         mapSpecie.forEach {
@@ -121,6 +121,7 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun initMouseValuesToView(){
+        // vyriesit null
         binding.cbGravit.isChecked = args.mouse.gravidity == 1
         binding.cbLactating.isChecked = args.mouse.lactating == 1
         binding.cbSexActive.isChecked = args.mouse.sexActive == 1
@@ -156,17 +157,17 @@ class UpdateMouseFragment : Fragment() {
         }
 
         when(args.mouse.age){
-            MouseAge.Adult.name -> binding.rbAdult.isChecked = true
-            MouseAge.Subadult.name -> binding.rbSubadult.isChecked = true
-            MouseAge.Juvenile.name -> binding.rbJuvenile.isChecked = true
+            EnumMouseAge.ADULT.myName -> binding.rbAdult.isChecked = true
+            EnumMouseAge.SUBADULT.myName -> binding.rbSubadult.isChecked = true
+            EnumMouseAge.JUVENILE.myName -> binding.rbJuvenile.isChecked = true
             null -> binding.rbNullAge.isChecked = true
         }
 
         when(args.mouse.captureID){
-            CaptureID.Captured.name -> binding.rbCaptured.isChecked = true
-            CaptureID.Died.name -> binding.rbDied.isChecked = true
-            CaptureID.Escaped.name -> binding.rbEscaped.isChecked = true
-            CaptureID.Released.name -> binding.rbReleased.isChecked = true
+            EnumCaptureID.CAPTURED.myName -> binding.rbCaptured.isChecked = true
+            EnumCaptureID.DIED.myName -> binding.rbDied.isChecked = true
+            EnumCaptureID.ESCAPED.myName -> binding.rbEscaped.isChecked = true
+            EnumCaptureID.RELEASED.myName -> binding.rbReleased.isChecked = true
             null -> binding.rbNullCapture.isChecked = true
         }
     }
@@ -194,9 +195,9 @@ class UpdateMouseFragment : Fragment() {
 
         binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
             age = when(radioButtonId){
-                binding.rbAdult.id -> MouseAge.Adult.name
-                binding.rbJuvenile.id -> MouseAge.Juvenile.name
-                binding.rbSubadult.id -> MouseAge.Subadult.name
+                binding.rbAdult.id -> EnumMouseAge.ADULT.myName
+                binding.rbJuvenile.id -> EnumMouseAge.JUVENILE.myName
+                binding.rbSubadult.id -> EnumMouseAge.SUBADULT.myName
                 binding.rbNullAge.id -> null
                 else -> null
             }
@@ -204,10 +205,10 @@ class UpdateMouseFragment : Fragment() {
 
         binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
             captureID = when(radioButtonId){
-                binding.rbCaptured.id -> CaptureID.Captured.name
-                binding.rbDied.id -> CaptureID.Died.name
-                binding.rbEscaped.id -> CaptureID.Escaped.name
-                binding.rbReleased.id -> CaptureID.Released.name
+                binding.rbCaptured.id -> EnumCaptureID.CAPTURED.myName
+                binding.rbDied.id -> EnumCaptureID.DIED.myName
+                binding.rbEscaped.id -> EnumCaptureID.ESCAPED.myName
+                binding.rbReleased.id -> EnumCaptureID.RELEASED.myName
                 binding.rbNullCapture.id -> null
                 else -> null
             }
@@ -215,21 +216,26 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun hideNonMaleFields(){
-        binding.etEmbryoRight.visibility = View.INVISIBLE
-        binding.etEmbryoLeft.visibility = View.INVISIBLE
-        binding.etEmbryoDiameter.visibility = View.INVISIBLE
+        // vyriesit nastavenie null
+        binding.cbGravit.visibility = View.INVISIBLE
+        binding.cbLactating.visibility = View.INVISIBLE
         binding.cbMc.visibility = View.INVISIBLE
         binding.etMcRight.visibility = View.INVISIBLE
         binding.etMcLeft.visibility = View.INVISIBLE
+        binding.etEmbryoRight.visibility = View.INVISIBLE
+        binding.etEmbryoLeft.visibility = View.INVISIBLE
+        binding.etEmbryoDiameter.visibility = View.INVISIBLE
     }
 
     private fun showNonMaleFields(){
-        binding.etEmbryoRight.visibility = View.VISIBLE
-        binding.etEmbryoLeft.visibility = View.VISIBLE
-        binding.etEmbryoDiameter.visibility = View.VISIBLE
+        binding.cbGravit.visibility = View.VISIBLE
+        binding.cbLactating.visibility = View.VISIBLE
         binding.cbMc.visibility = View.VISIBLE
         binding.etMcRight.visibility = View.VISIBLE
         binding.etMcLeft.visibility = View.VISIBLE
+        binding.etEmbryoRight.visibility = View.VISIBLE
+        binding.etEmbryoLeft.visibility = View.VISIBLE
+        binding.etEmbryoDiameter.visibility = View.VISIBLE
     }
 
     private fun goToCamera() {
@@ -249,6 +255,7 @@ class UpdateMouseFragment : Fragment() {
             mouseViewModel.deleteMouse(args.mouse)
 
             Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
+
             findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
@@ -271,8 +278,8 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun updateMouse() {
-        val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
         val trapID: String = binding.autoCompTvTrapId.text.toString()
+        val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
 
         if (checkInput(speciesID, trapID)){
             val mouse: Mouse = args.mouse
@@ -337,7 +344,7 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun checkInput(specieID: Long, trapID: String): Boolean {
-        return specieID.toString().isNotEmpty() && trapID.isNotEmpty()
+        return specieID > 0 && trapID.isNotEmpty()
     }
 
 }
