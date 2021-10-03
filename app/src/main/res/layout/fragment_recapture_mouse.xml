@@ -81,20 +81,23 @@
 
         <RadioButton
             android:id="@+id/rb_male"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Male" />
 
         <RadioButton
             android:id="@+id/rb_female"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Female" />
 
         <RadioButton
             android:id="@+id/rb_null_sex"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="N/A" />
     </RadioGroup>
 
@@ -111,26 +114,30 @@
 
         <RadioButton
             android:id="@+id/rb_juvenile"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Male" />
 
         <RadioButton
             android:id="@+id/rb_subadult"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Female" />
 
         <RadioButton
             android:id="@+id/rb_adult"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Female" />
 
         <RadioButton
             android:id="@+id/rb_null_age"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="N/A" />
     </RadioGroup>
 
@@ -182,32 +189,37 @@
 
         <RadioButton
             android:id="@+id/rb_died"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Died" />
 
         <RadioButton
             android:id="@+id/rb_captured"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Captured" />
 
         <RadioButton
             android:id="@+id/rb_released"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Released" />
 
         <RadioButton
             android:id="@+id/rb_escaped"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Escaped" />
 
         <RadioButton
             android:id="@+id/rb_null_capture"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="N/A" />
     </RadioGroup>
 

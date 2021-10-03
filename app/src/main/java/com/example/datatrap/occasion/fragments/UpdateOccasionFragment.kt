@@ -40,11 +40,11 @@ class UpdateOccasionFragment : Fragment() {
     private lateinit var trapTypeList: List<TrapType>
     private lateinit var vegTypeList: List<VegetType>
 
-    private lateinit var envTypeNameMap: MutableMap<String, Long>
+    private lateinit var envTypeNameMap: MutableMap<String, Long?>
     private lateinit var methodNameMap: MutableMap<String, Long>
     private lateinit var metTypeNameMap: MutableMap<String, Long>
     private lateinit var trapTypeNameMap: MutableMap<String, Long>
-    private lateinit var vegTypeNameMap: MutableMap<String, Long>
+    private lateinit var vegTypeNameMap: MutableMap<String, Long?>
 
     private var temperature: Float? = null
     private var weatherGlob: String? = null
@@ -74,6 +74,7 @@ class UpdateOccasionFragment : Fragment() {
         envTypeList.forEach {
             envTypeNameMap[it.envTypeName] = it.envTypeId
         }
+        envTypeNameMap["null"] = null
 
         methodList = methodViewModel.methodList.value!!
         methodList.forEach {
@@ -94,6 +95,7 @@ class UpdateOccasionFragment : Fragment() {
         vegTypeList.forEach {
             vegTypeNameMap[it.vegetTypeName] = it.vegetTypeId
         }
+        vegTypeNameMap["null"] = null
 
         initOccasionValuesToView()
 
@@ -209,7 +211,6 @@ class UpdateOccasionFragment : Fragment() {
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
 
             val occasion: Occasion = args.occasion
-            occasion.occasion = occasionNum
             occasion.methodID = method
             occasion.methodTypeID = methodType
             occasion.trapTypeID = trapType
@@ -217,10 +218,10 @@ class UpdateOccasionFragment : Fragment() {
             occasion.envTypeID = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
             occasion.vegetTypeID = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
             occasion.gotCaught = if (binding.cbGotCaught.isChecked) 1 else 0
-            occasion.numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
-            occasion.temperature = temperature
-            occasion.weather = weatherGlob
-            occasion.note = binding.etOccasionNote.toString()
+            occasion.numTraps = if (binding.etNumTraps.text.toString().isEmpty()) null else Integer.parseInt(binding.etNumTraps.text.toString())
+            occasion.temperature = if (binding.etTemperature.text.toString().isEmpty()) null else temperature
+            occasion.weather = if (binding.etWeather.text.toString().isEmpty()) null else weatherGlob
+            occasion.note = if (binding.etOccasionNote.toString().isEmpty()) null else binding.etOccasionNote.toString()
             occasion.imgName = imgName
 
             occasionViewModel.updateOccasion(occasion)

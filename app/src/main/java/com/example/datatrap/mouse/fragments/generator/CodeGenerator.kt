@@ -40,7 +40,6 @@ class CodeGenerator(fragment: Fragment, private var code: Int, private val finge
 
     private fun isCodeFreeInLocality(code: Int): Boolean{
         // volny bude vtedy ak datetime je starsi ako 2 roky
-        // a potom treba pozriet ci ma recapture 1
         mouseList.forEach{
             if (it.code == code){
                 return true

@@ -39,11 +39,11 @@ class AddOccasionFragment : Fragment() {
     private lateinit var metTypeList: List<MethodType>
     private lateinit var trapTypeList: List<TrapType>
     private lateinit var vegTypeList: List<VegetType>
-    private lateinit var envTypeNameMap: MutableMap<String, Long>
+    private lateinit var envTypeNameMap: MutableMap<String, Long?>
     private lateinit var methodNameMap: MutableMap<String, Long>
     private lateinit var metTypeNameMap: MutableMap<String, Long>
     private lateinit var trapTypeNameMap: MutableMap<String, Long>
-    private lateinit var vegTypeNameMap: MutableMap<String, Long>
+    private lateinit var vegTypeNameMap: MutableMap<String, Long?>
 
     private var temperature: Float? = null
     private var weatherGlob: String? = null
@@ -73,6 +73,7 @@ class AddOccasionFragment : Fragment() {
         envTypeList.forEach {
             envTypeNameMap[it.envTypeName] = it.envTypeId
         }
+        envTypeNameMap["null"] = null
 
         methodList = methodViewModel.methodList.value!!
         methodList.forEach {
@@ -93,6 +94,7 @@ class AddOccasionFragment : Fragment() {
         vegTypeList.forEach {
             vegTypeNameMap[it.vegetTypeName] = it.vegetTypeId
         }
+        vegTypeNameMap["null"] = null
 
         // nastavit leg na meno usera
         binding.etLeg.setText(userViewModel.getActiveUser().value?.userName)
@@ -149,23 +151,26 @@ class AddOccasionFragment : Fragment() {
         val method: Long = methodNameMap.getValue(binding.autoCompTvMethod.text.toString())
         val methodType: Long = metTypeNameMap.getValue(binding.autoCompTvMethodType.text.toString())
         val trapType: Long = trapTypeNameMap.getValue(binding.autoCompTvTrapType.text.toString())
-        val envType: Long? = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
-        val vegType: Long? = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
-        val gotCaught = 0
-        val numTraps = binding.etNumTraps.text.toString()
-        val numMice = 0
         val leg: String = binding.etLeg.toString()
-        val note: String? = binding.etOccasionNote.toString()
-        val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
+            val envType: Long? = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
+            val vegType: Long? = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
+            val gotCaught = 0
+            val numTraps = if (binding.etNumTraps.text.toString().isEmpty()) null else Integer.parseInt(binding.etNumTraps.text.toString())
+            val numMice = 0
+            val note: String? = if (binding.etOccasionNote.toString().isEmpty()) null else binding.etOccasionNote.toString()
+            val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
+            val temper = if (binding.etTemperature.text.toString().isEmpty()) null else temperature
+            val weat = if (binding.etWeather.text.toString().isEmpty()) null else weatherGlob
+
             // zvacsit numOcc v Session
             updateSessionNumOcc()
 
             // ulozit occasion
             val occasion = Occasion(0, occasionNum, deviceID, args.locality.localityId, args.session.sessionId,
                 method, methodType, trapType, envType, vegType, Calendar.getInstance().time, gotCaught,
-                Integer.parseInt(numTraps), numMice, temperature, weatherGlob, leg, note, imgName)
+                numTraps, numMice, temper, weat, leg, note, imgName)
 
             occasionViewModel.insertOccasion(occasion)
 

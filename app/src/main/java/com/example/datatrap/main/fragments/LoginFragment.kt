@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentLoginBinding
 import com.example.datatrap.models.User
+import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.UserViewModel
 
 class LoginFragment : Fragment() {
@@ -18,7 +19,7 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var userViewModel: UserViewModel
-    private var team: Int? = 0
+    private var team: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,14 +32,19 @@ class LoginFragment : Fragment() {
         }
 
         binding.rgTeam.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            team = when(radioButtonId){
-                binding.rbEven.id -> 0
-                binding.rbOdd.id -> 1
-                else -> null
+            when(radioButtonId){
+                binding.rbEven.id -> team = EnumTeam.EVEN_TEAM.numTeam
+                binding.rbOdd.id -> team =  EnumTeam.ODD_TEAM.numTeam
+                binding.rbSing.id -> team = EnumTeam.SINGLE.numTeam
             }
         }
 
         return binding.root
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private fun logIn() {
@@ -51,14 +57,14 @@ class LoginFragment : Fragment() {
         }
     }
 
-    private fun checkAuthority(userName: String, pass: String, team: Int?) {
+    private fun checkAuthority(userName: String, pass: String, team: Int) {
         val user: User? = userViewModel.checkUser(userName, pass).value
         if (user != null){
             // skontrolovat ci uz nie su iny pouzivatelia aktivny
             // ak su treba nastavit aktivitu na 0
             inactiveAllUsers()
-            // nastavit parny alebo neparny team
-            user.team = team!!
+            // nastavit team
+            user.team = team
             // tento pouzivatel je teraz aktivny vzdy moze byt len jeden
             user.isActive = 1
             userViewModel.updateUser(user)
@@ -83,10 +89,4 @@ class LoginFragment : Fragment() {
             }
         }
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
-    }
-
 }

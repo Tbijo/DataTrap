@@ -248,8 +248,6 @@ class RecaptureMouseFragment : Fragment() {
         val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
 
         if (checkInput(speciesID, trapID)){
-            // zmenit pohlavie vsetkym predch. mysiam ak sa zmenilo
-            changeSexIfNecesary()
 
             // recapture mouse
             val mouse: Mouse = args.mouse
@@ -298,6 +296,10 @@ class RecaptureMouseFragment : Fragment() {
         if (mouse.weight!! > specie.maxWeight!! || mouse.weight!! < specie.minWeight!!){
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes"){_, _ ->
+
+                // zmenit pohlavie vsetkym predch. mysiam ak sa zmenilo
+                changeSexIfNecesary()
+
                 mouseViewModel.insertMouse(mouse)
 
                 Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
