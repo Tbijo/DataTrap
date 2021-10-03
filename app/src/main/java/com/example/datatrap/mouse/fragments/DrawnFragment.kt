@@ -20,10 +20,10 @@ class DrawnFragment(private val uniCode: Int, private val fingers: Int) : Dialog
     private lateinit var background5: Bitmap
     private lateinit var background4: Bitmap
 
-    private lateinit var rightTopImgs: Array<Bitmap>
-    private lateinit var rightBottomImgs: Array<Bitmap>
-    private lateinit var leftTopImgs: Array<Bitmap>
-    private lateinit var leftBottomImgs: Array<Bitmap>
+    private lateinit var TisRightTopImgs: List<Bitmap>
+    private lateinit var DesRightBottomImgs: List<Bitmap>
+    private lateinit var StoLeftTopImgs: List<Bitmap>
+    private lateinit var JedLeftBottomImgs: List<Bitmap>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,28 +50,28 @@ class DrawnFragment(private val uniCode: Int, private val fingers: Int) : Dialog
     private fun callResources() {
         background5 = BitmapFactory.decodeResource(resources, R.drawable.pat_prstov)
         background4 = BitmapFactory.decodeResource(resources, R.drawable.styri_prsty)
-        rightTopImgs = arrayOf(
+        TisRightTopImgs = listOf(
             BitmapFactory.decodeResource(resources, R.drawable.prava_predna_prvy),
             BitmapFactory.decodeResource(resources, R.drawable.prava_predna_druhy),
             BitmapFactory.decodeResource(resources, R.drawable.prava_predna_treti),
             BitmapFactory.decodeResource(resources, R.drawable.prava_predna_stvrty),
             BitmapFactory.decodeResource(resources, R.drawable.prava_predna_piaty)
         )
-        rightBottomImgs = arrayOf(
+        DesRightBottomImgs = listOf(
             BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_prvy),
             BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_druhy),
             BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_treti),
             BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_stvrty),
             BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_piaty)
         )
-        leftTopImgs = arrayOf(
+        StoLeftTopImgs = listOf(
             BitmapFactory.decodeResource(resources, R.drawable.lava_predna_prvy),
             BitmapFactory.decodeResource(resources, R.drawable.lava_predna_druhy),
             BitmapFactory.decodeResource(resources, R.drawable.lava_predna_treti),
             BitmapFactory.decodeResource(resources, R.drawable.lava_predna_stvrty),
             BitmapFactory.decodeResource(resources, R.drawable.lava_predna_piaty)
         )
-        leftBottomImgs = arrayOf(
+        JedLeftBottomImgs = listOf(
             BitmapFactory.decodeResource(resources, R.drawable.lava_zadna_prvy),
             BitmapFactory.decodeResource(resources, R.drawable.lava_zadna_druhy),
             BitmapFactory.decodeResource(resources, R.drawable.lava_zadna_treti),
@@ -84,180 +84,239 @@ class DrawnFragment(private val uniCode: Int, private val fingers: Int) : Dialog
         val tempBitmap =
             Bitmap.createBitmap(bottomImage.width, bottomImage.height, Bitmap.Config.RGB_565)
         val tempCanvas = Canvas(tempBitmap)
+
         tempCanvas.drawBitmap(bottomImage, 0f, 0f, null)
+
         val unicodeS = unicode.toString()
-        for (i in unicodeS.indices) {
-            val c = unicodeS.substring(i, i + 1)
-            drawFinger5(c.toInt(), i, tempCanvas)
+
+        for (i in unicodeS.lastIndex downTo 0) {
+            val cislo = unicodeS.substring(i , i + 1).toInt()
+            when (cislo) {
+                0 -> continue
+
+                in 1..5 -> {
+                    when (unicodeS.length - i) {
+                        1 -> tempCanvas.drawBitmap(JedLeftBottomImgs[cislo - 1], 0f, 0f, null)
+                        2 -> tempCanvas.drawBitmap(DesRightBottomImgs[cislo - 1], 0f, 0f, null)
+                        3 -> tempCanvas.drawBitmap(StoLeftTopImgs[cislo - 1], 0f, 0f, null)
+                        4 -> tempCanvas.drawBitmap(TisRightTopImgs[cislo - 1], 0f, 0f, null)
+                    }
+                }
+                6 -> {
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[4], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[4], 0f, 0f, null)
+                        }
+                    }
+                }
+                7 -> {
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[4], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[4], 0f, 0f, null)
+                        }
+                    }
+                }
+                8 -> {
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[4], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[4], 0f, 0f, null)
+                        }
+                    }
+                }
+                9 -> {
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[4], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[4], 0f, 0f, null)
+                        }
+                    }
+                }
+            }
         }
+
         imgView.setImageBitmap(tempBitmap)
-    }
-
-    private fun drawFinger5(c: Int, i: Int, tempCanvas: Canvas) {
-        when (i) {
-            0 -> if (c > 5) {
-                val pole = drawFinger5P(c, i)
-                tempCanvas.drawBitmap(rightTopImgs[pole[0] - 1], 0f, 0f, null)
-                tempCanvas.drawBitmap(rightTopImgs[pole[1] - 1], 0f, 0f, null)
-            } else {
-                tempCanvas.drawBitmap(rightTopImgs[c - 1], 0f, 0f, null)
-            }
-            1 -> if (c > 5) {
-                val pole = drawFinger5P(c, i)
-                tempCanvas.drawBitmap(leftTopImgs[pole[0] - 1], 0f, 0f, null)
-                tempCanvas.drawBitmap(leftTopImgs[pole[1] - 1], 0f, 0f, null)
-            } else {
-                tempCanvas.drawBitmap(leftTopImgs[c - 1], 0f, 0f, null)
-            }
-            2 -> if (c > 5) {
-                val pole = drawFinger5P(c, i)
-                tempCanvas.drawBitmap(rightBottomImgs[pole[0] - 1], 0f, 0f, null)
-                tempCanvas.drawBitmap(rightBottomImgs[pole[1] - 1], 0f, 0f, null)
-            } else {
-                tempCanvas.drawBitmap(rightBottomImgs[c - 1], 0f, 0f, null)
-            }
-            3 -> if (c > 5) {
-                val pole = drawFinger5P(c, i)
-                tempCanvas.drawBitmap(leftBottomImgs[pole[0] - 1], 0f, 0f, null)
-                tempCanvas.drawBitmap(leftBottomImgs[pole[1] - 1], 0f, 0f, null)
-            } else {
-                tempCanvas.drawBitmap(leftBottomImgs[c - 1], 0f, 0f, null)
-            }
-        }
-    }
-
-    private fun drawFinger5P(c: Int, i: Int): IntArray {
-        val a = IntArray(2)
-        when (c) {
-            6 -> {
-                a[0] = 1
-                a[1] = 5
-            }
-            7 -> {
-                a[0] = 2
-                a[1] = 5
-            }
-            8 -> {
-                a[0] = 3
-                a[1] = 5
-            }
-            9 -> {
-                a[0] = 4
-                a[1] = 5
-            }
-        }
-        return a
     }
 
     private fun drawAndView4(imgView: ImageView, bottomImage: Bitmap, unicode: Int) {
         val tempBitmap =
             Bitmap.createBitmap(bottomImage.width, bottomImage.height, Bitmap.Config.RGB_565)
         val tempCanvas = Canvas(tempBitmap)
+
         tempCanvas.drawBitmap(bottomImage, 0f, 0f, null)
+
         val unicodeS = unicode.toString()
-        for (i in unicodeS.indices) {
-            val c = unicodeS.substring(i, i + 1)
-            drawFinger4(c.toInt(), i, tempCanvas)
-        }
-        imgView.setImageBitmap(tempBitmap)
-    }
 
-    private fun drawFinger4(c: Int, i: Int, tempCanvas: Canvas) {
-        //vykreslenie prsta
-        // // treba vytvorit kombinaciu cisiel ak je c vacsie ako 4 alebo 5
-        // i nam urcuje cifru s ktorou robime a c je konkretna hodnota cifry
-        when (i) {
-            0 -> if (c > 4) {
-                val pole = drawFinger4P(c, i)
-                tempCanvas.drawBitmap(rightTopImgs[pole[0] - 1], 0f, 0f, null)
-                tempCanvas.drawBitmap(rightTopImgs[pole[1] - 1], 0f, 0f, null)
-                // treba dat IF ak je posledna hodnota 0 aby sa nevykreslilo
-                if (pole[2] != 0) tempCanvas.drawBitmap(rightTopImgs[pole[2] - 1], 0f, 0f, null)
-            } else {
-                tempCanvas.drawBitmap(rightTopImgs[c - 1], 0f, 0f, null)
-            }
-            1 -> if (c > 4) {
-                val pole = drawFinger4P(c, i)
-                tempCanvas.drawBitmap(leftTopImgs[pole[0] - 1], 0f, 0f, null)
-                tempCanvas.drawBitmap(leftTopImgs[pole[1] - 1], 0f, 0f, null)
-                if (pole[2] != 0) tempCanvas.drawBitmap(leftTopImgs[pole[2] - 1], 0f, 0f, null)
-            } else {
-                tempCanvas.drawBitmap(leftTopImgs[c - 1], 0f, 0f, null)
-            }
-            2 -> if (c > 5) {
-                val pole = drawFinger4P(c, i)
-                tempCanvas.drawBitmap(rightBottomImgs[pole[0] - 1], 0f, 0f, null)
-                tempCanvas.drawBitmap(rightBottomImgs[pole[1] - 1], 0f, 0f, null)
-                if (pole[2] != 0) tempCanvas.drawBitmap(rightBottomImgs[pole[2] - 1], 0f, 0f, null)
-            } else {
-                tempCanvas.drawBitmap(rightBottomImgs[c - 1], 0f, 0f, null)
-            }
-            3 -> if (c > 5) {
-                val pole = drawFinger4P(c, i)
-                tempCanvas.drawBitmap(leftBottomImgs[pole[0] - 1], 0f, 0f, null)
-                tempCanvas.drawBitmap(leftBottomImgs[pole[1] - 1], 0f, 0f, null)
-                if (pole[2] != 0) tempCanvas.drawBitmap(leftBottomImgs[pole[2] - 1], 0f, 0f, null)
-            } else {
-                tempCanvas.drawBitmap(leftBottomImgs[c - 1], 0f, 0f, null)
-            }
-        }
-    }
+        for (i in unicodeS.lastIndex downTo 0) {
+            val cislo = unicodeS.substring(i , i + 1).toInt()
 
-    private fun drawFinger4P(c: Int, i: Int): IntArray {
-        val a = IntArray(3)
-        if (i == 0 || i == 1) { // horne koncatiny maju v tomto pripade 4 pazure
-            when (c) {
+            when (cislo) {
+                0 -> continue
+
+                in 1..4 -> {
+                    when (unicodeS.length - i) {
+                        1 -> tempCanvas.drawBitmap(JedLeftBottomImgs[cislo - 1], 0f, 0f, null)
+                        2 -> tempCanvas.drawBitmap(DesRightBottomImgs[cislo - 1], 0f, 0f, null)
+                        3 -> tempCanvas.drawBitmap(StoLeftTopImgs[cislo - 1], 0f, 0f, null)
+                        4 -> tempCanvas.drawBitmap(TisRightTopImgs[cislo - 1], 0f, 0f, null)
+                    }
+                }
                 5 -> {
-                    a[0] = 1
-                    a[1] = 4
-                    a[2] = 0
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[cislo - 1], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[cislo - 1], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                        }
+                    }
                 }
                 6 -> {
-                    a[0] = 2
-                    a[1] = 4
-                    a[2] = 0
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                        }
+                    }
                 }
                 7 -> {
-                    a[0] = 3
-                    a[1] = 4
-                    a[2] = 0
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                        }
+                    }
                 }
                 8 -> {
-                    a[0] = 1
-                    a[1] = 4
-                    a[2] = 3
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[0], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                        }
+                    }
                 }
                 9 -> {
-                    a[0] = 2
-                    a[1] = 4
-                    a[2] = 3
-                }
-            }
-        } else {
-            when (c) {
-                6 -> {
-                    a[0] = 1
-                    a[1] = 5
-                    a[2] = 0
-                }
-                7 -> {
-                    a[0] = 2
-                    a[1] = 5
-                    a[2] = 0
-                }
-                8 -> {
-                    a[0] = 3
-                    a[1] = 5
-                    a[2] = 0
-                }
-                9 -> {
-                    a[0] = 4
-                    a[1] = 5
-                    a[2] = 0
+                    when (unicodeS.length - i) {
+                        1 -> {
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                        }
+                        2 -> {
+                            tempCanvas.drawBitmap(DesRightBottomImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                        }
+                        3 -> {
+                            tempCanvas.drawBitmap(StoLeftTopImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                        }
+                        4 -> {
+                            tempCanvas.drawBitmap(TisRightTopImgs[1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[2], 0f, 0f, null)
+                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                        }
+                    }
                 }
             }
         }
-        return a
+
+        imgView.setImageBitmap(tempBitmap)
     }
 
 }

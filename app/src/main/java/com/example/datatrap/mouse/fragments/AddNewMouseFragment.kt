@@ -194,7 +194,7 @@ class AddNewMouseFragment : Fragment() {
             binding.etCodeMouseAdd.setText("")
             return
         }
-        // opravit generate code
+
         listSpecie.forEach {
             if (it.speciesCode == specieCode){
                 specie = it
@@ -286,12 +286,13 @@ class AddNewMouseFragment : Fragment() {
 
     private fun showDrawnRat(){
         speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
-        if (speciesID > 0 && code!! > 0 && code != null){
+        val currentCode: Int = binding.etCodeMouseAdd.text.toString().toInt()
+        if (speciesID > 0 && code != null && code!! > 0 && code.toString().length < 5 && code == currentCode){
             val fragman = requireActivity().supportFragmentManager
             val floatFrag = DrawnFragment(code!!, specie?.upperFingers!!)
             floatFrag.show(fragman, "FloatFragMouseCode")
         }else{
-            Toast.makeText(requireContext(), "Generate a code.", Toast.LENGTH_LONG).show()
+            Toast.makeText(requireContext(), "Generate a valid code.", Toast.LENGTH_LONG).show()
         }
     }
 
