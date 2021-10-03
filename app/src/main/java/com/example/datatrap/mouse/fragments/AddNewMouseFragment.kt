@@ -154,23 +154,21 @@ class AddNewMouseFragment : Fragment() {
         }
 
         binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            age = when(radioButtonId){
-                binding.rbAdult.id -> EnumMouseAge.ADULT.myName
-                binding.rbJuvenile.id -> EnumMouseAge.JUVENILE.myName
-                binding.rbSubadult.id -> EnumMouseAge.SUBADULT.myName
-                binding.rbNullAge.id -> null
-                else -> null
+            when(radioButtonId){
+                binding.rbAdult.id -> age =  EnumMouseAge.ADULT.myName
+                binding.rbJuvenile.id -> age =  EnumMouseAge.JUVENILE.myName
+                binding.rbSubadult.id -> age =  EnumMouseAge.SUBADULT.myName
+                binding.rbNullAge.id -> age =  null
             }
         }
 
         binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            captureID = when(radioButtonId){
-                binding.rbCaptured.id -> EnumCaptureID.CAPTURED.myName
-                binding.rbDied.id -> EnumCaptureID.DIED.myName
-                binding.rbEscaped.id -> EnumCaptureID.ESCAPED.myName
-                binding.rbReleased.id -> EnumCaptureID.RELEASED.myName
-                binding.rbNullCapture.id -> null
-                else -> null
+            when(radioButtonId){
+                binding.rbCaptured.id -> captureID =  EnumCaptureID.CAPTURED.myName
+                binding.rbDied.id -> captureID =  EnumCaptureID.DIED.myName
+                binding.rbEscaped.id -> captureID =  EnumCaptureID.ESCAPED.myName
+                binding.rbReleased.id -> captureID =  EnumCaptureID.RELEASED.myName
+                binding.rbNullCapture.id -> captureID = null
             }
         }
     }
@@ -307,7 +305,7 @@ class AddNewMouseFragment : Fragment() {
         speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
 
         if (checkInput(speciesID, trapID)){
-            code = if (code == null) null else giveOutPutInt(binding.etCodeMouseAdd.text.toString())
+            code = if (code != null) null else giveOutPutInt(binding.etCodeMouseAdd.text.toString())
             val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
             val sexActive: Int? = if (binding.cbSexActive.isChecked) 1 else 0
             val weight: Float? = giveOutPutFloat(binding.etWeight.text.toString())
@@ -364,6 +362,12 @@ class AddNewMouseFragment : Fragment() {
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
         }else{
+            // zvacsit numMice projektu do ktoreho sa pridava tato mys
+            updateProjectNumMice()
+
+            // zvacsit numMice occasion do ktorej sa pridava tato mys
+            updateOccasionNumMice()
+
             mouseViewModel.insertMouse(mouse)
 
             Toast.makeText(requireContext(), "New mouse added.", Toast.LENGTH_SHORT).show()

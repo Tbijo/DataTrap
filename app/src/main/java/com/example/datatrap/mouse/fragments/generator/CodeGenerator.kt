@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.datatrap.models.Mouse
+import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.MouseViewModel
 import java.util.*
 
@@ -83,7 +84,7 @@ class CodeGenerator(fragment: Fragment, private var code: Int, private val finge
 
     private fun checkNumberEvenOrOddForTeam(team: Int){
         if (isCycle2 < 2){
-            if (team == 0){
+            if (team == EnumTeam.EVEN_TEAM.numTeam){
                 if (code % 2 == 0){
                     Log.d("CodeGenerator", "Generation Complete")
                 }else{
@@ -95,7 +96,7 @@ class CodeGenerator(fragment: Fragment, private var code: Int, private val finge
                     }
                     checkNumberEvenOrOddForTeam(team)
                 }
-            }else{
+            }else if (team == EnumTeam.ODD_TEAM.numTeam){
                 if (code % 2 != 0){
                     Log.d("CodeGenerator", "Generation Complete")
                 }else{

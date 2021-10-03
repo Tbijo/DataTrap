@@ -37,17 +37,29 @@ class RecaptureMouseFragment : Fragment() {
     private lateinit var listSpecie: List<Specie>
     private lateinit var listProtocol: List<Protocol>
     private lateinit var mapSpecie: MutableMap<String, Long>
-    private lateinit var mapProtocol: MutableMap<String?, Long>
+    private lateinit var mapProtocol: MutableMap<String?, Long?>
 
     private var sex: String? = null
     private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
-    private var isMale: Boolean = false
+    private var gravitidy: Int? = null
+    private var lactating: Int? = null
+    private var embryoRight: Int? = null
+    private var embryoLeft: Int? = null
+    private var embryoDiameter: Float? = null
+    private var MC: Int? = null
+    private var MCright: Int? = null
+    private var MCleft: Int? = null
+    private var body: Float? = null
+    private var tail: Float? = null
+    private var feet: Float? = null
+    private var ear: Float? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentRecaptureMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
@@ -62,6 +74,7 @@ class RecaptureMouseFragment : Fragment() {
         listProtocol.forEach {
             mapProtocol[it.protocolName] = it.protocolId
         }
+        mapProtocol["null"] = null
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
@@ -69,6 +82,7 @@ class RecaptureMouseFragment : Fragment() {
         })
 
         setListeners()
+        setListenerToTrapID()
 
         initMouseValuesToView()
 
@@ -78,22 +92,25 @@ class RecaptureMouseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
+        val dropDownArrSpecie =
+            ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
         binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
 
-        val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
+        val dropDownArrProtocol =
+            ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
         binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
 
-        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, EnumTrapID.myValues())
+        val dropDownArrTrapID =
+            ArrayAdapter(requireContext(), R.layout.dropdown_names, EnumTrapID.myValues())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
         mapSpecie.forEach {
-            if (it.value == args.mouse.speciesID){
+            if (it.value == args.mouse.speciesID) {
                 binding.autoCompTvSpecie.setText(it.key, false)
             }
         }
         mapProtocol.forEach {
-            if (it.value == args.mouse.protocolID){
+            if (it.value == args.mouse.protocolID) {
                 binding.autoCompTvProtocol.setText(it.key, false)
             }
         }
@@ -113,15 +130,14 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.menu_save -> recaptureMouse()
             R.id.menu_camera -> goToCamera()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initMouseValuesToView(){
-        // vyriesit nastavenie null
+    private fun initMouseValuesToView() {
         binding.cbGravit.isChecked = args.mouse.gravidity == 1
         binding.cbLactating.isChecked = args.mouse.lactating == 1
         binding.cbSexActive.isChecked = args.mouse.sexActive == 1
@@ -141,28 +157,26 @@ class RecaptureMouseFragment : Fragment() {
         binding.etMcRight.setText(args.mouse.MCright.toString())
         binding.etMcLeft.setText(args.mouse.MCleft.toString())
 
-        when(args.mouse.sex){
+        when (args.mouse.sex) {
             "Male" -> {
                 binding.rbMale.isChecked = true
-                isMale = true
                 showNonMaleFields()
             }
             "Female" -> {
                 binding.rbFemale.isChecked = true
-                isMale = false
                 hideNonMaleFields()
             }
             null -> binding.rbNullSex.isChecked = true
         }
 
-        when(args.mouse.age){
+        when (args.mouse.age) {
             EnumMouseAge.ADULT.myName -> binding.rbAdult.isChecked = true
             EnumMouseAge.SUBADULT.myName -> binding.rbSubadult.isChecked = true
             EnumMouseAge.JUVENILE.myName -> binding.rbJuvenile.isChecked = true
             null -> binding.rbNullAge.isChecked = true
         }
 
-        when(args.mouse.captureID){
+        when (args.mouse.captureID) {
             EnumCaptureID.CAPTURED.myName -> binding.rbCaptured.isChecked = true
             EnumCaptureID.DIED.myName -> binding.rbDied.isChecked = true
             EnumCaptureID.ESCAPED.myName -> binding.rbEscaped.isChecked = true
@@ -171,62 +185,105 @@ class RecaptureMouseFragment : Fragment() {
         }
     }
 
-    private fun setListeners(){
-        binding.rgSex.setOnCheckedChangeListener{ radioGroup, checkedId ->
-            when(checkedId){
-                R.id.rb_male -> {
+    private fun setListeners() {
+        binding.rgSex.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            when (radioButtonId) {
+                binding.rbMale.id -> {
                     sex = "Male"
-                    showNonMaleFields()
-                    isMale = true
-                }
-                R.id.rb_female -> {
-                    sex =  "Female"
                     hideNonMaleFields()
-                    isMale = false
                 }
-                R.id.rb_null_sex -> {
+                binding.rbFemale.id -> {
+                    sex = "Female"
+                    showNonMaleFields()
+                }
+                binding.rbNullSex.id -> {
                     sex = null
-                    isMale = false
                     showNonMaleFields()
                 }
             }
         }
 
-        binding.rgAge.setOnCheckedChangeListener { radioGroup, checkedId ->
-            age = when(checkedId){
-                R.id.rb_adult -> EnumMouseAge.ADULT.myName
-                R.id.rb_juvenile -> EnumMouseAge.JUVENILE.myName
-                R.id.rb_subadult -> EnumMouseAge.SUBADULT.myName
-                R.id.rb_null_age -> null
-                else -> null
+        binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            when (radioButtonId) {
+                binding.rbAdult.id -> age = EnumMouseAge.ADULT.myName
+                binding.rbJuvenile.id -> age = EnumMouseAge.JUVENILE.myName
+                binding.rbSubadult.id -> age = EnumMouseAge.SUBADULT.myName
+                binding.rbNullAge.id -> age = null
             }
         }
 
-        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, checkedId ->
-            captureID = when(checkedId){
-                R.id.rb_captured -> EnumCaptureID.CAPTURED.myName
-                R.id.rb_died -> EnumCaptureID.DIED.myName
-                R.id.rb_escaped -> EnumCaptureID.ESCAPED.myName
-                R.id.rb_released -> EnumCaptureID.RELEASED.myName
-                R.id.rb_null_capture -> null
-                else -> null
+        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+            when (radioButtonId) {
+                binding.rbCaptured.id -> captureID = EnumCaptureID.CAPTURED.myName
+                binding.rbDied.id -> captureID = EnumCaptureID.DIED.myName
+                binding.rbEscaped.id -> captureID = EnumCaptureID.ESCAPED.myName
+                binding.rbReleased.id -> captureID = EnumCaptureID.RELEASED.myName
+                binding.rbNullCapture.id -> captureID = null
             }
         }
     }
 
-    private fun hideNonMaleFields(){
-        // vyriesit nastavenie null
+    private fun setListenerToTrapID() {
+        binding.autoCompTvTrapId.setOnItemClickListener { parent, view, position, id ->
+            when (parent.getItemAtPosition(position) as String) {
+                EnumTrapID.LIVE_TRAPS.myName -> {
+                    body = null
+                    tail = null
+                    feet = null
+                    ear = null
+                    binding.etBody.visibility = View.INVISIBLE
+                    binding.etBody.setText("")
+                    binding.etTail.visibility = View.INVISIBLE
+                    binding.etTail.setText("")
+                    binding.etFeet.visibility = View.INVISIBLE
+                    binding.etFeet.setText("")
+                    binding.etEar.visibility = View.INVISIBLE
+                    binding.etEar.setText("")
+
+                    binding.rgCaptureId.visibility = View.VISIBLE
+                }
+                EnumTrapID.SNAP_TRAPS.myName -> {
+                    captureID = null
+                    binding.rgCaptureId.visibility = View.INVISIBLE
+                    binding.rgCaptureId.clearCheck()
+
+                    binding.etBody.visibility = View.VISIBLE
+                    binding.etTail.visibility = View.VISIBLE
+                    binding.etFeet.visibility = View.VISIBLE
+                    binding.etEar.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    private fun hideNonMaleFields() {
+        gravitidy = null
+        lactating = null
+        embryoRight = null
+        embryoLeft = null
+        embryoDiameter = null
+        MC = null
+        MCright = null
+        MCleft = null
         binding.cbGravit.visibility = View.INVISIBLE
+        binding.cbGravit.isChecked = false
         binding.cbLactating.visibility = View.INVISIBLE
+        binding.cbLactating.isChecked = false
         binding.cbMc.visibility = View.INVISIBLE
+        binding.cbMc.isChecked = false
         binding.etMcRight.visibility = View.INVISIBLE
+        binding.etMcRight.setText("")
         binding.etMcLeft.visibility = View.INVISIBLE
+        binding.etMcLeft.setText("")
         binding.etEmbryoRight.visibility = View.INVISIBLE
+        binding.etEmbryoRight.setText("")
         binding.etEmbryoLeft.visibility = View.INVISIBLE
+        binding.etEmbryoLeft.setText("")
         binding.etEmbryoDiameter.visibility = View.INVISIBLE
+        binding.etEmbryoDiameter.setText("")
     }
 
-    private fun showNonMaleFields(){
+    private fun showNonMaleFields() {
         binding.cbGravit.visibility = View.VISIBLE
         binding.cbLactating.visibility = View.VISIBLE
         binding.cbMc.visibility = View.VISIBLE
@@ -238,67 +295,85 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     private fun goToCamera() {
-        val action = RecaptureMouseFragmentDirections.actionRecaptureMouseFragmentToTakePhotoFragment("Mouse", imgName)
+        val action =
+            RecaptureMouseFragmentDirections.actionRecaptureMouseFragmentToTakePhotoFragment(
+                "Mouse",
+                imgName
+            )
         findNavController().navigate(action)
     }
 
     private fun recaptureMouse() {
-        // vyriesit nastavenie null
         val trapID: String = binding.autoCompTvTrapId.text.toString()
         val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
 
-        if (checkInput(speciesID, trapID)){
-
+        if (checkInput(speciesID, trapID)) {
             // recapture mouse
             val mouse: Mouse = args.mouse
             mouse.mouseId = 0
             mouse.primeMouseID = args.mouse.mouseId
-            mouse.speciesID = speciesID
-            mouse.protocolID = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
             mouse.occasionID = args.occasion.occasionId
             mouse.localityID = args.occasion.localityID
-            mouse.trapID = trapID
             mouse.catchDateTime = Calendar.getInstance().time
+            mouse.recapture = 1
+            mouse.speciesID = speciesID
+            mouse.trapID = trapID
             mouse.sex = sex
             mouse.age = age
-            mouse.gravidity = if (binding.cbGravit.isChecked) 1 else 0
-            mouse.lactating = if (binding.cbLactating.isChecked) 1 else 0
-            mouse.sexActive = if (binding.cbSexActive.isChecked) 1 else 0
-            mouse.weight = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
-            mouse.recapture = 1
             mouse.captureID = captureID
-            mouse.body = Integer.parseInt(binding.etBody.text.toString()).toFloat()
-            mouse.tail = Integer.parseInt(binding.etTail.text.toString()).toFloat()
-            mouse.feet = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
-            mouse.ear = Integer.parseInt(binding.etEar.text.toString()).toFloat()
-            mouse.testesLength = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
-            mouse.testesWidth = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
+
+            mouse.protocolID = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
+            mouse.sexActive = if (binding.cbSexActive.isChecked) 1 else 0
+            mouse.weight = giveOutPutFloat(binding.etWeight.text.toString())
+            mouse.body = if (body == null) null else giveOutPutFloat(binding.etBody.text.toString())
+            mouse.tail = if (tail == null) null else giveOutPutFloat(binding.etTail.text.toString())
+            mouse.feet = if (feet == null) null else giveOutPutFloat(binding.etFeet.text.toString())
+            mouse.ear = if (ear == null) null else giveOutPutFloat(binding.etEar.text.toString())
+            mouse.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
+            mouse.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
+            mouse.gravidity = if (gravitidy == null) null else { if (binding.cbGravit.isChecked) 1 else 0 }
+            mouse.lactating = if (lactating == null) null else { if (binding.cbLactating.isChecked) 1 else 0 }
             //počet embryí v oboch rohoch maternice a ich priemer
-            mouse.embryoRight = if (isMale) null else Integer.parseInt(binding.etEmbryoRight.text.toString())
-            mouse.embryoLeft = if (isMale) null else Integer.parseInt(binding.etEmbryoLeft.text.toString())
-            mouse.embryoDiameter = if (isMale) null else Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
-            mouse.MC = if (isMale) null else { if (binding.cbMc.isChecked) 1 else 0 }
+            mouse.embryoRight =
+                if (embryoRight == null) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
+            mouse.embryoLeft =
+                if (embryoLeft == null) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
+            mouse.embryoDiameter =
+                if (embryoDiameter == null) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
+            mouse.MC = if (MC == null) null else { if (binding.cbMc.isChecked) 1 else 0 }
             //počet placentálnych polypov
-            mouse.MCright = if (isMale) null else Integer.parseInt(binding.etMcRight.text.toString())
-            mouse.MCleft = if (isMale) null else Integer.parseInt(binding.etMcLeft.text.toString())
-            mouse.note = binding.etMouseNote.text.toString()
+            mouse.MCright =
+                if (MCright == null) null else giveOutPutInt(binding.etMcRight.text.toString())
+            mouse.MCleft = if (MCleft == null) null else giveOutPutInt(binding.etMcLeft.text.toString())
+            mouse.note = if (binding.etMouseNote.text.toString().isEmpty()) null else binding.etMouseNote.text.toString()
             mouse.imgName = imgName
 
             checkWeightAndSave(mouse)
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG)
+                .show()
         }
+    }
+
+    private fun giveOutPutInt(input: String?): Int? {
+        return if (input.isNullOrEmpty()) null else Integer.parseInt(input)
+    }
+
+    private fun giveOutPutFloat(input: String?): Float? {
+        return if (input.isNullOrEmpty()) null else Integer.parseInt(input).toFloat()
     }
 
     private fun checkWeightAndSave(mouse: Mouse) {
         val specie: Specie = specieViewModel.getSpecie(mouse.speciesID).value!!
 
-        if (mouse.weight!! > specie.maxWeight!! || mouse.weight!! < specie.minWeight!!){
+        if (mouse.weight!! > specie.maxWeight!! || mouse.weight!! < specie.minWeight!!) {
             val builder = AlertDialog.Builder(requireContext())
-            builder.setPositiveButton("Yes"){_, _ ->
+            builder.setPositiveButton("Yes") { _, _ ->
 
                 // zmenit pohlavie vsetkym predch. mysiam ak sa zmenilo
-                changeSexIfNecesary()
+                if (args.mouse.sex != sex) {
+                    changeSexIfNecesary()
+                }
 
                 mouseViewModel.insertMouse(mouse)
 
@@ -306,11 +381,15 @@ class RecaptureMouseFragment : Fragment() {
 
                 findNavController().navigateUp()
             }
-                .setNegativeButton("No"){_, _ -> }
+                .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
-        }else{
+        } else {
+            if (args.mouse.sex != sex) {
+                changeSexIfNecesary()
+            }
+
             mouseViewModel.insertMouse(mouse)
 
             Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
@@ -323,19 +402,17 @@ class RecaptureMouseFragment : Fragment() {
         return specieID > 0 && trapID.isNotEmpty()
     }
 
-    private fun changeSexIfNecesary(){
+    private fun changeSexIfNecesary() {
         // upravit zmenu pohlavia
-        if (args.mouse.sex != sex){
-            val updateMouseList: List<Mouse> = mouseViewModel.getMiceForLog(args.mouse.mouseId).value!!
-            updateMouseList.forEach {
-                it.sex = sex
-                mouseViewModel.updateMouse(it)
-            }
-            // zmena pohlavia prveho zaznamu
-            val mouse: Mouse = mouseViewModel.getMouse(args.mouse.mouseId).value!!
-            mouse.sex = sex
-            mouseViewModel.updateMouse(mouse)
+        val updateMouseList: List<Mouse> = mouseViewModel.getMiceForLog(args.mouse.mouseId).value!!
+        updateMouseList.forEach {
+            it.sex = sex
+            mouseViewModel.updateMouse(it)
         }
+        // zmena pohlavia prveho zaznamu
+        val mouse: Mouse = mouseViewModel.getMouse(args.mouse.mouseId).value!!
+        mouse.sex = sex
+        mouseViewModel.updateMouse(mouse)
     }
 
 }

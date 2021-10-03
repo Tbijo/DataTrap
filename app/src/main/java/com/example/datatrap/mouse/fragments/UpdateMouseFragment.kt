@@ -34,13 +34,24 @@ class UpdateMouseFragment : Fragment() {
     private lateinit var listSpecie: List<Specie>
     private lateinit var listProtocol: List<Protocol>
     private lateinit var mapSpecie: MutableMap<String, Long>
-    private lateinit var mapProtocol: MutableMap<String?, Long>
+    private lateinit var mapProtocol: MutableMap<String?, Long?>
 
     private var sex: String? = null
     private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
-    private var isMale: Boolean = false
+    private var gravitidy: Int? = null
+    private var lactating: Int? = null
+    private var embryoRight: Int? = null
+    private var embryoLeft: Int? = null
+    private var embryoDiameter: Float? = null
+    private var MC: Int? = null
+    private var MCright: Int? = null
+    private var MCleft: Int? = null
+    private var body: Float? = null
+    private var tail: Float? = null
+    private var feet: Float? = null
+    private var ear: Float? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +73,7 @@ class UpdateMouseFragment : Fragment() {
         listProtocol.forEach {
             mapProtocol[it.protocolName] = it.protocolId
         }
+        mapProtocol["null"] = null
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
@@ -69,6 +81,7 @@ class UpdateMouseFragment : Fragment() {
         })
 
         setListeners()
+        setListenerToTrapID()
 
         initMouseValuesToView()
 
@@ -121,7 +134,6 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun initMouseValuesToView(){
-        // vyriesit null
         binding.cbGravit.isChecked = args.mouse.gravidity == 1
         binding.cbLactating.isChecked = args.mouse.lactating == 1
         binding.cbSexActive.isChecked = args.mouse.sexActive == 1
@@ -145,12 +157,10 @@ class UpdateMouseFragment : Fragment() {
         when(args.mouse.sex){
             "Male" -> {
                 binding.rbMale.isChecked = true
-                isMale = true
                 showNonMaleFields()
             }
             "Female" -> {
                 binding.rbFemale.isChecked = true
-                isMale = false
                 hideNonMaleFields()
             }
             null -> binding.rbNullSex.isChecked = true
@@ -177,54 +187,97 @@ class UpdateMouseFragment : Fragment() {
             when(radioButtonId){
                 binding.rbMale.id -> {
                     sex = "Male"
-                    isMale = true
                     hideNonMaleFields()
                 }
                 binding.rbFemale.id -> {
                     sex = "Female"
-                    isMale = false
                     showNonMaleFields()
                 }
                 binding.rbNullSex.id -> {
                     sex = null
-                    isMale = false
                     showNonMaleFields()
                 }
             }
         }
 
         binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            age = when(radioButtonId){
-                binding.rbAdult.id -> EnumMouseAge.ADULT.myName
-                binding.rbJuvenile.id -> EnumMouseAge.JUVENILE.myName
-                binding.rbSubadult.id -> EnumMouseAge.SUBADULT.myName
-                binding.rbNullAge.id -> null
-                else -> null
+            when(radioButtonId){
+                binding.rbAdult.id -> age = EnumMouseAge.ADULT.myName
+                binding.rbJuvenile.id -> age = EnumMouseAge.JUVENILE.myName
+                binding.rbSubadult.id -> age = EnumMouseAge.SUBADULT.myName
+                binding.rbNullAge.id -> age = null
             }
         }
 
         binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            captureID = when(radioButtonId){
-                binding.rbCaptured.id -> EnumCaptureID.CAPTURED.myName
-                binding.rbDied.id -> EnumCaptureID.DIED.myName
-                binding.rbEscaped.id -> EnumCaptureID.ESCAPED.myName
-                binding.rbReleased.id -> EnumCaptureID.RELEASED.myName
-                binding.rbNullCapture.id -> null
-                else -> null
+            when(radioButtonId){
+                binding.rbCaptured.id -> captureID = EnumCaptureID.CAPTURED.myName
+                binding.rbDied.id -> captureID = EnumCaptureID.DIED.myName
+                binding.rbEscaped.id -> captureID = EnumCaptureID.ESCAPED.myName
+                binding.rbReleased.id -> captureID = EnumCaptureID.RELEASED.myName
+                binding.rbNullCapture.id -> captureID = null
+            }
+        }
+    }
+
+    private fun setListenerToTrapID(){
+        binding.autoCompTvTrapId.setOnItemClickListener { parent, view, position, id ->
+            when (parent.getItemAtPosition(position) as String) {
+                EnumTrapID.LIVE_TRAPS.myName -> {
+                    body = null
+                    tail = null
+                    feet = null
+                    ear = null
+                    binding.etBody.visibility = View.INVISIBLE
+                    binding.etBody.setText("")
+                    binding.etTail.visibility = View.INVISIBLE
+                    binding.etTail.setText("")
+                    binding.etFeet.visibility = View.INVISIBLE
+                    binding.etFeet.setText("")
+                    binding.etEar.visibility = View.INVISIBLE
+                    binding.etEar.setText("")
+
+                    binding.rgCaptureId.visibility = View.VISIBLE
+                }
+                EnumTrapID.SNAP_TRAPS.myName -> {
+                    captureID = null
+                    binding.rgCaptureId.visibility = View.INVISIBLE
+                    binding.rgCaptureId.clearCheck()
+
+                    binding.etBody.visibility = View.VISIBLE
+                    binding.etTail.visibility = View.VISIBLE
+                    binding.etFeet.visibility = View.VISIBLE
+                    binding.etEar.visibility = View.VISIBLE
+                }
             }
         }
     }
 
     private fun hideNonMaleFields(){
-        // vyriesit nastavenie null
+        gravitidy = null
+        lactating = null
+        embryoRight = null
+        embryoLeft = null
+        embryoDiameter = null
+        MC = null
+        MCright = null
+        MCleft = null
         binding.cbGravit.visibility = View.INVISIBLE
+        binding.cbGravit.isChecked = false
         binding.cbLactating.visibility = View.INVISIBLE
+        binding.cbLactating.isChecked = false
         binding.cbMc.visibility = View.INVISIBLE
+        binding.cbMc.isChecked = false
         binding.etMcRight.visibility = View.INVISIBLE
+        binding.etMcRight.setText("")
         binding.etMcLeft.visibility = View.INVISIBLE
+        binding.etMcLeft.setText("")
         binding.etEmbryoRight.visibility = View.INVISIBLE
+        binding.etEmbryoRight.setText("")
         binding.etEmbryoLeft.visibility = View.INVISIBLE
+        binding.etEmbryoLeft.setText("")
         binding.etEmbryoDiameter.visibility = View.INVISIBLE
+        binding.etEmbryoDiameter.setText("")
     }
 
     private fun showNonMaleFields(){
@@ -288,26 +341,27 @@ class UpdateMouseFragment : Fragment() {
             mouse.sex = sex
             mouse.age = age
             mouse.captureID = captureID
+
             mouse.protocolID = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
-            mouse.gravidity = if (binding.cbGravit.isChecked) 1 else 0
-            mouse.lactating = if (binding.cbLactating.isChecked) 1 else 0
             mouse.sexActive = if (binding.cbSexActive.isChecked) 1 else 0
-            mouse.weight = Integer.parseInt(binding.etWeight.text.toString()).toFloat()
-            mouse.body = Integer.parseInt(binding.etBody.text.toString()).toFloat()
-            mouse.tail = Integer.parseInt(binding.etTail.text.toString()).toFloat()
-            mouse.feet = Integer.parseInt(binding.etFeet.text.toString()).toFloat()
-            mouse.ear = Integer.parseInt(binding.etEar.text.toString()).toFloat()
-            mouse.testesLength = Integer.parseInt(binding.etTestesLength.text.toString()).toFloat()
-            mouse.testesWidth = Integer.parseInt(binding.etTestesWidth.text.toString()).toFloat()
+            mouse.weight = giveOutPutFloat(binding.etWeight.text.toString())
+            mouse.body = if (body == null) null else giveOutPutFloat(binding.etBody.text.toString())
+            mouse.tail = if (tail == null) null else giveOutPutFloat(binding.etTail.text.toString())
+            mouse.feet = if (feet == null) null else giveOutPutFloat(binding.etFeet.text.toString())
+            mouse.ear = if (ear == null) null else giveOutPutFloat(binding.etEar.text.toString())
+            mouse.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
+            mouse.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
+            mouse.gravidity = if (gravitidy == null) null else { if (binding.cbGravit.isChecked) 1 else 0 }
+            mouse.lactating = if (lactating == null) null else { if (binding.cbLactating.isChecked) 1 else 0 }
             //počet embryí v oboch rohoch maternice a ich priemer
-            mouse.embryoRight = if (isMale) null else Integer.parseInt(binding.etEmbryoRight.text.toString())
-            mouse.embryoLeft = if (isMale) null else Integer.parseInt(binding.etEmbryoLeft.text.toString())
-            mouse.embryoDiameter = if (isMale) null else Integer.parseInt(binding.etEmbryoDiameter.text.toString()).toFloat()
-            mouse.MC = if (isMale) null else { if (binding.cbMc.isChecked) 1 else 0 }
+            mouse.embryoRight = if (embryoRight == null) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
+            mouse.embryoLeft = if (embryoLeft == null) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
+            mouse.embryoDiameter = if (embryoDiameter == null) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
+            mouse.MC = if (MC == null) null else { if (binding.cbMc.isChecked) 1 else 0 }
             //počet placentálnych polypov
-            mouse.MCright = if (isMale) null else Integer.parseInt(binding.etMcRight.text.toString())
-            mouse.MCleft = if (isMale) null else Integer.parseInt(binding.etMcLeft.text.toString())
-            mouse.note = binding.etMouseNote.text.toString()
+            mouse.MCright = if (MCright == null) null else giveOutPutInt(binding.etMcRight.text.toString())
+            mouse.MCleft = if (MCleft == null) null else giveOutPutInt(binding.etMcLeft.text.toString())
+            mouse.note = if (binding.etMouseNote.text.toString().isEmpty()) null else binding.etMouseNote.text.toString()
             mouse.imgName = imgName
 
             // update mouse
@@ -318,13 +372,21 @@ class UpdateMouseFragment : Fragment() {
         }
     }
 
+    private fun giveOutPutInt(input: String?): Int?{
+        return if (input.isNullOrEmpty()) null else Integer.parseInt(input)
+    }
+
+    private fun giveOutPutFloat(input: String?): Float?{
+        return if (input.isNullOrEmpty()) null else Integer.parseInt(input).toFloat()
+    }
+
     private fun checkWeightAndSave(mouse: Mouse) {
         val specie: Specie = specieViewModel.getSpecie(mouse.speciesID).value!!
 
         if (mouse.weight!! > specie.maxWeight!! || mouse.weight!! < specie.minWeight!!){
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes"){_, _ ->
-                mouseViewModel.insertMouse(mouse)
+                mouseViewModel.updateMouse(mouse)
 
                 Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
 
@@ -335,7 +397,7 @@ class UpdateMouseFragment : Fragment() {
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
         }else{
-            mouseViewModel.insertMouse(mouse)
+            mouseViewModel.updateMouse(mouse)
 
             Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
 

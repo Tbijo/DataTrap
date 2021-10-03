@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateUserBinding
 import com.example.datatrap.models.User
+import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.UserViewModel
 
 class UpdateUserFragment : Fragment() {
@@ -20,7 +21,7 @@ class UpdateUserFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private val args by navArgs<UpdateUserFragmentArgs>()
 
-    private var team: Int? = null
+    private var team: Int = args.user.team
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -31,10 +32,10 @@ class UpdateUserFragment : Fragment() {
         initUserValuseToView()
 
         binding.rgTeamUpdate.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            team = when(radioButtonId){
-                binding.rbEven.id -> 0
-                binding.rbOdd.id -> 1
-                else -> null
+            when(radioButtonId){
+                binding.rbEven.id -> team =  EnumTeam.EVEN_TEAM.numTeam
+                binding.rbOdd.id -> team =  EnumTeam.ODD_TEAM.numTeam
+                binding.rbSing.id -> team =  EnumTeam.SINGLE.numTeam
             }
         }
 
@@ -83,7 +84,7 @@ class UpdateUserFragment : Fragment() {
             val user: User = args.user
             user.userName = userName
             user.password = password
-            user.team = team!!
+            user.team = team
 
             userViewModel.updateUser(user)
 
@@ -104,8 +105,9 @@ class UpdateUserFragment : Fragment() {
         binding.etPasswordUpdate.setText(args.user.password)
 
         when(args.user.team){
-            0 -> binding.rbEven.isChecked = true
-            1 -> binding.rbOdd.isChecked = true
+            EnumTeam.EVEN_TEAM.numTeam -> binding.rbEven.isChecked = true
+            EnumTeam.ODD_TEAM.numTeam -> binding.rbOdd.isChecked = true
+            EnumTeam.SINGLE.numTeam -> binding.rbSing.isChecked = true
         }
     }
 
