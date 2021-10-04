@@ -157,12 +157,12 @@ class AddOccasionFragment : Fragment() {
             val envType: Long? = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
             val vegType: Long? = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
             val gotCaught = 0
-            val numTraps = if (binding.etNumTraps.text.toString().isEmpty()) null else Integer.parseInt(binding.etNumTraps.text.toString())
+            val numTraps = if (binding.etNumTraps.text.toString().isBlank()) null else Integer.parseInt(binding.etNumTraps.text.toString())
             val numMice = 0
-            val note: String? = if (binding.etOccasionNote.toString().isEmpty()) null else binding.etOccasionNote.toString()
+            val note: String? = if (binding.etOccasionNote.toString().isBlank()) null else binding.etOccasionNote.toString()
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
-            val temper = if (binding.etTemperature.text.toString().isEmpty()) null else temperature
-            val weat = if (binding.etWeather.text.toString().isEmpty()) null else weatherGlob
+            val temper = if (binding.etTemperature.text.toString().isBlank()) null else temperature
+            val weat = if (binding.etWeather.text.toString().isBlank()) null else weatherGlob
 
             // zvacsit numOcc v Session
             updateSessionNumOcc()

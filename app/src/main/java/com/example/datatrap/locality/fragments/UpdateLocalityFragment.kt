@@ -21,6 +21,7 @@ class UpdateLocalityFragment : Fragment(){
 
     private var _binding: FragmentUpdateLocalityBinding? = null
     private val binding get() = _binding!!
+    
     private lateinit var localityViewModel: LocalityViewModel
     private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
     private lateinit var projectViewModel: ProjectViewModel
@@ -110,7 +111,7 @@ class UpdateLocalityFragment : Fragment(){
             locality.localityName = localityName
             locality.x = Integer.parseInt(latitude).toFloat()
             locality.y = Integer.parseInt(longitude).toFloat()
-            locality.note = binding.etLocalityNote.text.toString()
+            locality.note = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
 
             localityViewModel.updateLocality(locality)
 

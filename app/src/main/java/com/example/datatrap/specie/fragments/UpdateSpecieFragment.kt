@@ -39,10 +39,9 @@ class UpdateSpecieFragment : Fragment() {
         })
 
         binding.rgUpperFingers.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            upperFingers = when (radioButtonId){
-                binding.rb4.id -> 4
-                binding.rb5.id -> 5
-                else -> null
+            when (radioButtonId){
+                binding.rb4.id -> upperFingers = 4
+                binding.rb5.id -> upperFingers = 5
             }
         }
 
@@ -71,7 +70,6 @@ class UpdateSpecieFragment : Fragment() {
     }
 
     private fun goToCamera(){
-        // overenie ci mame alebo nemame fotku
         val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureFragment(imgName)
         findNavController().navigate(action)
     }
@@ -121,13 +119,13 @@ class UpdateSpecieFragment : Fragment() {
             specie.speciesCode = speciesCode
             specie.fullName = fullName
             specie.authority = authority
-            specie.synonym = binding.etSynonym.text.toString()
-            specie.description = binding.etDescription.text.toString()
+            specie.synonym = if (binding.etSynonym.text.toString().isBlank()) null else binding.etSynonym.text.toString()
+            specie.description = if (binding.etDescription.text.toString().isBlank()) null else binding.etDescription.text.toString()
             specie.isSmallMammal = if (binding.cbIsSmallMammal.isChecked) 1 else 0
             specie.upperFingers = upperFingers
-            specie.minWeight = Integer.parseInt(binding.etMinWeight.text.toString()).toFloat()
-            specie.maxWeight = Integer.parseInt(binding.etMaxWeight.text.toString()).toFloat()
-            specie.note = binding.etNote.text.toString()
+            specie.minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMinWeight.text.toString()).toFloat()
+            specie.maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMaxWeight.text.toString()).toFloat()
+            specie.note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()
             specie.imgName = imgName
 
             specieViewModel.updateSpecie(specie)

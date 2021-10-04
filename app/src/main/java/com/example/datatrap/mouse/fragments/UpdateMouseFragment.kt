@@ -361,52 +361,61 @@ class UpdateMouseFragment : Fragment() {
             //počet placentálnych polypov
             mouse.MCright = if (MCright == null) null else giveOutPutInt(binding.etMcRight.text.toString())
             mouse.MCleft = if (MCleft == null) null else giveOutPutInt(binding.etMcLeft.text.toString())
-            mouse.note = if (binding.etMouseNote.text.toString().isEmpty()) null else binding.etMouseNote.text.toString()
+            mouse.note = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
             mouse.imgName = imgName
 
             // update mouse
-            checkWeightAndSave(mouse)
+            var selSpecie: Specie? = null
+            listSpecie.forEach{
+                if (it.specieId == mouse.speciesID){
+                    selSpecie = it
+                }
+            }
+
+            if (mouse.weight != null && selSpecie?.minWeight != null && selSpecie?.maxWeight != null) {
+                checkWeightAndSave(mouse, selSpecie!!)
+            } else {
+                executeTask(mouse)
+            }
 
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun giveOutPutInt(input: String?): Int?{
-        return if (input.isNullOrEmpty()) null else Integer.parseInt(input)
-    }
-
-    private fun giveOutPutFloat(input: String?): Float?{
-        return if (input.isNullOrEmpty()) null else Integer.parseInt(input).toFloat()
-    }
-
-    private fun checkWeightAndSave(mouse: Mouse) {
-        val specie: Specie = specieViewModel.getSpecie(mouse.speciesID).value!!
-
-        if (mouse.weight!! > specie.maxWeight!! || mouse.weight!! < specie.minWeight!!){
+    private fun checkWeightAndSave(mouse: Mouse, selSpecie: Specie) {
+        if (mouse.weight!! > selSpecie.maxWeight!! || mouse.weight!! < selSpecie.minWeight!!){
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes"){_, _ ->
-                mouseViewModel.updateMouse(mouse)
-
-                Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
-
-                findNavController().navigateUp()
+                executeTask(mouse)
             }
                 .setNegativeButton("No"){_, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
         }else{
-            mouseViewModel.updateMouse(mouse)
-
-            Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
-
-            findNavController().navigateUp()
+            executeTask(mouse)
         }
+    }
+
+    private fun executeTask(mouse: Mouse) {
+        mouseViewModel.updateMouse(mouse)
+
+        Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
+
+        findNavController().navigateUp()
     }
 
     private fun checkInput(specieID: Long, trapID: String): Boolean {
         return specieID > 0 && trapID.isNotEmpty()
+    }
+
+    private fun giveOutPutInt(input: String?): Int?{
+        return if (input.isNullOrBlank()) null else Integer.parseInt(input)
+    }
+
+    private fun giveOutPutFloat(input: String?): Float?{
+        return if (input.isNullOrBlank()) null else Integer.parseInt(input).toFloat()
     }
 
 }

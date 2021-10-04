@@ -18,6 +18,7 @@ class AddLocalityFragment : Fragment() {
 
     private var _binding: FragmentAddLocalityBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var localityViewModel: LocalityViewModel
     private lateinit var gpsProvider: GPSProvider
 
@@ -56,7 +57,7 @@ class AddLocalityFragment : Fragment() {
 
     private fun insertLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val localityNote = binding.etLocalityNote.text.toString()
+        val localityNote = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
         val latitude = binding.tvLatitude.text.toString()
         val longnitude = binding.tvLongnitude.text.toString()
         val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)

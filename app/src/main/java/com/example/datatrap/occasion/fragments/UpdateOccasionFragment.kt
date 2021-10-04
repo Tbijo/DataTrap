@@ -218,10 +218,10 @@ class UpdateOccasionFragment : Fragment() {
             occasion.envTypeID = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
             occasion.vegetTypeID = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
             occasion.gotCaught = if (binding.cbGotCaught.isChecked) 1 else 0
-            occasion.numTraps = if (binding.etNumTraps.text.toString().isEmpty()) null else Integer.parseInt(binding.etNumTraps.text.toString())
-            occasion.temperature = if (binding.etTemperature.text.toString().isEmpty()) null else temperature
-            occasion.weather = if (binding.etWeather.text.toString().isEmpty()) null else weatherGlob
-            occasion.note = if (binding.etOccasionNote.toString().isEmpty()) null else binding.etOccasionNote.toString()
+            occasion.numTraps = if (binding.etNumTraps.text.toString().isBlank()) null else Integer.parseInt(binding.etNumTraps.text.toString())
+            occasion.temperature = if (binding.etTemperature.text.toString().isBlank()) null else temperature
+            occasion.weather = if (binding.etWeather.text.toString().isBlank()) null else weatherGlob
+            occasion.note = if (binding.etOccasionNote.toString().isBlank()) null else binding.etOccasionNote.toString()
             occasion.imgName = imgName
 
             occasionViewModel.updateOccasion(occasion)

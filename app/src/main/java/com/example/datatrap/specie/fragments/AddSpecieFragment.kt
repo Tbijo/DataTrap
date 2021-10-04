@@ -35,10 +35,9 @@ class AddSpecieFragment : Fragment() {
         })
 
         binding.rgUpperFingers.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            upperFingers = when (radioButtonId){
-                binding.rb4.id -> 4
-                binding.rb5.id -> 5
-                else -> null
+            when (radioButtonId){
+                binding.rb4.id -> upperFingers = 4
+                binding.rb5.id -> upperFingers = 5
             }
         }
 
@@ -72,21 +71,18 @@ class AddSpecieFragment : Fragment() {
     private fun insertSpecie() {
         val speciesCode = binding.etSpeciesCode.text.toString()
         val fullName = binding.etFullName.text.toString()
-        val synonym = binding.etSynonym.text.toString()
         val authority = binding.etAuthority.text.toString()
-        val description = binding.etDescription.text.toString()
-
-        val isSmallMammal: Int = if (binding.cbIsSmallMammal.isChecked) 1 else 0
-
-        val minWeight = binding.etMinWeight.text.toString()
-        val maxWeight = binding.etMaxWeight.text.toString()
-        val note = binding.etNote.text.toString()
 
         if (checkInput(speciesCode, fullName, authority)){
+            val synonym = if (binding.etSynonym.text.toString().isBlank()) null else binding.etSynonym.text.toString()
+            val description = if (binding.etDescription.text.toString().isBlank()) null else binding.etDescription.text.toString()
+            val isSmallMammal: Int = if (binding.cbIsSmallMammal.isChecked) 1 else 0
+            val minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMinWeight.text.toString()).toFloat()
+            val maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMaxWeight.text.toString()).toFloat()
+            val note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()
 
             val specie = Specie(0, speciesCode, fullName, synonym, authority, description,
-                isSmallMammal, upperFingers, Integer.parseInt(minWeight).toFloat(),
-                Integer.parseInt(maxWeight).toFloat(), note, imgName)
+                isSmallMammal, upperFingers, minWeight, maxWeight, note, imgName)
 
             specieViewModel.insertSpecie(specie)
 

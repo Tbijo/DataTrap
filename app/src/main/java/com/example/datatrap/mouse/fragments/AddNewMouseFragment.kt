@@ -176,7 +176,7 @@ class AddNewMouseFragment : Fragment() {
     private fun generateCode(){
         val specieCode = binding.autoCompTvSpecie.text.toString()
         val trapID = binding.autoCompTvTrapId.text.toString()
-        if (specieCode.isEmpty() || specieCode == "Other" || specieCode == "PVP" || specieCode == "TRE" || specieCode == "C" || specieCode == "P"){
+        if (specieCode.isBlank() || specieCode == "Other" || specieCode == "PVP" || specieCode == "TRE" || specieCode == "C" || specieCode == "P"){
             Toast.makeText(requireContext(), "Choose a valiable specie code.", Toast.LENGTH_LONG).show()
             code = null
             binding.etCodeMouseAdd.setText("")
@@ -188,7 +188,7 @@ class AddNewMouseFragment : Fragment() {
             binding.etCodeMouseAdd.setText("")
             return
         }
-        if (trapID.isEmpty() || trapID == EnumTrapID.SNAP_TRAPS.myName){
+        if (trapID.isBlank() || trapID == EnumTrapID.SNAP_TRAPS.myName){
             Toast.makeText(requireContext(), "Choose a valiable trap ID.", Toast.LENGTH_LONG).show()
             code = null
             binding.etCodeMouseAdd.setText("")
@@ -326,7 +326,7 @@ class AddNewMouseFragment : Fragment() {
             //počet placentálnych polypov
             MCright = if (MCright == null) null else giveOutPutInt(binding.etMcRight.text.toString())
             MCleft = if (MCleft == null) null else giveOutPutInt(binding.etMcLeft.text.toString())
-            val note: String? = if (binding.etMouseNote.text.toString().isEmpty()) null else binding.etMouseNote.text.toString()
+            val note: String? = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
             val mouse = Mouse(0, code, deviceID, null, speciesID, protocolID, args.occasion.occasionId,
@@ -335,7 +335,17 @@ class AddNewMouseFragment : Fragment() {
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 
             // ulozit mys
-            checkWeightAndSave(mouse)
+            var selSpecie: Specie? = null
+            listSpecie.forEach {
+                if (it.specieId == mouse.speciesID)
+                    selSpecie = it
+            }
+
+            if (mouse.weight != null && selSpecie?.minWeight != null && selSpecie?.maxWeight != null) {
+                checkWeightAndSave(mouse)
+            } else {
+                executeTask(mouse)
+            }
 
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
@@ -346,43 +356,37 @@ class AddNewMouseFragment : Fragment() {
         if (mouse.weight!! > specie?.maxWeight!! || mouse.weight!! < specie?.minWeight!!){
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes"){_, _ ->
-                // zvacsit numMice projektu do ktoreho sa pridava tato mys
-                updateProjectNumMice()
-
-                // zvacsit numMice occasion do ktorej sa pridava tato mys
-                updateOccasionNumMice()
-
-                mouseViewModel.insertMouse(mouse)
-
-                Toast.makeText(requireContext(), "New mouse added.", Toast.LENGTH_SHORT).show()
-
-                findNavController().navigateUp()
+                executeTask(mouse)
             }
                 .setNegativeButton("No"){_, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
         }else{
-            // zvacsit numMice projektu do ktoreho sa pridava tato mys
-            updateProjectNumMice()
-
-            // zvacsit numMice occasion do ktorej sa pridava tato mys
-            updateOccasionNumMice()
-
-            mouseViewModel.insertMouse(mouse)
-
-            Toast.makeText(requireContext(), "New mouse added.", Toast.LENGTH_SHORT).show()
-
-            findNavController().navigateUp()
+            executeTask(mouse)
         }
     }
 
+    private fun executeTask(mouse: Mouse){
+        // zvacsit numMice projektu do ktoreho sa pridava tato mys
+        updateProjectNumMice()
+
+        // zvacsit numMice occasion do ktorej sa pridava tato mys
+        updateOccasionNumMice()
+
+        mouseViewModel.insertMouse(mouse)
+
+        Toast.makeText(requireContext(), "New mouse added.", Toast.LENGTH_SHORT).show()
+
+        findNavController().navigateUp()
+    }
+
     private fun giveOutPutInt(input: String?): Int?{
-        return if (input.isNullOrEmpty()) null else Integer.parseInt(input)
+        return if (input.isNullOrBlank()) null else Integer.parseInt(input)
     }
 
     private fun giveOutPutFloat(input: String?): Float?{
-        return if (input.isNullOrEmpty()) null else Integer.parseInt(input).toFloat()
+        return if (input.isNullOrBlank()) null else Integer.parseInt(input).toFloat()
     }
 
     private fun updateProjectNumMice(){
