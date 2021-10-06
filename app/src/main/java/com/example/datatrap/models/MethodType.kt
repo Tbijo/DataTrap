@@ -3,6 +3,7 @@ package com.example.datatrap.models
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.*
 
 @Entity(tableName = "method_types")
 data class MethodType(
@@ -11,5 +12,9 @@ data class MethodType(
     var methodTypeId: Long,
 
     @ColumnInfo(name = "MethodTypeName")
-    var methodTypeName: String
+    var methodTypeName: String,
+
+    var methTypeDateTimeCreated: Date,
+
+    var methTypeDateTimeUpdated: Date?
 )

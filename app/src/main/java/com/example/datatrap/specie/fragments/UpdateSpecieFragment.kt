@@ -14,6 +14,7 @@ import com.example.datatrap.databinding.FragmentUpdateSpecieBinding
 import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.SharedViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
+import java.util.*
 
 class UpdateSpecieFragment : Fragment() {
 
@@ -127,6 +128,7 @@ class UpdateSpecieFragment : Fragment() {
             specie.maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMaxWeight.text.toString()).toFloat()
             specie.note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()
             specie.imgName = imgName
+            specie.specieDateTimeUpdated = Calendar.getInstance().time
 
             specieViewModel.updateSpecie(specie)
 

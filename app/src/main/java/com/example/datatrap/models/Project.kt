@@ -19,7 +19,9 @@ data class Project(
 
     var deviceID: String,
 
-    var projectDateTime: Date,
+    var projectDateTimeCreated: Date,
+
+    var projectDateTimeUpdated: Date?,
 
     @ColumnInfo(name = "Num_local")
     var numLocal: Int,

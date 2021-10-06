@@ -314,7 +314,8 @@ class RecaptureMouseFragment : Fragment() {
             mouse.primeMouseID = args.mouse.mouseId
             mouse.occasionID = args.occasion.occasionId
             mouse.localityID = args.occasion.localityID
-            mouse.catchDateTime = Calendar.getInstance().time
+            mouse.mouseDateTimeCreated = Calendar.getInstance().time
+            mouse.mouseDateTimeUpdated = null
             mouse.recapture = 1
             mouse.speciesID = speciesID
             mouse.trapID = trapID

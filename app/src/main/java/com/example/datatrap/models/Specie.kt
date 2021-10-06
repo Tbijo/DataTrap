@@ -5,6 +5,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
+import java.util.*
 
 @Parcelize
 @Entity(tableName = "species")
@@ -44,5 +45,9 @@ data class Specie(
     var note: String?,
 
     @ColumnInfo(name = "Img_sp")
-    var imgName: String?
+    var imgName: String?,
+
+    var specieDateTimeCreated: Date,
+
+    var specieDateTimeUpdated: Date?
 ): Parcelable

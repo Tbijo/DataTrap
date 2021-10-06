@@ -31,7 +31,7 @@ class PrjSessionRecyclerAdapter : RecyclerView.Adapter<PrjSessionRecyclerAdapter
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = sessionList[position]
         holder.binding.tvSession.text = currenItem.session.toString()
-        holder.binding.tvSessionDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.sessionDateTime)
+        holder.binding.tvSessionDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.sessionDateTimeCreated)
         holder.binding.tvNumOcc.text = currenItem.numOcc.toString()
     }
 

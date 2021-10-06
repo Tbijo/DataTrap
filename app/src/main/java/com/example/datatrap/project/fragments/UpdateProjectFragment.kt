@@ -12,6 +12,7 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateProjectBinding
 import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.ProjectViewModel
+import java.util.*
 
 class UpdateProjectFragment : Fragment() {
 
@@ -64,7 +65,7 @@ class UpdateProjectFragment : Fragment() {
         if (checkInput(projectName, numLocal, numMice)){
             val project: Project = args.project
             project.projectName = projectName
-            project.projectDateTime = args.project.projectDateTime
+            project.projectDateTimeUpdated = Calendar.getInstance().time
             project.numLocal = Integer.parseInt(numLocal)
             project.numMice = Integer.parseInt(numMice)
 

@@ -29,5 +29,7 @@ data class Session(
     @ColumnInfo(name = "Num_occasion")
     var numOcc: Int,
 
-    var sessionDateTime: Date
+    var sessionDateTimeCreated: Date,
+
+    var sessionDateTimeUpdated: Date?
 ): Parcelable

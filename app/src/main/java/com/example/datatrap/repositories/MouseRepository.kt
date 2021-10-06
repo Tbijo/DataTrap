@@ -1,6 +1,5 @@
 package com.example.datatrap.repositories
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.MouseDao
 import com.example.datatrap.models.Mouse

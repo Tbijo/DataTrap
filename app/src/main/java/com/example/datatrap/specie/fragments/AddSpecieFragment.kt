@@ -12,6 +12,7 @@ import com.example.datatrap.databinding.FragmentAddSpecieBinding
 import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.SharedViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
+import java.util.*
 
 class AddSpecieFragment : Fragment() {
 
@@ -82,7 +83,7 @@ class AddSpecieFragment : Fragment() {
             val note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()
 
             val specie = Specie(0, speciesCode, fullName, synonym, authority, description,
-                isSmallMammal, upperFingers, minWeight, maxWeight, note, imgName)
+                isSmallMammal, upperFingers, minWeight, maxWeight, note, imgName, Calendar.getInstance().time, null)
 
             specieViewModel.insertSpecie(specie)
 

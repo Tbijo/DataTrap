@@ -16,6 +16,7 @@ import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
+import java.util.*
 
 class UpdateLocalityFragment : Fragment(){
 
@@ -111,6 +112,7 @@ class UpdateLocalityFragment : Fragment(){
             locality.localityName = localityName
             locality.x = Integer.parseInt(latitude).toFloat()
             locality.y = Integer.parseInt(longitude).toFloat()
+            locality.localityDateTimeUpdated = Calendar.getInstance().time
             locality.note = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
 
             localityViewModel.updateLocality(locality)

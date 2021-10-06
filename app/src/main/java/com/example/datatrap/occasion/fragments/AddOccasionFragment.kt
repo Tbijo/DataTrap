@@ -169,7 +169,7 @@ class AddOccasionFragment : Fragment() {
 
             // ulozit occasion
             val occasion = Occasion(0, occasionNum, deviceID, args.locality.localityId, args.session.sessionId,
-                method, methodType, trapType, envType, vegType, Calendar.getInstance().time, gotCaught,
+                method, methodType, trapType, envType, vegType, Calendar.getInstance().time, null, gotCaught,
                 numTraps, numMice, temper, weat, leg, note, imgName)
 
             occasionViewModel.insertOccasion(occasion)

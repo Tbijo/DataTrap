@@ -50,7 +50,9 @@ data class Occasion(
     // cudzi kluc
     var vegetTypeID: Long?,
 
-    var occasionDateTim: Date,
+    var occasionDateTimeCreated: Date,
+
+    var occasionDateTimeUpdated: Date?,
 
     @ColumnInfo(name = "Got_caught")
     var gotCaught: Int?, // boolean

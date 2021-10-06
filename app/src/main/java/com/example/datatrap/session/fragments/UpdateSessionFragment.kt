@@ -13,6 +13,7 @@ import com.example.datatrap.databinding.FragmentUpdateSessionBinding
 import com.example.datatrap.models.Locality
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
+import java.util.*
 
 class UpdateSessionFragment : Fragment() {
 
@@ -91,6 +92,7 @@ class UpdateSessionFragment : Fragment() {
             val session = args.session
             session.session = Integer.parseInt(sessionNum)
             session.numOcc = Integer.parseInt(numOcc)
+            session.sessionDateTimeUpdated = Calendar.getInstance().time
 
             sessionViewModel.updateSession(session)
 

@@ -38,7 +38,7 @@ class MouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<Mo
 
         holder.binding.tvMouseSpecieCode.text = specieViewModel.getSpecie(currenItem.speciesID).value?.speciesCode
 
-        holder.binding.tvCatchDateTime.text = "${currenItem.catchDateTime}"
+        holder.binding.tvCatchDateTime.text = "${currenItem.mouseDateTimeCreated}"
     }
 
     override fun getItemCount(): Int {

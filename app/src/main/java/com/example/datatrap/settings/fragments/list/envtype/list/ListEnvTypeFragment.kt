@@ -16,6 +16,7 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListEnvTypeBinding
 import com.example.datatrap.models.EnvType
 import com.example.datatrap.viewmodels.EnvTypeViewModel
+import java.util.*
 
 class ListEnvTypeFragment : Fragment() {
 
@@ -89,7 +90,7 @@ class ListEnvTypeFragment : Fragment() {
     private fun insertEnvType(name: String){
         if (name.isNotEmpty()){
 
-            val envType: EnvType = EnvType(0, name)
+            val envType: EnvType = EnvType(0, name, Calendar.getInstance().time, null)
 
             envTypeViewModel.insertEnvType(envType)
 
@@ -111,7 +112,7 @@ class ListEnvTypeFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateEnvType(envType.envTypeId, name)
+                updateEnvType(envType, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -119,12 +120,14 @@ class ListEnvTypeFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateEnvType(id: Long, name: String){
+    private fun updateEnvType(envType: EnvType, name: String){
         if (name.isNotEmpty()){
 
-            val envType: EnvType = EnvType(id, name)
+            val envTypeNew: EnvType = envType
+            envTypeNew.envTypeName = name
+            envTypeNew.envTypeDateTimeUpdated = Calendar.getInstance().time
 
-            envTypeViewModel.updateEnvType(envType)
+            envTypeViewModel.updateEnvType(envTypeNew)
 
             Toast.makeText(requireContext(),"Environment type updated.", Toast.LENGTH_SHORT).show()
         }else{

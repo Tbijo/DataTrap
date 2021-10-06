@@ -330,7 +330,7 @@ class AddNewMouseFragment : Fragment() {
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
             val mouse = Mouse(0, code, deviceID, null, speciesID, protocolID, args.occasion.occasionId,
-                args.occasion.localityID, trapID, Calendar.getInstance().time, sex, age, gravitidy, lactating, sexActive,
+                args.occasion.localityID, trapID, Calendar.getInstance().time, null, sex, age, gravitidy, lactating, sexActive,
                 weight, recapture = 0, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 

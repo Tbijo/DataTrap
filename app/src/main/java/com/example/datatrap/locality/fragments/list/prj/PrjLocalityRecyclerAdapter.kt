@@ -31,7 +31,7 @@ class PrjLocalityRecyclerAdapter : RecyclerView.Adapter<PrjLocalityRecyclerAdapt
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = localityList[position]
         holder.binding.tvName.text = currenItem.localityName
-        holder.binding.tvDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.localityDateTime)
+        holder.binding.tvDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.localityDateTimeCreated)
         holder.binding.tvNumSes.text = currenItem.numSessions.toString()
     }
 

@@ -17,6 +17,7 @@ import com.example.datatrap.databinding.FragmentListVegetTypeBinding
 import com.example.datatrap.models.VegetType
 import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
 import com.example.datatrap.viewmodels.VegetTypeViewModel
+import java.util.*
 
 class ListVegetTypeFragment : Fragment() {
 
@@ -89,7 +90,7 @@ class ListVegetTypeFragment : Fragment() {
     private fun insertVegType(name: String){
         if (name.isNotEmpty()){
 
-            val vegType: VegetType = VegetType(0, name)
+            val vegType: VegetType = VegetType(0, name, Calendar.getInstance().time, null)
 
             vegTypeViewModel.insertVegetType(vegType)
 
@@ -111,7 +112,7 @@ class ListVegetTypeFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateVegType(vegType.vegetTypeId, name)
+                updateVegType(vegType, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -119,12 +120,14 @@ class ListVegetTypeFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateVegType(id: Long, name: String){
+    private fun updateVegType(vegType: VegetType, name: String){
         if (name.isNotEmpty()){
 
-            val vegType: VegetType = VegetType(id, name)
+            val vegTypeNew: VegetType = vegType
+            vegTypeNew.vegetTypeName = name
+            vegTypeNew.vegTypeDateTimeUpdated = Calendar.getInstance().time
 
-            vegTypeViewModel.updateVegetType(vegType)
+            vegTypeViewModel.updateVegetType(vegTypeNew)
 
             Toast.makeText(requireContext(),"Vegetation type updated.", Toast.LENGTH_SHORT).show()
         }else{

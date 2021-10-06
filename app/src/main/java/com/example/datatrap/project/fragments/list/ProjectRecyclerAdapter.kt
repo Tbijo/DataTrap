@@ -23,7 +23,7 @@ class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyVie
         holder.binding.tvProjectName.text = currenItem.projectName
         holder.binding.tvNumLocality.text = currenItem.numLocal.toString()
         holder.binding.tvNumMice.text = currenItem.numMice.toString()
-        holder.binding.tvProjectDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.projectDateTime)
+        holder.binding.tvProjectDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.projectDateTimeCreated)
 
         holder.binding.projectRow.setOnClickListener {
             // tu sa prejde na locality s projektom

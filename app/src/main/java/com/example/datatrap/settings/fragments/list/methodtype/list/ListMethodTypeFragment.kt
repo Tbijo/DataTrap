@@ -18,6 +18,7 @@ import com.example.datatrap.models.Method
 import com.example.datatrap.models.MethodType
 import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
 import com.example.datatrap.viewmodels.MethodTypeViewModel
+import java.util.*
 
 class ListMethodTypeFragment : Fragment() {
 
@@ -91,7 +92,7 @@ class ListMethodTypeFragment : Fragment() {
     private fun insertMethodType(name: String){
         if (name.isNotEmpty()){
 
-            val methodType: MethodType = MethodType(0, name)
+            val methodType: MethodType = MethodType(0, name, Calendar.getInstance().time, null)
 
             methodTypeViewModel.insertMethodType(methodType)
 
@@ -113,7 +114,7 @@ class ListMethodTypeFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateMethodType(methodType.methodTypeId, name)
+                updateMethodType(methodType, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -121,12 +122,14 @@ class ListMethodTypeFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateMethodType(id: Long, name: String){
+    private fun updateMethodType(methodType: MethodType, name: String){
         if (name.isNotEmpty()){
 
-            val methodType: MethodType = MethodType(id, name)
+            val methodTypeNew: MethodType = methodType
+            methodTypeNew.methodTypeName = name
+            methodTypeNew.methTypeDateTimeUpdated = Calendar.getInstance().time
 
-            methodTypeViewModel.updateMethodType(methodType)
+            methodTypeViewModel.updateMethodType(methodTypeNew)
 
             Toast.makeText(requireContext(),"Method type updated.", Toast.LENGTH_SHORT).show()
         }else{

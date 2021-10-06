@@ -17,6 +17,7 @@ import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumTrapID
 import com.example.datatrap.viewmodels.*
+import java.util.*
 
 class UpdateMouseFragment : Fragment() {
 
@@ -341,6 +342,7 @@ class UpdateMouseFragment : Fragment() {
             mouse.sex = sex
             mouse.age = age
             mouse.captureID = captureID
+            mouse.mouseDateTimeUpdated = Calendar.getInstance().time
 
             mouse.protocolID = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
             mouse.sexActive = if (binding.cbSexActive.isChecked) 1 else 0

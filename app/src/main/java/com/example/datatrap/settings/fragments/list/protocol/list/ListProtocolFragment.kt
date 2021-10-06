@@ -17,6 +17,7 @@ import com.example.datatrap.databinding.FragmentListProtocolBinding
 import com.example.datatrap.models.Protocol
 import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
 import com.example.datatrap.viewmodels.ProtocolViewModel
+import java.util.*
 
 class ListProtocolFragment : Fragment() {
 
@@ -90,7 +91,7 @@ class ListProtocolFragment : Fragment() {
     private fun insertProtocol(name: String){
         if (name.isNotEmpty()){
 
-            val protocol: Protocol = Protocol(0, name)
+            val protocol: Protocol = Protocol(0, name, Calendar.getInstance().time, null)
 
             protocolViewModel.insertProtocol(protocol)
 
@@ -112,7 +113,7 @@ class ListProtocolFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateProtocol(prot.protocolId, name)
+                updateProtocol(prot, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -120,12 +121,14 @@ class ListProtocolFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateProtocol(id: Long, name: String){
+    private fun updateProtocol(prot: Protocol, name: String){
         if (name.isNotEmpty()){
 
-            val protocol: Protocol = Protocol(id, name)
+            val protocolNew: Protocol = prot
+            protocolNew.protocolName = name
+            protocolNew.protDateTimeUpdated = Calendar.getInstance().time
 
-            protocolViewModel.updateProtocol(protocol)
+            protocolViewModel.updateProtocol(protocolNew)
 
             Toast.makeText(requireContext(),"Protocol updated.", Toast.LENGTH_SHORT).show()
         }else{

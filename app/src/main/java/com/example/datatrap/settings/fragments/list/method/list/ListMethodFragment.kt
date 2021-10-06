@@ -17,6 +17,7 @@ import com.example.datatrap.databinding.FragmentListMethodBinding
 import com.example.datatrap.models.Method
 import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
 import com.example.datatrap.viewmodels.MethodViewModel
+import java.util.*
 
 class ListMethodFragment : Fragment() {
 
@@ -88,7 +89,7 @@ class ListMethodFragment : Fragment() {
     private fun insertMethod(name: String){
         if (name.isNotEmpty()){
 
-            val method: Method = Method(0, name)
+            val method: Method = Method(0, name, Calendar.getInstance().time, null)
 
             methodViewModel.insertMethod(method)
 
@@ -110,7 +111,7 @@ class ListMethodFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateMethod(method.methodId, name)
+                updateMethod(method, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -118,12 +119,14 @@ class ListMethodFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateMethod(id: Long, name: String){
+    private fun updateMethod(method: Method, name: String){
         if (name.isNotEmpty()){
 
-            val method: Method = Method(id, name)
+            val methodNew: Method = method
+            methodNew.methodName = name
+            methodNew.methodDateTimeUpdated = Calendar.getInstance().time
 
-            methodViewModel.updateMethod(method)
+            methodViewModel.updateMethod(methodNew)
 
             Toast.makeText(requireContext(),"Method updated.", Toast.LENGTH_SHORT).show()
         }else{

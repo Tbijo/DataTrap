@@ -17,6 +17,7 @@ import com.example.datatrap.databinding.FragmentListTrapTypeBinding
 import com.example.datatrap.models.TrapType
 import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
 import com.example.datatrap.viewmodels.TrapTypeViewModel
+import java.util.*
 
 class ListTrapTypeFragment : Fragment() {
 
@@ -90,7 +91,7 @@ class ListTrapTypeFragment : Fragment() {
     private fun insertTrapType(name: String){
         if (name.isNotEmpty()){
 
-            val trapType: TrapType = TrapType(0, name)
+            val trapType: TrapType = TrapType(0, name, Calendar.getInstance().time, null)
 
             trapTypeViewModel.insertTrapType(trapType)
 
@@ -112,7 +113,7 @@ class ListTrapTypeFragment : Fragment() {
             .setView(input)
             .setPositiveButton("OK") { _, _ ->
                 val name = input.text.toString()
-                updateTrapType(trapType.trapTypeId, name)
+                updateTrapType(trapType, name)
             }
             .setNegativeButton("Cancel") { dialog, _ ->
                 dialog.cancel()
@@ -120,12 +121,14 @@ class ListTrapTypeFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateTrapType(id: Long, name: String){
+    private fun updateTrapType(trapType: TrapType, name: String){
         if (name.isNotEmpty()){
 
-            val trapType: TrapType = TrapType(id, name)
+            val trapTypeNew: TrapType = trapType
+            trapTypeNew.trapTypeName = name
+            trapTypeNew.trapTypeDateTimeUpdated = Calendar.getInstance().time
 
-            trapTypeViewModel.updateTrapType(trapType)
+            trapTypeViewModel.updateTrapType(trapTypeNew)
 
             Toast.makeText(requireContext(),"Trap type updated.", Toast.LENGTH_SHORT).show()
         }else{

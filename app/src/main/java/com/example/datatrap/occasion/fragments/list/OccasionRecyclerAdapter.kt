@@ -21,7 +21,7 @@ class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyV
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = occasionList[position]
         holder.binding.tvOccasion.text = currenItem.occasion.toString()
-        holder.binding.tvOccDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.occasionDateTim)
+        holder.binding.tvOccDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.occasionDateTimeCreated)
         holder.binding.tvNumMouse.text = currenItem.numMice.toString()
         holder.binding.tvNumTraps.text = currenItem.numTraps.toString()
 

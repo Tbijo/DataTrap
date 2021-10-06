@@ -43,7 +43,9 @@ data class Mouse(
     @ColumnInfo(name = "Trap_ID")
     var trapID: String,
 
-    var catchDateTime: Date,
+    var mouseDateTimeCreated: Date,
+
+    var mouseDateTimeUpdated: Date?,
 
     @ColumnInfo(name = "Sex")
     var sex: String?, //list male female null

@@ -19,8 +19,9 @@ data class Locality(
 
     var deviceID: String,
 
-    @ColumnInfo(name = "Date")
-    var localityDateTime: Date,
+    var localityDateTimeCreated: Date,
+
+    var localityDateTimeUpdated: Date?,
 
     @ColumnInfo(name = "X")
     var x: Float, // latitude
