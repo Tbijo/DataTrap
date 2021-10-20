@@ -38,6 +38,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private lateinit var pictureViewModel: PictureViewModel
     private val args by navArgs<TakePhotoFragmentArgs>()
 
+    private var oldPicName: String? = null
     private var picPath: String? = null
     private var picUri: Uri? = null
     private var picName: String? = null
@@ -50,12 +51,14 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        if (args.picName != null) {
+        oldPicName = args.picName
+
+        if (oldPicName != null) {
             // ak mame fotku tak ju nacitame
             binding.tvTakePicture.text = getString(R.string.pictureAdded)
-            val picture: Picture? = pictureViewModel.getPictureById(args.picName!!)
+            val picture: Picture? = pictureViewModel.getPictureById(oldPicName!!)
             binding.ivTakePicture.setImageURI(picture?.path?.toUri())
-            picName = args.picName
+            picName = oldPicName
         } else {
             binding.tvTakePicture.text = getString(R.string.noPicture)
         }
@@ -76,11 +79,23 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze
             // pridat novu fotku do galerie
             // poslat novy nazov a odist
-            if (args.picName != picName && picName != null) {
-                val picture =
+            if (oldPicName != picName && picName != null) {
+                val newPicture =
                     Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
-                pictureViewModel.insertPicture(picture)
+                // nacitat povodnu fotku
+                val oldPicture = oldPicName?.let { it1 -> pictureViewModel.getPictureById(it1) }
+                // vymazat povodnu fotku z databazy
+                if (oldPicture != null) {
+                    pictureViewModel.deletePicture(oldPicture)
+                }
+                // vymazat povodnu fotku ako subor
+                val myFile: File = File(oldPicture?.path)
+                if (myFile.exists()) myFile.delete()
+                // ulozit novu
+                pictureViewModel.insertPicture(newPicture)
+                // zobrazit v galerii
                 galleryAddPic(picUri!!, picName!!)
+                // poslat ID novej fotky
                 sharedViewModel.setData(picName!!)
             } else {
                 // v pripade povodnej fotky len poslat povodny nazov a odist

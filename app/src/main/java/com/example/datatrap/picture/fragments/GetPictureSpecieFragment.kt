@@ -19,6 +19,7 @@ import com.example.datatrap.databinding.FragmentGetPictureSpecieBinding
 import com.example.datatrap.models.Picture
 import com.example.datatrap.viewmodels.PictureViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,6 +31,7 @@ class GetPictureSpecieFragment : Fragment() {
     private lateinit var pictureViewModel: PictureViewModel
     private val args by navArgs<GetPictureSpecieFragmentArgs>()
 
+    private var oldPicName: String? = null
     private var picName: String? = null
     private var picUri: Uri? = null
 
@@ -40,12 +42,14 @@ class GetPictureSpecieFragment : Fragment() {
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        if (args.picName != null){
+        oldPicName = args.picName
+
+        if (oldPicName != null){
             // ak mame fotku tak hu nacitame
             binding.tvGetPicture.text = getString(R.string.pictureAdded)
-            val picture: Picture? = pictureViewModel.getPictureById(args.picName!!)
+            val picture: Picture? = pictureViewModel.getPictureById(oldPicName!!)
             binding.ivGetPicture.setImageURI(picture?.path?.toUri())
-            picName = args.picName
+            picName = oldPicName
         }else{
             binding.tvGetPicture.text = getString(R.string.noPicture)
         }
@@ -59,9 +63,20 @@ class GetPictureSpecieFragment : Fragment() {
             // ak je vsetko v poriadku treba
             // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze
             // poslat novy nazov a odist
-            if (picName != args.picName && picName != null){
-                val picture = Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
-                pictureViewModel.insertPicture(picture)
+            if (picName != oldPicName && picName != null){
+                val newPicture = Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
+                // nacitat povodnu fotku
+                val oldPicture = oldPicName?.let { it1 -> pictureViewModel.getPictureById(it1) }
+                // vymazat povodnu fotku z databazy
+                if (oldPicture != null) {
+                    pictureViewModel.deletePicture(oldPicture)
+                }
+                // vymazat povodnu fotku ako subor
+                val myFile: File = File(oldPicture?.path)
+                if (myFile.exists()) myFile.delete()
+                // a novu ulozit
+                pictureViewModel.insertPicture(newPicture)
+                // poslat ID novej fotky
                 sharedViewModel.setData(picName!!)
             }else{
                 // v pripade povodnej fotky len poslat povodny nazov a odist
