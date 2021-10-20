@@ -9,6 +9,7 @@ import com.example.datatrap.models.Occasion
 import com.example.datatrap.repositories.OccasionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class OccasionViewModel(application: Application): AndroidViewModel(application) {
 
@@ -37,8 +38,12 @@ class OccasionViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun getOccasion(occasionId: Long): LiveData<Occasion>{
-        return occasionRepository.getOccasion(occasionId)
+    fun getOccasion(occasionId: Long): Occasion? {
+        val occasion: Occasion?
+        runBlocking {
+            occasion = occasionRepository.getOccasion(occasionId)
+        }
+        return occasion
     }
 
     fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>{

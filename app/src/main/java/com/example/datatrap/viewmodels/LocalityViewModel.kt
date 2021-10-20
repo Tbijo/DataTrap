@@ -9,6 +9,7 @@ import com.example.datatrap.models.Locality
 import com.example.datatrap.repositories.LocalityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class LocalityViewModel(application: Application): AndroidViewModel(application) {
 
@@ -39,8 +40,12 @@ class LocalityViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun getLocality(localityId: Long): LiveData<Locality>{
-        return localityRepository.getLocality(localityId)
+    fun getLocality(localityId: Long): Locality? {
+        val locality: Locality?
+        runBlocking {
+            locality = localityRepository.getLocality(localityId)
+        }
+        return locality
     }
 
     fun searchLocalities(localityName: String): LiveData<List<Locality>>{   //LiveData

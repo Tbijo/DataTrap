@@ -1,5 +1,6 @@
 package com.example.datatrap.picture.fragments
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -22,12 +23,14 @@ import com.example.datatrap.databinding.FragmentTakePhotoBinding
 import com.example.datatrap.models.Picture
 import com.example.datatrap.viewmodels.PictureViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class TakePhotoFragment : Fragment() {
+class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentTakePhotoBinding? = null
     private val binding get() = _binding!!
@@ -41,25 +44,30 @@ class TakePhotoFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentTakePhotoBinding.inflate(inflater, container, false)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        if (args.picName != null){
+        if (args.picName != null) {
             // ak mame fotku tak ju nacitame
             binding.tvTakePicture.text = getString(R.string.pictureAdded)
-            val picture: Picture? = pictureViewModel.getPictureById(args.picName!!).value
+            val picture: Picture? = pictureViewModel.getPictureById(args.picName!!)
             binding.ivTakePicture.setImageURI(picture?.path?.toUri())
             picName = args.picName
-        }else{
+        } else {
             binding.tvTakePicture.text = getString(R.string.noPicture)
         }
 
         binding.btnTakePicture.setOnClickListener {
-            when(args.fragmentName){
-                "Occasion" -> takePicture("Occasion")
-                "Mouse" -> takePicture("Mouse")
+            if (hasStoragePermission()) {
+                when (args.fragmentName) {
+                    "Occasion" -> takePicture("Occasion")
+                    "Mouse" -> takePicture("Mouse")
+                }
+            } else {
+                requestStoragePermission()
             }
         }
 
@@ -68,12 +76,13 @@ class TakePhotoFragment : Fragment() {
             // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze
             // pridat novu fotku do galerie
             // poslat novy nazov a odist
-            if (args.picName != picName && picName != null){
-                val picture = Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
+            if (args.picName != picName && picName != null) {
+                val picture =
+                    Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
                 pictureViewModel.insertPicture(picture)
                 galleryAddPic(picUri!!, picName!!)
                 sharedViewModel.setData(picName!!)
-            }else{
+            } else {
                 // v pripade povodnej fotky len poslat povodny nazov a odist
                 sharedViewModel.setData(picName!!)
             }
@@ -95,7 +104,8 @@ class TakePhotoFragment : Fragment() {
                 val photoFile: File? = try {
                     createImageFile(what)
                 } catch (ex: IOException) {
-                    Toast.makeText(requireContext(), "File was not created.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "File was not created.", Toast.LENGTH_LONG)
+                        .show()
                     null
                 }
                 photoFile?.also {
@@ -127,25 +137,27 @@ class TakePhotoFragment : Fragment() {
         }
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode != Activity.RESULT_OK) {
-            // sem sa pojde ak pouzivatel neprijal fotku
-            // treba vymazat empty file ktora bola vytvorena
-            val myFile: File = File(picPath)
-            if (myFile.exists()) myFile.delete()
-            binding.tvTakePicture.text = getString(R.string.noPicture)
-            picUri = null
-            picPath = null
-            picName = null
-            Toast.makeText(requireContext(), "Empty File deleted.", Toast.LENGTH_SHORT).show()
-        }else{
-            binding.ivTakePicture.setImageURI(picUri)
-            binding.tvTakePicture.text = getString(R.string.pictureAdded)
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode != Activity.RESULT_OK) {
+                // sem sa pojde ak pouzivatel neprijal fotku
+                // treba vymazat empty file ktora bola vytvorena
+                val myFile: File = File(picPath)
+                if (myFile.exists()) myFile.delete()
+                binding.tvTakePicture.text = getString(R.string.noPicture)
+                picUri = null
+                picPath = null
+                picName = null
+                Toast.makeText(requireContext(), "Empty File deleted.", Toast.LENGTH_SHORT).show()
+            } else {
+                binding.ivTakePicture.setImageURI(picUri)
+                binding.tvTakePicture.text = getString(R.string.pictureAdded)
+            }
         }
-    }
 
-    private fun galleryAddPic(imageUri:Uri, title:String) {
-        val bitmap = MediaStore.Images.Media.getBitmap(requireContext().getContentResolver(), imageUri)
+    private fun galleryAddPic(imageUri: Uri, title: String) {
+        val bitmap =
+            MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
         MediaStore.Images.Media.insertImage(
             requireContext().contentResolver,
             bitmap,
@@ -153,6 +165,43 @@ class TakePhotoFragment : Fragment() {
             "Image of $title"
         )
         Toast.makeText(requireContext(), "Picture Added to Gallery", Toast.LENGTH_SHORT).show()
+    }
+
+    ///////
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        Toast.makeText(context, "Permission Granted.", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            AppSettingsDialog.Builder(requireActivity()).build().show()
+        } else {
+            requestStoragePermission()
+        }
+    }
+
+    private fun hasStoragePermission() =
+        EasyPermissions.hasPermissions(
+            requireContext(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE    // sem pojdu permissiony ktore chceme skontrolovat ci su povolene
+        )
+
+    private fun requestStoragePermission() {
+        EasyPermissions.requestPermissions(
+            this,
+            "This app can not work without Storage Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
+            1,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE    // co chceme povolit
+        )
     }
 
 }

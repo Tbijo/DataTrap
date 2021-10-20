@@ -18,13 +18,13 @@ class SpecieRepository(private val specieDao: SpecieDao) {
         specieDao.deleteSpecie(specie)
     }
 
-    fun getSpecie(specieId: Long): LiveData<Specie>{
+    suspend fun getSpecie(specieId: Long): Specie? {
         return specieDao.getSpecie(specieId)
     }
 
     val specieList: LiveData<List<Specie>> = specieDao.getSpecies()
 
-    fun searchSpecies(specieCode: String): LiveData<List<Specie>>{
+    fun searchSpecies(specieCode: String): LiveData<List<Specie>> {
         return specieDao.searchSpecies(specieCode)
     }
 

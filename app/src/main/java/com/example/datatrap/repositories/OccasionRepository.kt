@@ -18,7 +18,7 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
         occasionDao.deleteOccasion(occasion)
     }
 
-    fun getOccasion(occasionId: Long): LiveData<Occasion>{
+    suspend fun getOccasion(occasionId: Long): Occasion? {
         return occasionDao.getOccasion(occasionId)
     }
 

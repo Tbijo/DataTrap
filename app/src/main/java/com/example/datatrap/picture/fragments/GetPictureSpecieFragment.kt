@@ -43,7 +43,7 @@ class GetPictureSpecieFragment : Fragment() {
         if (args.picName != null){
             // ak mame fotku tak hu nacitame
             binding.tvGetPicture.text = getString(R.string.pictureAdded)
-            val picture: Picture? = pictureViewModel.getPictureById(args.picName!!).value
+            val picture: Picture? = pictureViewModel.getPictureById(args.picName!!)
             binding.ivGetPicture.setImageURI(picture?.path?.toUri())
             picName = args.picName
         }else{

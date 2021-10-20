@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProjectBinding
 import com.example.datatrap.models.Project
-import com.example.datatrap.models.User
 import com.example.datatrap.viewmodels.ProjectViewModel
 import com.example.datatrap.viewmodels.UserViewModel
 import java.util.*
@@ -73,9 +72,11 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun logOut() {
-        val activeUser: User = userViewModel.getActiveUser().value!!
-        activeUser.isActive = 0
-        userViewModel.updateUser(activeUser)
+        val user = userViewModel.getActiveUser()
+        user?.also {
+            it.isActive = 0
+            userViewModel.updateUser(it)
+        }
         val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToMainActivity()
         findNavController().navigate(action)
     }

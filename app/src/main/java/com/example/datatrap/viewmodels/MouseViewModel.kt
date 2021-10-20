@@ -9,6 +9,7 @@ import com.example.datatrap.models.Mouse
 import com.example.datatrap.repositories.MouseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class MouseViewModel(application: Application): AndroidViewModel(application) {
 
@@ -37,8 +38,12 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun getMouse(idMouse: Long): LiveData<Mouse>{
-        return mouseRepository.getMouse(idMouse)
+    fun getMouse(idMouse: Long): Mouse? {
+        val mouse: Mouse?
+        runBlocking {
+            mouse = mouseRepository.getMouse(idMouse)
+        }
+        return mouse
     }
 
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{
@@ -57,7 +62,11 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         return mouseRepository.getActiveMiceOfLocality(localityId, currentTime, twoYears)
     }
 
-    fun countMiceForLocality(localityId: Long): LiveData<Int>{
-        return mouseRepository.countMiceForLocality(localityId)
+    fun countMiceForLocality(localityId: Long): Int {
+        val count: Int
+        runBlocking {
+            count = mouseRepository.countMiceForLocality(localityId)
+        }
+        return count
     }
 }

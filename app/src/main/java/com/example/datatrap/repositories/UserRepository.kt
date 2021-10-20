@@ -20,15 +20,15 @@ class UserRepository(private val userDao: UserDao) {
         userDao.deleteUser(user)
     }
 
-    fun getActiveUser(): LiveData<User>{
+    suspend fun getActiveUser(): User? {
         return userDao.getActiveUser()
     }
 
-    fun getActiveUsers(): LiveData<List<User>>{
+    suspend fun getActiveUsers(): List<User>{
         return userDao.getActiveUsers()
     }
 
-    fun checkUser(userName: String, password: String):LiveData<User>{
+    suspend fun checkUser(userName: String, password: String): User? {
         return userDao.checkUser(userName, password)
     }
 }

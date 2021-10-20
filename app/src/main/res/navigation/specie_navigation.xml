@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/listSpecieFragment"
         android:name="com.example.datatrap.specie.fragments.list.ListSpecieFragment"
-        android:label="fragment_list_specie"
+        android:label="Specie List"
         tools:layout="@layout/fragment_list_specie" >
         <action
             android:id="@+id/action_listSpecieFragment_to_addSpecieFragment"
@@ -35,7 +35,7 @@
     <fragment
         android:id="@+id/addSpecieFragment"
         android:name="com.example.datatrap.specie.fragments.AddSpecieFragment"
-        android:label="AddSpecieFragment" >
+        android:label="Add New Specie" >
         <action
             android:id="@+id/action_addSpecieFragment_to_getPictureFragment"
             app:destination="@id/getPictureFragment" />
@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/updateSpecieFragment"
         android:name="com.example.datatrap.specie.fragments.UpdateSpecieFragment"
-        android:label="UpdateSpecieFragment" >
+        android:label="Update Specie" >
         <argument
             android:name="specie"
             app:argType="com.example.datatrap.models.Specie" />
@@ -54,24 +54,24 @@
     <activity
         android:id="@+id/bugReportActivity"
         android:name="com.example.datatrap.bugreport.BugReportActivity"
-        android:label="BugReportActivity" />
+        android:label="Report a Bug" />
     <activity
         android:id="@+id/aboutActivity"
         android:name="com.example.datatrap.about.AboutActivity"
-        android:label="AboutActivity" />
+        android:label="About" />
     <activity
         android:id="@+id/settingsActivity"
         android:name="com.example.datatrap.settings.SettingsActivity"
-        android:label="SettingsActivity" />
+        android:label="Settings" />
     <activity
         android:id="@+id/projectActivity"
         android:name="com.example.datatrap.project.ProjectActivity"
-        android:label="activity_project"
+        android:label="Projects"
         tools:layout="@layout/activity_project" />
     <fragment
         android:id="@+id/viewSpecieFragment"
-        android:name="com.example.datatrap.specie.fragments.list.ViewSpecieFragment"
-        android:label="fragment_view_specie"
+        android:name="com.example.datatrap.specie.fragments.ViewSpecieFragment"
+        android:label="View Specie"
         tools:layout="@layout/fragment_view_specie" >
         <argument
             android:name="specie"
@@ -80,7 +80,7 @@
     <fragment
         android:id="@+id/getPictureFragment"
         android:name="com.example.datatrap.picture.fragments.GetPictureSpecieFragment"
-        android:label="fragment_get_picture"
+        android:label="Get Picture"
         tools:layout="@layout/fragment_get_picture_specie" >
         <argument
             android:name="picName"

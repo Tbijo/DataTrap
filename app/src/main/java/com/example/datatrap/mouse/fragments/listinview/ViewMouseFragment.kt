@@ -34,7 +34,8 @@ class ViewMouseFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentViewMouseBinding.inflate(inflater, container, false)
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
         occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
@@ -45,25 +46,17 @@ class ViewMouseFragment : Fragment() {
 
         initMouseValuesToView()
 
-        specieViewModel.getSpecie(args.mouse.speciesID).observe(viewLifecycleOwner, Observer {
-            binding.tvMouseFullName.text = it.fullName
-            binding.tvSpecie.text = it.speciesCode
-        })
+        val mySpecie = specieViewModel.getSpecie(args.mouse.speciesID)
+        binding.tvMouseFullName.text = mySpecie?.fullName
+        binding.tvSpecie.text = mySpecie?.speciesCode
 
-        var occasion: Occasion? = null
-        occasionViewModel.getOccasion(args.mouse.occasionID).observe(viewLifecycleOwner, Observer {
-            binding.tvMouseLeg.text = it.leg
-            occasion = it
-        })
+        val occasion: Occasion? = occasionViewModel.getOccasion(args.mouse.occasionID)
+        binding.tvMouseLeg.text = occasion?.leg
 
-        var session: Session? = null
-        sessionViewModel.getSession(occasion!!.sessionID).observe(viewLifecycleOwner, Observer {
-            session = it
-        })
+        val session: Session? = sessionViewModel.getSession(occasion!!.sessionID)
 
-        projectViewModel.getProject(session?.projectID!!).observe(viewLifecycleOwner, Observer {
-            binding.tvMouseProjectName.text = it.projectName
-        })
+        binding.tvMouseProjectName.text =
+            projectViewModel.getProject(session?.projectID!!)?.projectName
 
         adapter = MouseHistRecyclerAdapter()
         binding.recyclerMouse.adapter = adapter
@@ -92,7 +85,7 @@ class ViewMouseFragment : Fragment() {
     }
 
     // naplnit list male alebo female predchadzajucimi udajmi o jedincovi
-    private fun fillList(): List<String>{
+    private fun fillList(): List<String> {
         val logList = mutableListOf<String>()
         var mouseList = emptyList<Mouse>()
         mouseViewModel.getMiceForLog(args.mouse.mouseId).observe(viewLifecycleOwner, Observer {
@@ -105,33 +98,35 @@ class ViewMouseFragment : Fragment() {
         var newId: Long
         var localName = ""
 
-        if (args.mouse.sex == "Male"){
+        if (args.mouse.sex == "Male") {
             var maleLog: String
             mouseList.forEach {
                 sexActive = if (it.sexActive == 1) "Yes" else "No"
                 newId = it.localityID
-                if (oldId != newId){
-                    locality = localityViewModel.getLocality(args.mouse.localityID).value!!
+                if (oldId != newId) {
+                    locality = localityViewModel.getLocality(args.mouse.localityID)
                     oldId = newId
                     newId = locality!!.localityId
                     localName = locality!!.localityName
                 }
-                maleLog = "Catch DateTime - ${it.mouseDateTimeCreated} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Sex. Active - $sexActive"
+                maleLog =
+                    "Catch DateTime - ${it.mouseDateTimeCreated} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Sex. Active - $sexActive"
                 logList.add(maleLog)
             }
             return logList
-        }else{
+        } else {
             var femaleLog: String
             mouseList.forEach {
                 sexActive = if (it.sexActive == 1) "Yes" else "No"
                 newId = it.localityID
-                if (oldId != newId){
-                    locality = localityViewModel.getLocality(args.mouse.localityID).value!!
+                if (oldId != newId) {
+                    locality = localityViewModel.getLocality(args.mouse.localityID)
                     oldId = newId
                     newId = locality!!.localityId
                     localName = locality!!.localityName
                 }
-                femaleLog = "Catch DateTime - ${it.mouseDateTimeCreated} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Gravidity - ${it.gravidity} Lactating - ${it.lactating} Sex. Active - $sexActive"
+                femaleLog =
+                    "Catch DateTime - ${it.mouseDateTimeCreated} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Gravidity - ${it.gravidity} Lactating - ${it.lactating} Sex. Active - $sexActive"
                 logList.add(femaleLog)
             }
             return logList
@@ -139,11 +134,12 @@ class ViewMouseFragment : Fragment() {
 
     }
 
-    private fun initMouseValuesToView(){
+    private fun initMouseValuesToView() {
         binding.tvBodyLength.text = args.mouse.body.toString()
         binding.tvTailLength.text = args.mouse.tail.toString()
         binding.tvFeetLength.text = args.mouse.feet.toString()
-        binding.tvCatchTime.text = SimpleDateFormat.getDateTimeInstance().format(args.mouse.mouseDateTimeCreated)
+        binding.tvCatchTime.text =
+            SimpleDateFormat.getDateTimeInstance().format(args.mouse.mouseDateTimeCreated)
         binding.tvEar.text = args.mouse.ear.toString()
         binding.tvGravidity.text = if (args.mouse.gravidity == 1) "Yes" else "No"
         binding.tvLactating.text = if (args.mouse.lactating == 1) "Yes" else "No"

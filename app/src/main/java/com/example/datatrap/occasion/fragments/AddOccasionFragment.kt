@@ -97,7 +97,7 @@ class AddOccasionFragment : Fragment() {
         vegTypeNameMap["null"] = null
 
         // nastavit leg na meno usera
-        binding.etLeg.setText(userViewModel.getActiveUser().value?.userName)
+        binding.etLeg.setText(userViewModel.getActiveUser()?.userName)
 
         setHasOptionsMenu(true)
         return binding.root

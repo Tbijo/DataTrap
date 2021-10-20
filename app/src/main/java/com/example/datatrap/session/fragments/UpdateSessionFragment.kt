@@ -79,7 +79,7 @@ class UpdateSessionFragment : Fragment() {
     }
 
     private fun updateLocalityNumSes(){
-        val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId).value!!
+        val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId)!!
         updatedLocality.numSessions = (updatedLocality.numSessions - 1)
         localityViewModel.updateLocality(updatedLocality)
     }

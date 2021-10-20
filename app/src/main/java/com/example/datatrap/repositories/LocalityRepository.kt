@@ -20,7 +20,7 @@ class LocalityRepository(private val localityDao: LocalityDao) {
         localityDao.deleteLocality(locality)
     }
 
-    fun getLocality(localityId: Long): LiveData<Locality>{
+    suspend fun getLocality(localityId: Long): Locality? {
         return localityDao.getLocality(localityId)
     }
 

@@ -50,9 +50,9 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.A
 
         holder.binding.tvSexActiveRecap.text = if (currenItem.sexActive == 1) "Yes" else "No"
 
-        holder.binding.tvLocality.text = localityViewModel.getLocality(currenItem.localityID).value?.localityName
+        holder.binding.tvLocality.text = localityViewModel.getLocality(currenItem.localityID)?.localityName
 
-        holder.binding.tvSpecieRecap.text = specieViewModel.getSpecie(currenItem.speciesID).value?.speciesCode
+        holder.binding.tvSpecieRecap.text = specieViewModel.getSpecie(currenItem.speciesID)?.speciesCode
 
         holder.binding.tvRecapDate.text = "${currenItem.mouseDateTimeCreated}"
     }

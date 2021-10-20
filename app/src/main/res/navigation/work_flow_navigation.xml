@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/listAllProjectFragment"
         android:name="com.example.datatrap.project.fragments.list.ListAllProjectFragment"
-        android:label="fragment_list_project"
+        android:label="Projects"
         tools:layout="@layout/fragment_list_project" >
         <action
             android:id="@+id/action_listAllProjectFragment_to_updateProjectFragment"
@@ -35,7 +35,7 @@
     <fragment
         android:id="@+id/updateProjectFragment"
         android:name="com.example.datatrap.project.fragments.UpdateProjectFragment"
-        android:label="fragment_update_project"
+        android:label="Update Project"
         tools:layout="@layout/fragment_update_project" >
         <argument
             android:name="project"
@@ -44,23 +44,23 @@
     <activity
         android:id="@+id/aboutActivity"
         android:name="com.example.datatrap.about.AboutActivity"
-        android:label="AboutActivity" />
+        android:label="About" />
     <activity
         android:id="@+id/bugReportActivity"
         android:name="com.example.datatrap.bugreport.BugReportActivity"
-        android:label="BugReportActivity" />
+        android:label="Report a Bug" />
     <activity
         android:id="@+id/settingsActivity"
         android:name="com.example.datatrap.settings.SettingsActivity"
-        android:label="SettingsActivity" />
+        android:label="Settings" />
     <activity
         android:id="@+id/specieActivity"
         android:name="com.example.datatrap.specie.SpecieActivity"
-        android:label="SpecieActivity" />
+        android:label="Species" />
     <fragment
         android:id="@+id/listPrjLocalityFragment"
         android:name="com.example.datatrap.locality.fragments.list.prj.ListPrjLocalityFragment"
-        android:label="fragment_list_prj_locality"
+        android:label="Associated Localities"
         tools:layout="@layout/fragment_list_prj_locality" >
         <action
             android:id="@+id/action_listPrjLocalityFragment_to_listAllLocalityFragment"
@@ -75,7 +75,7 @@
     <fragment
         android:id="@+id/listAllLocalityFragment"
         android:name="com.example.datatrap.locality.fragments.list.all.ListAllLocalityFragment"
-        android:label="ListAllLocalityFragment" >
+        android:label="Locality List" >
         <action
             android:id="@+id/action_listAllLocalityFragment_to_addLocalityFragment"
             app:destination="@id/addLocalityFragment" />
@@ -92,12 +92,12 @@
     <fragment
         android:id="@+id/addLocalityFragment"
         android:name="com.example.datatrap.locality.fragments.AddLocalityFragment"
-        android:label="fragment_add_locality"
+        android:label="Add New Locality"
         tools:layout="@layout/fragment_add_locality" />
     <fragment
         android:id="@+id/updateLocalityFragment"
         android:name="com.example.datatrap.locality.fragments.UpdateLocalityFragment"
-        android:label="fragment_update_locality"
+        android:label="Update Locality"
         tools:layout="@layout/fragment_update_locality" >
         <argument
             android:name="locality"
@@ -106,7 +106,7 @@
     <fragment
         android:id="@+id/localityMapFragment"
         android:name="com.example.datatrap.locality.fragments.LocalityMapFragment"
-        android:label="fragment_locality_map"
+        android:label="Map"
         tools:layout="@layout/fragment_locality_map" >
         <argument
             android:name="localities"
@@ -115,7 +115,7 @@
     <fragment
         android:id="@+id/listPrjSessionFragment"
         android:name="com.example.datatrap.session.fragments.list.ListPrjSessionFragment"
-        android:label="fragment_list_prj_session"
+        android:label="Session List"
         tools:layout="@layout/fragment_list_prj_session" >
         <action
             android:id="@+id/action_listPrjSessionFragment_to_updateSessionFragment"
@@ -133,7 +133,7 @@
     <fragment
         android:id="@+id/updateSessionFragment"
         android:name="com.example.datatrap.session.fragments.UpdateSessionFragment"
-        android:label="fragment_update_session"
+        android:label="Update Session"
         tools:layout="@layout/fragment_update_session" >
         <argument
             android:name="session"
@@ -145,7 +145,7 @@
     <fragment
         android:id="@+id/listSesOccasionFragment"
         android:name="com.example.datatrap.occasion.fragments.list.ListSesOccasionFragment"
-        android:label="fragment_list_ses_occasion"
+        android:label="Occasion List"
         tools:layout="@layout/fragment_list_ses_occasion" >
         <action
             android:id="@+id/action_listSesOccasionFragment_to_addOccasionFragment"
@@ -166,7 +166,7 @@
     <fragment
         android:id="@+id/addOccasionFragment"
         android:name="com.example.datatrap.occasion.fragments.AddOccasionFragment"
-        android:label="fragment_add_occasion"
+        android:label="Add New Occasion"
         tools:layout="@layout/fragment_add_occasion" >
         <argument
             android:name="session"
@@ -184,7 +184,7 @@
     <fragment
         android:id="@+id/updateOccasionFragment"
         android:name="com.example.datatrap.occasion.fragments.UpdateOccasionFragment"
-        android:label="fragment_update_occasion"
+        android:label="Update Occasion"
         tools:layout="@layout/fragment_update_occasion" >
         <argument
             android:name="occasion"
@@ -196,7 +196,7 @@
     <fragment
         android:id="@+id/listOccMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.list.ListOccMouseFragment"
-        android:label="fragment_list_occ_mouse"
+        android:label="Mouse List"
         tools:layout="@layout/fragment_list_occ_mouse" >
         <action
             android:id="@+id/action_listOccMouseFragment_to_updateMouseFragment"
@@ -217,7 +217,7 @@
     <fragment
         android:id="@+id/updateMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.UpdateMouseFragment"
-        android:label="UpdateMouseFragment" >
+        android:label="Update Mouse" >
         <argument
             android:name="mouse"
             app:argType="com.example.datatrap.models.Mouse" />
@@ -231,7 +231,7 @@
     <fragment
         android:id="@+id/addNewMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.AddNewMouseFragment"
-        android:label="fragment_add_new_mouse"
+        android:label="Add New Mouse"
         tools:layout="@layout/fragment_add_new_mouse" >
         <action
             android:id="@+id/action_addNewMouseFragment_to_takePhotoFragment"
@@ -243,7 +243,7 @@
     <fragment
         android:id="@+id/takePhotoFragment"
         android:name="com.example.datatrap.picture.fragments.TakePhotoFragment"
-        android:label="fragment_take_photo"
+        android:label="Take a Photo"
         tools:layout="@layout/fragment_take_photo" >
         <argument
             android:name="fragmentName"
@@ -256,7 +256,7 @@
     <fragment
         android:id="@+id/viewMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.listinview.ViewMouseFragment"
-        android:label="fragment_view_mouse"
+        android:label="View Mouse"
         tools:layout="@layout/fragment_view_mouse" >
         <argument
             android:name="mouse"
@@ -265,12 +265,12 @@
     <activity
         android:id="@+id/mainActivity"
         android:name="com.example.datatrap.main.MainActivity"
-        android:label="activity_main"
+        android:label="Main"
         tools:layout="@layout/activity_main" />
     <fragment
         android:id="@+id/recaptureMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.recapture.RecaptureMouseFragment"
-        android:label="fragment_recapture_mouse"
+        android:label="Recapture Mouse"
         tools:layout="@layout/fragment_recapture_mouse" >
         <argument
             android:name="mouse"
@@ -285,7 +285,7 @@
     <fragment
         android:id="@+id/recaptureListMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.recapture.list.RecaptureListMouseFragment"
-        android:label="fragment_recapture_list_mouse"
+        android:label="List of Mice for Recapture"
         tools:layout="@layout/fragment_recapture_list_mouse" >
         <action
             android:id="@+id/action_recaptureListMouseFragment_to_recaptureMouseFragment"

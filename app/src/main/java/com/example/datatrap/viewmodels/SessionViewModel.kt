@@ -9,6 +9,7 @@ import com.example.datatrap.models.Session
 import com.example.datatrap.repositories.SessionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SessionViewModel(application: Application): AndroidViewModel(application) {
 
@@ -37,8 +38,12 @@ class SessionViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun getSession(sessionId: Long): LiveData<Session>{
-        return sessionRepository.getSession(sessionId)
+    fun getSession(sessionId: Long): Session? {
+        val session: Session?
+        runBlocking {
+            session = sessionRepository.getSession(sessionId)
+        }
+        return session
     }
 
     fun getSessionsForProject(projectId: Long): LiveData<List<Session>>{

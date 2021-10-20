@@ -30,7 +30,7 @@ class ProjectActivity : AppCompatActivity(), OnActiveFragment {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.main_fragmentContainerView)
+        val navController = findNavController(R.id.project_fragmentContainerView)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 

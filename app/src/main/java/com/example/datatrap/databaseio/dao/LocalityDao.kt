@@ -17,7 +17,7 @@ interface LocalityDao {
     suspend fun deleteLocality(locality: Locality)
 
     @Query("SELECT * FROM localities WHERE localityId = :localityId")
-    fun getLocality(localityId: Long): LiveData<Locality>
+    suspend fun getLocality(localityId: Long): Locality?
 
     @Query("SELECT * FROM localities")
     fun getLocalities(): LiveData<List<Locality>>

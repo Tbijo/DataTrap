@@ -416,7 +416,7 @@ class RecaptureMouseFragment : Fragment() {
             mouseViewModel.updateMouse(it)
         }
         // zmena pohlavia prveho zaznamu
-        val mouse: Mouse = mouseViewModel.getMouse(args.mouse.mouseId).value!!
+        val mouse: Mouse = mouseViewModel.getMouse(args.mouse.mouseId)!!
         mouse.sex = sex
         mouseViewModel.updateMouse(mouse)
     }

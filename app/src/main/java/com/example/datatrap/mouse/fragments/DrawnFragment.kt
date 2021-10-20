@@ -17,13 +17,10 @@ class DrawnFragment(private val uniCode: Int, private val fingers: Int) : Dialog
     private var _binding: FragmentDrawnBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var background5: Bitmap
-    private lateinit var background4: Bitmap
-
-    private lateinit var TisRightTopImgs: List<Bitmap>
-    private lateinit var DesRightBottomImgs: List<Bitmap>
-    private lateinit var StoLeftTopImgs: List<Bitmap>
-    private lateinit var JedLeftBottomImgs: List<Bitmap>
+    private lateinit var TisRightTopID: List<Int>
+    private lateinit var DesRightBottomID: List<Int>
+    private lateinit var StoLeftTopID: List<Int>
+    private lateinit var JedLeftBottomID: List<Int>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,9 +31,9 @@ class DrawnFragment(private val uniCode: Int, private val fingers: Int) : Dialog
         callResources()
 
         if (fingers == 5) {
-            drawAndView5(binding.mainImage, background5, uniCode)
+            drawAndView5(binding.mainImage, uniCode)
         } else {
-            drawAndView4(binding.mainImage, background4, uniCode)
+            drawAndView4(binding.mainImage, uniCode)
         }
 
         return binding.root
@@ -48,137 +45,150 @@ class DrawnFragment(private val uniCode: Int, private val fingers: Int) : Dialog
     }
 
     private fun callResources() {
-        background5 = BitmapFactory.decodeResource(resources, R.drawable.pat_prstov)
-        background4 = BitmapFactory.decodeResource(resources, R.drawable.styri_prsty)
-        TisRightTopImgs = listOf(
-            BitmapFactory.decodeResource(resources, R.drawable.prava_predna_prvy),
-            BitmapFactory.decodeResource(resources, R.drawable.prava_predna_druhy),
-            BitmapFactory.decodeResource(resources, R.drawable.prava_predna_treti),
-            BitmapFactory.decodeResource(resources, R.drawable.prava_predna_stvrty),
-            BitmapFactory.decodeResource(resources, R.drawable.prava_predna_piaty)
+        TisRightTopID = listOf(
+            R.drawable.prava_predna_prvy,
+            R.drawable.prava_predna_druhy,
+            R.drawable.prava_predna_treti,
+            R.drawable.prava_predna_stvrty,
+            R.drawable.prava_predna_piaty
         )
-        DesRightBottomImgs = listOf(
-            BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_prvy),
-            BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_druhy),
-            BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_treti),
-            BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_stvrty),
-            BitmapFactory.decodeResource(resources, R.drawable.prava_zadna_piaty)
+        DesRightBottomID = listOf(
+            R.drawable.prava_zadna_prvy,
+            R.drawable.prava_zadna_druhy,
+            R.drawable.prava_zadna_treti,
+            R.drawable.prava_zadna_stvrty,
+            R.drawable.prava_zadna_piaty
         )
-        StoLeftTopImgs = listOf(
-            BitmapFactory.decodeResource(resources, R.drawable.lava_predna_prvy),
-            BitmapFactory.decodeResource(resources, R.drawable.lava_predna_druhy),
-            BitmapFactory.decodeResource(resources, R.drawable.lava_predna_treti),
-            BitmapFactory.decodeResource(resources, R.drawable.lava_predna_stvrty),
-            BitmapFactory.decodeResource(resources, R.drawable.lava_predna_piaty)
+        StoLeftTopID = listOf(
+            R.drawable.lava_predna_prvy,
+            R.drawable.lava_predna_druhy,
+            R.drawable.lava_predna_treti,
+            R.drawable.lava_predna_stvrty,
+            R.drawable.lava_predna_piaty
         )
-        JedLeftBottomImgs = listOf(
-            BitmapFactory.decodeResource(resources, R.drawable.lava_zadna_prvy),
-            BitmapFactory.decodeResource(resources, R.drawable.lava_zadna_druhy),
-            BitmapFactory.decodeResource(resources, R.drawable.lava_zadna_treti),
-            BitmapFactory.decodeResource(resources, R.drawable.lava_zadna_stvrty),
-            BitmapFactory.decodeResource(resources, R.drawable.lava_zadna_piaty)
+        JedLeftBottomID = listOf(
+            R.drawable.lava_zadna_prvy,
+            R.drawable.lava_zadna_druhy,
+            R.drawable.lava_zadna_treti,
+            R.drawable.lava_zadna_stvrty,
+            R.drawable.lava_zadna_piaty
         )
     }
 
-    private fun drawAndView5(imgView: ImageView, bottomImage: Bitmap, unicode: Int) {
+    private fun getImage(imageRes: Int): Bitmap {
+        return BitmapFactory.decodeResource(resources, imageRes)
+    }
+
+    private fun drawAndView5(imgView: ImageView, unicode: Int) {
+        val background5: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.pat_prstov)
         val tempBitmap =
-            Bitmap.createBitmap(bottomImage.width, bottomImage.height, Bitmap.Config.RGB_565)
+            Bitmap.createBitmap(background5.width, background5.height, Bitmap.Config.RGB_565)
         val tempCanvas = Canvas(tempBitmap)
 
-        tempCanvas.drawBitmap(bottomImage, 0f, 0f, null)
+        tempCanvas.drawBitmap(background5, 0f, 0f, null)
 
         val unicodeS = unicode.toString()
 
         for (i in unicodeS.lastIndex downTo 0) {
-            val cislo = unicodeS.substring(i , i + 1).toInt()
+            val cislo = unicodeS.substring(i, i + 1).toInt()
             when (cislo) {
                 0 -> continue
 
-                in 1..5 -> {
-                    when (unicodeS.length - i) {
-                        1 -> tempCanvas.drawBitmap(JedLeftBottomImgs[cislo - 1], 0f, 0f, null)
-                        2 -> tempCanvas.drawBitmap(DesRightBottomImgs[cislo - 1], 0f, 0f, null)
-                        3 -> tempCanvas.drawBitmap(StoLeftTopImgs[cislo - 1], 0f, 0f, null)
-                        4 -> tempCanvas.drawBitmap(TisRightTopImgs[cislo - 1], 0f, 0f, null)
+                in 1..5 -> {//cislica
+                    when (unicodeS.length - i) {// poradie
+                        1 -> tempCanvas.drawBitmap(
+                            getImage(JedLeftBottomID[cislo - 1]),
+                            0f,
+                            0f,
+                            null
+                        )
+                        2 -> tempCanvas.drawBitmap(
+                            getImage(DesRightBottomID[cislo - 1]),
+                            0f,
+                            0f,
+                            null
+                        )
+                        3 -> tempCanvas.drawBitmap(getImage(StoLeftTopID[cislo - 1]), 0f, 0f, null)
+                        4 -> tempCanvas.drawBitmap(getImage(TisRightTopID[cislo - 1]), 0f, 0f, null)
                     }
                 }
                 6 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[4]), 0f, 0f, null)
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[4]), 0f, 0f, null)
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[4]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[4]), 0f, 0f, null)
                         }
                     }
                 }
                 7 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[4]), 0f, 0f, null)
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[4]), 0f, 0f, null)
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[4]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[4]), 0f, 0f, null)
                         }
                     }
                 }
                 8 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[4]), 0f, 0f, null)
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[4]), 0f, 0f, null)
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[4]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[4]), 0f, 0f, null)
                         }
                     }
                 }
                 9 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[3], 0f, 0f, null)
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[3]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[4]), 0f, 0f, null)
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[3], 0f, 0f, null)
-                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[3]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[4]), 0f, 0f, null)
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[3]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[4]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[3]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[4]), 0f, 0f, null)
                         }
                     }
                 }
@@ -188,128 +198,149 @@ class DrawnFragment(private val uniCode: Int, private val fingers: Int) : Dialog
         imgView.setImageBitmap(tempBitmap)
     }
 
-    private fun drawAndView4(imgView: ImageView, bottomImage: Bitmap, unicode: Int) {
+    private fun drawAndView4(imgView: ImageView, unicode: Int) {
+        val background4: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.styri_prsty)
         val tempBitmap =
-            Bitmap.createBitmap(bottomImage.width, bottomImage.height, Bitmap.Config.RGB_565)
+            Bitmap.createBitmap(background4.width, background4.height, Bitmap.Config.RGB_565)
         val tempCanvas = Canvas(tempBitmap)
 
-        tempCanvas.drawBitmap(bottomImage, 0f, 0f, null)
+        tempCanvas.drawBitmap(background4, 0f, 0f, null)
 
         val unicodeS = unicode.toString()
 
         for (i in unicodeS.lastIndex downTo 0) {
-            val cislo = unicodeS.substring(i , i + 1).toInt()
+            val cislo = unicodeS.substring(i, i + 1).toInt()
 
             when (cislo) {
                 0 -> continue
 
                 in 1..4 -> {
                     when (unicodeS.length - i) {
-                        1 -> tempCanvas.drawBitmap(JedLeftBottomImgs[cislo - 1], 0f, 0f, null)
-                        2 -> tempCanvas.drawBitmap(DesRightBottomImgs[cislo - 1], 0f, 0f, null)
-                        3 -> tempCanvas.drawBitmap(StoLeftTopImgs[cislo - 1], 0f, 0f, null)
-                        4 -> tempCanvas.drawBitmap(TisRightTopImgs[cislo - 1], 0f, 0f, null)
+                        1 -> tempCanvas.drawBitmap(
+                            getImage(JedLeftBottomID[cislo - 1]),
+                            0f,
+                            0f,
+                            null
+                        )
+                        2 -> tempCanvas.drawBitmap(
+                            getImage(DesRightBottomID[cislo - 1]),
+                            0f,
+                            0f,
+                            null
+                        )
+                        3 -> tempCanvas.drawBitmap(getImage(StoLeftTopID[cislo - 1]), 0f, 0f, null)
+                        4 -> tempCanvas.drawBitmap(getImage(TisRightTopID[cislo - 1]), 0f, 0f, null)
                     }
                 }
                 5 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[cislo - 1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(
+                                getImage(JedLeftBottomID[cislo - 1]),
+                                0f,
+                                0f,
+                                null
+                            )
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[cislo - 1], 0f, 0f, null)
+                            tempCanvas.drawBitmap(
+                                getImage(DesRightBottomID[cislo - 1]),
+                                0f,
+                                0f,
+                                null
+                            )
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[3]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[3]), 0f, 0f, null)
                         }
                     }
                 }
                 6 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[4]), 0f, 0f, null)
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[4]), 0f, 0f, null)
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[3]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[3]), 0f, 0f, null)
                         }
                     }
                 }
                 7 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[4]), 0f, 0f, null)
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[4]), 0f, 0f, null)
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[3]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[3]), 0f, 0f, null)
                         }
                     }
                 }
                 8 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[4]), 0f, 0f, null)
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[4]), 0f, 0f, null)
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[3]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[0], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[0]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[3]), 0f, 0f, null)
                         }
                     }
                 }
                 9 -> {
                     when (unicodeS.length - i) {
                         1 -> {
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[3], 0f, 0f, null)
-                            tempCanvas.drawBitmap(JedLeftBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[3]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(JedLeftBottomID[4]), 0f, 0f, null)
                         }
                         2 -> {
-                            tempCanvas.drawBitmap(DesRightBottomImgs[3], 0f, 0f, null)
-                            tempCanvas.drawBitmap(DesRightBottomImgs[4], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[3]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(DesRightBottomID[4]), 0f, 0f, null)
                         }
                         3 -> {
-                            tempCanvas.drawBitmap(StoLeftTopImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(StoLeftTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(StoLeftTopID[3]), 0f, 0f, null)
                         }
                         4 -> {
-                            tempCanvas.drawBitmap(TisRightTopImgs[1], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[2], 0f, 0f, null)
-                            tempCanvas.drawBitmap(TisRightTopImgs[3], 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[1]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[2]), 0f, 0f, null)
+                            tempCanvas.drawBitmap(getImage(TisRightTopID[3]), 0f, 0f, null)
                         }
                     }
                 }

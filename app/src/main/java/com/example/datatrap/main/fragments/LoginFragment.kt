@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentLoginBinding
-import com.example.datatrap.models.User
 import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.UserViewModel
 
@@ -23,7 +22,8 @@ class LoginFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
@@ -32,9 +32,9 @@ class LoginFragment : Fragment() {
         }
 
         binding.rgTeam.setOnCheckedChangeListener { radioGroup, radioButtonId ->
-            when(radioButtonId){
+            when (radioButtonId) {
                 binding.rbEven.id -> team = EnumTeam.EVEN_TEAM.numTeam
-                binding.rbOdd.id -> team =  EnumTeam.ODD_TEAM.numTeam
+                binding.rbOdd.id -> team = EnumTeam.ODD_TEAM.numTeam
                 binding.rbSing.id -> team = EnumTeam.SINGLE.numTeam
             }
         }
@@ -50,16 +50,18 @@ class LoginFragment : Fragment() {
     private fun logIn() {
         val userName = binding.etUserName.text.toString()
         val pass = binding.etPassword.text.toString()
-        if (checkInput(userName, pass, team)){
+        if (checkInput(userName, pass, team)) {
             checkAuthority(userName, pass, team)
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG)
+                .show()
         }
     }
 
     private fun checkAuthority(userName: String, pass: String, team: Int) {
-        val user: User? = userViewModel.checkUser(userName, pass).value
-        if (user != null){
+        val user = userViewModel.checkUser(userName, pass)
+
+        if (user != null) {
             // skontrolovat ci uz nie su iny pouzivatelia aktivny
             // ak su treba nastavit aktivitu na 0
             inactiveAllUsers()
@@ -67,25 +69,30 @@ class LoginFragment : Fragment() {
             user.team = team
             // tento pouzivatel je teraz aktivny vzdy moze byt len jeden
             user.isActive = 1
+
             userViewModel.updateUser(user)
+
             Toast.makeText(requireContext(), "Log in successful.", Toast.LENGTH_SHORT).show()
             val action = LoginFragmentDirections.actionLoginFragmentToProjectActivity()
             findNavController().navigate(action)
-        }else{
-            Toast.makeText(requireContext(), "Wrong user name or password.", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(requireContext(), "Wrong user name or password.", Toast.LENGTH_LONG)
+                .show()
         }
+
     }
 
     private fun checkInput(userName: String, pass: String, team: Int?): Boolean {
         return userName.isNotEmpty() && pass.isNotEmpty() && team.toString().isNotEmpty()
     }
 
-    private fun inactiveAllUsers(){
-        val activeUserList: List<User>? = userViewModel.getActiveUsers().value
-        if (activeUserList?.isNotEmpty() == true){
-            activeUserList.forEach {
-                it.isActive = 0
-                userViewModel.updateUser(it)
+    private fun inactiveAllUsers() {
+        val listActiveUsers = userViewModel.getActiveUsers()
+
+        if (listActiveUsers.isNotEmpty()) {
+            listActiveUsers.forEach { user ->
+                user.isActive = 0
+                userViewModel.updateUser(user)
             }
         }
     }

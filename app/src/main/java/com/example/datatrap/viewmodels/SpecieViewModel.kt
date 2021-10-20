@@ -9,6 +9,7 @@ import com.example.datatrap.models.Specie
 import com.example.datatrap.repositories.SpecieRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class SpecieViewModel(application: Application): AndroidViewModel(application) {
 
@@ -39,8 +40,12 @@ class SpecieViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun getSpecie(specieId: Long): LiveData<Specie>{
-        return specieRepository.getSpecie(specieId)
+    fun getSpecie(specieId: Long): Specie? {
+        val specie: Specie?
+        runBlocking {
+            specie = specieRepository.getSpecie(specieId)
+        }
+        return specie
     }
 
     fun searchSpecies(specieCode: String): LiveData<List<Specie>>{

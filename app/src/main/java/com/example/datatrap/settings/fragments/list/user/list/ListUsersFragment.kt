@@ -80,7 +80,7 @@ class ListUsersFragment : Fragment() {
     }
 
     private fun inactiveAllUsers(){
-        val activeUserList: List<User>? = userViewModel.getActiveUsers().value
+        val activeUserList: List<User>? = userViewModel.getActiveUsers()
         if (activeUserList?.isNotEmpty() == true){
             activeUserList.forEach {
                 it.isActive = 0

@@ -1,6 +1,5 @@
 package com.example.datatrap.databaseio.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Picture
 
@@ -14,5 +13,5 @@ interface PictureDao {
     suspend fun deletePicture(picture: Picture)
 
     @Query("SELECT * FROM images WHERE Img_name = :imgName")
-    fun getPictureById(imgName: String): LiveData<Picture>
+    suspend fun getPictureById(imgName: String): Picture?
 }

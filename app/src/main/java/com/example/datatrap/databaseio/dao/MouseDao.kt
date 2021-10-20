@@ -17,7 +17,7 @@ interface MouseDao {
     suspend fun deleteMouse(mouse: Mouse)
 
     @Query("SELECT * FROM sm WHERE mouseId = :idMouse")
-    fun getMouse(idMouse: Long): LiveData<Mouse>
+    suspend fun getMouse(idMouse: Long): Mouse?
 
     @Query("SELECT * FROM sm WHERE occasionID = :idOccasion")
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>
@@ -32,5 +32,5 @@ interface MouseDao {
     fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>
 
     @Query("SELECT COUNT(Code) FROM sm WHERE localityID = :localityId AND Code IS NOT NULL AND Recapture = 0")
-    fun countMiceForLocality(localityId: Long): LiveData<Int>
+    suspend fun countMiceForLocality(localityId: Long): Int
 }

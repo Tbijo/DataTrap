@@ -238,7 +238,7 @@ class UpdateOccasionFragment : Fragment() {
     }
 
     private fun updateSessionNumOcc(){
-        val updatedSession: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
+        val updatedSession: Session = sessionViewModel.getSession(args.occasion.sessionID)!!
         updatedSession.numOcc = (updatedSession.numOcc - 1)
         sessionViewModel.updateSession(updatedSession)
     }
@@ -256,7 +256,7 @@ class UpdateOccasionFragment : Fragment() {
     private fun getHistoryWeather(){
         if (isOnline(requireContext())){
             val weather = Weather(requireContext())
-            val locality: Locality = localityViewModel.getLocality(args.occasion.localityID).value!!
+            val locality: Locality = localityViewModel.getLocality(args.occasion.localityID)!!
 
             val unixtime = args.occasion.occasionDateTimeCreated.time / 1000L
 

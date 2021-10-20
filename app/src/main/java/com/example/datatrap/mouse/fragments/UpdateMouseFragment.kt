@@ -319,8 +319,8 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun updateProjectNumMice(){
-        val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
-        val updatedProject: Project = projectViewModel.getProject(session.projectID!!).value!!
+        val session: Session = sessionViewModel.getSession(args.occasion.sessionID)!!
+        val updatedProject: Project = projectViewModel.getProject(session.projectID!!)!!
         updatedProject.numMice = (updatedProject.numMice - 1)
         projectViewModel.updateProject(updatedProject)
     }

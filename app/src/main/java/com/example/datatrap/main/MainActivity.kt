@@ -22,4 +22,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController)
     }
 
+    override fun onBackPressed() {}
+
 }

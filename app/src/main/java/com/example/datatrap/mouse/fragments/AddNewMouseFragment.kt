@@ -89,9 +89,7 @@ class AddNewMouseFragment : Fragment() {
             imgName = it
         })
 
-        mouseViewModel.countMiceForLocality(args.occasion.localityID).observe(viewLifecycleOwner, Observer {
-            oldCode = it + 1
-        })
+        oldCode = mouseViewModel.countMiceForLocality(args.occasion.localityID) + 1
 
         binding.btnGenCode.setOnClickListener {
             generateCode()
@@ -200,7 +198,7 @@ class AddNewMouseFragment : Fragment() {
                 specie = it
             }
         }
-        val team: Int = userViewModel.getActiveUser().value?.team!!
+        val team: Int = userViewModel.getActiveUser()?.team!!
         val codeGen = CodeGenerator(this, oldCode, specie?.upperFingers!!, team, args.occasion.localityID)
         code = codeGen.generateCode()
         if(code == 0){
@@ -390,8 +388,8 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun updateProjectNumMice(){
-        val session: Session = sessionViewModel.getSession(args.occasion.sessionID).value!!
-        val updatedProject: Project = projectViewModel.getProject(session.projectID!!).value!!
+        val session: Session = sessionViewModel.getSession(args.occasion.sessionID)!!
+        val updatedProject: Project = projectViewModel.getProject(session.projectID!!)!!
 
         updatedProject.numMice = (updatedProject.numMice + 1)
 

@@ -9,6 +9,7 @@ import com.example.datatrap.models.Project
 import com.example.datatrap.repositories.ProjectRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 class ProjectViewModel(application: Application): AndroidViewModel(application) {
 
@@ -39,8 +40,12 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun getProject(projectId: Long): LiveData<Project>{
-        return projectRepository.getProject(projectId)
+    fun getProject(projectId: Long): Project? {
+        val project: Project?
+        runBlocking {
+            project = projectRepository.getProject(projectId)
+        }
+        return project
     }
 
     fun searchProjects(projectName: String): LiveData<List<Project>>{

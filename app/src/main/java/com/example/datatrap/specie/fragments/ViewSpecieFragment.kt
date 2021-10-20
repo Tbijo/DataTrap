@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.databinding.FragmentViewSpecieBinding
 import com.example.datatrap.models.Picture
-import com.example.datatrap.specie.fragments.list.ViewSpecieFragmentArgs
 import com.example.datatrap.viewmodels.PictureViewModel
 
 class ViewSpecieFragment : Fragment() {
@@ -39,7 +38,7 @@ class ViewSpecieFragment : Fragment() {
     private fun initSpecieValuesToView(){
         if (args.specie.imgName == null){
             args.specie.imgName?.let {
-                val picture: Picture? = pictureViewModel.getPictureById(it).value
+                val picture: Picture? = pictureViewModel.getPictureById(it)
                 binding.ivPicture.setImageURI(picture?.path?.toUri())
             }
         }

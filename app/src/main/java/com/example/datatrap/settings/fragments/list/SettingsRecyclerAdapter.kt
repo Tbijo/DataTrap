@@ -17,8 +17,8 @@ class SettingsRecyclerAdapter : RecyclerView.Adapter<SettingsRecyclerAdapter.MyV
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        val currenItem = settingsList[position]
-        holder.binding.tvSetName.text = currenItem[position].toString()
+        val currenItem: String = settingsList[position]
+        holder.binding.tvSetName.text = currenItem
 
         holder.binding.root.setOnClickListener {
             when(currenItem){
@@ -55,7 +55,7 @@ class SettingsRecyclerAdapter : RecyclerView.Adapter<SettingsRecyclerAdapter.MyV
     }
 
     override fun getItemCount(): Int {
-        return settingsList.size
+        return 7
     }
 
 }

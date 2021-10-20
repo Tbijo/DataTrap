@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/bugReportFragment"
         android:name="com.example.datatrap.bugreport.BugReportFragment"
-        android:label="fragment_bug_report"
+        android:label="Bug Report"
         tools:layout="@layout/fragment_bug_report" >
         <action
             android:id="@+id/action_bugReportFragment_to_specieActivity"
@@ -26,18 +26,18 @@
     <activity
         android:id="@+id/aboutActivity"
         android:name="com.example.datatrap.about.AboutActivity"
-        android:label="AboutActivity" />
+        android:label="About" />
     <activity
         android:id="@+id/settingsActivity"
         android:name="com.example.datatrap.settings.SettingsActivity"
-        android:label="SettingsActivity" />
+        android:label="Settings" />
     <activity
         android:id="@+id/specieActivity"
         android:name="com.example.datatrap.specie.SpecieActivity"
-        android:label="SpecieActivity" />
+        android:label="Species" />
     <activity
         android:id="@+id/projectActivity"
         android:name="com.example.datatrap.project.ProjectActivity"
-        android:label="activity_project"
+        android:label="Projects"
         tools:layout="@layout/activity_project" />
 </navigation>
