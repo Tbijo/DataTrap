@@ -39,6 +39,7 @@ class AddSpecieFragment : Fragment() {
             when (radioButtonId){
                 binding.rb4.id -> upperFingers = 4
                 binding.rb5.id -> upperFingers = 5
+                binding.rbFingerNull.id -> upperFingers = null
             }
         }
 

@@ -225,7 +225,7 @@
 
     <EditText
         android:id="@+id/et_weight"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ems="10"
@@ -238,7 +238,7 @@
 
     <EditText
         android:id="@+id/et_body"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:ems="10"
@@ -251,7 +251,7 @@
 
     <EditText
         android:id="@+id/et_tail"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Tail"
@@ -263,7 +263,7 @@
 
     <EditText
         android:id="@+id/et_feet"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Feet"
@@ -275,18 +275,19 @@
 
     <EditText
         android:id="@+id/et_ear"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Ear"
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/et_embryo_diameter"
         app:layout_constraintTop_toBottomOf="@+id/et_embryo_left" />
 
     <EditText
         android:id="@+id/et_testes_length"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Testes Length"
@@ -298,7 +299,7 @@
 
     <EditText
         android:id="@+id/et_testes_width"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Testes Width"
@@ -310,7 +311,7 @@
 
     <EditText
         android:id="@+id/et_embryo_right"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Right Embryo"
@@ -322,7 +323,7 @@
 
     <EditText
         android:id="@+id/et_embryo_left"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Left Embryo"
@@ -346,11 +347,13 @@
 
     <EditText
         android:id="@+id/et_embryo_diameter"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="Embryo Diameter"
         android:inputType="numberDecimal"
+        app:layout_constraintEnd_toStartOf="@+id/et_ear"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_embryo_right" />
 
@@ -367,7 +370,7 @@
 
     <EditText
         android:id="@+id/et_mc_right"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="MC Right"
@@ -379,7 +382,7 @@
 
     <EditText
         android:id="@+id/et_mc_left"
-        android:layout_width="299dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="MC Left"
@@ -393,7 +396,7 @@
         android:id="@+id/et_code_mouse_add"
         android:layout_width="362dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="50dp"
         android:ems="10"
         android:hint="To generate code select a specie."
         android:inputType="number"
