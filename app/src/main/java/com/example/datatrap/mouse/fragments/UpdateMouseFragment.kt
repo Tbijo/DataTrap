@@ -181,6 +181,19 @@ class UpdateMouseFragment : Fragment() {
             EnumCaptureID.RELEASED.myName -> binding.rbReleased.isChecked = true
             null -> binding.rbNullCapture.isChecked = true
         }
+
+        when (args.mouse.trapID) {
+            EnumTrapID.LIVE_TRAPS.myName -> {
+                binding.etBody.visibility = View.INVISIBLE
+                binding.etTail.visibility = View.INVISIBLE
+                binding.etFeet.visibility = View.INVISIBLE
+                binding.etEar.visibility = View.INVISIBLE
+            }
+            EnumTrapID.SNAP_TRAPS.myName -> {
+                binding.rgCaptureId.visibility = View.INVISIBLE
+                binding.rgCaptureId.clearCheck()
+            }
+        }
     }
 
     private fun setListeners(){
@@ -322,12 +335,14 @@ class UpdateMouseFragment : Fragment() {
         val session: Session = sessionViewModel.getSession(args.occasion.sessionID)!!
         val updatedProject: Project = projectViewModel.getProject(session.projectID!!)!!
         updatedProject.numMice = (updatedProject.numMice - 1)
+        updatedProject.projectDateTimeUpdated = Calendar.getInstance().time
         projectViewModel.updateProject(updatedProject)
     }
 
     private fun updateOccasionNumMice(){
         val updatedOccasion: Occasion = args.occasion
         updatedOccasion.numMice = (updatedOccasion.numMice?.minus(1))
+        updatedOccasion.occasionDateTimeUpdated = Calendar.getInstance().time
         occasionViewModel.updateOccasion(updatedOccasion)
     }
 

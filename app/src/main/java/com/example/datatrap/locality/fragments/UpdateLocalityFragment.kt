@@ -98,6 +98,7 @@ class UpdateLocalityFragment : Fragment(){
 
         updateProjectList.forEach {
             it.numLocal = (it.numLocal - 1)
+            it.projectDateTimeUpdated = Calendar.getInstance().time
             projectViewModel.updateProject(it)
         }
     }

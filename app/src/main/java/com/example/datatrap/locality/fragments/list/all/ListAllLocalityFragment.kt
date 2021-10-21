@@ -19,6 +19,7 @@ import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
+import java.util.*
 
 class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -130,6 +131,7 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
     private fun updateProjectNumLocal(){
         val updatedProject: Project = args.project
         updatedProject.numLocal = (updatedProject.numLocal + 1)
+        updatedProject.projectDateTimeUpdated = Calendar.getInstance().time
         projectViewModel.updateProject(updatedProject)
     }
 

@@ -224,12 +224,14 @@ class AddNewMouseFragment : Fragment() {
                     binding.etEar.visibility = View.INVISIBLE
                     binding.etEar.setText("")
 
+                    binding.btnGenCode.visibility = View.VISIBLE
                     binding.etCodeMouseAdd.visibility = View.VISIBLE
                     binding.rgCaptureId.visibility = View.VISIBLE
                 }
                 EnumTrapID.SNAP_TRAPS.myName -> {
                     code = null
                     captureID = null
+                    binding.btnGenCode.visibility = View.INVISIBLE
                     binding.etCodeMouseAdd.visibility = View.INVISIBLE
                     binding.etCodeMouseAdd.setText("")
                     binding.rgCaptureId.visibility = View.INVISIBLE
@@ -284,8 +286,8 @@ class AddNewMouseFragment : Fragment() {
 
     private fun showDrawnRat(){
         speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
-        val currentCode: Int = binding.etCodeMouseAdd.text.toString().toInt()
-        if (speciesID > 0 && code != null && code!! > 0 && code.toString().length < 5 && code == currentCode){
+
+        if (speciesID > 0 && code != null && code!! > 0 && code.toString().length < 5){
             val fragman = requireActivity().supportFragmentManager
             val floatFrag = DrawnFragment(code!!, specie?.upperFingers!!)
             floatFrag.show(fragman, "FloatFragMouseCode")
@@ -392,13 +394,16 @@ class AddNewMouseFragment : Fragment() {
         val updatedProject: Project = projectViewModel.getProject(session.projectID!!)!!
 
         updatedProject.numMice = (updatedProject.numMice + 1)
+        updatedProject.projectDateTimeUpdated = Calendar.getInstance().time
 
         projectViewModel.updateProject(updatedProject)
     }
 
     private fun updateOccasionNumMice(){
         val updatedOccasion: Occasion = args.occasion
+
         updatedOccasion.numMice = (updatedOccasion.numMice?.plus(1))
+        updatedOccasion.occasionDateTimeUpdated = Calendar.getInstance().time
 
         occasionViewModel.updateOccasion(updatedOccasion)
     }

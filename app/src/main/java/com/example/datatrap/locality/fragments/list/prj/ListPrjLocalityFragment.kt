@@ -16,6 +16,7 @@ import com.example.datatrap.models.Project
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
+import java.util.*
 
 class ListPrjLocalityFragment : Fragment() {
 
@@ -90,6 +91,7 @@ class ListPrjLocalityFragment : Fragment() {
     private fun updateProjectNumLocal(){
         val updatedProject: Project = args.project
         updatedProject.numLocal = (updatedProject.numLocal - 1)
+        updatedProject.projectDateTimeUpdated = Calendar.getInstance().time
         projectViewModel.updateProject(updatedProject)
     }
 

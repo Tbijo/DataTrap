@@ -183,6 +183,19 @@ class RecaptureMouseFragment : Fragment() {
             EnumCaptureID.RELEASED.myName -> binding.rbReleased.isChecked = true
             null -> binding.rbNullCapture.isChecked = true
         }
+
+        when (args.mouse.trapID) {
+            EnumTrapID.LIVE_TRAPS.myName -> {
+                binding.etBody.visibility = View.INVISIBLE
+                binding.etTail.visibility = View.INVISIBLE
+                binding.etFeet.visibility = View.INVISIBLE
+                binding.etEar.visibility = View.INVISIBLE
+            }
+            EnumTrapID.SNAP_TRAPS.myName -> {
+                binding.rgCaptureId.visibility = View.INVISIBLE
+                binding.rgCaptureId.clearCheck()
+            }
+        }
     }
 
     private fun setListeners() {
@@ -413,11 +426,13 @@ class RecaptureMouseFragment : Fragment() {
         val updateMouseList: List<Mouse> = mouseViewModel.getMiceForLog(args.mouse.mouseId).value!!
         updateMouseList.forEach {
             it.sex = sex
+            it.mouseDateTimeUpdated = Calendar.getInstance().time
             mouseViewModel.updateMouse(it)
         }
         // zmena pohlavia prveho zaznamu
         val mouse: Mouse = mouseViewModel.getMouse(args.mouse.mouseId)!!
         mouse.sex = sex
+        mouse.mouseDateTimeUpdated = Calendar.getInstance().time
         mouseViewModel.updateMouse(mouse)
     }
 

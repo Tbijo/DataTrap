@@ -185,6 +185,7 @@ class AddOccasionFragment : Fragment() {
     private fun updateSessionNumOcc(){
         val updatedSession: Session = args.session
         updatedSession.numOcc = (updatedSession.numOcc + 1)
+        updatedSession.sessionDateTimeUpdated = Calendar.getInstance().time
         sessionViewModel.updateSession(updatedSession)
     }
 
