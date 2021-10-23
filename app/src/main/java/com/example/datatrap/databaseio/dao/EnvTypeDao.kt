@@ -16,6 +16,6 @@ interface EnvTypeDao {
     @Delete
     suspend fun deleteEnvType(envType: EnvType)
 
-    @Query("SELECT * FROM env_types")
+    @Query("SELECT * FROM EnvType")
     fun getEnvTypes(): LiveData<List<EnvType>>
 }

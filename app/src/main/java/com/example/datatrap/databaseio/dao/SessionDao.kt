@@ -16,9 +16,9 @@ interface SessionDao {
     @Delete
     suspend fun deleteSession(session: Session)
 
-    @Query("SELECT * FROM sessions WHERE sessionId = :sessionId")
+    @Query("SELECT * FROM Session WHERE sessionId = :sessionId")
     suspend fun getSession(sessionId: Long): Session?
 
-    @Query("SELECT * FROM sessions WHERE projectID = :projectId")
+    @Query("SELECT * FROM Session WHERE projectID = :projectId")
     fun getSessionsForProject(projectId: Long): LiveData<List<Session>>
 }

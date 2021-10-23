@@ -41,12 +41,12 @@ class UpdateMouseFragment : Fragment() {
     private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
-    private var gravitidy: Int? = null
-    private var lactating: Int? = null
+    private var gravitidy: Boolean? = null
+    private var lactating: Boolean? = null
     private var embryoRight: Int? = null
     private var embryoLeft: Int? = null
     private var embryoDiameter: Float? = null
-    private var MC: Int? = null
+    private var MC: Boolean? = null
     private var MCright: Int? = null
     private var MCleft: Int? = null
     private var body: Float? = null
@@ -135,10 +135,10 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun initMouseValuesToView(){
-        binding.cbGravit.isChecked = args.mouse.gravidity == 1
-        binding.cbLactating.isChecked = args.mouse.lactating == 1
-        binding.cbSexActive.isChecked = args.mouse.sexActive == 1
-        binding.cbMc.isChecked = args.mouse.MC == 1
+        binding.cbGravit.isChecked = args.mouse.gravidity == true
+        binding.cbLactating.isChecked = args.mouse.lactating == true
+        binding.cbSexActive.isChecked = args.mouse.sexActive == true
+        binding.cbMc.isChecked = args.mouse.MC == true
 
         binding.etMouseCodeUpdate.setText(args.mouse.code.toString())
         binding.etWeight.setText(args.mouse.weight.toString())
@@ -360,7 +360,7 @@ class UpdateMouseFragment : Fragment() {
             mouse.mouseDateTimeUpdated = Calendar.getInstance().time
 
             mouse.protocolID = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
-            mouse.sexActive = if (binding.cbSexActive.isChecked) 1 else 0
+            mouse.sexActive = binding.cbSexActive.isChecked
             mouse.weight = giveOutPutFloat(binding.etWeight.text.toString())
             mouse.body = if (body == null) null else giveOutPutFloat(binding.etBody.text.toString())
             mouse.tail = if (tail == null) null else giveOutPutFloat(binding.etTail.text.toString())
@@ -368,13 +368,13 @@ class UpdateMouseFragment : Fragment() {
             mouse.ear = if (ear == null) null else giveOutPutFloat(binding.etEar.text.toString())
             mouse.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
             mouse.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
-            mouse.gravidity = if (gravitidy == null) null else { if (binding.cbGravit.isChecked) 1 else 0 }
-            mouse.lactating = if (lactating == null) null else { if (binding.cbLactating.isChecked) 1 else 0 }
+            mouse.gravidity = if (gravitidy == null) null else { binding.cbGravit.isChecked }
+            mouse.lactating = if (lactating == null) null else { binding.cbLactating.isChecked }
             //počet embryí v oboch rohoch maternice a ich priemer
             mouse.embryoRight = if (embryoRight == null) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
             mouse.embryoLeft = if (embryoLeft == null) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
             mouse.embryoDiameter = if (embryoDiameter == null) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            mouse.MC = if (MC == null) null else { if (binding.cbMc.isChecked) 1 else 0 }
+            mouse.MC = if (MC == null) null else { binding.cbMc.isChecked }
             //počet placentálnych polypov
             mouse.MCright = if (MCright == null) null else giveOutPutInt(binding.etMcRight.text.toString())
             mouse.MCleft = if (MCleft == null) null else giveOutPutInt(binding.etMcLeft.text.toString())

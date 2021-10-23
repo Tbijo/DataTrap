@@ -90,7 +90,7 @@ class UpdateSpecieFragment : Fragment() {
 
         binding.etMaxWeight.setText(args.specie.maxWeight.toString())
         binding.etMinWeight.setText(args.specie.maxWeight.toString())
-        binding.cbIsSmallMammal.isChecked = args.specie.isSmallMammal == 1
+        binding.cbIsSmallMammal.isChecked = args.specie.isSmallMammal
         binding.etNote.setText(args.specie.note)
     }
 
@@ -123,7 +123,7 @@ class UpdateSpecieFragment : Fragment() {
             specie.authority = authority
             specie.synonym = if (binding.etSynonym.text.toString().isBlank()) null else binding.etSynonym.text.toString()
             specie.description = if (binding.etDescription.text.toString().isBlank()) null else binding.etDescription.text.toString()
-            specie.isSmallMammal = if (binding.cbIsSmallMammal.isChecked) 1 else 0
+            specie.isSmallMammal = binding.cbIsSmallMammal.isChecked
             specie.upperFingers = upperFingers
             specie.minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMinWeight.text.toString()).toFloat()
             specie.maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMaxWeight.text.toString()).toFloat()

@@ -16,12 +16,12 @@ interface ProjectDao {
     @Delete
     suspend fun deleteProject(project: Project)
 
-    @Query("SELECT * FROM projects WHERE projectId = :projectId")
+    @Query("SELECT * FROM Project WHERE projectId = :projectId")
     suspend fun getProject(projectId: Long): Project?
 
-    @Query("SELECT * FROM projects")
+    @Query("SELECT * FROM Project")
     fun getProjects(): LiveData<List<Project>>
 
-    @Query("SELECT * FROM projects WHERE ProjectName LIKE :nameProject")
+    @Query("SELECT * FROM Project WHERE ProjectName LIKE :nameProject")
     fun searchProjects(nameProject: String): LiveData<List<Project>>
 }

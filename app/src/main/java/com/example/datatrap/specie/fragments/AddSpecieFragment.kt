@@ -78,7 +78,7 @@ class AddSpecieFragment : Fragment() {
         if (checkInput(speciesCode, fullName, authority)){
             val synonym = if (binding.etSynonym.text.toString().isBlank()) null else binding.etSynonym.text.toString()
             val description = if (binding.etDescription.text.toString().isBlank()) null else binding.etDescription.text.toString()
-            val isSmallMammal: Int = if (binding.cbIsSmallMammal.isChecked) 1 else 0
+            val isSmallMammal: Boolean = binding.cbIsSmallMammal.isChecked
             val minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMinWeight.text.toString()).toFloat()
             val maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMaxWeight.text.toString()).toFloat()
             val note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()

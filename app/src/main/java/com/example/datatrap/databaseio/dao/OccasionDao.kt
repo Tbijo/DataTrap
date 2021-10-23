@@ -16,10 +16,10 @@ interface OccasionDao {
     @Delete
     suspend fun deleteOccasion(occasion: Occasion)
 
-    @Query("SELECT * FROM occasions WHERE occasionId = :occasionId")
+    @Query("SELECT * FROM Occasion WHERE occasionId = :occasionId")
     suspend fun getOccasion(occasionId: Long): Occasion?
 
-    @Query("SELECT * FROM occasions WHERE sessionID = :idSession")
+    @Query("SELECT * FROM Occasion WHERE sessionID = :idSession")
     fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>
 
 }

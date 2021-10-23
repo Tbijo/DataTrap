@@ -16,6 +16,6 @@ interface ProtocolDao {
     @Delete
     suspend fun deleteProtocol(protocol: Protocol)
 
-    @Query("SELECT * FROM protocols")
+    @Query("SELECT * FROM Protocol")
     fun getProtocols(): LiveData<List<Protocol>>
 }

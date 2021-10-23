@@ -44,11 +44,11 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.A
 
         holder.binding.tvSex.text = currenItem.sex
 
-        holder.binding.tvGravitRecap.text = if (currenItem.gravidity == 1) "Yes" else "No"
+        holder.binding.tvGravitRecap.text = if (currenItem.gravidity == true) "Yes" else "No"
 
-        holder.binding.tvLactaRecap.text = if (currenItem.lactating == 1) "Yes" else "No"
+        holder.binding.tvLactaRecap.text = if (currenItem.lactating == true) "Yes" else "No"
 
-        holder.binding.tvSexActiveRecap.text = if (currenItem.sexActive == 1) "Yes" else "No"
+        holder.binding.tvSexActiveRecap.text = if (currenItem.sexActive == true) "Yes" else "No"
 
         holder.binding.tvLocality.text = localityViewModel.getLocality(currenItem.localityID)?.localityName
 

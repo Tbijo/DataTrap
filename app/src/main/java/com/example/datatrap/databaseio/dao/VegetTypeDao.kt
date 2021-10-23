@@ -16,6 +16,6 @@ interface VegetTypeDao {
     @Delete
     suspend fun deleteVegetType(vegetType: VegetType)
 
-    @Query("SELECT * FROM veget_types")
+    @Query("SELECT * FROM VegetType")
     fun getVegetTypes(): LiveData<List<VegetType>>
 }

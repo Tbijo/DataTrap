@@ -179,6 +179,7 @@ class UpdateOccasionFragment : Fragment() {
         binding.etOccasionNote.setText(args.occasion.note)
         binding.etTemperature.setText(args.occasion.temperature.toString())
         binding.etWeather.setText(args.occasion.weather)
+        binding.cbGotCaught.isChecked = args.occasion.gotCaught == true
         imgName = args.occasion.imgName
     }
 
@@ -220,7 +221,7 @@ class UpdateOccasionFragment : Fragment() {
 
             occasion.envTypeID = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
             occasion.vegetTypeID = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
-            occasion.gotCaught = if (binding.cbGotCaught.isChecked) 1 else 0
+            occasion.gotCaught = binding.cbGotCaught.isChecked
             occasion.numTraps = if (binding.etNumTraps.text.toString().isBlank()) null else Integer.parseInt(binding.etNumTraps.text.toString())
             occasion.temperature = if (binding.etTemperature.text.toString().isBlank()) null else temperature
             occasion.weather = if (binding.etWeather.text.toString().isBlank()) null else weatherGlob

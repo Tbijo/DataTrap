@@ -1,7 +1,6 @@
 package com.example.datatrap.models
 
 import android.os.Parcelable
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
@@ -10,7 +9,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
-@Entity(tableName = "occasions", foreignKeys = [
+@Entity(foreignKeys = [
     ForeignKey(entity = Locality::class, parentColumns = ["localityId"], childColumns = ["localityID"], onDelete = CASCADE),
     ForeignKey(entity = Session::class, parentColumns = ["sessionId"], childColumns = ["sessionID"], onDelete = CASCADE),
     ForeignKey(entity = Method::class, parentColumns = ["methodId"], childColumns = ["methodID"], onDelete = CASCADE),
@@ -24,7 +23,6 @@ data class Occasion(
     @PrimaryKey(autoGenerate = true)
     var occasionId: Long,
 
-    @ColumnInfo(name = "Occasion")
     var occasion: Int,
 
     var deviceID: String,
@@ -54,28 +52,20 @@ data class Occasion(
 
     var occasionDateTimeUpdated: Date?,
 
-    @ColumnInfo(name = "Got_caught")
-    var gotCaught: Int?, // boolean
+    var gotCaught: Boolean?, // boolean
 
-    @ColumnInfo(name = "No_traps")
     var numTraps: Int?,
 
-    @ColumnInfo(name = "Num_mice")
     var numMice: Int?,
 
-    @ColumnInfo(name = "Temperature")
     var temperature: Float?,
 
-    @ColumnInfo(name = "Weather")
     var weather: String?,
 
-    @ColumnInfo(name = "Leg")
     var leg: String,
 
-    @ColumnInfo(name = "Note_occ")
     var note: String?,
 
     // cudzi kluc
-    @ColumnInfo(name = "Img_occ")
     var imgName: String?
 ): Parcelable

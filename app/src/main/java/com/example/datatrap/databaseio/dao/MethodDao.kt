@@ -16,6 +16,6 @@ interface MethodDao {
     @Delete
     suspend fun deleteMethod(method: Method)
 
-    @Query("SELECT * FROM methods")
+    @Query("SELECT * FROM Method")
     fun getMethods(): LiveData<List<Method>>
 }

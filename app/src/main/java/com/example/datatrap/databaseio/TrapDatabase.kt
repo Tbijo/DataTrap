@@ -18,7 +18,7 @@ import java.util.concurrent.Executors
     Occasion::class, Picture::class, Project::class, Protocol::class,
     Session::class, Specie::class, TrapType::class, VegetType::class,
     Mouse::class, ProjectLocalityCrossRef::class, User::class
-                     ], version = 2, exportSchema = false)
+                     ], version = 3, exportSchema = false)
 @TypeConverters(DateLongConverters::class)
 abstract class TrapDatabase: RoomDatabase() {
     abstract fun envTypeDao(): EnvTypeDao

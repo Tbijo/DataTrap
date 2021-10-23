@@ -48,12 +48,12 @@ class AddNewMouseFragment : Fragment() {
     private var captureID: String? = null
     private var speciesID: Long = 0
     private var specie: Specie? = null
-    private var gravitidy: Int? = null
-    private var lactating: Int? = null
+    private var gravitidy: Boolean? = null
+    private var lactating: Boolean? = null
     private var embryoRight: Int? = null
     private var embryoLeft: Int? = null
     private var embryoDiameter: Float? = null
-    private var MC: Int? = null
+    private var MC: Boolean? = null
     private var MCright: Int? = null
     private var MCleft: Int? = null
     private var body: Float? = null
@@ -308,7 +308,7 @@ class AddNewMouseFragment : Fragment() {
         if (checkInput(speciesID, trapID)){
             code = if (code != null) null else giveOutPutInt(binding.etCodeMouseAdd.text.toString())
             val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
-            val sexActive: Int? = if (binding.cbSexActive.isChecked) 1 else 0
+            val sexActive: Boolean? = binding.cbSexActive.isChecked
             val weight: Float? = giveOutPutFloat(binding.etWeight.text.toString())
             body = if (body == null) null else giveOutPutFloat(binding.etBody.text.toString())
             tail = if (tail == null) null else giveOutPutFloat(binding.etTail.text.toString())
@@ -316,13 +316,13 @@ class AddNewMouseFragment : Fragment() {
             ear = if (ear == null) null else giveOutPutFloat(binding.etEar.text.toString())
             val testesLength: Float? = giveOutPutFloat(binding.etTestesLength.text.toString())
             val testesWidth: Float? = giveOutPutFloat(binding.etTestesWidth.text.toString())
-            gravitidy = if (gravitidy == null) null else { if (binding.cbGravit.isChecked) 1 else 0 }
-            lactating = if (lactating == null) null else { if (binding.cbLactating.isChecked) 1 else 0 }
+            gravitidy = if (gravitidy == null) null else { binding.cbGravit.isChecked }
+            lactating = if (lactating == null) null else { binding.cbLactating.isChecked }
             //počet embryí v oboch rohoch maternice a ich priemer
             embryoRight = if (embryoRight == null) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
             embryoLeft = if (embryoLeft == null) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
             embryoDiameter = if (embryoDiameter == null) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            MC = if (MC == null) null else { if (binding.cbMc.isChecked) 1 else 0 }
+            MC = if (MC == null) null else { binding.cbMc.isChecked }
             //počet placentálnych polypov
             MCright = if (MCright == null) null else giveOutPutInt(binding.etMcRight.text.toString())
             MCleft = if (MCleft == null) null else giveOutPutInt(binding.etMcLeft.text.toString())
@@ -331,7 +331,7 @@ class AddNewMouseFragment : Fragment() {
 
             val mouse = Mouse(0, code, deviceID, null, speciesID, protocolID, args.occasion.occasionId,
                 args.occasion.localityID, trapID, Calendar.getInstance().time, null, sex, age, gravitidy, lactating, sexActive,
-                weight, recapture = 0, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
+                weight, recapture = false, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 
             // ulozit mys

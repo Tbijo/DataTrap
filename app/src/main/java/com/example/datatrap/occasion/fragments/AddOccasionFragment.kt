@@ -156,7 +156,7 @@ class AddOccasionFragment : Fragment() {
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
             val envType: Long? = envTypeNameMap.getValue(binding.autoCompTvEnvType.text.toString())
             val vegType: Long? = vegTypeNameMap.getValue(binding.autoCompTvVegType.text.toString())
-            val gotCaught = 0
+            val gotCaught = false
             val numTraps = if (binding.etNumTraps.text.toString().isBlank()) null else Integer.parseInt(binding.etNumTraps.text.toString())
             val numMice = 0
             val note: String? = if (binding.etOccasionNote.toString().isBlank()) null else binding.etOccasionNote.toString()

@@ -101,7 +101,7 @@ class ViewMouseFragment : Fragment() {
         if (args.mouse.sex == "Male") {
             var maleLog: String
             mouseList.forEach {
-                sexActive = if (it.sexActive == 1) "Yes" else "No"
+                sexActive = if (it.sexActive == true) "Yes" else "No"
                 newId = it.localityID
                 if (oldId != newId) {
                     locality = localityViewModel.getLocality(args.mouse.localityID)
@@ -117,7 +117,7 @@ class ViewMouseFragment : Fragment() {
         } else {
             var femaleLog: String
             mouseList.forEach {
-                sexActive = if (it.sexActive == 1) "Yes" else "No"
+                sexActive = if (it.sexActive == true) "Yes" else "No"
                 newId = it.localityID
                 if (oldId != newId) {
                     locality = localityViewModel.getLocality(args.mouse.localityID)
@@ -141,9 +141,9 @@ class ViewMouseFragment : Fragment() {
         binding.tvCatchTime.text =
             SimpleDateFormat.getDateTimeInstance().format(args.mouse.mouseDateTimeCreated)
         binding.tvEar.text = args.mouse.ear.toString()
-        binding.tvGravidity.text = if (args.mouse.gravidity == 1) "Yes" else "No"
-        binding.tvLactating.text = if (args.mouse.lactating == 1) "Yes" else "No"
-        binding.tvSexActive.text = if (args.mouse.sexActive == 1) "Yes" else "No"
+        binding.tvGravidity.text = if (args.mouse.gravidity == true) "Yes" else "No"
+        binding.tvLactating.text = if (args.mouse.lactating == true) "Yes" else "No"
+        binding.tvSexActive.text = if (args.mouse.sexActive == true) "Yes" else "No"
         binding.tvMouseAge.text = args.mouse.age
         binding.tvMouseSex.text = args.mouse.sex
         binding.tvMouseWeight.text = args.mouse.weight.toString()
@@ -153,7 +153,7 @@ class ViewMouseFragment : Fragment() {
         binding.tvEmbryoRight.text = args.mouse.embryoRight.toString()
         binding.tvEmbryoLeft.text = args.mouse.embryoLeft.toString()
         binding.tvEmbryoDiam.text = args.mouse.embryoDiameter.toString()
-        binding.tvMc.text = if (args.mouse.MC == 1) "Yes" else "No"
+        binding.tvMc.text = if (args.mouse.MC == true) "Yes" else "No"
         binding.tvMcLeft.text = args.mouse.MCleft.toString()
         binding.tvMcRight.text = args.mouse.MCright.toString()
     }

@@ -16,13 +16,13 @@ interface LocalityDao {
     @Delete
     suspend fun deleteLocality(locality: Locality)
 
-    @Query("SELECT * FROM localities WHERE localityId = :localityId")
+    @Query("SELECT * FROM Locality WHERE localityId = :localityId")
     suspend fun getLocality(localityId: Long): Locality?
 
-    @Query("SELECT * FROM localities")
+    @Query("SELECT * FROM Locality")
     fun getLocalities(): LiveData<List<Locality>>
 
-    @Query("SELECT * FROM localities WHERE LocalityName LIKE :localityName")
+    @Query("SELECT * FROM Locality WHERE LocalityName LIKE :localityName")
     fun searchLocalities(localityName: String): LiveData<List<Locality>>
 
 }
