@@ -8,10 +8,12 @@
 
     <TextView
         android:id="@+id/textView17"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
         android:text="Project"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView19"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,10 +21,12 @@
 
     <TextView
         android:id="@+id/textView19"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
         android:text="Specie Code"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView23"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView17"
@@ -30,10 +34,12 @@
 
     <TextView
         android:id="@+id/textView23"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:gravity="center"
         android:text="Species Full Name"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView19"
@@ -41,9 +47,9 @@
 
     <TextView
         android:id="@+id/tv_mouse_project_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="Komjatice"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_specie"
@@ -53,9 +59,9 @@
 
     <TextView
         android:id="@+id/tv_specie"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="AAG"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_mouse_full_name"
@@ -65,9 +71,9 @@
 
     <TextView
         android:id="@+id/tv_mouse_full_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="Agrelis Midisis"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -77,11 +83,12 @@
 
     <TextView
         android:id="@+id/textView30"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Weight"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView31"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,11 +96,12 @@
 
     <TextView
         android:id="@+id/textView31"
-        android:layout_width="wrap_content"
-        android:layout_height="22dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Age"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView32"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView30"
@@ -101,11 +109,12 @@
 
     <TextView
         android:id="@+id/textView32"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Sex"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView31"
@@ -113,9 +122,9 @@
 
     <TextView
         android:id="@+id/tv_mouse_weight"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="38.0"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_mouse_age"
@@ -125,9 +134,9 @@
 
     <TextView
         android:id="@+id/tv_mouse_age"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="Adult"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_mouse_sex"
@@ -137,9 +146,9 @@
 
     <TextView
         android:id="@+id/tv_mouse_sex"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="Male"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -149,11 +158,12 @@
 
     <TextView
         android:id="@+id/textView36"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Gravidity"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView37"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -161,11 +171,12 @@
 
     <TextView
         android:id="@+id/textView37"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Lactating"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView38"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView36"
@@ -173,11 +184,12 @@
 
     <TextView
         android:id="@+id/textView38"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Sex. Active"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView37"
@@ -185,9 +197,9 @@
 
     <TextView
         android:id="@+id/tv_gravidity"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="No"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_lactating"
@@ -197,9 +209,9 @@
 
     <TextView
         android:id="@+id/tv_lactating"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="No"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_sex_active"
@@ -209,9 +221,9 @@
 
     <TextView
         android:id="@+id/tv_sex_active"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="No"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -221,11 +233,12 @@
 
     <TextView
         android:id="@+id/textView42"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Body Length"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView43"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -233,11 +246,12 @@
 
     <TextView
         android:id="@+id/textView43"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Tail Length"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView44"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView42"
@@ -245,21 +259,22 @@
 
     <TextView
         android:id="@+id/textView44"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Feet Length"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView54"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView43"
-        app:layout_constraintTop_toBottomOf="@+id/tv_sex_active" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_lactating" />
 
     <TextView
         android:id="@+id/tv_body_length"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="25.4"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_tail_length"
@@ -269,9 +284,9 @@
 
     <TextView
         android:id="@+id/tv_tail_length"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="25.4"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_feet_length"
@@ -281,25 +296,23 @@
 
     <TextView
         android:id="@+id/tv_feet_length"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="25.4"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_ear"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/tv_tail_length"
         app:layout_constraintTop_toBottomOf="@+id/textView44" />
 
     <TextView
         android:id="@+id/textView48"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:text="Note"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.308"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_tail_length" />
 
@@ -307,7 +320,6 @@
         android:id="@+id/tv_mouse_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="Note note note."
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -316,12 +328,11 @@
 
     <TextView
         android:id="@+id/textView50"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Leg"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_mouse_note" />
 
@@ -329,7 +340,6 @@
         android:id="@+id/tv_mouse_leg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="Mister Perfect"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -338,12 +348,11 @@
 
     <TextView
         android:id="@+id/textView52"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="Catch DateTime"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_mouse_leg" />
 
@@ -351,7 +360,6 @@
         android:id="@+id/tv_catch_time"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="20.12.2021 12:50:33"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -360,55 +368,60 @@
 
     <TextView
         android:id="@+id/textView54"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Ear"
-        android:textSize="16sp"
+        android:gravity="center"
+        android:text="Ear Length"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_catch_time" />
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView44"
+        app:layout_constraintTop_toBottomOf="@+id/tv_sex_active" />
 
     <TextView
         android:id="@+id/tv_ear"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="5.4"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_feet_length"
         app:layout_constraintTop_toBottomOf="@+id/textView54" />
 
     <TextView
         android:id="@+id/textView56"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
         android:text="Testes Length"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView57"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_ear" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_catch_time" />
 
     <TextView
         android:id="@+id/textView57"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
+        android:gravity="center"
         android:text="Testes Width"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView56"
-        app:layout_constraintTop_toBottomOf="@+id/tv_ear" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_catch_time" />
 
     <TextView
         android:id="@+id/tv_testes_length"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="9.6"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_testes_width"
@@ -418,9 +431,9 @@
 
     <TextView
         android:id="@+id/tv_testes_width"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="9.6"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -430,11 +443,12 @@
 
     <TextView
         android:id="@+id/textView60"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Embryo Right"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView61"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -442,11 +456,12 @@
 
     <TextView
         android:id="@+id/textView61"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Embryo Left"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView62"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView60"
@@ -454,11 +469,12 @@
 
     <TextView
         android:id="@+id/textView62"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="Embryo Diameter"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView61"
@@ -466,9 +482,9 @@
 
     <TextView
         android:id="@+id/tv_embryo_right"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="5"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_embryo_left"
@@ -478,9 +494,9 @@
 
     <TextView
         android:id="@+id/tv_embryo_left"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="5"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_embryo_diam"
@@ -490,9 +506,9 @@
 
     <TextView
         android:id="@+id/tv_embryo_diam"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="5.3"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -502,11 +518,12 @@
 
     <TextView
         android:id="@+id/textView66"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="MC"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView67"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -514,11 +531,12 @@
 
     <TextView
         android:id="@+id/textView67"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="MC Right"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toStartOf="@+id/textView68"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView66"
@@ -526,11 +544,12 @@
 
     <TextView
         android:id="@+id/textView68"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:gravity="center"
         android:text="MC Left"
-        android:textSize="16sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/textView67"
@@ -538,21 +557,21 @@
 
     <TextView
         android:id="@+id/tv_mc"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="Yes"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_mc_right"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView66" />
+        app:layout_constraintTop_toBottomOf="@+id/textView66"
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/tv_mc_right"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="10"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_mc_left"
@@ -562,9 +581,9 @@
 
     <TextView
         android:id="@+id/tv_mc_left"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:gravity="center"
         android:text="10"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -575,8 +594,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_mouse"
         android:layout_width="match_parent"
-        android:layout_height="138dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

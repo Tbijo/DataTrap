@@ -17,8 +17,8 @@
 
     <TextView
         android:id="@+id/textView11"
-        android:layout_width="102dp"
-        android:layout_height="22dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Species Code:"
         app:layout_constraintBottom_toBottomOf="parent"

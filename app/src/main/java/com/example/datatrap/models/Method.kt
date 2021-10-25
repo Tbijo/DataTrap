@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
-@Entity()
+@Entity
 data class Method(
 
     @PrimaryKey(autoGenerate = true)

@@ -10,23 +10,23 @@
         android:id="@+id/tv_take_picture"
         android:layout_width="107dp"
         android:layout_height="39dp"
-        android:layout_marginBottom="232dp"
+        android:layout_marginTop="28dp"
         android:text="@string/noPicture"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_take_picture" />
 
     <Button
         android:id="@+id/btn_take_picture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
+        android:layout_marginTop="575dp"
         android:text="Take Picture"
-        app:layout_constraintBottom_toTopOf="@+id/tv_take_picture"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_take_picture" />
 
     <ImageView
         android:id="@+id/iv_take_picture"
@@ -42,22 +42,31 @@
         android:id="@+id/btn_add_picture"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginTop="57dp"
         android:text="Save Picture"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_pic_note" />
 
     <EditText
         android:id="@+id/et_pic_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="52dp"
         android:ems="10"
         android:hint="Note"
         android:inputType="textPersonName"
-        app:layout_constraintBottom_toTopOf="@+id/btn_add_picture"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView159" />
+
+    <TextView
+        android:id="@+id/textView159"
+        android:layout_width="wrap_content"
+        android:layout_height="25dp"
+        android:layout_marginTop="32dp"
+        android:text="Note"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_take_picture" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

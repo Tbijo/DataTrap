@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
-@Entity()
+@Entity
 data class EnvType(
 
     @PrimaryKey(autoGenerate = true)

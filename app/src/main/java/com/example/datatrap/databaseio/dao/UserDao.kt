@@ -19,15 +19,15 @@ interface UserDao {
     @Delete
     suspend fun deleteUser(user: User)
 
-    @Query("SELECT * FROM users")
+    @Query("SELECT * FROM User")
     fun getUsers(): LiveData<List<User>>
 
-    @Query("SELECT * FROM users WHERE isActive = 1")
+    @Query("SELECT * FROM User WHERE isActive = 1")
     suspend fun getActiveUser(): User?
 
-    @Query("SELECT * FROM users WHERE isActive = 1")
+    @Query("SELECT * FROM User WHERE isActive = 1")
     suspend fun getActiveUsers(): List<User>
 
-    @Query("SELECT * From users WHERE userName = :userName AND password = :password")
+    @Query("SELECT * From User WHERE userName = :userName AND password = :password")
     suspend fun checkUser(userName: String, password: String): User?
 }

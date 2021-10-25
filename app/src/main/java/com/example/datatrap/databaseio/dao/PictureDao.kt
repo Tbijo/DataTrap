@@ -12,6 +12,6 @@ interface PictureDao {
     @Delete
     suspend fun deletePicture(picture: Picture)
 
-    @Query("SELECT * FROM images WHERE Img_name = :imgName")
+    @Query("SELECT * FROM Picture WHERE imgName = :imgName")
     suspend fun getPictureById(imgName: String): Picture?
 }

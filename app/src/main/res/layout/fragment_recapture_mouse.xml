@@ -7,14 +7,35 @@
     tools:context=".mouse.fragments.recapture.RecaptureMouseFragment">
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textInputLayout7"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:hint="TrapID"
+        app:layout_constraintEnd_toStartOf="@+id/textInputLayout6"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textInputLayout5"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <AutoCompleteTextView
+            android:id="@+id/auto_comp_tv_trap_id"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:inputType="none"
+            tools:ignore="DuplicateClickableBoundsCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout5"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="60dp"
         android:hint="Specie"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/textInputLayout7"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,36 +49,16 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/textInputLayout7"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="TrapID"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
-
-        <AutoCompleteTextView
-            android:id="@+id/auto_comp_tv_trap_id"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:inputType="none"
-            tools:ignore="DuplicateClickableBoundsCheck" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout6"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="60dp"
         android:hint="Protocol"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout7">
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textInputLayout7"
+        app:layout_constraintTop_toTopOf="parent">
 
         <AutoCompleteTextView
             android:id="@+id/auto_comp_tv_protocol"
@@ -71,13 +72,9 @@
         android:id="@+id/rg_sex"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout6">
+        app:layout_constraintTop_toBottomOf="@+id/textView137">
 
         <RadioButton
             android:id="@+id/rb_male"
@@ -105,12 +102,12 @@
         android:id="@+id/rg_age"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rg_sex">
+        app:layout_constraintTop_toBottomOf="@+id/textView138">
 
         <RadioButton
             android:id="@+id/rb_juvenile"
@@ -143,49 +140,43 @@
 
     <CheckBox
         android:id="@+id/cb_gravit"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:text="Gravititdy"
-        app:layout_constraintEnd_toStartOf="@+id/cb_sexActive"
+        app:layout_constraintEnd_toStartOf="@+id/cb_lactating"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rg_age" />
+        app:layout_constraintStart_toEndOf="@+id/cb_sexActive"
+        app:layout_constraintTop_toBottomOf="@+id/textView141" />
 
     <CheckBox
         android:id="@+id/cb_sexActive"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="Sex. Active"
-        app:layout_constraintEnd_toStartOf="@+id/cb_lactating"
+        app:layout_constraintEnd_toStartOf="@+id/cb_gravit"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cb_gravit"
-        app:layout_constraintTop_toBottomOf="@+id/rg_age" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView141" />
 
     <CheckBox
         android:id="@+id/cb_lactating"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:text="Lactating"
-        app:layout_constraintEnd_toStartOf="@+id/cb_mc"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cb_sexActive"
-        app:layout_constraintTop_toBottomOf="@+id/rg_age" />
+        app:layout_constraintStart_toEndOf="@+id/cb_gravit"
+        app:layout_constraintTop_toBottomOf="@+id/textView141" />
 
     <RadioGroup
         android:id="@+id/rg_capture_id"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginTop="8dp"
         android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cb_sexActive">
+        app:layout_constraintTop_toBottomOf="@+id/textView140">
 
         <RadioButton
             android:id="@+id/rb_died"
@@ -224,30 +215,28 @@
     </RadioGroup>
 
     <EditText
-        android:id="@+id/et_weight"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:hint="Weight"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toStartOf="@+id/et_body"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rg_capture_id" />
-
-    <EditText
         android:id="@+id/et_body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Body"
         android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/et_tail"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/et_weight"
-        app:layout_constraintTop_toBottomOf="@+id/rg_capture_id" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView143" />
+
+    <EditText
+        android:id="@+id/et_feet"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Feet"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toStartOf="@+id/et_ear"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/et_tail"
+        app:layout_constraintTop_toBottomOf="@+id/textView145" />
 
     <EditText
         android:id="@+id/et_tail"
@@ -258,20 +247,8 @@
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toStartOf="@+id/et_feet"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_weight" />
-
-    <EditText
-        android:id="@+id/et_feet"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Feet"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/et_tail"
-        app:layout_constraintTop_toBottomOf="@+id/et_body" />
+        app:layout_constraintStart_toEndOf="@+id/et_body"
+        app:layout_constraintTop_toBottomOf="@+id/textView144" />
 
     <EditText
         android:id="@+id/et_ear"
@@ -282,20 +259,30 @@
         android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/et_embryo_diameter"
-        app:layout_constraintTop_toBottomOf="@+id/et_embryo_left" />
+        app:layout_constraintStart_toEndOf="@+id/et_feet"
+        app:layout_constraintTop_toBottomOf="@+id/textView146" />
 
     <EditText
-        android:id="@+id/et_testes_length"
+        android:id="@+id/et_embryo_left"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Testes Length"
-        android:inputType="numberDecimal"
-        app:layout_constraintEnd_toStartOf="@+id/et_testes_width"
+        android:hint="Left Embryo"
+        android:inputType="number"
+        app:layout_constraintEnd_toStartOf="@+id/et_embryo_diameter"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_tail" />
+        app:layout_constraintStart_toEndOf="@+id/et_embryo_right"
+        app:layout_constraintTop_toBottomOf="@+id/textView150" />
+
+    <EditText
+        android:id="@+id/et_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Weight"
+        android:inputType="numberDecimal"
+        app:layout_constraintTop_toBottomOf="@+id/textView142"
+        tools:layout_editor_absoluteX="1dp" />
 
     <EditText
         android:id="@+id/et_testes_width"
@@ -307,7 +294,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/et_testes_length"
-        app:layout_constraintTop_toBottomOf="@+id/et_feet" />
+        app:layout_constraintTop_toBottomOf="@+id/textView148" />
+
+    <EditText
+        android:id="@+id/et_mc_left"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="MC Left"
+        android:inputType="number"
+        app:layout_constraintEnd_toStartOf="@+id/cb_mc"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/et_mc_right"
+        app:layout_constraintTop_toBottomOf="@+id/textView153" />
+
+    <EditText
+        android:id="@+id/et_mouse_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Note"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView155" />
 
     <EditText
         android:id="@+id/et_embryo_right"
@@ -319,54 +329,19 @@
         app:layout_constraintEnd_toStartOf="@+id/et_embryo_left"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_testes_length" />
+        app:layout_constraintTop_toBottomOf="@+id/textView149" />
 
     <EditText
-        android:id="@+id/et_embryo_left"
+        android:id="@+id/et_testes_length"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Left Embryo"
-        android:inputType="number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/et_embryo_right"
-        app:layout_constraintTop_toBottomOf="@+id/et_testes_width" />
-
-    <CheckBox
-        android:id="@+id/cb_mc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="MC"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/cb_lactating"
-        app:layout_constraintTop_toBottomOf="@+id/rg_age" />
-
-    <EditText
-        android:id="@+id/et_embryo_diameter"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Embryo Diameter"
+        android:hint="Testes Length"
         android:inputType="numberDecimal"
-        app:layout_constraintEnd_toStartOf="@+id/et_ear"
+        app:layout_constraintEnd_toStartOf="@+id/et_testes_width"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_embryo_right" />
-
-    <EditText
-        android:id="@+id/et_mouse_note"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="Note"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_mc_left" />
+        app:layout_constraintTop_toBottomOf="@+id/textView147" />
 
     <EditText
         android:id="@+id/et_mc_right"
@@ -378,18 +353,232 @@
         app:layout_constraintEnd_toStartOf="@+id/et_mc_left"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_embryo_diameter" />
+        app:layout_constraintTop_toBottomOf="@+id/textView152" />
 
     <EditText
-        android:id="@+id/et_mc_left"
+        android:id="@+id/et_embryo_diameter"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="MC Left"
-        android:inputType="number"
+        android:hint="Embryo Diameter"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/et_mc_right"
+        app:layout_constraintStart_toEndOf="@+id/et_embryo_left"
+        app:layout_constraintTop_toBottomOf="@+id/textView151" />
+
+    <CheckBox
+        android:id="@+id/cb_mc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="MC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/et_mc_left"
+        app:layout_constraintTop_toBottomOf="@+id/textView154" />
+
+    <TextView
+        android:id="@+id/textView137"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Sex"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout5" />
+
+    <TextView
+        android:id="@+id/textView138"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Age"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_sex" />
+
+    <TextView
+        android:id="@+id/textView140"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Capture ID"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_age" />
+
+    <TextView
+        android:id="@+id/textView141"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Sexual Activity"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rg_capture_id" />
+
+    <TextView
+        android:id="@+id/textView142"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Weight"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_sexActive" />
+
+    <TextView
+        android:id="@+id/textView143"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Body"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView144"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_weight" />
+
+    <TextView
+        android:id="@+id/textView144"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Tail"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView145"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView143"
+        app:layout_constraintTop_toBottomOf="@+id/et_weight" />
+
+    <TextView
+        android:id="@+id/textView145"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Feet"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView146"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView144"
+        app:layout_constraintTop_toBottomOf="@+id/et_weight" />
+
+    <TextView
+        android:id="@+id/textView146"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Ear"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView145"
+        app:layout_constraintTop_toBottomOf="@+id/et_weight" />
+
+    <TextView
+        android:id="@+id/textView147"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Testes Length"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView148"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_body" />
+
+    <TextView
+        android:id="@+id/textView148"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Testes Width"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView147"
         app:layout_constraintTop_toBottomOf="@+id/et_ear" />
+
+    <TextView
+        android:id="@+id/textView149"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Right Embryo"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView150"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_testes_length" />
+
+    <TextView
+        android:id="@+id/textView150"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Left Embryo"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView151"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView149"
+        app:layout_constraintTop_toBottomOf="@+id/et_testes_length" />
+
+    <TextView
+        android:id="@+id/textView151"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Embryo Diameter"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView150"
+        app:layout_constraintTop_toBottomOf="@+id/et_testes_width" />
+
+    <TextView
+        android:id="@+id/textView152"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="MC Right"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView153"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_embryo_right" />
+
+    <TextView
+        android:id="@+id/textView153"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="MC Left"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView154"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView152"
+        app:layout_constraintTop_toBottomOf="@+id/et_embryo_left" />
+
+    <TextView
+        android:id="@+id/textView154"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="MC"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView153"
+        app:layout_constraintTop_toBottomOf="@+id/et_embryo_diameter" />
+
+    <TextView
+        android:id="@+id/textView155"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Note"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_mc_right" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

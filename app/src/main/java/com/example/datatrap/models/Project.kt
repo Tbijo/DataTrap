@@ -7,7 +7,7 @@ import kotlinx.parcelize.Parcelize
 import java.util.*
 
 @Parcelize
-@Entity()
+@Entity
 data class Project(
 
     @PrimaryKey(autoGenerate = true)
