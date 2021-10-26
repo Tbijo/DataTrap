@@ -215,32 +215,32 @@ class AddNewMouseFragment : Fragment() {
                     tail = null
                     feet = null
                     ear = null
-                    binding.etBody.visibility = View.INVISIBLE
+                    binding.etBody.isEnabled = false
                     binding.etBody.setText("")
-                    binding.etTail.visibility = View.INVISIBLE
+                    binding.etTail.isEnabled = false
                     binding.etTail.setText("")
-                    binding.etFeet.visibility = View.INVISIBLE
+                    binding.etFeet.isEnabled = false
                     binding.etFeet.setText("")
-                    binding.etEar.visibility = View.INVISIBLE
+                    binding.etEar.isEnabled = false
                     binding.etEar.setText("")
 
-                    binding.btnGenCode.visibility = View.VISIBLE
-                    binding.etCodeMouseAdd.visibility = View.VISIBLE
-                    binding.rgCaptureId.visibility = View.VISIBLE
+                    binding.btnGenCode.isEnabled = true
+                    binding.etCodeMouseAdd.isEnabled = true
+                    binding.rgCaptureId.isEnabled = true
                 }
                 EnumTrapID.SNAP_TRAPS.myName -> {
                     code = null
                     captureID = null
-                    binding.btnGenCode.visibility = View.INVISIBLE
-                    binding.etCodeMouseAdd.visibility = View.INVISIBLE
+                    binding.btnGenCode.isEnabled = false
+                    binding.etCodeMouseAdd.isEnabled = false
                     binding.etCodeMouseAdd.setText("")
-                    binding.rgCaptureId.visibility = View.INVISIBLE
+                    binding.rgCaptureId.isEnabled = false
                     binding.rgCaptureId.clearCheck()
 
-                    binding.etBody.visibility = View.VISIBLE
-                    binding.etTail.visibility = View.VISIBLE
-                    binding.etFeet.visibility = View.VISIBLE
-                    binding.etEar.visibility = View.VISIBLE
+                    binding.etBody.isEnabled = true
+                    binding.etTail.isEnabled = true
+                    binding.etFeet.isEnabled = true
+                    binding.etEar.isEnabled = true
                 }
             }
         }
@@ -255,33 +255,33 @@ class AddNewMouseFragment : Fragment() {
         MC = null
         MCright = null
         MCleft = null
-        binding.cbGravit.visibility = View.INVISIBLE
+        binding.cbGravit.isEnabled = false
         binding.cbGravit.isChecked = false
-        binding.cbLactating.visibility = View.INVISIBLE
+        binding.cbLactating.isEnabled = false
         binding.cbLactating.isChecked = false
-        binding.cbMc.visibility = View.INVISIBLE
+        binding.cbMc.isEnabled = false
         binding.cbMc.isChecked = false
-        binding.etMcRight.visibility = View.INVISIBLE
+        binding.etMcRight.isEnabled = false
         binding.etMcRight.setText("")
-        binding.etMcLeft.visibility = View.INVISIBLE
+        binding.etMcLeft.isEnabled = false
         binding.etMcLeft.setText("")
-        binding.etEmbryoRight.visibility = View.INVISIBLE
+        binding.etEmbryoRight.isEnabled = false
         binding.etEmbryoRight.setText("")
-        binding.etEmbryoLeft.visibility = View.INVISIBLE
+        binding.etEmbryoLeft.isEnabled = false
         binding.etEmbryoLeft.setText("")
-        binding.etEmbryoDiameter.visibility = View.INVISIBLE
+        binding.etEmbryoDiameter.isEnabled = false
         binding.etEmbryoDiameter.setText("")
     }
 
     private fun showNonMaleFields(){
-        binding.cbGravit.visibility = View.VISIBLE
-        binding.cbLactating.visibility = View.VISIBLE
-        binding.cbMc.visibility = View.VISIBLE
-        binding.etMcRight.visibility = View.VISIBLE
-        binding.etMcLeft.visibility = View.VISIBLE
-        binding.etEmbryoRight.visibility = View.VISIBLE
-        binding.etEmbryoLeft.visibility = View.VISIBLE
-        binding.etEmbryoDiameter.visibility = View.VISIBLE
+        binding.cbGravit.isEnabled = true
+        binding.cbLactating.isEnabled = true
+        binding.cbMc.isEnabled = true
+        binding.etMcRight.isEnabled = true
+        binding.etMcLeft.isEnabled = true
+        binding.etEmbryoRight.isEnabled = true
+        binding.etEmbryoLeft.isEnabled = true
+        binding.etEmbryoDiameter.isEnabled = true
     }
 
     private fun showDrawnRat(){
