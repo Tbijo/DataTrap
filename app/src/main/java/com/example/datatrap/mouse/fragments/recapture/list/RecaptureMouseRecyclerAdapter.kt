@@ -6,7 +6,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.RecaptureRowBinding
+import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Mouse
+import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
 
@@ -15,6 +17,8 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.A
     private var mouseList = emptyList<Mouse>()
     private val specieViewModel: SpecieViewModel = ViewModelProvider(owner).get(SpecieViewModel::class.java)
     private val localityViewModel: LocalityViewModel = ViewModelProvider(owner).get(LocalityViewModel::class.java)
+    private val specieList: List<Specie> = specieViewModel.specieList.value!!
+    private val localList: List<Locality> = localityViewModel.localityList.value!!
 
     class MyViewHolder(val binding: RecaptureRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
         init {
@@ -50,9 +54,9 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.A
 
         holder.binding.tvSexActiveRecap.text = if (currenItem.sexActive == true) "Yes" else "No"
 
-        holder.binding.tvLocality.text = localityViewModel.getLocality(currenItem.localityID)?.localityName
+        holder.binding.tvLocality.text = localList.first {it.localityId == currenItem.localityID}.localityName
 
-        holder.binding.tvSpecieRecap.text = specieViewModel.getSpecie(currenItem.speciesID)?.speciesCode
+        holder.binding.tvSpecieRecap.text = specieList.first { it.specieId == currenItem.speciesID }.speciesCode
 
         holder.binding.tvRecapDate.text = "${currenItem.mouseDateTimeCreated}"
     }

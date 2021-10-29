@@ -42,13 +42,15 @@ class LocalityViewModel(application: Application): AndroidViewModel(application)
 
     fun getLocality(localityId: Long): Locality? {
         val locality: Locality?
+
         runBlocking {
             locality = localityRepository.getLocality(localityId)
         }
+
         return locality
     }
 
-    fun searchLocalities(localityName: String): LiveData<List<Locality>>{   //LiveData
+    fun searchLocalities(localityName: String): LiveData<List<Locality>> {   //LiveData
         return localityRepository.searchLocalities(localityName)//.asLiveData()
     }
 }

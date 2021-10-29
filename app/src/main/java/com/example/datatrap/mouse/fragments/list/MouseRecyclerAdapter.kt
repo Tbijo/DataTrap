@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.MouseRowBinding
 import com.example.datatrap.models.Mouse
+import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.SpecieViewModel
 
 class MouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHolder>() {
 
     private var mouseList = emptyList<Mouse>()
     private val specieViewModel: SpecieViewModel = ViewModelProvider(owner).get(SpecieViewModel::class.java)
+    private val specieList: List<Specie> = specieViewModel.specieList.value!!
 
     class MyViewHolder(val binding: MouseRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
         init {
@@ -36,7 +38,8 @@ class MouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<Mo
 
         holder.binding.tvIdIndividual.text = currenItem.code.toString()
 
-        holder.binding.tvMouseSpecieCode.text = specieViewModel.getSpecie(currenItem.speciesID)?.speciesCode
+        holder.binding.tvMouseSpecieCode.text =
+            specieList.first { it.specieId == currenItem.speciesID }.speciesCode
 
         holder.binding.tvCatchDateTime.text = "${currenItem.mouseDateTimeCreated}"
     }
