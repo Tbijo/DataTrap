@@ -20,7 +20,7 @@ class UserRepository(private val userDao: UserDao) {
         userDao.deleteUser(user)
     }
 
-    suspend fun getActiveUser(): User? {
+    suspend fun getActiveUser(): User {
         return userDao.getActiveUser()
     }
 
@@ -28,7 +28,7 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getActiveUsers()
     }
 
-    suspend fun checkUser(userName: String, password: String): User? {
+    suspend fun checkUser(userName: String, password: String): User {
         return userDao.checkUser(userName, password)
     }
 }

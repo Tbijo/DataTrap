@@ -24,7 +24,7 @@ class UpdateSpecieFragment : Fragment() {
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var sharedViewModel: SharedViewModel
 
-    private var imgName: String? = args.specie.imgName
+    private var imgName: String? = null
     private var upperFingers: Int? = null
 
     override fun onCreateView(
@@ -33,6 +33,8 @@ class UpdateSpecieFragment : Fragment() {
     ): View? {
         _binding = FragmentUpdateSpecieBinding.inflate(inflater, container, false)
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
+
+        imgName = args.specie.imgName
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
@@ -125,8 +127,8 @@ class UpdateSpecieFragment : Fragment() {
             specie.description = if (binding.etDescription.text.toString().isBlank()) null else binding.etDescription.text.toString()
             specie.isSmallMammal = binding.cbIsSmallMammal.isChecked
             specie.upperFingers = upperFingers
-            specie.minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMinWeight.text.toString()).toFloat()
-            specie.maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else Integer.parseInt(binding.etMaxWeight.text.toString()).toFloat()
+            specie.minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else binding.etMinWeight.text.toString().toFloat()
+            specie.maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else binding.etMaxWeight.text.toString().toFloat()
             specie.note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()
             specie.imgName = imgName
             specie.specieDateTimeUpdated = Calendar.getInstance().time

@@ -18,7 +18,7 @@ class MouseRepository(private val mouseDao: MouseDao) {
         mouseDao.deleteMouse(mouse)
     }
 
-    suspend fun getMouse(idMouse: Long): Mouse? {
+    suspend fun getMouse(idMouse: Long): Mouse {
         return mouseDao.getMouse(idMouse)
     }
 

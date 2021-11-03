@@ -13,7 +13,7 @@ class PictureRepository(private val pictureDao: PictureDao) {
         pictureDao.deletePicture(picture)
     }
 
-    suspend fun getPictureById(pictureName: String): Picture? {
+    suspend fun getPictureById(pictureName: String): Picture {
         return pictureDao.getPictureById(pictureName)
     }
 

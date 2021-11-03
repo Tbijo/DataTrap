@@ -14,9 +14,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListMethodTypeBinding
-import com.example.datatrap.models.Method
 import com.example.datatrap.models.MethodType
-import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
+import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.MethodTypeViewModel
 import java.util.*
 
@@ -24,7 +23,7 @@ class ListMethodTypeFragment : Fragment() {
 
     private var _binding: FragmentListMethodTypeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: AnyRecyclerAdapter
+    private lateinit var adapter: MetTypeRecyclerAdapter
     private lateinit var methodTypeViewModel: MethodTypeViewModel
     private lateinit var methodTypeList: List<MethodType>
 
@@ -34,7 +33,7 @@ class ListMethodTypeFragment : Fragment() {
         _binding = FragmentListMethodTypeBinding.inflate(inflater, container, false)
         methodTypeViewModel = ViewModelProvider(this).get(MethodTypeViewModel::class.java)
 
-        adapter = AnyRecyclerAdapter()
+        adapter = MetTypeRecyclerAdapter()
         binding.methodTypeRecyclerview.adapter = adapter
         binding.methodTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
@@ -48,7 +47,7 @@ class ListMethodTypeFragment : Fragment() {
             showAddDialog("New Method Type", "Add new method type?")
         }
 
-        adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object: MetTypeRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update method type
                 val currMetType: MethodType = methodTypeList[position]

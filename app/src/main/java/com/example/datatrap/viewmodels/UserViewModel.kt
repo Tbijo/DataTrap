@@ -3,6 +3,7 @@ package com.example.datatrap.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.User
@@ -13,8 +14,9 @@ import kotlinx.coroutines.runBlocking
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {
 
-    val userList: LiveData<List<User>>
     private val userRepository: UserRepository
+    val userList: LiveData<List<User>>
+    val checkUser: MutableLiveData<User> = MutableLiveData()
 
     init {
         val userDao = TrapDatabase.getDatabase(application).userDao()
@@ -40,8 +42,8 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getActiveUser(): User? {
-        val user: User?
+    fun getActiveUser(): User {
+        val user: User
         runBlocking {
             user = userRepository.getActiveUser()
         }
@@ -56,11 +58,10 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         return list
     }
 
-    fun checkUser(userName: String, password: String): User? {
-        val user: User?
-        runBlocking {
-            user = userRepository.checkUser(userName, password)
+    fun checkUser(userName: String, password: String) {
+        viewModelScope.launch {
+            val user: User = userRepository.checkUser(userName, password)
+            checkUser.value = user
         }
-        return user
     }
 }

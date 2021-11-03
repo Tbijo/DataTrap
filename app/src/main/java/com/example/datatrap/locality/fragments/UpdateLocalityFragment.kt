@@ -111,8 +111,8 @@ class UpdateLocalityFragment : Fragment(){
         if (checkInput(localityName, latitude, longitude)){
             val locality: Locality = args.locality
             locality.localityName = localityName
-            locality.x = Integer.parseInt(latitude).toFloat()
-            locality.y = Integer.parseInt(longitude).toFloat()
+            locality.x = latitude.toFloat()
+            locality.y = longitude.toFloat()
             locality.localityDateTimeUpdated = Calendar.getInstance().time
             locality.note = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
 

@@ -18,7 +18,7 @@ class SessionRepository(private val sessionDao: SessionDao) {
         sessionDao.deleteSession(session)
     }
 
-    suspend fun getSession(sessionId: Long): Session? {
+    suspend fun getSession(sessionId: Long): Session {
         return sessionDao.getSession(sessionId)
     }
 

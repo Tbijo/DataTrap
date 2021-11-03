@@ -65,8 +65,8 @@ class AddLocalityFragment : Fragment() {
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
             val locality = Locality(0, localityName, deviceID, Calendar.getInstance().time,
-                null, Integer.parseInt(latitude).toFloat(),
-                Integer.parseInt(longnitude).toFloat(),0, localityNote)
+                null, latitude.toFloat(),
+                longnitude.toFloat(),0, localityNote)
 
             localityViewModel.insertLocality(locality)
 

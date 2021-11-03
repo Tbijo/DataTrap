@@ -31,8 +31,8 @@ class PictureViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getPictureById(pictureName: String): Picture? {
-        val picture: Picture?
+    fun getPictureById(pictureName: String): Picture {
+        val picture: Picture
         runBlocking {
             picture = pictureRepository.getPictureById(pictureName)
         }

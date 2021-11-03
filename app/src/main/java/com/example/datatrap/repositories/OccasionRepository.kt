@@ -18,7 +18,7 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
         occasionDao.deleteOccasion(occasion)
     }
 
-    suspend fun getOccasion(occasionId: Long): Occasion? {
+    suspend fun getOccasion(occasionId: Long): Occasion {
         return occasionDao.getOccasion(occasionId)
     }
 

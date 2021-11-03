@@ -17,7 +17,7 @@ interface MouseDao {
     suspend fun deleteMouse(mouse: Mouse)
 
     @Query("SELECT * FROM Mouse WHERE mouseId = :idMouse")
-    suspend fun getMouse(idMouse: Long): Mouse?
+    suspend fun getMouse(idMouse: Long): Mouse
 
     @Query("SELECT * FROM Mouse WHERE occasionID = :idOccasion")
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>

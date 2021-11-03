@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProtocolBinding
 import com.example.datatrap.models.Protocol
-import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
+import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.ProtocolViewModel
 import java.util.*
 
@@ -23,7 +23,7 @@ class ListProtocolFragment : Fragment() {
 
     private var _binding: FragmentListProtocolBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: AnyRecyclerAdapter
+    private lateinit var adapter: ProtocolRecyclerAdapter
     private lateinit var protocolViewModel: ProtocolViewModel
     private lateinit var protocolList: List<Protocol>
 
@@ -33,7 +33,7 @@ class ListProtocolFragment : Fragment() {
         _binding = FragmentListProtocolBinding.inflate(inflater, container, false)
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
-        adapter = AnyRecyclerAdapter()
+        adapter = ProtocolRecyclerAdapter()
         binding.protocolRecyclerview.adapter = adapter
         binding.protocolRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
@@ -46,7 +46,7 @@ class ListProtocolFragment : Fragment() {
             showAddDialog("New Protocol", "Add new protocol?")
         }
 
-        adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object: ProtocolRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update protocol
                 val currProtocol: Protocol = protocolList[position]

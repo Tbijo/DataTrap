@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListTrapTypeBinding
 import com.example.datatrap.models.TrapType
-import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
+import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.TrapTypeViewModel
 import java.util.*
 
@@ -23,7 +23,7 @@ class ListTrapTypeFragment : Fragment() {
 
     private var _binding: FragmentListTrapTypeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: AnyRecyclerAdapter
+    private lateinit var adapter: TrapTypeRecyclerAdapter
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var trapTypeList: List<TrapType>
 
@@ -33,7 +33,7 @@ class ListTrapTypeFragment : Fragment() {
         _binding = FragmentListTrapTypeBinding.inflate(inflater, container, false)
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
 
-        adapter = AnyRecyclerAdapter()
+        adapter = TrapTypeRecyclerAdapter()
         binding.trapTypeRecyclerview.adapter = adapter
         binding.trapTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
@@ -46,7 +46,7 @@ class ListTrapTypeFragment : Fragment() {
             showAddDialog("New Trap Type", "Add new trap type?")
         }
 
-        adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object: TrapTypeRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update trap Type
                 val currTrapType: TrapType = trapTypeList[position]

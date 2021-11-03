@@ -40,8 +40,8 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun getProject(projectId: Long): Project? {
-        val project: Project?
+    fun getProject(projectId: Long): Project {
+        val project: Project
         runBlocking {
             project = projectRepository.getProject(projectId)
         }

@@ -56,8 +56,8 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         if (oldPicName != null) {
             // ak mame fotku tak ju nacitame
             binding.tvTakePicture.text = getString(R.string.pictureAdded)
-            val picture: Picture? = pictureViewModel.getPictureById(oldPicName!!)
-            binding.ivTakePicture.setImageURI(picture?.path?.toUri())
+            val picture: Picture = pictureViewModel.getPictureById(oldPicName!!)
+            binding.ivTakePicture.setImageURI(picture.path.toUri())
             picName = oldPicName
         } else {
             binding.tvTakePicture.text = getString(R.string.noPicture)
@@ -207,7 +207,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun hasStoragePermission() =
         EasyPermissions.hasPermissions(
             requireContext(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE    // sem pojdu permissiony ktore chceme skontrolovat ci su povolene
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE    // sem pojdu permissiony ktore chceme skontrolovat ci su povolene
         )
 
     private fun requestStoragePermission() {
@@ -215,7 +215,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             this,
             "This app can not work without Storage Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
             1,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE    // co chceme povolit
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE    // co chceme povolit
         )
     }
 

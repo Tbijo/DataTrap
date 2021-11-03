@@ -48,6 +48,7 @@ class ListUsersFragment : Fragment() {
                     val user: User = userList[position]
                     user.isActive = 1
                     userViewModel.updateUser(user)
+                    Toast.makeText(requireContext(), "Selected user is now active.", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(requireContext(), "Unable to access root.", Toast.LENGTH_LONG).show()
                 }
@@ -80,8 +81,8 @@ class ListUsersFragment : Fragment() {
     }
 
     private fun inactiveAllUsers(){
-        val activeUserList: List<User>? = userViewModel.getActiveUsers()
-        if (activeUserList?.isNotEmpty() == true){
+        val activeUserList: List<User> = userViewModel.getActiveUsers()
+        if (activeUserList.isNotEmpty()){
             activeUserList.forEach {
                 it.isActive = 0
                 userViewModel.updateUser(it)

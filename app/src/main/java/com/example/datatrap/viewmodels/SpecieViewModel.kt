@@ -40,8 +40,8 @@ class SpecieViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun getSpecie(specieId: Long): Specie? {
-        val specie: Specie?
+    fun getSpecie(specieId: Long): Specie {
+        val specie: Specie
         runBlocking {
             specie = specieRepository.getSpecie(specieId)
         }

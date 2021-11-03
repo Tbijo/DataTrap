@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListVegetTypeBinding
 import com.example.datatrap.models.VegetType
-import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
+import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.VegetTypeViewModel
 import java.util.*
 
@@ -23,7 +23,7 @@ class ListVegetTypeFragment : Fragment() {
 
     private var _binding: FragmentListVegetTypeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: AnyRecyclerAdapter
+    private lateinit var adapter: VegTypeRecyclerAdapter
     private lateinit var vegTypeViewModel: VegetTypeViewModel
     private lateinit var vegTypeList: List<VegetType>
 
@@ -33,7 +33,7 @@ class ListVegetTypeFragment : Fragment() {
         _binding = FragmentListVegetTypeBinding.inflate(inflater, container, false)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
 
-        adapter = AnyRecyclerAdapter()
+        adapter = VegTypeRecyclerAdapter()
         binding.vegTypeRecyclerview.adapter = adapter
         binding.vegTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
@@ -46,7 +46,7 @@ class ListVegetTypeFragment : Fragment() {
             showAddDialog("New Vegetation Type", "Add new vegetation type?")
         }
 
-        adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object: VegTypeRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update veg Type
                 val currVegetType: VegetType = vegTypeList[position]

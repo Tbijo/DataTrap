@@ -1,5 +1,6 @@
 package com.example.datatrap.picture.fragments
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
@@ -19,11 +21,13 @@ import com.example.datatrap.databinding.FragmentGetPictureSpecieBinding
 import com.example.datatrap.models.Picture
 import com.example.datatrap.viewmodels.PictureViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
-class GetPictureSpecieFragment : Fragment() {
+class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentGetPictureSpecieBinding? = null
     private val binding get() = _binding!!
@@ -47,16 +51,20 @@ class GetPictureSpecieFragment : Fragment() {
         if (oldPicName != null){
             // ak mame fotku tak hu nacitame
             binding.tvGetPicture.text = getString(R.string.pictureAdded)
-            val picture: Picture? = pictureViewModel.getPictureById(oldPicName!!)
-            binding.ivGetPicture.setImageURI(picture?.path?.toUri())
+            val picture: Picture = pictureViewModel.getPictureById(oldPicName!!)
+            binding.ivGetPicture.setImageURI(picture.path.toUri())
             picName = oldPicName
         }else{
             binding.tvGetPicture.text = getString(R.string.noPicture)
         }
 
         binding.btnGetPicture.setOnClickListener {
-            // zohnat novu fotku
-            getPicture()
+            if (hasStoragePermission()) {
+                // zohnat novu fotku
+                getPicture()
+            } else {
+                requestStoragePermission()
+            }
         }
 
         binding.btnAddPicture.setOnClickListener {
@@ -72,8 +80,10 @@ class GetPictureSpecieFragment : Fragment() {
                     pictureViewModel.deletePicture(oldPicture)
                 }
                 // vymazat povodnu fotku ako subor
-                val myFile: File = File(oldPicture?.path)
-                if (myFile.exists()) myFile.delete()
+                if (oldPicture?.path != null) {
+                    val myFile: File = File(oldPicture.path)
+                    if (myFile.exists()) myFile.delete()
+                }
                 // a novu ulozit
                 pictureViewModel.insertPicture(newPicture)
                 // poslat ID novej fotky
@@ -110,6 +120,44 @@ class GetPictureSpecieFragment : Fragment() {
             binding.ivGetPicture.setImageURI(picUri)
             binding.tvGetPicture.text = getString(R.string.pictureAdded)
         }
+    }
+
+    ////////////////////
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        Toast.makeText(context, "Permission Granted.", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            AppSettingsDialog.Builder(requireActivity()).build().show()
+        } else {
+            requestStoragePermission()
+        }
+    }
+
+    private fun hasStoragePermission() =
+        EasyPermissions.hasPermissions(
+            requireContext(),
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+
+    private fun requestStoragePermission() {
+        EasyPermissions.requestPermissions(
+            this,
+            "This app can not work without Storage Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
+            1,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
     }
 
 }

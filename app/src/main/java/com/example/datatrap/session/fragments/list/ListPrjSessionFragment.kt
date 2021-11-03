@@ -113,7 +113,7 @@ class ListPrjSessionFragment : Fragment() {
     }
 
     private fun updateLocalityNumSess(){
-        val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId)!!
+        val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId)
         updatedLocality.numSessions = (updatedLocality.numSessions + 1)
         updatedLocality.localityDateTimeUpdated = Calendar.getInstance().time
         localityViewModel.updateLocality(updatedLocality)

@@ -418,7 +418,7 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     private fun giveOutPutFloat(input: String?): Float? {
-        return if (input.isNullOrBlank()) null else Integer.parseInt(input).toFloat()
+        return if (input.isNullOrBlank()) null else input.toFloat()
     }
 
     private fun changeSexIfNecesary() {
@@ -430,7 +430,7 @@ class RecaptureMouseFragment : Fragment() {
             mouseViewModel.updateMouse(it)
         }
         // zmena pohlavia prveho zaznamu
-        val mouse: Mouse = mouseViewModel.getMouse(args.mouse.mouseId)!!
+        val mouse: Mouse = mouseViewModel.getMouse(args.mouse.mouseId)
         mouse.sex = sex
         mouse.mouseDateTimeUpdated = Calendar.getInstance().time
         mouseViewModel.updateMouse(mouse)

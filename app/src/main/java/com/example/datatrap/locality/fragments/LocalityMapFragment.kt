@@ -23,16 +23,18 @@ class LocalityMapFragment : Fragment() {
 
         googleMap.isMyLocationEnabled = true
 
-        args.localities.forEach {
-            val locality = LatLng(it.x.toDouble(), it.y.toDouble())
-            googleMap.addMarker(MarkerOptions().position(locality).title(it.localityName))
-        }
+        if (args.localities.isNotEmpty()) {
+            args.localities.forEach {
+                val locality = LatLng(it.x.toDouble(), it.y.toDouble())
+                googleMap.addMarker(MarkerOptions().position(locality).title(it.localityName))
+            }
 
-        val lastLat = args.localities.last().x.toDouble()
-        val lastlon = args.localities.last().y.toDouble()
-        val lastLatLon = LatLng(lastLat, lastlon)
-        // bolo by treba nastavit najblizsiu takto sa nastavi najnovsia
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLon, 13F))
+            val lastLat = args.localities.last().x.toDouble()
+            val lastlon = args.localities.last().y.toDouble()
+            val lastLatLon = LatLng(lastLat, lastlon)
+            // bolo by treba nastavit najblizsiu takto sa nastavi najnovsia
+            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLon, 13F))
+        }
     }
 
     override fun onCreateView(

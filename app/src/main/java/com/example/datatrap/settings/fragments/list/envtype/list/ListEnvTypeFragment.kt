@@ -22,7 +22,7 @@ class ListEnvTypeFragment : Fragment() {
 
     private var _binding: FragmentListEnvTypeBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: AnyRecyclerAdapter
+    private lateinit var adapter: EnvTypeRecyclerAdapter
     private lateinit var envTypeViewModel: EnvTypeViewModel
     private lateinit var envTypeList: List<EnvType>
 
@@ -32,7 +32,7 @@ class ListEnvTypeFragment : Fragment() {
         _binding = FragmentListEnvTypeBinding.inflate(inflater, container, false)
         envTypeViewModel = ViewModelProvider(this).get(EnvTypeViewModel::class.java)
 
-        adapter = AnyRecyclerAdapter()
+        adapter = EnvTypeRecyclerAdapter()
         binding.envTypeRecyclerview.adapter = adapter
         binding.envTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
@@ -45,7 +45,7 @@ class ListEnvTypeFragment : Fragment() {
             showAddDialog("New Environment Type", "Add new environment type?")
         }
 
-        adapter.setOnItemClickListener(object: AnyRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object: EnvTypeRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 // update envType
                 val currEnvType: EnvType = envTypeList[position]

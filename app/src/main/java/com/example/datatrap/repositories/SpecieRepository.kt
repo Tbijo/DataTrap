@@ -18,7 +18,7 @@ class SpecieRepository(private val specieDao: SpecieDao) {
         specieDao.deleteSpecie(specie)
     }
 
-    suspend fun getSpecie(specieId: Long): Specie? {
+    suspend fun getSpecie(specieId: Long): Specie {
         return specieDao.getSpecie(specieId)
     }
 

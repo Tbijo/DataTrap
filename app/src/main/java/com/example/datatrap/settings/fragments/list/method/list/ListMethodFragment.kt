@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListMethodBinding
 import com.example.datatrap.models.Method
-import com.example.datatrap.settings.fragments.list.envtype.list.AnyRecyclerAdapter
+import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.MethodViewModel
 import java.util.*
 
@@ -23,7 +23,7 @@ class ListMethodFragment : Fragment() {
 
     private var _binding: FragmentListMethodBinding? = null
     private val binding get() = _binding!!
-    private lateinit var adapter: AnyRecyclerAdapter
+    private lateinit var adapter: MethodRecyclerAdapter
     private lateinit var methodViewModel: MethodViewModel
     private lateinit var methodList: List<Method>
 
@@ -33,7 +33,7 @@ class ListMethodFragment : Fragment() {
         _binding = FragmentListMethodBinding.inflate(inflater, container, false)
         methodViewModel = ViewModelProvider(this).get(MethodViewModel::class.java)
 
-        adapter = AnyRecyclerAdapter()
+        adapter = MethodRecyclerAdapter()
         binding.methodRecyclerview.adapter = adapter
         binding.methodRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
@@ -46,7 +46,7 @@ class ListMethodFragment : Fragment() {
             showAddDialog("Add Method", "Add new Method?")
         }
 
-        adapter.setOnItemClickListener(object : AnyRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object : MethodRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
                 val currMethod = methodList[position]
                 showUpdateDialog("Update Method", "Update method?", currMethod)

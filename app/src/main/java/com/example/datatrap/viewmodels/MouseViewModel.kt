@@ -38,8 +38,8 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun getMouse(idMouse: Long): Mouse? {
-        val mouse: Mouse?
+    fun getMouse(idMouse: Long): Mouse {
+        val mouse: Mouse
         runBlocking {
             mouse = mouseRepository.getMouse(idMouse)
         }

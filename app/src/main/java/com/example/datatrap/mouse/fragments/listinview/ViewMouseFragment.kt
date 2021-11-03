@@ -47,16 +47,16 @@ class ViewMouseFragment : Fragment() {
         initMouseValuesToView()
 
         val mySpecie = specieViewModel.getSpecie(args.mouse.speciesID)
-        binding.tvMouseFullName.text = mySpecie?.fullName
-        binding.tvSpecie.text = mySpecie?.speciesCode
+        binding.tvMouseFullName.text = mySpecie.fullName
+        binding.tvSpecie.text = mySpecie.speciesCode
 
-        val occasion: Occasion? = occasionViewModel.getOccasion(args.mouse.occasionID)
-        binding.tvMouseLeg.text = occasion?.leg
+        val occasion: Occasion = occasionViewModel.getOccasion(args.mouse.occasionID)
+        binding.tvMouseLeg.text = occasion.leg
 
-        val session: Session? = sessionViewModel.getSession(occasion!!.sessionID)
+        val session: Session = sessionViewModel.getSession(occasion.sessionID)
 
         binding.tvMouseProjectName.text =
-            projectViewModel.getProject(session?.projectID!!)?.projectName
+            projectViewModel.getProject(session.projectID!!).projectName
 
         adapter = MouseHistRecyclerAdapter()
         binding.recyclerMouse.adapter = adapter

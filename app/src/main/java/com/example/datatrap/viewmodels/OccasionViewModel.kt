@@ -38,8 +38,8 @@ class OccasionViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun getOccasion(occasionId: Long): Occasion? {
-        val occasion: Occasion?
+    fun getOccasion(occasionId: Long): Occasion {
+        val occasion: Occasion
         runBlocking {
             occasion = occasionRepository.getOccasion(occasionId)
         }

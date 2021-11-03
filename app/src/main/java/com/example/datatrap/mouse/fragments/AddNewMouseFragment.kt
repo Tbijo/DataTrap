@@ -386,12 +386,12 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun giveOutPutFloat(input: String?): Float?{
-        return if (input.isNullOrBlank()) null else Integer.parseInt(input).toFloat()
+        return if (input.isNullOrBlank()) null else input.toFloat()
     }
 
     private fun updateProjectNumMice(){
-        val session: Session = sessionViewModel.getSession(args.occasion.sessionID)!!
-        val updatedProject: Project = projectViewModel.getProject(session.projectID!!)!!
+        val session: Session = sessionViewModel.getSession(args.occasion.sessionID)
+        val updatedProject: Project = projectViewModel.getProject(session.projectID!!)
 
         updatedProject.numMice = (updatedProject.numMice + 1)
         updatedProject.projectDateTimeUpdated = Calendar.getInstance().time

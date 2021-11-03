@@ -18,7 +18,7 @@ class ProjectRepository(private val projectDao: ProjectDao) {
         projectDao.deleteProject(project)
     }
 
-    suspend fun getProject(projectId: Long): Project? {
+    suspend fun getProject(projectId: Long): Project {
         return projectDao.getProject(projectId)
     }
 

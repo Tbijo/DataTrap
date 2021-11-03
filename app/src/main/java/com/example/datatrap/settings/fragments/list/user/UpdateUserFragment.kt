@@ -21,13 +21,15 @@ class UpdateUserFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
     private val args by navArgs<UpdateUserFragmentArgs>()
 
-    private var team: Int = args.user.team
+    private var team: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateUserBinding.inflate(inflater, container, false)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
+
+        team = args.user.team
 
         initUserValuseToView()
 

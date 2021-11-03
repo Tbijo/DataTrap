@@ -53,8 +53,8 @@ class UpdateProjectFragment : Fragment() {
 
     private fun initProjectValuesToView(){
         binding.etProjectName.setText(args.project.projectName)
-        binding.etNumLocality.setText(args.project.numLocal)
-        binding.etNumMouse.setText(args.project.numMice)
+        binding.etNumLocality.setText(args.project.numLocal.toString())
+        binding.etNumMouse.setText(args.project.numMice.toString())
     }
 
     private fun updateProject() {

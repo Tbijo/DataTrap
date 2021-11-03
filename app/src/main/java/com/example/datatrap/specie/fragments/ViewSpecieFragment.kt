@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
@@ -36,11 +37,12 @@ class ViewSpecieFragment : Fragment() {
     }
 
     private fun initSpecieValuesToView(){
-        if (args.specie.imgName == null){
-            args.specie.imgName?.let {
-                val picture: Picture? = pictureViewModel.getPictureById(it)
-                binding.ivPicture.setImageURI(picture?.path?.toUri())
-            }
+        if (args.specie.imgName != null){
+            val picture: Picture = pictureViewModel.getPictureById(args.specie.imgName!!)
+            binding.ivPicture.setImageURI(picture.path.toUri())
+            Toast.makeText(requireContext(), "Fotka je", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), "Fotka nie je", Toast.LENGTH_SHORT).show()
         }
 
         binding.tvAuthority.text = args.specie.authority

@@ -38,8 +38,8 @@ class SessionViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun getSession(sessionId: Long): Session? {
-        val session: Session?
+    fun getSession(sessionId: Long): Session {
+        val session: Session
         runBlocking {
             session = sessionRepository.getSession(sessionId)
         }

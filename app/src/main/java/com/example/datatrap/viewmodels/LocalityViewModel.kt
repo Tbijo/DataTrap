@@ -40,13 +40,11 @@ class LocalityViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun getLocality(localityId: Long): Locality? {
-        val locality: Locality?
-
+    fun getLocality(localityId: Long): Locality {
+        val locality: Locality
         runBlocking {
             locality = localityRepository.getLocality(localityId)
         }
-
         return locality
     }
 
