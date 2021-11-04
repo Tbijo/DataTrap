@@ -48,6 +48,16 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
             showAddDialog("New Project", "Project Name", "Add new project?")
         }
 
+        // log out
+        userViewModel.activeUser.observe(viewLifecycleOwner, {
+            if (it != null) {
+                it.isActive = 0
+                userViewModel.updateUser(it)
+                val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToMainActivity()
+                findNavController().navigate(action)
+            }
+        })
+
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -72,13 +82,7 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun logOut() {
-        val user = userViewModel.getActiveUser()
-        user?.also {
-            it.isActive = 0
-            userViewModel.updateUser(it)
-        }
-        val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToMainActivity()
-        findNavController().navigate(action)
+        userViewModel.getActiveUser()
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

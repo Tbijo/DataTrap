@@ -69,12 +69,13 @@ class Weather(val context: Context) {
 
         val currentTime = Calendar.getInstance().time.time
         if (currentTime - unixTime >= FIVE_DAYS){
+            Log.d("Weather", "$currentTime - $unixTime >= $FIVE_DAYS")
             Toast.makeText(context, "Occasion is older than 5 days.", Toast.LENGTH_LONG).show()
             return
         }
 
         val url =
-            QUERRY_HISTORY_WEATHER_COOR + SIRKA_URL + sirka + DLZKA_URL + dlzka + DATE_TIME_URL + unixTime + UNITS + OWM_API_KEY_URL
+            QUERRY_HISTORY_WEATHER_COOR + SIRKA_URL + sirka + DLZKA_URL + dlzka + DATE_TIME_URL + (unixTime / 1000)  + UNITS + OWM_API_KEY_URL
 
         val jsonObjectRequest = JsonObjectRequest(
             Request.Method.GET, url, null,

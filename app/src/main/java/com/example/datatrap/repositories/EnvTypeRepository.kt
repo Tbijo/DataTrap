@@ -18,5 +18,9 @@ class EnvTypeRepository(private val envTypeDao: EnvTypeDao) {
         envTypeDao.deleteEnvType(envType)
     }
 
+    fun getEnvTypes(): LiveData<List<EnvType>> {
+        return envTypeDao.getEnvTypes()
+    }
+
     val envTypeList: LiveData<List<EnvType>> = envTypeDao.getEnvTypes()
 }

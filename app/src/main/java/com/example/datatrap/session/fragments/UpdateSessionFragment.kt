@@ -54,8 +54,8 @@ class UpdateSessionFragment : Fragment() {
     }
 
     private fun initSessionValuesToView(){
-        binding.etSession.setText(args.session.session)
-        binding.etNumOcc.setText(args.session.numOcc)
+        binding.etSession.setText(args.session.session.toString())
+        binding.etNumOcc.setText(args.session.numOcc.toString())
     }
 
     private fun deleteSession() {

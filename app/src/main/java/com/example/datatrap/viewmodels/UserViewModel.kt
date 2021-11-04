@@ -17,6 +17,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
     private val userRepository: UserRepository
     val userList: LiveData<List<User>>
     val checkUser: MutableLiveData<User> = MutableLiveData()
+    val activeUser: MutableLiveData<User> = MutableLiveData()
 
     init {
         val userDao = TrapDatabase.getDatabase(application).userDao()
@@ -42,12 +43,11 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getActiveUser(): User {
-        val user: User
-        runBlocking {
-            user = userRepository.getActiveUser()
+    fun getActiveUser() {
+        viewModelScope.launch {
+            val user = userRepository.getActiveUser()
+            activeUser.value = user
         }
-        return user
     }
 
     fun getActiveUsers(): List<User> {

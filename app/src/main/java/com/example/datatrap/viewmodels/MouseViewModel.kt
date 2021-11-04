@@ -3,6 +3,7 @@ package com.example.datatrap.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Mouse
@@ -14,6 +15,7 @@ import kotlinx.coroutines.runBlocking
 class MouseViewModel(application: Application): AndroidViewModel(application) {
 
     private val mouseRepository: MouseRepository
+    val gotMouse: MutableLiveData<Mouse> = MutableLiveData()
 
     init {
         val mouseDao = TrapDatabase.getDatabase(application).mouseDao()
@@ -38,12 +40,11 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun getMouse(idMouse: Long): Mouse {
-        val mouse: Mouse
-        runBlocking {
-            mouse = mouseRepository.getMouse(idMouse)
+    fun getMouse(idMouse: Long) {
+        viewModelScope.launch {
+            val mouse = mouseRepository.getMouse(idMouse)
+            gotMouse.value = mouse
         }
-        return mouse
     }
 
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{

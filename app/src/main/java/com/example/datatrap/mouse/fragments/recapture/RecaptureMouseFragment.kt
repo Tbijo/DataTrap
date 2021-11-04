@@ -35,7 +35,6 @@ class RecaptureMouseFragment : Fragment() {
     private lateinit var sharedViewModel: SharedViewModel
 
     private lateinit var listSpecie: List<Specie>
-    private lateinit var listProtocol: List<Protocol>
     private lateinit var mapSpecie: MutableMap<String, Long>
     private lateinit var mapProtocol: MutableMap<String?, Long?>
 
@@ -64,27 +63,29 @@ class RecaptureMouseFragment : Fragment() {
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        listSpecie = specieViewModel.specieList.value!!
-        listSpecie.forEach {
-            mapSpecie[it.speciesCode] = it.specieId
-        }
-
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
-        listProtocol = protocolViewModel.procolList.value!!
-        listProtocol.forEach {
-            mapProtocol[it.protocolName] = it.protocolId
-        }
-        mapProtocol["null"] = null
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
             imgName = it
         })
 
+        mapSpecie = mutableMapOf()
+        mapProtocol = mutableMapOf()
+
+        fillDropDown()
+
         setListeners()
         setListenerToTrapID()
 
         initMouseValuesToView()
+
+        // zmena pohlavia
+        mouseViewModel.gotMouse.observe(viewLifecycleOwner, { mouse ->
+            mouse.sex = sex
+            mouse.mouseDateTimeUpdated = Calendar.getInstance().time
+            mouseViewModel.updateMouse(mouse)
+        })
 
         setHasOptionsMenu(true)
         return binding.root
@@ -92,28 +93,12 @@ class RecaptureMouseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val dropDownArrSpecie =
-            ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
-        binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
 
-        val dropDownArrProtocol =
-            ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
-        binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
+        fillDropDown()
 
         val dropDownArrTrapID =
             ArrayAdapter(requireContext(), R.layout.dropdown_names, EnumTrapID.myValues())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
-
-        mapSpecie.forEach {
-            if (it.value == args.mouse.speciesID) {
-                binding.autoCompTvSpecie.setText(it.key, false)
-            }
-        }
-        mapProtocol.forEach {
-            if (it.value == args.mouse.protocolID) {
-                binding.autoCompTvProtocol.setText(it.key, false)
-            }
-        }
 
         binding.autoCompTvTrapId.setText(args.mouse.trapID)
     }
@@ -135,6 +120,43 @@ class RecaptureMouseFragment : Fragment() {
             R.id.menu_camera -> goToCamera()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun fillDropDown() {
+        specieViewModel.specieList.observe(viewLifecycleOwner, {
+            listSpecie = it
+            it.forEach { specie ->
+                mapSpecie[specie.speciesCode] = specie.specieId
+            }
+            val dropDownArrSpecie =
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
+            binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
+
+            // init values
+            mapSpecie.forEach { map ->
+                if (map.value == args.mouse.speciesID) {
+                    binding.autoCompTvSpecie.setText(map.key, false)
+                }
+            }
+        })
+
+        protocolViewModel.procolList.observe(viewLifecycleOwner, {
+            it.forEach { protocol ->
+                mapProtocol[protocol.protocolName] = protocol.protocolId
+            }
+            mapProtocol["null"] = null
+
+            val dropDownArrProtocol =
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
+            binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
+
+            // init values
+            mapProtocol.forEach { map ->
+                if (map.value == args.mouse.protocolID) {
+                    binding.autoCompTvProtocol.setText(map.key, false)
+                }
+            }
+        })
     }
 
     private fun initMouseValuesToView() {
@@ -318,7 +340,7 @@ class RecaptureMouseFragment : Fragment() {
 
     private fun recaptureMouse() {
         val trapID: String = binding.autoCompTvTrapId.text.toString()
-        val speciesID: Long = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
+        val speciesID: Long = mapSpecie.getOrDefault(binding.autoCompTvSpecie.text.toString(), 1)
 
         if (checkInput(speciesID, trapID)) {
             // recapture mouse
@@ -336,7 +358,7 @@ class RecaptureMouseFragment : Fragment() {
             mouse.age = age
             mouse.captureID = captureID
 
-            mouse.protocolID = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
+            mouse.protocolID = mapProtocol.getOrDefault(binding.autoCompTvProtocol.text.toString(), null)
             mouse.sexActive = binding.cbSexActive.isChecked
             mouse.weight = giveOutPutFloat(binding.etWeight.text.toString())
             mouse.body = if (body == null) null else giveOutPutFloat(binding.etBody.text.toString())
@@ -414,26 +436,25 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     private fun giveOutPutInt(input: String?): Int? {
-        return if (input.isNullOrBlank()) null else Integer.parseInt(input)
+        return if (input.isNullOrBlank() || input == "null") null else Integer.parseInt(input)
     }
 
     private fun giveOutPutFloat(input: String?): Float? {
-        return if (input.isNullOrBlank()) null else input.toFloat()
+        return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
     }
 
     private fun changeSexIfNecesary() {
         // upravit zmenu pohlavia
-        val updateMouseList: List<Mouse> = mouseViewModel.getMiceForLog(args.mouse.mouseId).value!!
-        updateMouseList.forEach {
-            it.sex = sex
-            it.mouseDateTimeUpdated = Calendar.getInstance().time
-            mouseViewModel.updateMouse(it)
-        }
+        mouseViewModel.getMiceForLog(args.mouse.mouseId).observe(viewLifecycleOwner, {
+            it.forEach { mouse ->
+                mouse.sex = sex
+                mouse.mouseDateTimeUpdated = Calendar.getInstance().time
+                mouseViewModel.updateMouse(mouse)
+            }
+        })
+
         // zmena pohlavia prveho zaznamu
-        val mouse: Mouse = mouseViewModel.getMouse(args.mouse.mouseId)
-        mouse.sex = sex
-        mouse.mouseDateTimeUpdated = Calendar.getInstance().time
-        mouseViewModel.updateMouse(mouse)
+        mouseViewModel.getMouse(args.mouse.mouseId)
     }
 
 }

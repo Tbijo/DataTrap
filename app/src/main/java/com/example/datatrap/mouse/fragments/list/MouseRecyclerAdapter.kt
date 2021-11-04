@@ -2,6 +2,7 @@ package com.example.datatrap.mouse.fragments.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -10,11 +11,10 @@ import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.SpecieViewModel
 
-class MouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHolder>() {
+class MouseRecyclerAdapter(owner: ViewModelStoreOwner, private val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHolder>() {
 
     private var mouseList = emptyList<Mouse>()
     private val specieViewModel: SpecieViewModel = ViewModelProvider(owner).get(SpecieViewModel::class.java)
-    private val specieList: List<Specie> = specieViewModel.specieList.value!!
 
     class MyViewHolder(val binding: MouseRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
         init {
@@ -36,12 +36,14 @@ class MouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<Mo
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = mouseList[position]
 
-        holder.binding.tvIdIndividual.text = currenItem.code.toString()
+        specieViewModel.specieList.observe(viewLifecycleOwner, { specieList ->
+            holder.binding.tvIdIndividual.text = currenItem.code.toString()
 
-        holder.binding.tvMouseSpecieCode.text =
-            specieList.first { it.specieId == currenItem.speciesID }.speciesCode
+            holder.binding.tvMouseSpecieCode.text =
+                specieList.first { it.specieId == currenItem.speciesID }.speciesCode
 
-        holder.binding.tvCatchDateTime.text = "${currenItem.mouseDateTimeCreated}"
+            holder.binding.tvCatchDateTime.text = "${currenItem.mouseDateTimeCreated}"
+        })
     }
 
     override fun getItemCount(): Int {

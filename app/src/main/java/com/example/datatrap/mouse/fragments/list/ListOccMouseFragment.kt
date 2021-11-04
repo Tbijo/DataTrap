@@ -28,7 +28,7 @@ class ListOccMouseFragment : Fragment() {
         _binding = FragmentListOccMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
-        adapter = MouseRecyclerAdapter(this)
+        adapter = MouseRecyclerAdapter(this, viewLifecycleOwner)
         val recyclerView = binding.mouseRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())

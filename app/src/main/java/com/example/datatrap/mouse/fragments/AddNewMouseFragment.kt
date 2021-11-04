@@ -3,6 +3,7 @@ package com.example.datatrap.mouse.fragments
 import android.app.AlertDialog
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -36,7 +37,8 @@ class AddNewMouseFragment : Fragment() {
     private lateinit var userViewModel: UserViewModel
 
     private lateinit var listSpecie: List<Specie>
-    private lateinit var listProtocol: List<Protocol>
+    private lateinit var activeMouseList: List<Mouse>
+
     private lateinit var mapSpecie: MutableMap<String, Long>
     private lateinit var mapProtocol: MutableMap<String, Long?>
 
@@ -61,6 +63,14 @@ class AddNewMouseFragment : Fragment() {
     private var feet: Float? = null
     private var ear: Float? = null
 
+    private val MILLIS_IN_SECOND = 1000L
+    private val SECONDS_IN_MINUTE = 60
+    private val MINUTES_IN_HOUR = 60
+    private val HOURS_IN_DAY = 24
+    private val DAYS_IN_YEAR = 365
+    private val MILLISECONDS_IN_2_YEAR: Long =
+        2 * MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -72,22 +82,17 @@ class AddNewMouseFragment : Fragment() {
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        listSpecie = specieViewModel.specieList.value!!
-        listSpecie.forEach {
-            mapSpecie[it.speciesCode] = it.specieId
-        }
-
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
-        listProtocol = protocolViewModel.procolList.value!!
-        listProtocol.forEach {
-            mapProtocol[it.protocolName] = it.protocolId
-        }
-        mapProtocol["null"] = null
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
             imgName = it
         })
+
+        mapSpecie = mutableMapOf()
+        mapProtocol = mutableMapOf()
+
+        fillDropDown()
 
         oldCode = mouseViewModel.countMiceForLocality(args.occasion.localityID) + 1
 
@@ -98,17 +103,33 @@ class AddNewMouseFragment : Fragment() {
         setListeners()
         setListenerToTrapID()
 
+        mouseViewModel.getActiveMiceOfLocality(
+            args.occasion.localityID,
+            Calendar.getInstance().time.time,
+            MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner, { mouseList ->
+            activeMouseList = mouseList
+        })
+
+        // generate code this is to get team
+        userViewModel.activeUser.observe(viewLifecycleOwner, { user ->
+            if (user != null && activeMouseList != null) {
+                val codeGen = CodeGenerator(oldCode, specie?.upperFingers!!, user.team, activeMouseList)
+                code = codeGen.generateCode()
+                if(code == 0) {
+                    Toast.makeText(requireContext(), "No code is available.", Toast.LENGTH_LONG).show()
+                }
+                binding.etCodeMouseAdd.setText(code.toString())
+            }
+        })
+
         setHasOptionsMenu(true)
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
-        binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
 
-        val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
-        binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
+        fillDropDown()
 
         val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, EnumTrapID.myValues())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
@@ -131,6 +152,27 @@ class AddNewMouseFragment : Fragment() {
             R.id.menu_camera -> goToCamera()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun fillDropDown() {
+        specieViewModel.specieList.observe(viewLifecycleOwner, {
+            listSpecie = it
+            it.forEach { specie ->
+                mapSpecie[specie.speciesCode] = specie.specieId
+            }
+            val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
+            binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
+        })
+
+        protocolViewModel.procolList.observe(viewLifecycleOwner, {
+            it.forEach { protocol ->
+                mapProtocol[protocol.protocolName] = protocol.protocolId
+            }
+            mapProtocol["null"] = null
+
+            val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
+            binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
+        })
     }
 
     private fun setListeners(){
@@ -198,13 +240,7 @@ class AddNewMouseFragment : Fragment() {
                 specie = it
             }
         }
-        val team: Int = userViewModel.getActiveUser()?.team!!
-        val codeGen = CodeGenerator(this, oldCode, specie?.upperFingers!!, team, args.occasion.localityID)
-        code = codeGen.generateCode()
-        if(code == 0){
-            Toast.makeText(requireContext(), "No code is available.", Toast.LENGTH_LONG).show()
-        }
-        binding.etCodeMouseAdd.setText(code.toString())
+        userViewModel.getActiveUser()
     }
 
     private fun setListenerToTrapID(){
@@ -285,6 +321,10 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun showDrawnRat(){
+        if (binding.autoCompTvSpecie.text.toString().isBlank()) {
+            Toast.makeText(requireContext(), "Select a valid Specie", Toast.LENGTH_LONG).show()
+            return
+        }
         speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
 
         if (speciesID > 0 && code != null && code!! > 0 && code.toString().length < 5){
@@ -303,11 +343,11 @@ class AddNewMouseFragment : Fragment() {
 
     private fun insertMouse() {
         val trapID: String = binding.autoCompTvTrapId.text.toString()
-        speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
+        speciesID = mapSpecie.getOrDefault(binding.autoCompTvSpecie.text.toString(), 1)
 
         if (checkInput(speciesID, trapID)){
-            code = if (code != null) null else giveOutPutInt(binding.etCodeMouseAdd.text.toString())
-            val protocolID: Long? = mapProtocol.getValue(binding.autoCompTvProtocol.text.toString())
+            code = if (code == null) null else giveOutPutInt(binding.etCodeMouseAdd.text.toString())
+            val protocolID: Long? = mapProtocol.getOrDefault(binding.autoCompTvProtocol.text.toString(), null)
             val sexActive: Boolean? = binding.cbSexActive.isChecked
             val weight: Float? = giveOutPutFloat(binding.etWeight.text.toString())
             body = if (body == null) null else giveOutPutFloat(binding.etBody.text.toString())
@@ -382,11 +422,11 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun giveOutPutInt(input: String?): Int?{
-        return if (input.isNullOrBlank()) null else Integer.parseInt(input)
+        return if (input.isNullOrBlank() || input == "null") null else Integer.parseInt(input)
     }
 
     private fun giveOutPutFloat(input: String?): Float?{
-        return if (input.isNullOrBlank()) null else input.toFloat()
+        return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
     }
 
     private fun updateProjectNumMice(){
