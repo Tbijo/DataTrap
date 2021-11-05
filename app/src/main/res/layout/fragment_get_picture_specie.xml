@@ -8,8 +8,8 @@
 
     <TextView
         android:id="@+id/tv_get_picture"
-        android:layout_width="107dp"
-        android:layout_height="39dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/noPicture"
         android:textSize="20sp"

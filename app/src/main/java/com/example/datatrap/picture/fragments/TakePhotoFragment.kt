@@ -89,8 +89,10 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     pictureViewModel.deletePicture(oldPicture)
                 }
                 // vymazat povodnu fotku ako subor
-                val myFile: File = File(oldPicture?.path)
-                if (myFile.exists()) myFile.delete()
+                if (oldPicture?.path != null) {
+                    val myFile: File = File(oldPicture.path)
+                    if (myFile.exists()) myFile.delete()
+                }
                 // ulozit novu
                 pictureViewModel.insertPicture(newPicture)
                 // zobrazit v galerii

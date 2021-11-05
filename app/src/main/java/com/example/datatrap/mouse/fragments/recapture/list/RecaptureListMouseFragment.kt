@@ -30,7 +30,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         _binding = FragmentRecaptureListMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
-        adapter = RecaptureMouseRecyclerAdapter(this)
+        adapter = RecaptureMouseRecyclerAdapter(this, viewLifecycleOwner)
         val recyclerView = binding.recaptureRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -68,7 +68,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        if (newText != null) {
+        if (!newText.isNullOrBlank()) {
             searchMice(Integer.parseInt(newText))
         }
         return true

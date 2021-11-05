@@ -2,6 +2,7 @@ package com.example.datatrap.mouse.fragments.listinview
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -144,16 +145,16 @@ class ViewMouseFragment : Fragment() {
         binding.tvGravidity.text = if (args.mouse.gravidity == true) "Yes" else "No"
         binding.tvLactating.text = if (args.mouse.lactating == true) "Yes" else "No"
         binding.tvSexActive.text = if (args.mouse.sexActive == true) "Yes" else "No"
-        binding.tvMouseAge.text = args.mouse.age
-        binding.tvMouseSex.text = args.mouse.sex
+        binding.tvMouseAge.text = args.mouse.age.toString()
+        binding.tvMouseSex.text = args.mouse.sex.toString()
         binding.tvMouseWeight.text = args.mouse.weight.toString()
-        binding.tvMouseNote.text = args.mouse.note
+        binding.tvMouseNote.text = args.mouse.note.toString()
         binding.tvTestesLength.text = args.mouse.testesLength.toString()
         binding.tvTestesWidth.text = args.mouse.testesWidth.toString()
         binding.tvEmbryoRight.text = args.mouse.embryoRight.toString()
         binding.tvEmbryoLeft.text = args.mouse.embryoLeft.toString()
         binding.tvEmbryoDiam.text = args.mouse.embryoDiameter.toString()
-        binding.tvMc.text = if (args.mouse.MC == true) "Yes" else "No"
+        binding.tvMc.text = if (args.mouse.MC == true) "Yes" else if (args.mouse.MC == false) "No" else "null"
         binding.tvMcLeft.text = args.mouse.MCleft.toString()
         binding.tvMcRight.text = args.mouse.MCright.toString()
     }

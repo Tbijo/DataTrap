@@ -2,6 +2,7 @@ package com.example.datatrap.mouse.fragments.recapture.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
@@ -12,13 +13,22 @@ import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
 
-class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner) : RecyclerView.Adapter<RecaptureMouseRecyclerAdapter.MyViewHolder>() {
+class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner, private val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<RecaptureMouseRecyclerAdapter.MyViewHolder>() {
 
     private var mouseList = emptyList<Mouse>()
     private val specieViewModel: SpecieViewModel = ViewModelProvider(owner).get(SpecieViewModel::class.java)
     private val localityViewModel: LocalityViewModel = ViewModelProvider(owner).get(LocalityViewModel::class.java)
-    private val specieList: List<Specie> = specieViewModel.specieList.value!!
-    private val localList: List<Locality> = localityViewModel.localityList.value!!
+    private lateinit var specieList: List<Specie>
+    private lateinit var localList: List<Locality>
+
+    init {
+        specieViewModel.specieList.observe(viewLifecycleOwner, {
+            specieList = it
+        })
+        localityViewModel.localityList.observe(viewLifecycleOwner, {
+            localList = it
+        })
+    }
 
     class MyViewHolder(val binding: RecaptureRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
         init {

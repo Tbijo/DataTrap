@@ -2,6 +2,7 @@ package com.example.datatrap.mouse.fragments.list
 
 import android.os.Bundle
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,7 +14,7 @@ import com.example.datatrap.databinding.FragmentListOccMouseBinding
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.viewmodels.MouseViewModel
 
-class ListOccMouseFragment : Fragment() {
+class ListOccMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentListOccMouseBinding? = null
     private val binding get() = _binding!!
@@ -59,6 +60,7 @@ class ListOccMouseFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -81,6 +83,14 @@ class ListOccMouseFragment : Fragment() {
     private fun goToRecapture(){
         val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToRecaptureListMouseFragment(args.occasion)
         findNavController().navigate(action)
+    }
+
+    override fun onQueryTextSubmit(query: String?): Boolean {
+        TODO("Not yet implemented")
+    }
+
+    override fun onQueryTextChange(newText: String?): Boolean {
+        TODO("Not yet implemented")
     }
 
 }

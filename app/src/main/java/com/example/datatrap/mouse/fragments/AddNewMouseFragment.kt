@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.Observer
@@ -18,6 +19,7 @@ import com.example.datatrap.models.*
 import com.example.datatrap.mouse.fragments.generator.CodeGenerator
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
+import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.myenums.EnumTrapID
 import com.example.datatrap.viewmodels.*
 import java.util.*
@@ -179,11 +181,11 @@ class AddNewMouseFragment : Fragment() {
         binding.rgSex.setOnCheckedChangeListener{ radioGroup, radioButtonId ->
             when(radioButtonId){
                 binding.rbMale.id -> {
-                    sex = "Male"
+                    sex = EnumSex.MALE.myName
                     hideNonMaleFields()
                 }
                 binding.rbFemale.id -> {
-                    sex = "Female"
+                    sex = EnumSex.FEMALE.myName
                     showNonMaleFields()
                 }
                 binding.rbNullSex.id -> {
@@ -195,19 +197,19 @@ class AddNewMouseFragment : Fragment() {
 
         binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
             when(radioButtonId){
-                binding.rbAdult.id -> age =  EnumMouseAge.ADULT.myName
-                binding.rbJuvenile.id -> age =  EnumMouseAge.JUVENILE.myName
-                binding.rbSubadult.id -> age =  EnumMouseAge.SUBADULT.myName
-                binding.rbNullAge.id -> age =  null
+                binding.rbAdult.id -> age = EnumMouseAge.ADULT.myName
+                binding.rbJuvenile.id -> age = EnumMouseAge.JUVENILE.myName
+                binding.rbSubadult.id -> age = EnumMouseAge.SUBADULT.myName
+                binding.rbNullAge.id -> age = null
             }
         }
 
         binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
             when(radioButtonId){
-                binding.rbCaptured.id -> captureID =  EnumCaptureID.CAPTURED.myName
-                binding.rbDied.id -> captureID =  EnumCaptureID.DIED.myName
-                binding.rbEscaped.id -> captureID =  EnumCaptureID.ESCAPED.myName
-                binding.rbReleased.id -> captureID =  EnumCaptureID.RELEASED.myName
+                binding.rbCaptured.id -> captureID = EnumCaptureID.CAPTURED.myName
+                binding.rbDied.id -> captureID = EnumCaptureID.DIED.myName
+                binding.rbEscaped.id -> captureID = EnumCaptureID.ESCAPED.myName
+                binding.rbReleased.id -> captureID = EnumCaptureID.RELEASED.myName
                 binding.rbNullCapture.id -> captureID = null
             }
         }
@@ -247,10 +249,6 @@ class AddNewMouseFragment : Fragment() {
         binding.autoCompTvTrapId.setOnItemClickListener { parent, view, position, id ->
             when (parent.getItemAtPosition(position) as String) {
                 EnumTrapID.LIVE_TRAPS.myName -> {
-                    body = null
-                    tail = null
-                    feet = null
-                    ear = null
                     binding.etBody.isEnabled = false
                     binding.etBody.setText("")
                     binding.etTail.isEnabled = false
@@ -262,15 +260,17 @@ class AddNewMouseFragment : Fragment() {
 
                     binding.btnGenCode.isEnabled = true
                     binding.etCodeMouseAdd.isEnabled = true
-                    binding.rgCaptureId.isEnabled = true
+                    binding.rgCaptureId.children.forEach {
+                        it.isEnabled = true
+                    }
                 }
                 EnumTrapID.SNAP_TRAPS.myName -> {
-                    code = null
-                    captureID = null
                     binding.btnGenCode.isEnabled = false
                     binding.etCodeMouseAdd.isEnabled = false
                     binding.etCodeMouseAdd.setText("")
-                    binding.rgCaptureId.isEnabled = false
+                    binding.rgCaptureId.children.forEach {
+                        it.isEnabled = false
+                    }
                     binding.rgCaptureId.clearCheck()
 
                     binding.etBody.isEnabled = true
@@ -283,14 +283,6 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun hideNonMaleFields(){
-        gravitidy = null
-        lactating = null
-        embryoRight = null
-        embryoLeft = null
-        embryoDiameter = null
-        MC = null
-        MCright = null
-        MCleft = null
         binding.cbGravit.isEnabled = false
         binding.cbGravit.isChecked = false
         binding.cbLactating.isEnabled = false
@@ -346,26 +338,32 @@ class AddNewMouseFragment : Fragment() {
         speciesID = mapSpecie.getOrDefault(binding.autoCompTvSpecie.text.toString(), 1)
 
         if (checkInput(speciesID, trapID)){
-            code = if (code == null) null else giveOutPutInt(binding.etCodeMouseAdd.text.toString())
+            code = if (trapID == EnumTrapID.SNAP_TRAPS.myName) null else giveOutPutInt(binding.etCodeMouseAdd.text.toString())
+            captureID = if (trapID == EnumTrapID.SNAP_TRAPS.myName) null else captureID
+
             val protocolID: Long? = mapProtocol.getOrDefault(binding.autoCompTvProtocol.text.toString(), null)
             val sexActive: Boolean? = binding.cbSexActive.isChecked
             val weight: Float? = giveOutPutFloat(binding.etWeight.text.toString())
-            body = if (body == null) null else giveOutPutFloat(binding.etBody.text.toString())
-            tail = if (tail == null) null else giveOutPutFloat(binding.etTail.text.toString())
-            feet = if (feet == null) null else giveOutPutFloat(binding.etFeet.text.toString())
-            ear = if (ear == null) null else giveOutPutFloat(binding.etEar.text.toString())
+
+            body = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etBody.text.toString())
+            tail = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etTail.text.toString())
+            feet = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etFeet.text.toString())
+            ear = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etEar.text.toString())
+
             val testesLength: Float? = giveOutPutFloat(binding.etTestesLength.text.toString())
             val testesWidth: Float? = giveOutPutFloat(binding.etTestesWidth.text.toString())
-            gravitidy = if (gravitidy == null) null else { binding.cbGravit.isChecked }
-            lactating = if (lactating == null) null else { binding.cbLactating.isChecked }
-            //počet embryí v oboch rohoch maternice a ich priemer
-            embryoRight = if (embryoRight == null) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
-            embryoLeft = if (embryoLeft == null) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
-            embryoDiameter = if (embryoDiameter == null) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            MC = if (MC == null) null else { binding.cbMc.isChecked }
-            //počet placentálnych polypov
-            MCright = if (MCright == null) null else giveOutPutInt(binding.etMcRight.text.toString())
-            MCleft = if (MCleft == null) null else giveOutPutInt(binding.etMcLeft.text.toString())
+
+            gravitidy = if (sex == EnumSex.MALE.myName) null else binding.cbGravit.isChecked
+            lactating = if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
+            // počet embryí v oboch rohoch maternice a ich priemer
+            embryoRight = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
+            embryoLeft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
+            embryoDiameter = if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
+            MC = if (sex == EnumSex.MALE.myName) null else binding.cbMc.isChecked
+            // počet placentálnych polypov
+            MCright = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
+            MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
+
             val note: String? = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
