@@ -63,7 +63,7 @@ class UpdateProjectFragment : Fragment() {
         val numMice = binding.etNumMouse.text.toString()
 
         if (checkInput(projectName, numLocal, numMice)){
-            val project: Project = args.project
+            val project: Project = args.project.copy()
             project.projectName = projectName
             project.projectDateTimeUpdated = Calendar.getInstance().time
             project.numLocal = Integer.parseInt(numLocal)

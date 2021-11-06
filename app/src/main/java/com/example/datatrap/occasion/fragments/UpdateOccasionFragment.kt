@@ -243,7 +243,7 @@ class UpdateOccasionFragment : Fragment() {
 
         if (checkInput(occasionNum, method, methodType, trapType, leg)){
 
-            val occasion: Occasion = args.occasion
+            val occasion: Occasion = args.occasion.copy()
             occasion.methodID = method
             occasion.methodTypeID = methodType
             occasion.trapTypeID = trapType

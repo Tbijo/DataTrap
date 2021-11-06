@@ -90,7 +90,7 @@ class UpdateSessionFragment : Fragment() {
         val numOcc = binding.etNumOcc.text.toString()
         if (checkIput(sessionNum, numOcc)){
 
-            val session = args.session
+            val session = args.session.copy()
             session.session = Integer.parseInt(sessionNum)
             session.numOcc = Integer.parseInt(numOcc)
             session.sessionDateTimeUpdated = Calendar.getInstance().time

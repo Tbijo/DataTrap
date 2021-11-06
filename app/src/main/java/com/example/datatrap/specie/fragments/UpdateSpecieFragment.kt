@@ -119,7 +119,7 @@ class UpdateSpecieFragment : Fragment() {
 
         if (checkInput(speciesCode, fullName, authority)){
 
-            val specie: Specie = args.specie
+            val specie: Specie = args.specie.copy()
             specie.speciesCode = speciesCode
             specie.fullName = fullName
             specie.authority = authority

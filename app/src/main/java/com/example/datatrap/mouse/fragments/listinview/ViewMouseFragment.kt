@@ -2,7 +2,6 @@ package com.example.datatrap.mouse.fragments.listinview
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +15,7 @@ import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.Occasion
 import com.example.datatrap.models.Session
+import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.myinterfaces.OnActiveFragment
 import com.example.datatrap.viewmodels.*
 import java.text.SimpleDateFormat
@@ -63,7 +63,10 @@ class ViewMouseFragment : Fragment() {
         binding.recyclerMouse.adapter = adapter
         binding.recyclerMouse.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter.setData(fillList())
+        // naplnit list male alebo female predchadzajucimi udajmi o jedincovi
+        mouseViewModel.getMiceForLog(args.mouse.mouseId).observe(viewLifecycleOwner, Observer { mouseList ->
+            fillList(mouseList)
+        })
 
         return binding.root
     }
@@ -85,37 +88,15 @@ class ViewMouseFragment : Fragment() {
         listener.setTitle("Individual ID: ${args.mouse.code}")
     }
 
-    // naplnit list male alebo female predchadzajucimi udajmi o jedincovi
-    private fun fillList(): List<String> {
+    private fun fillList(mouseList: List<Mouse>) {
         val logList = mutableListOf<String>()
-        var mouseList = emptyList<Mouse>()
-        mouseViewModel.getMiceForLog(args.mouse.mouseId).observe(viewLifecycleOwner, Observer {
-            mouseList = it
-        })
-
         var locality: Locality?
         var sexActive: String
         var oldId: Long = 0
         var newId: Long
         var localName = ""
 
-        if (args.mouse.sex == "Male") {
-            var maleLog: String
-            mouseList.forEach {
-                sexActive = if (it.sexActive == true) "Yes" else "No"
-                newId = it.localityID
-                if (oldId != newId) {
-                    locality = localityViewModel.getLocality(args.mouse.localityID)
-                    oldId = newId
-                    newId = locality!!.localityId
-                    localName = locality!!.localityName
-                }
-                maleLog =
-                    "Catch DateTime - ${it.mouseDateTimeCreated} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Sex. Active - $sexActive"
-                logList.add(maleLog)
-            }
-            return logList
-        } else {
+        if (args.mouse.sex == EnumSex.FEMALE.myName) {
             var femaleLog: String
             mouseList.forEach {
                 sexActive = if (it.sexActive == true) "Yes" else "No"
@@ -126,13 +107,30 @@ class ViewMouseFragment : Fragment() {
                     newId = locality!!.localityId
                     localName = locality!!.localityName
                 }
+                val dateFormated = SimpleDateFormat.getDateTimeInstance().format(it.mouseDateTimeCreated)
                 femaleLog =
-                    "Catch DateTime - ${it.mouseDateTimeCreated} Locality - $localName Trap Number - ${it.trapID} Weight - ${it.weight} Gravidity - ${it.gravidity} Lactating - ${it.lactating} Sex. Active - $sexActive"
+                    "Catch DateTime - $dateFormated, Locality - $localName, Trap Number - ${it.trapID}, Weight - ${it.weight}, Gravidity - ${it.gravidity}, Lactating - ${it.lactating}, Sex. Active - $sexActive"
                 logList.add(femaleLog)
             }
-            return logList
+            adapter.setData(logList)
+        } else {
+            var maleLog: String
+            mouseList.forEach {
+                sexActive = if (it.sexActive == true) "Yes" else "No"
+                newId = it.localityID
+                if (oldId != newId) {
+                    locality = localityViewModel.getLocality(args.mouse.localityID)
+                    oldId = newId
+                    newId = locality!!.localityId
+                    localName = locality!!.localityName
+                }
+                val dateFormated = SimpleDateFormat.getDateTimeInstance().format(it.mouseDateTimeCreated)
+                maleLog =
+                    "Catch DateTime - $dateFormated, Locality - $localName, Trap Number - ${it.trapID}, Weight - ${it.weight}, Sex. Active - $sexActive"
+                logList.add(maleLog)
+            }
+            adapter.setData(logList)
         }
-
     }
 
     private fun initMouseValuesToView() {

@@ -170,7 +170,10 @@ class UpdateMouseFragment : Fragment() {
             }
             EnumSex.FEMALE.myName -> binding.rbFemale.isChecked = true
 
-            null -> binding.rbNullSex.isChecked = true
+            null -> {
+                binding.rbNullSex.isChecked = true
+                hideNonMaleFields()
+            }
         }
 
         when (args.mouse.trapID) {
@@ -216,7 +219,7 @@ class UpdateMouseFragment : Fragment() {
                 }
                 binding.rbNullSex.id -> {
                     sex = null
-                    showNonMaleFields()
+                    hideNonMaleFields()
                 }
             }
         }
@@ -349,7 +352,7 @@ class UpdateMouseFragment : Fragment() {
         val speciesID: Long = mapSpecie.getOrDefault(binding.autoCompTvSpecie.text.toString(), 1)
 
         if (checkInput(speciesID, trapID)){
-            val mouse: Mouse = args.mouse
+            val mouse: Mouse = args.mouse.copy()
             mouse.speciesID = speciesID
             mouse.trapID = trapID
             mouse.sex = sex

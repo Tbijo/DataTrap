@@ -17,7 +17,7 @@ class MouseHistRecyclerAdapter : RecyclerView.Adapter<MouseHistRecyclerAdapter.M
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currentItem = historyList[position]
-        holder.binding.tvLog.text = currentItem[position].toString()
+        holder.binding.tvLog.text = currentItem
     }
 
     override fun getItemCount(): Int {

@@ -114,7 +114,7 @@ class AddNewMouseFragment : Fragment() {
 
         // generate code this is to get team
         userViewModel.activeUser.observe(viewLifecycleOwner, { user ->
-            if (user != null && activeMouseList != null) {
+            if (user != null) {
                 val codeGen = CodeGenerator(oldCode, specie?.upperFingers!!, user.team, activeMouseList)
                 code = codeGen.generateCode()
                 if(code == 0) {
@@ -190,7 +190,7 @@ class AddNewMouseFragment : Fragment() {
                 }
                 binding.rbNullSex.id -> {
                     sex = null
-                    showNonMaleFields()
+                    hideNonMaleFields()
                 }
             }
         }

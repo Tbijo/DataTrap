@@ -1,6 +1,7 @@
 package com.example.datatrap.mouse.fragments.recapture.list
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
@@ -35,7 +36,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        adapter.setOnItemClickListener(object: RecaptureMouseRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object: RecaptureMouseRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
                 goToRecaptureMouse(position)
             }

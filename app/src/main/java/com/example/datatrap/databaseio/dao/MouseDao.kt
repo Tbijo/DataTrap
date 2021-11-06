@@ -25,7 +25,7 @@ interface MouseDao {
     @Query("SELECT * FROM Mouse WHERE Code = :code ORDER BY mouseDateTimeCreated DESC LIMIT 100")
     fun getMiceForRecapture(code: Int): LiveData<List<Mouse>>
 
-    @Query("SELECT * FROM Mouse WHERE primeMouseID = :idMouse")
+    @Query("SELECT * FROM Mouse WHERE primeMouseID = :idMouse ORDER BY mouseDateTimeCreated ASC")
     fun getMiceForLog(idMouse: Long): LiveData<List<Mouse>>
 
     @Query("SELECT * FROM Mouse WHERE localityID = :localityId AND Code IS NOT NULL AND (:currentTime - mouseDateTimeCreated) < :twoYears")

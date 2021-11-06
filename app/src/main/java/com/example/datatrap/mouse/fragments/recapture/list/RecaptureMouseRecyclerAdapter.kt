@@ -21,15 +21,6 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner, private val view
     private lateinit var specieList: List<Specie>
     private lateinit var localList: List<Locality>
 
-    init {
-        specieViewModel.specieList.observe(viewLifecycleOwner, {
-            specieList = it
-        })
-        localityViewModel.localityList.observe(viewLifecycleOwner, {
-            localList = it
-        })
-    }
-
     class MyViewHolder(val binding: RecaptureRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
         init {
             binding.recaptureRow.setOnClickListener {
@@ -52,11 +43,11 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner, private val view
 
         holder.binding.tvMouseId.text = currenItem.code.toString()
 
-        holder.binding.tvAge.text = currenItem.age
+        holder.binding.tvAge.text = currenItem.age.toString()
 
         holder.binding.tvWeight.text = currenItem.weight.toString()
 
-        holder.binding.tvSex.text = currenItem.sex
+        holder.binding.tvSex.text = currenItem.sex.toString()
 
         holder.binding.tvGravitRecap.text = if (currenItem.gravidity == true) "Yes" else "No"
 
@@ -64,9 +55,13 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner, private val view
 
         holder.binding.tvSexActiveRecap.text = if (currenItem.sexActive == true) "Yes" else "No"
 
-        holder.binding.tvLocality.text = localList.first {it.localityId == currenItem.localityID}.localityName
+        localityViewModel.localityList.observe(viewLifecycleOwner, { localList ->
+            holder.binding.tvLocality.text = localList.first {it.localityId == currenItem.localityID}.localityName
+        })
 
-        holder.binding.tvSpecieRecap.text = specieList.first { it.specieId == currenItem.speciesID }.speciesCode
+        specieViewModel.specieList.observe(viewLifecycleOwner, { specieList ->
+            holder.binding.tvSpecieRecap.text = specieList.first { it.specieId == currenItem.speciesID }.speciesCode
+        })
 
         holder.binding.tvRecapDate.text = "${currenItem.mouseDateTimeCreated}"
     }

@@ -109,7 +109,7 @@ class UpdateLocalityFragment : Fragment(){
         val longitude = binding.tvLongnitude.text.toString()
 
         if (checkInput(localityName, latitude, longitude)){
-            val locality: Locality = args.locality
+            val locality: Locality = args.locality.copy()
             locality.localityName = localityName
             locality.x = latitude.toFloat()
             locality.y = longitude.toFloat()

@@ -2,6 +2,7 @@ package com.example.datatrap.mouse.fragments.recapture
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -49,6 +50,7 @@ class RecaptureMouseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentRecaptureMouseBinding.inflate(inflater, container, false)
+
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
@@ -177,7 +179,10 @@ class RecaptureMouseFragment : Fragment() {
             }
             EnumSex.FEMALE.myName -> binding.rbFemale.isChecked = true
 
-            null -> binding.rbNullSex.isChecked = true
+            null -> {
+                binding.rbNullSex.isChecked = true
+                hideNonMaleFields()
+            }
         }
 
         when (args.mouse.age) {
@@ -223,7 +228,7 @@ class RecaptureMouseFragment : Fragment() {
                 }
                 binding.rbNullSex.id -> {
                     sex = null
-                    showNonMaleFields()
+                    hideNonMaleFields()
                 }
             }
         }
@@ -325,7 +330,7 @@ class RecaptureMouseFragment : Fragment() {
 
         if (checkInput(speciesID, trapID)) {
             // recapture mouse
-            val mouse: Mouse = args.mouse
+            val mouse: Mouse = args.mouse.copy()
             mouse.mouseId = 0
             mouse.primeMouseID = args.mouse.mouseId
             mouse.occasionID = args.occasion.occasionId
@@ -364,7 +369,6 @@ class RecaptureMouseFragment : Fragment() {
             mouse.MCright =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
             mouse.MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
-
 
             mouse.note = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
             mouse.imgName = imgName

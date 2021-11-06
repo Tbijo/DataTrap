@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.MouseRowBinding
 import com.example.datatrap.models.Mouse
-import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.SpecieViewModel
 
 class MouseRecyclerAdapter(owner: ViewModelStoreOwner, private val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHolder>() {
