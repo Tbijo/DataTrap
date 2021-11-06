@@ -38,7 +38,7 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.getActiveMiceOfLocality(localityId, currentTime, twoYears)
     }
 
-    suspend fun countMiceForLocality(localityId: Long): Int {
+    fun countMiceForLocality(localityId: Long): LiveData<Int> {
         return mouseDao.countMiceForLocality(localityId)
     }
 }

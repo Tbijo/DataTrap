@@ -314,11 +314,15 @@ class UpdateMouseFragment : Fragment() {
     private fun deleteMouse(){
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
-            // zmensit numMice projektu do ktoreho sa pridava tato mys
-            updateProjectNumMice()
 
-            // zmensit numMice occasion do ktorej sa pridava tato mys
-            updateOccasionNumMice()
+            // zmensit cisla len v pripade ze je to prvy zaznam mysi
+            if (args.mouse.primeMouseID == null) {
+                // zmensit numMice projektu do ktoreho sa pridava tato mys
+                updateProjectNumMice()
+
+                // zmensit numMice occasion do ktorej sa pridava tato mys
+                updateOccasionNumMice()
+            }
 
             mouseViewModel.deleteMouse(args.mouse)
 

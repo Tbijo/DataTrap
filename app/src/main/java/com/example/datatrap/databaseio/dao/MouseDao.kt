@@ -32,5 +32,5 @@ interface MouseDao {
     fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>
 
     @Query("SELECT COUNT(Code) FROM Mouse WHERE localityID = :localityId AND Code IS NOT NULL AND Recapture = 0")
-    suspend fun countMiceForLocality(localityId: Long): Int
+    fun countMiceForLocality(localityId: Long): LiveData<Int>
 }

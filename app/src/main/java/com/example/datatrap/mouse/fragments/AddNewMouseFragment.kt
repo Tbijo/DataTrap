@@ -96,7 +96,9 @@ class AddNewMouseFragment : Fragment() {
 
         fillDropDown()
 
-        oldCode = mouseViewModel.countMiceForLocality(args.occasion.localityID) + 1
+        mouseViewModel.countMiceForLocality(args.occasion.localityID).observe(viewLifecycleOwner, {
+            oldCode = it + 1
+        })
 
         binding.btnGenCode.setOnClickListener {
             generateCode()
