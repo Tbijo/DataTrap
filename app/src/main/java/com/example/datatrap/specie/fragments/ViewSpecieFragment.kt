@@ -27,10 +27,11 @@ class ViewSpecieFragment : Fragment() {
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
         if (args.specie.imgName != null){
-            pictureViewModel.getPictureById(args.specie.imgName!!).observe(viewLifecycleOwner, {
-                binding.ivPicture.setImageURI(it.path.toUri())
-            })
+            pictureViewModel.getPictureById(args.specie.imgName!!)
         }
+        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
+            binding.ivPicture.setImageURI(it.path.toUri())
+        })
 
         initSpecieValuesToView()
 

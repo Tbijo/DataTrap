@@ -20,6 +20,7 @@ import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.myenums.EnumTrapID
 import com.example.datatrap.viewmodels.*
+import java.io.File
 import java.util.*
 
 class UpdateMouseFragment : Fragment() {
@@ -34,6 +35,7 @@ class UpdateMouseFragment : Fragment() {
     private lateinit var projectViewModel: ProjectViewModel
     private lateinit var sessionViewModel: SessionViewModel
     private lateinit var occasionViewModel: OccasionViewModel
+    private lateinit var pictureViewModel: PictureViewModel
 
     private lateinit var listSpecie: List<Specie>
     private lateinit var mapSpecie: MutableMap<String, Long>
@@ -52,13 +54,29 @@ class UpdateMouseFragment : Fragment() {
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
         occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
+        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), Observer {
+        sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
+        })
+        imgName = args.mouse.imgName
+
+        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
+            // odstranit fyzicku zlozku
+            val myFile = File(it.path)
+            if (myFile.exists()) myFile.delete()
+            //odstranit zaznam z databazy
+            pictureViewModel.deletePicture(it)
+
+            mouseViewModel.deleteMouse(args.mouse)
+
+            Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
         })
 
         mapSpecie = mutableMapOf()
@@ -324,11 +342,15 @@ class UpdateMouseFragment : Fragment() {
                 updateOccasionNumMice()
             }
 
-            mouseViewModel.deleteMouse(args.mouse)
+            if (imgName != null) {
+                pictureViewModel.getPictureById(imgName!!)
+            } else {
+                mouseViewModel.deleteMouse(args.mouse)
 
-            Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
 
-            findNavController().navigateUp()
+                findNavController().navigateUp()
+            }
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Mouse?")

@@ -3,6 +3,7 @@ package com.example.datatrap.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Picture
@@ -13,6 +14,7 @@ import kotlinx.coroutines.launch
 class PictureViewModel(application: Application) : AndroidViewModel(application) {
 
     private val pictureRepository: PictureRepository
+    var gotPicture: MutableLiveData<Picture> = MutableLiveData<Picture>()
 
     init {
         val pictureDao = TrapDatabase.getDatabase(application).pictureDao()
@@ -31,7 +33,10 @@ class PictureViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getPictureById(pictureName: String): LiveData<Picture> {
-        return pictureRepository.getPictureById(pictureName)
+    fun getPictureById(pictureName: String) {
+        viewModelScope.launch {
+            val pic = pictureRepository.getPictureById(pictureName)
+            gotPicture.value = pic
+        }
     }
 }

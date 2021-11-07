@@ -14,5 +14,5 @@ interface PictureDao {
     suspend fun deletePicture(picture: Picture)
 
     @Query("SELECT * FROM Picture WHERE imgName = :imgName")
-    fun getPictureById(imgName: String): LiveData<Picture>
+    suspend fun getPictureById(imgName: String): Picture
 }

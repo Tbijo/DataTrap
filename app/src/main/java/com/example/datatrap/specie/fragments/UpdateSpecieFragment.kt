@@ -12,8 +12,10 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateSpecieBinding
 import com.example.datatrap.models.Specie
+import com.example.datatrap.viewmodels.PictureViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
+import java.io.File
 import java.util.*
 
 class UpdateSpecieFragment : Fragment() {
@@ -23,6 +25,7 @@ class UpdateSpecieFragment : Fragment() {
     private val args by navArgs<UpdateSpecieFragmentArgs>()
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var sharedViewModel: SharedViewModel
+    private lateinit var pictureViewModel: PictureViewModel
 
     private var imgName: String? = null
     private var upperFingers: Int? = null
@@ -33,12 +36,26 @@ class UpdateSpecieFragment : Fragment() {
     ): View? {
         _binding = FragmentUpdateSpecieBinding.inflate(inflater, container, false)
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
+        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
         imgName = args.specie.imgName
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {
             imgName = it
+        })
+        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
+            // odstranit fyzicku zlozku
+            val myFile = File(it.path)
+            if (myFile.exists()) myFile.delete()
+            //odstranit zaznam z databazy
+            pictureViewModel.deletePicture(it)
+
+            specieViewModel.deleteSpecie(args.specie)
+
+            Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
         })
 
         binding.rgUpperFingers.setOnCheckedChangeListener { radioGroup, radioButtonId ->
@@ -100,11 +117,15 @@ class UpdateSpecieFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            specieViewModel.deleteSpecie(args.specie)
+            if (imgName != null) {
+                pictureViewModel.getPictureById(imgName!!)
+            } else {
+                specieViewModel.deleteSpecie(args.specie)
 
-            Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
 
-            findNavController().navigateUp()
+                findNavController().navigateUp()
+            }
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Specie?")

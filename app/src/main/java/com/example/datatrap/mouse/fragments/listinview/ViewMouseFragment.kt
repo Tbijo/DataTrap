@@ -39,10 +39,7 @@ class ViewMouseFragment : Fragment() {
 
     private val logList = mutableListOf<String>()
 
-    val deviceID: String = Settings.Secure.getString(
-        requireContext().contentResolver,
-        Settings.Secure.ANDROID_ID
-    )
+    var deviceID: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,11 +54,17 @@ class ViewMouseFragment : Fragment() {
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
+        deviceID = Settings.Secure.getString(
+            requireContext().contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
+
         if (args.mouse.imgName != null) {
-            pictureViewModel.getPictureById(args.mouse.imgName!!).observe(viewLifecycleOwner, {
-                binding.ivMouse.setImageURI(it.path.toUri())
-            })
+            pictureViewModel.getPictureById(args.mouse.imgName!!)
         }
+        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
+            binding.ivMouse.setImageURI(it.path.toUri())
+        })
 
         val mySpecie = specieViewModel.getSpecie(args.mouse.speciesID)
         binding.tvMouseFullName.text = mySpecie.fullName

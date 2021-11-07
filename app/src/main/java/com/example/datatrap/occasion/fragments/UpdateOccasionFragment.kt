@@ -19,6 +19,7 @@ import com.example.datatrap.databinding.FragmentUpdateOccasionBinding
 import com.example.datatrap.models.*
 import com.example.datatrap.occasion.fragments.weather.Weather
 import com.example.datatrap.viewmodels.*
+import java.io.File
 import java.util.*
 
 class UpdateOccasionFragment : Fragment() {
@@ -35,6 +36,7 @@ class UpdateOccasionFragment : Fragment() {
     private lateinit var vegTypeViewModel: VegetTypeViewModel
     private lateinit var localityViewModel: LocalityViewModel
     private lateinit var sessionViewModel: SessionViewModel
+    private lateinit var pictureViewModel: PictureViewModel
 
     private lateinit var envTypeNameMap: MutableMap<String, Long?>
     private lateinit var methodNameMap: MutableMap<String, Long>
@@ -61,12 +63,27 @@ class UpdateOccasionFragment : Fragment() {
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
+        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
         imgName = args.occasion.imgName
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
+        })
+
+        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
+            // odstranit fyzicku zlozku
+            val myFile = File(it.path)
+            if (myFile.exists()) myFile.delete()
+            //odstranit zaznam z databazy
+            pictureViewModel.deletePicture(it)
+            // vymazat occasion
+            occasionViewModel.deleteOccasion(args.occasion)
+
+            Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
         })
 
         envTypeNameMap = mutableMapOf()
@@ -221,12 +238,16 @@ class UpdateOccasionFragment : Fragment() {
             // zmensit numOcc v session
             updateSessionNumOcc()
 
-            // vymazat occasion
-            occasionViewModel.deleteOccasion(args.occasion)
+            if (imgName != null) {
+                pictureViewModel.getPictureById(imgName!!)
+            } else {
+                // vymazat occasion
+                occasionViewModel.deleteOccasion(args.occasion)
 
-            Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
+                Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
 
-            findNavController().navigateUp()
+                findNavController().navigateUp()
+            }
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Occasion?")
