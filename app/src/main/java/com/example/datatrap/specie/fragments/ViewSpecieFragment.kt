@@ -26,6 +26,12 @@ class ViewSpecieFragment : Fragment() {
         _binding = FragmentViewSpecieBinding.inflate(inflater, container, false)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
+        if (args.specie.imgName != null){
+            pictureViewModel.getPictureById(args.specie.imgName!!).observe(viewLifecycleOwner, {
+                binding.ivPicture.setImageURI(it.path.toUri())
+            })
+        }
+
         initSpecieValuesToView()
 
         return binding.root
@@ -37,22 +43,14 @@ class ViewSpecieFragment : Fragment() {
     }
 
     private fun initSpecieValuesToView(){
-        if (args.specie.imgName != null){
-            val picture: Picture = pictureViewModel.getPictureById(args.specie.imgName!!)
-            binding.ivPicture.setImageURI(picture.path.toUri())
-            Toast.makeText(requireContext(), "Fotka je", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), "Fotka nie je", Toast.LENGTH_SHORT).show()
-        }
-
         binding.tvAuthority.text = args.specie.authority
-        binding.tvDescription.text = args.specie.description
+        binding.tvDescription.text = args.specie.description.toString()
         binding.tvFullName.text = args.specie.fullName
         binding.tvMaxWeight.text = args.specie.maxWeight.toString()
         binding.tvMinWeight.text = args.specie.minWeight.toString()
         binding.tvNumberUpperFinger.text = args.specie.upperFingers.toString()
         binding.tvSpecieCodeView.text = args.specie.speciesCode
-        binding.tvSynonymum.text = args.specie.synonym
+        binding.tvSynonymum.text = args.specie.synonym.toString()
     }
 
 }

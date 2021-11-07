@@ -38,6 +38,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private lateinit var pictureViewModel: PictureViewModel
     private val args by navArgs<TakePhotoFragmentArgs>()
 
+    private var picture: Picture? = null
     private var oldPicName: String? = null
     private var picPath: String? = null
     private var picUri: Uri? = null
@@ -54,11 +55,13 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         oldPicName = args.picName
 
         if (oldPicName != null) {
-            // ak mame fotku tak ju nacitame
-            binding.tvTakePicture.text = getString(R.string.pictureAdded)
-            val picture: Picture = pictureViewModel.getPictureById(oldPicName!!)
-            binding.ivTakePicture.setImageURI(picture.path.toUri())
-            picName = oldPicName
+            pictureViewModel.getPictureById(oldPicName!!).observe(viewLifecycleOwner, {
+                // ak mame fotku tak ju nacitame
+                picture = it
+                binding.tvTakePicture.text = getString(R.string.pictureAdded)
+                binding.ivTakePicture.setImageURI(it.path.toUri())
+                picName = oldPicName
+            })
         } else {
             binding.tvTakePicture.text = getString(R.string.noPicture)
         }
@@ -82,15 +85,11 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             if (oldPicName != picName && picName != null) {
                 val newPicture =
                     Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
-                // nacitat povodnu fotku
-                val oldPicture = oldPicName?.let { it1 -> pictureViewModel.getPictureById(it1) }
                 // vymazat povodnu fotku z databazy
-                if (oldPicture != null) {
-                    pictureViewModel.deletePicture(oldPicture)
-                }
-                // vymazat povodnu fotku ako subor
-                if (oldPicture?.path != null) {
-                    val myFile: File = File(oldPicture.path)
+                if (picture != null) {
+                    pictureViewModel.deletePicture(picture!!)
+                    // vymazat povodnu fotku ako subor
+                    val myFile = File(picture!!.path)
                     if (myFile.exists()) myFile.delete()
                 }
                 // ulozit novu
@@ -159,7 +158,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             if (result.resultCode != Activity.RESULT_OK) {
                 // sem sa pojde ak pouzivatel neprijal fotku
                 // treba vymazat empty file ktora bola vytvorena
-                val myFile: File = File(picPath)
+                val myFile = File(picPath)
                 if (myFile.exists()) myFile.delete()
                 binding.tvTakePicture.text = getString(R.string.noPicture)
                 picUri = null

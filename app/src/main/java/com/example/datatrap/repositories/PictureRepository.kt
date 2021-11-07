@@ -1,5 +1,6 @@
 package com.example.datatrap.repositories
 
+import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.PictureDao
 import com.example.datatrap.models.Picture
 
@@ -13,7 +14,7 @@ class PictureRepository(private val pictureDao: PictureDao) {
         pictureDao.deletePicture(picture)
     }
 
-    suspend fun getPictureById(pictureName: String): Picture {
+    fun getPictureById(pictureName: String): LiveData<Picture> {
         return pictureDao.getPictureById(pictureName)
     }
 

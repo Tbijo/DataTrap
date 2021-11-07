@@ -2,13 +2,13 @@ package com.example.datatrap.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Picture
 import com.example.datatrap.repositories.PictureRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class PictureViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -31,11 +31,7 @@ class PictureViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    fun getPictureById(pictureName: String): Picture {
-        val picture: Picture
-        runBlocking {
-            picture = pictureRepository.getPictureById(pictureName)
-        }
-        return picture
+    fun getPictureById(pictureName: String): LiveData<Picture> {
+        return pictureRepository.getPictureById(pictureName)
     }
 }
