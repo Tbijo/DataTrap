@@ -39,9 +39,9 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun getMouse(idMouse: Long) {
+    fun getMouse(idMouse: Long, deviceID: String) {
         viewModelScope.launch {
-            val mouse = mouseRepository.getMouse(idMouse)
+            val mouse = mouseRepository.getMouse(idMouse, deviceID)
             gotMouse.value = mouse
         }
     }
@@ -54,8 +54,8 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         return mouseRepository.getMiceForRecapture(code)
     }
 
-    fun getMiceForLog(idMouse: Long): LiveData<List<Mouse>>{
-        return mouseRepository.getMiceForLog(idMouse)
+    fun getMiceForLog(idMouse: Long, deviceID: String): LiveData<List<Mouse>>{
+        return mouseRepository.getMiceForLog(idMouse, deviceID)
     }
 
     fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>{

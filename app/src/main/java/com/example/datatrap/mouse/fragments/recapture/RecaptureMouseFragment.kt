@@ -2,6 +2,7 @@ package com.example.datatrap.mouse.fragments.recapture
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
@@ -35,6 +36,10 @@ class RecaptureMouseFragment : Fragment() {
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var protocolViewModel: ProtocolViewModel
     private lateinit var sharedViewModel: SharedViewModel
+    val deviceID: String = Settings.Secure.getString(
+        requireContext().contentResolver,
+        Settings.Secure.ANDROID_ID
+    )
 
     private lateinit var listSpecie: List<Specie>
     private lateinit var mapSpecie: MutableMap<String, Long>
@@ -434,7 +439,7 @@ class RecaptureMouseFragment : Fragment() {
 
     private fun changeSexIfNecesary() {
         // upravit zmenu pohlavia
-        mouseViewModel.getMiceForLog(args.mouse.mouseId).observe(viewLifecycleOwner, {
+        mouseViewModel.getMiceForLog(args.mouse.mouseId, deviceID).observe(viewLifecycleOwner, {
             it.forEach { mouse ->
                 mouse.sex = sex
                 mouse.mouseDateTimeUpdated = Calendar.getInstance().time
@@ -443,7 +448,7 @@ class RecaptureMouseFragment : Fragment() {
         })
 
         // zmena pohlavia prveho zaznamu
-        mouseViewModel.getMouse(args.mouse.mouseId)
+        mouseViewModel.getMouse(args.mouse.mouseId, deviceID)
     }
 
 }

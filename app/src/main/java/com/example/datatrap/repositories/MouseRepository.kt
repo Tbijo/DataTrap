@@ -18,8 +18,8 @@ class MouseRepository(private val mouseDao: MouseDao) {
         mouseDao.deleteMouse(mouse)
     }
 
-    suspend fun getMouse(idMouse: Long): Mouse {
-        return mouseDao.getMouse(idMouse)
+    suspend fun getMouse(idMouse: Long, deviceID: String): Mouse {
+        return mouseDao.getMouse(idMouse, deviceID)
     }
 
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{
@@ -30,8 +30,8 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.getMiceForRecapture(code)
     }
 
-    fun getMiceForLog(idMouse: Long): LiveData<List<Mouse>>{
-        return mouseDao.getMiceForLog(idMouse)
+    fun getMiceForLog(idMouse: Long, deviceID: String): LiveData<List<Mouse>>{
+        return mouseDao.getMiceForLog(idMouse, deviceID)
     }
 
     fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>{
