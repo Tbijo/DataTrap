@@ -36,10 +36,7 @@ class RecaptureMouseFragment : Fragment() {
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var protocolViewModel: ProtocolViewModel
     private lateinit var sharedViewModel: SharedViewModel
-    val deviceID: String = Settings.Secure.getString(
-        requireContext().contentResolver,
-        Settings.Secure.ANDROID_ID
-    )
+    var deviceID: String = ""
 
     private lateinit var listSpecie: List<Specie>
     private lateinit var mapSpecie: MutableMap<String, Long>
@@ -60,6 +57,11 @@ class RecaptureMouseFragment : Fragment() {
 
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
+
+        deviceID = Settings.Secure.getString(
+        requireContext().contentResolver,
+        Settings.Secure.ANDROID_ID
+        )
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), Observer {

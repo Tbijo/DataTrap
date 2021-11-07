@@ -41,7 +41,7 @@ class UpdateSpecieFragment : Fragment() {
         imgName = args.specie.imgName
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), Observer {
+        sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
         pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
