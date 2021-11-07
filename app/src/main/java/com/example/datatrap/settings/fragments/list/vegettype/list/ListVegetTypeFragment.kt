@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListVegetTypeBinding
@@ -37,7 +38,13 @@ class ListVegetTypeFragment : Fragment() {
         binding.vegTypeRecyclerview.adapter = adapter
         binding.vegTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
-        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner, Observer { vegTypes ->
+        val dividerItemDecoration = DividerItemDecoration(
+            binding.vegTypeRecyclerview.context,
+            LinearLayoutManager.VERTICAL
+        )
+        binding.vegTypeRecyclerview.addItemDecoration(dividerItemDecoration)
+
+        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner, { vegTypes ->
             adapter.setData(vegTypes)
             vegTypeList = vegTypes
         })

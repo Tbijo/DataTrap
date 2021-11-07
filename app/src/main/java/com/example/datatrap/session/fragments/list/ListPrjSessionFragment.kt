@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListPrjSessionBinding
 import com.example.datatrap.models.Locality
@@ -41,6 +42,12 @@ class ListPrjSessionFragment : Fragment() {
         val recyclerView = binding.prjSessionRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        val dividerItemDecoration = DividerItemDecoration(
+            recyclerView.context,
+            LinearLayoutManager.VERTICAL
+        )
+        recyclerView.addItemDecoration(dividerItemDecoration)
 
         sessionViewModel.getSessionsForProject(args.project.projectId)
             .observe(viewLifecycleOwner, Observer { sessions ->

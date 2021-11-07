@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProtocolBinding
@@ -37,7 +38,13 @@ class ListProtocolFragment : Fragment() {
         binding.protocolRecyclerview.adapter = adapter
         binding.protocolRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
-        protocolViewModel.procolList.observe(viewLifecycleOwner, Observer { protocols ->
+        val dividerItemDecoration = DividerItemDecoration(
+            binding.protocolRecyclerview.context,
+            LinearLayoutManager.VERTICAL
+        )
+        binding.protocolRecyclerview.addItemDecoration(dividerItemDecoration)
+
+        protocolViewModel.procolList.observe(viewLifecycleOwner, { protocols ->
             adapter.setData(protocols)
             protocolList = protocols
         })

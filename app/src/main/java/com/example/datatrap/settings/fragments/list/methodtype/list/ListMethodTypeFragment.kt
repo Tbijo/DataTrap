@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListMethodTypeBinding
@@ -37,7 +38,13 @@ class ListMethodTypeFragment : Fragment() {
         binding.methodTypeRecyclerview.adapter = adapter
         binding.methodTypeRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
-        methodTypeViewModel.methodTypeList.observe(viewLifecycleOwner, Observer { methodTypes ->
+        val dividerItemDecoration = DividerItemDecoration(
+            binding.methodTypeRecyclerview.context,
+            LinearLayoutManager.VERTICAL
+        )
+        binding.methodTypeRecyclerview.addItemDecoration(dividerItemDecoration)
+
+        methodTypeViewModel.methodTypeList.observe(viewLifecycleOwner, { methodTypes ->
             adapter.setData(methodTypes)
             methodTypeList = methodTypes
         })

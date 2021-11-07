@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
 import com.example.datatrap.models.Locality
@@ -40,6 +41,12 @@ class ListPrjLocalityFragment : Fragment() {
         val recyclerView = binding.prjLocalityRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        val dividerItemDecoration = DividerItemDecoration(
+            recyclerView.context,
+            LinearLayoutManager.VERTICAL
+        )
+        recyclerView.addItemDecoration(dividerItemDecoration)
 
         prjLocalityViewModel.getLocalitiesForProject(args.project.projectId).observe(viewLifecycleOwner, Observer {
             adapter.setData(it.first().localities)

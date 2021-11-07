@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListOccMouseBinding
@@ -33,7 +34,13 @@ class ListOccMouseFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        mouseViewModel.getMiceForOccasion(args.occasion.occasionId).observe(viewLifecycleOwner, Observer { mice ->
+        val dividerItemDecoration = DividerItemDecoration(
+            recyclerView.context,
+            LinearLayoutManager.VERTICAL
+        )
+        recyclerView.addItemDecoration(dividerItemDecoration)
+
+        mouseViewModel.getMiceForOccasion(args.occasion.occasionId).observe(viewLifecycleOwner, { mice ->
             adapter.setData(mice)
             mouseList = mice
         })

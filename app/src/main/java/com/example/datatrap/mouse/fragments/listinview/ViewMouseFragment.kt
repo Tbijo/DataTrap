@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentViewMouseBinding
 import com.example.datatrap.models.Locality
@@ -62,6 +63,12 @@ class ViewMouseFragment : Fragment() {
         adapter = MouseHistRecyclerAdapter()
         binding.recyclerMouse.adapter = adapter
         binding.recyclerMouse.layoutManager = LinearLayoutManager(requireContext())
+
+        val dividerItemDecoration = DividerItemDecoration(
+            binding.recyclerMouse.context,
+            LinearLayoutManager.VERTICAL
+        )
+        binding.recyclerMouse.addItemDecoration(dividerItemDecoration)
 
         // naplnit list male alebo female predchadzajucimi udajmi o jedincovi
         mouseViewModel.getMiceForLog(args.mouse.mouseId).observe(viewLifecycleOwner, Observer { mouseList ->

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListUsersBinding
 import com.example.datatrap.models.User
@@ -33,7 +34,13 @@ class ListUsersFragment : Fragment() {
         binding.userRecyclerview.adapter = adapter
         binding.userRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
-        userViewModel.userList.observe(viewLifecycleOwner, Observer {
+        val dividerItemDecoration = DividerItemDecoration(
+            binding.userRecyclerview.context,
+            LinearLayoutManager.VERTICAL
+        )
+        binding.userRecyclerview.addItemDecoration(dividerItemDecoration)
+
+        userViewModel.userList.observe(viewLifecycleOwner, {
             adapter.setData(it)
             userList = it
         })

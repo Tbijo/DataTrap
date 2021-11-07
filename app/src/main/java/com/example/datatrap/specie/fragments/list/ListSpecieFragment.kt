@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListSpecieBinding
@@ -29,7 +30,13 @@ class ListSpecieFragment : Fragment(), SearchView.OnQueryTextListener {
         binding.specieRecyclerview.adapter = adapter
         binding.specieRecyclerview.layoutManager = LinearLayoutManager(requireContext())
 
-        specieViewModel.specieList.observe(viewLifecycleOwner, Observer { species ->
+        val dividerItemDecoration = DividerItemDecoration(
+            binding.specieRecyclerview.context,
+            LinearLayoutManager.VERTICAL
+        )
+        binding.specieRecyclerview.addItemDecoration(dividerItemDecoration)
+
+        specieViewModel.specieList.observe(viewLifecycleOwner, { species ->
             adapter.setData(species)
         })
 

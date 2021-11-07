@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListSesOccasionBinding
 import com.example.datatrap.viewmodels.OccasionViewModel
@@ -33,6 +34,12 @@ class ListSesOccasionFragment : Fragment() {
         val recyclerView = binding.sesOccasionRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        val dividerItemDecoration = DividerItemDecoration(
+            recyclerView.context,
+            LinearLayoutManager.VERTICAL
+        )
+        recyclerView.addItemDecoration(dividerItemDecoration)
 
         occasionViewModel.getOccasionsForSession(args.session.sessionId).observe(viewLifecycleOwner, Observer {
             adapter.setData(it)

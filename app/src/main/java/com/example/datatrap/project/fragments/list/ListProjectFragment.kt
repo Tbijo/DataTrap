@@ -13,12 +13,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProjectBinding
 import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.ProjectViewModel
 import com.example.datatrap.viewmodels.UserViewModel
 import java.util.*
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.viewpager2.widget.ViewPager2
+
 
 class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
 
@@ -39,6 +43,12 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
         adapter = ProjectRecyclerAdapter()
         binding.projectRecyclerview.adapter = adapter
         binding.projectRecyclerview.layoutManager = LinearLayoutManager(requireContext())
+
+        val dividerItemDecoration = DividerItemDecoration(
+            binding.projectRecyclerview.context,
+            LinearLayoutManager.VERTICAL
+        )
+        binding.projectRecyclerview.addItemDecoration(dividerItemDecoration)
 
         projectViewModel.projectList.observe(viewLifecycleOwner, Observer { projects ->
             adapter.setData(projects)

@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListAllLocalityBinding
@@ -46,7 +47,13 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        localityViewModel.localityList.observe(viewLifecycleOwner, Observer {localities ->
+        val dividerItemDecoration = DividerItemDecoration(
+            recyclerView.context,
+            LinearLayoutManager.VERTICAL
+        )
+        recyclerView.addItemDecoration(dividerItemDecoration)
+
+        localityViewModel.localityList.observe(viewLifecycleOwner, {localities ->
             adapter.setData(localities)
             localityList = localities
         })
