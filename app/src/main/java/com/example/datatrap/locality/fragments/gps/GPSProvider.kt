@@ -3,13 +3,17 @@ package com.example.datatrap.locality.fragments.gps
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Location
 import android.location.LocationManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.CancellationTokenSource
+import com.google.android.gms.tasks.Task
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 
@@ -21,6 +25,8 @@ class GPSProvider(
 
     private val fusedLocationProviderClient: FusedLocationProviderClient =
         LocationServices.getFusedLocationProviderClient(context)
+
+    private var cancellationTokenSource = CancellationTokenSource()
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -68,7 +74,11 @@ class GPSProvider(
     fun getCoordinates(listener: CoordinatesListener) {
         if (isGPSon(context)) {
             if (hasLocationPermission()) {
-                fusedLocationProviderClient.lastLocation.addOnSuccessListener { location ->
+                val currentLocationTask: Task<Location> = fusedLocationProviderClient.getCurrentLocation(
+                    LocationRequest.PRIORITY_HIGH_ACCURACY,
+                    cancellationTokenSource.token
+                )
+                currentLocationTask.addOnSuccessListener { location ->
                     location?.let {
                         listener.onReceivedCoordinates(it.latitude, it.longitude)
                     }
@@ -79,6 +89,10 @@ class GPSProvider(
         } else {
             Toast.makeText(context, "Turn on GPS.", Toast.LENGTH_LONG).show()
         }
+    }
+
+    fun cancelLocationRequest() {
+        cancellationTokenSource.cancel()
     }
 
     interface CoordinatesListener {

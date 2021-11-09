@@ -57,6 +57,8 @@ class UpdateLocalityFragment : Fragment(){
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        gpsProviderA.cancelLocationRequest()
+        gpsProviderB.cancelLocationRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -121,6 +123,7 @@ class UpdateLocalityFragment : Fragment(){
         if (checkInput(localityName, latitudeA, longitudeA, latitudeB, longitudeB)){
             val locality: Locality = args.locality.copy()
             locality.localityName = localityName
+            locality.numSessions = Integer.parseInt(binding.etSessionNum.text.toString())
             locality.xA = latitudeA.toFloat()
             locality.yA = longitudeA.toFloat()
             locality.xB = latitudeB.toFloat()
@@ -131,6 +134,9 @@ class UpdateLocalityFragment : Fragment(){
             localityViewModel.updateLocality(locality)
 
             Toast.makeText(requireContext(), "Locality updated.", Toast.LENGTH_SHORT).show()
+
+            gpsProviderA.cancelLocationRequest()
+            gpsProviderB.cancelLocationRequest()
 
             findNavController().navigateUp()
         }else{

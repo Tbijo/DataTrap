@@ -18,7 +18,7 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private lateinit var userViewModel: UserViewModel
-    private var team: Int = 0
+    private var team: Int? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +45,7 @@ class LoginFragment : Fragment() {
                 // ak su treba nastavit aktivitu na 0
                 inactiveAllUsers()
                 // nastavit team
-                user.team = team
+                user.team = team!!
                 // tento pouzivatel je teraz aktivny vzdy moze byt len jeden
                 user.isActive = 1
 
@@ -84,7 +84,7 @@ class LoginFragment : Fragment() {
     }
 
     private fun checkInput(userName: String, pass: String, team: Int?): Boolean {
-        return userName.isNotEmpty() && pass.isNotEmpty() && team.toString().isNotEmpty()
+        return userName.isNotEmpty() && pass.isNotEmpty() && team != null
     }
 
     private fun inactiveAllUsers() {

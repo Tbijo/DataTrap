@@ -48,6 +48,8 @@ class AddLocalityFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+        gpsProviderA.cancelLocationRequest()
+        gpsProviderB.cancelLocationRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -80,6 +82,9 @@ class AddLocalityFragment : Fragment() {
             localityViewModel.insertLocality(locality)
 
             Toast.makeText(requireContext(), "New locality added.", Toast.LENGTH_SHORT).show()
+
+            gpsProviderA.cancelLocationRequest()
+            gpsProviderB.cancelLocationRequest()
 
             findNavController().navigateUp()
         }else{
