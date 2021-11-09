@@ -1,6 +1,5 @@
 package com.example.datatrap.databaseio.dao
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Picture
 
@@ -9,6 +8,9 @@ interface PictureDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPicture(picture: Picture)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun initInsert(picture: Picture)
 
     @Delete
     suspend fun deletePicture(picture: Picture)

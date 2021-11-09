@@ -20,7 +20,8 @@ class AddLocalityFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var localityViewModel: LocalityViewModel
-    private lateinit var gpsProvider: GPSProvider
+    private lateinit var gpsProviderA: GPSProvider
+    private lateinit var gpsProviderB: GPSProvider
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,11 +29,16 @@ class AddLocalityFragment : Fragment() {
         _binding = FragmentAddLocalityBinding.inflate(inflater, container, false)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
 
-        gpsProvider = GPSProvider(requireContext(), requireActivity(), this)
+        gpsProviderA = GPSProvider(requireContext(), requireActivity(), this)
+        gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
 
-        binding.btnGetCoordinates.setOnClickListener {
+        binding.btnGetCoorA.setOnClickListener {
             // ziskanie aktualnych suradnic
-            getCoordinates()
+            getCoordinatesA()
+        }
+
+        binding.btnGetCoorB.setOnClickListener {
+            getCoordinatesB()
         }
 
         setHasOptionsMenu(true)
@@ -57,16 +63,19 @@ class AddLocalityFragment : Fragment() {
 
     private fun insertLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val latitude = binding.tvLatitude.text.toString()
-        val longnitude = binding.tvLongnitude.text.toString()
+        val latitudeA = binding.etLatitudeA.text.toString()
+        val longnitudeA = binding.etLongnitudeA.text.toString()
+        val latitudeB = binding.etLatitudeB.text.toString()
+        val longnitudeB = binding.etLongnitudeB.text.toString()
 
-        if (checkInput(localityName, latitude, longnitude)){
+        if (checkInput(localityName, latitudeA, longnitudeA, latitudeB, longnitudeB)){
             val localityNote = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
             val locality = Locality(0, localityName, deviceID, Calendar.getInstance().time,
-                null, latitude.toFloat(),
-                longnitude.toFloat(),0, localityNote)
+                null, latitudeA.toFloat(), longnitudeA.toFloat(),
+                latitudeB.toFloat(), longnitudeB.toFloat(),
+                0, localityNote)
 
             localityViewModel.insertLocality(locality)
 
@@ -78,15 +87,25 @@ class AddLocalityFragment : Fragment() {
         }
     }
 
-    private fun checkInput(localityName: String, latitude: String, longnitude: String): Boolean {
-        return localityName.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
+    private fun checkInput(localityName: String, latitudeA: String, longnitudeA: String, latitudeB: String, longnitudeB: String): Boolean {
+        return localityName.isNotEmpty() && latitudeA.isNotEmpty() && longnitudeA.isNotEmpty() && latitudeB.isNotEmpty() && longnitudeB.isNotEmpty()
     }
 
-    private fun getCoordinates(){
-        gpsProvider.getCoordinates(object : GPSProvider.CoordinatesListener{
+    private fun getCoordinatesA(){
+        gpsProviderA.getCoordinates(object : GPSProvider.CoordinatesListener{
             override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
-                binding.tvLatitude.text = latitude.toString()
-                binding.tvLongnitude.text = longitude.toString()
+                binding.etLatitudeA.setText(latitude.toString())
+                binding.etLongnitudeA.setText(longitude.toString())
+            }
+
+        })
+    }
+
+    private fun getCoordinatesB(){
+        gpsProviderB.getCoordinates(object : GPSProvider.CoordinatesListener{
+            override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
+                binding.etLatitudeB.setText(latitude.toString())
+                binding.etLongnitudeB.setText(longitude.toString())
             }
 
         })

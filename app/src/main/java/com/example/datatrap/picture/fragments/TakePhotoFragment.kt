@@ -61,10 +61,12 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         }
         pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
             // ak mame fotku tak ju nacitame
-            picture = it
-            binding.tvTakePicture.text = getString(R.string.pictureAdded)
-            binding.ivTakePicture.setImageURI(it.path.toUri())
-            picName = oldPicName
+            if (it != null) {
+                picture = it
+                binding.tvTakePicture.text = getString(R.string.pictureAdded)
+                binding.ivTakePicture.setImageURI(it.path.toUri())
+                picName = oldPicName
+            }
         })
 
         binding.btnTakePicture.setOnClickListener {

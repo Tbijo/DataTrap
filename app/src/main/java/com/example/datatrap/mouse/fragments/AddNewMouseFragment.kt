@@ -3,14 +3,12 @@ package com.example.datatrap.mouse.fragments
 import android.app.AlertDialog
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -20,7 +18,7 @@ import com.example.datatrap.mouse.fragments.generator.CodeGenerator
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
-import com.example.datatrap.myenums.EnumTrapID
+import com.example.datatrap.myenums.EnumTrapType
 import com.example.datatrap.viewmodels.*
 import java.util.*
 
@@ -87,7 +85,7 @@ class AddNewMouseFragment : Fragment() {
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), Observer {
+        sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
 
@@ -105,7 +103,6 @@ class AddNewMouseFragment : Fragment() {
         }
 
         setListeners()
-        setListenerToTrapID()
 
         mouseViewModel.getActiveMiceOfLocality(
             args.occasion.localityID,
@@ -135,7 +132,7 @@ class AddNewMouseFragment : Fragment() {
 
         fillDropDown()
 
-        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, EnumTrapID.myValues())
+        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occasion.numTraps).toList())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
     }
 
@@ -232,12 +229,6 @@ class AddNewMouseFragment : Fragment() {
             binding.etCodeMouseAdd.setText("")
             return
         }
-        if (trapID.isBlank() || trapID == EnumTrapID.SNAP_TRAPS.myName){
-            Toast.makeText(requireContext(), "Choose a valiable trap ID.", Toast.LENGTH_LONG).show()
-            code = null
-            binding.etCodeMouseAdd.setText("")
-            return
-        }
 
         listSpecie.forEach {
             if (it.speciesCode == specieCode){
@@ -245,43 +236,6 @@ class AddNewMouseFragment : Fragment() {
             }
         }
         userViewModel.getActiveUser()
-    }
-
-    private fun setListenerToTrapID(){
-        binding.autoCompTvTrapId.setOnItemClickListener { parent, view, position, id ->
-            when (parent.getItemAtPosition(position) as String) {
-                EnumTrapID.LIVE_TRAPS.myName -> {
-                    binding.etBody.isEnabled = false
-                    binding.etBody.setText("")
-                    binding.etTail.isEnabled = false
-                    binding.etTail.setText("")
-                    binding.etFeet.isEnabled = false
-                    binding.etFeet.setText("")
-                    binding.etEar.isEnabled = false
-                    binding.etEar.setText("")
-
-                    binding.btnGenCode.isEnabled = true
-                    binding.etCodeMouseAdd.isEnabled = true
-                    binding.rgCaptureId.children.forEach {
-                        it.isEnabled = true
-                    }
-                }
-                EnumTrapID.SNAP_TRAPS.myName -> {
-                    binding.btnGenCode.isEnabled = false
-                    binding.etCodeMouseAdd.isEnabled = false
-                    binding.etCodeMouseAdd.setText("")
-                    binding.rgCaptureId.children.forEach {
-                        it.isEnabled = false
-                    }
-                    binding.rgCaptureId.clearCheck()
-
-                    binding.etBody.isEnabled = true
-                    binding.etTail.isEnabled = true
-                    binding.etFeet.isEnabled = true
-                    binding.etEar.isEnabled = true
-                }
-            }
-        }
     }
 
     private fun hideNonMaleFields(){
@@ -336,21 +290,20 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun insertMouse() {
-        val trapID: String = binding.autoCompTvTrapId.text.toString()
         speciesID = mapSpecie.getOrDefault(binding.autoCompTvSpecie.text.toString(), 1)
 
-        if (checkInput(speciesID, trapID)){
-            code = if (trapID == EnumTrapID.SNAP_TRAPS.myName) null else giveOutPutInt(binding.etCodeMouseAdd.text.toString())
-            captureID = if (trapID == EnumTrapID.SNAP_TRAPS.myName) null else captureID
+        if (speciesID > 0){
+            code = giveOutPutInt(binding.etCodeMouseAdd.text.toString())
 
             val protocolID: Long? = mapProtocol.getOrDefault(binding.autoCompTvProtocol.text.toString(), null)
             val sexActive: Boolean? = binding.cbSexActive.isChecked
             val weight: Float? = giveOutPutFloat(binding.etWeight.text.toString())
+            val trapID: Int = if (binding.autoCompTvTrapId.text.toString().isBlank()) 0 else Integer.parseInt(binding.autoCompTvTrapId.text.toString())
 
-            body = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etBody.text.toString())
-            tail = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etTail.text.toString())
-            feet = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etFeet.text.toString())
-            ear = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etEar.text.toString())
+            body = giveOutPutFloat(binding.etBody.text.toString())
+            tail = giveOutPutFloat(binding.etTail.text.toString())
+            feet = giveOutPutFloat(binding.etFeet.text.toString())
+            ear = giveOutPutFloat(binding.etEar.text.toString())
 
             val testesLength: Float? = giveOutPutFloat(binding.etTestesLength.text.toString())
             val testesWidth: Float? = giveOutPutFloat(binding.etTestesWidth.text.toString())
@@ -446,10 +399,6 @@ class AddNewMouseFragment : Fragment() {
         updatedOccasion.occasionDateTimeUpdated = Calendar.getInstance().time
 
         occasionViewModel.updateOccasion(updatedOccasion)
-    }
-
-    private fun checkInput(specieID: Long, trapID: String): Boolean {
-        return specieID > 0 && trapID.isNotEmpty()
     }
 
 }

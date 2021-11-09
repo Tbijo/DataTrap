@@ -5,13 +5,11 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -225,7 +223,6 @@ class UpdateOccasionFragment : Fragment() {
         binding.etTemperature.setText(args.occasion.temperature.toString())
         binding.etWeather.setText(args.occasion.weather.toString())
         binding.cbGotCaught.isChecked = args.occasion.gotCaught == true
-        imgName = args.occasion.imgName
 
         binding.etLeg.setText(args.occasion.leg)
         binding.etOccasionNote.setText(args.occasion.note.toString())
@@ -261,8 +258,9 @@ class UpdateOccasionFragment : Fragment() {
         val methodType: Long = metTypeNameMap.getOrDefault(binding.autoCompTvMethodType.text.toString(), 1)
         val trapType: Long = trapTypeNameMap.getOrDefault(binding.autoCompTvTrapType.text.toString(), 1)
         val leg: String = binding.etLeg.text.toString()
+        val numTraps = binding.etNumTraps.text.toString()
 
-        if (checkInput(occasionNum, method, methodType, trapType, leg)){
+        if (checkInput(occasionNum, method, methodType, trapType, leg, numTraps)){
 
             val occasion: Occasion = args.occasion.copy()
             occasion.methodID = method
@@ -274,7 +272,7 @@ class UpdateOccasionFragment : Fragment() {
             occasion.envTypeID = envTypeNameMap.getOrDefault(binding.autoCompTvEnvType.text.toString(), null)
             occasion.vegetTypeID = vegTypeNameMap.getOrDefault(binding.autoCompTvVegType.text.toString(), null)
             occasion.gotCaught = binding.cbGotCaught.isChecked
-            occasion.numTraps = if (binding.etNumTraps.text.toString().isBlank()) null else Integer.parseInt(binding.etNumTraps.text.toString())
+            occasion.numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
             occasion.temperature = if (binding.etTemperature.text.toString().isBlank()) null else temperature
             occasion.weather = if (binding.etWeather.text.toString().isBlank()) null else weatherGlob
             occasion.note = if (binding.etOccasionNote.text.toString().isBlank()) null else binding.etOccasionNote.text.toString()
@@ -302,9 +300,12 @@ class UpdateOccasionFragment : Fragment() {
         method: Long,
         methodType: Long,
         trapType: Long,
-        leg: String
+        leg: String,
+        numTraps: String
     ): Boolean {
-        return occasion.toString().isNotEmpty() && method.toString().isNotEmpty() && methodType.toString().isNotEmpty() && trapType.toString().isNotEmpty() && leg.isNotEmpty()
+        return occasion.toString().isNotEmpty() && method.toString().isNotEmpty() &&
+                methodType.toString().isNotEmpty() && trapType.toString().isNotEmpty() &&
+                leg.isNotEmpty() && numTraps.isNotEmpty()
     }
 
     private fun getHistoryWeather(){
@@ -314,7 +315,7 @@ class UpdateOccasionFragment : Fragment() {
 
             val unixtime = args.occasion.occasionDateTimeCreated.time
 
-            weather.getHistoricalWeatherByCoordinates(locality.x, locality.y, unixtime, object: Weather.VolleyResponseListener{
+            weather.getHistoricalWeatherByCoordinates(locality.xA, locality.yA, unixtime, object: Weather.VolleyResponseListener{
                 override fun onResponse(temp: Int, weather: String) {
                     temperature = temp.toFloat()
                     binding.etTemperature.setText(temperature.toString())

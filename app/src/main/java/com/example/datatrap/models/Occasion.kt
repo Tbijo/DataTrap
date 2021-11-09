@@ -54,7 +54,7 @@ data class Occasion(
 
     var gotCaught: Boolean?, // boolean
 
-    var numTraps: Int?,
+    var numTraps: Int,
 
     var numMice: Int?,
 

@@ -2,7 +2,6 @@ package com.example.datatrap.mouse.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -18,7 +17,7 @@ import com.example.datatrap.models.*
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
-import com.example.datatrap.myenums.EnumTrapID
+import com.example.datatrap.myenums.EnumTrapType
 import com.example.datatrap.viewmodels.*
 import java.io.File
 import java.util.*
@@ -85,7 +84,6 @@ class UpdateMouseFragment : Fragment() {
         fillDropDown()
 
         setListeners()
-        setListenerToTrapID()
 
         initMouseValuesToView()
 
@@ -98,10 +96,10 @@ class UpdateMouseFragment : Fragment() {
 
         fillDropDown()
 
-        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, EnumTrapID.myValues())
+        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occasion.numTraps).toList())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
-        binding.autoCompTvTrapId.setText(args.mouse.trapID, false)
+        binding.autoCompTvTrapId.setText(args.mouse.trapID.toString(), false)
     }
 
     override fun onDestroy() {
@@ -124,7 +122,7 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun fillDropDown() {
-        specieViewModel.specieList.observe(viewLifecycleOwner, Observer {
+        specieViewModel.specieList.observe(viewLifecycleOwner, {
             listSpecie = it
             it.forEach { specie ->
                 mapSpecie[specie.speciesCode] = specie.specieId
@@ -194,20 +192,6 @@ class UpdateMouseFragment : Fragment() {
             }
         }
 
-        when (args.mouse.trapID) {
-            EnumTrapID.LIVE_TRAPS.myName -> {
-                binding.etBody.isEnabled = false
-                binding.etTail.isEnabled = false
-                binding.etFeet.isEnabled = false
-                binding.etEar.isEnabled = false
-            }
-            EnumTrapID.SNAP_TRAPS.myName -> {
-                binding.rgCaptureId.children.forEach {
-                    it.isEnabled = false
-                }
-            }
-        }
-
         when(args.mouse.age){
             EnumMouseAge.ADULT.myName -> binding.rbAdult.isChecked = true
             EnumMouseAge.SUBADULT.myName -> binding.rbSubadult.isChecked = true
@@ -258,38 +242,6 @@ class UpdateMouseFragment : Fragment() {
                 binding.rbEscaped.id -> captureID = EnumCaptureID.ESCAPED.myName
                 binding.rbReleased.id -> captureID = EnumCaptureID.RELEASED.myName
                 binding.rbNullCapture.id -> captureID = null
-            }
-        }
-    }
-
-    private fun setListenerToTrapID(){
-        binding.autoCompTvTrapId.setOnItemClickListener { parent, view, position, id ->
-            when (parent.getItemAtPosition(position) as String) {
-                EnumTrapID.LIVE_TRAPS.myName -> {
-                    binding.etBody.isEnabled = false
-                    binding.etBody.setText("")
-                    binding.etTail.isEnabled = false
-                    binding.etTail.setText("")
-                    binding.etFeet.isEnabled = false
-                    binding.etFeet.setText("")
-                    binding.etEar.isEnabled = false
-                    binding.etEar.setText("")
-
-                    binding.rgCaptureId.children.forEach {
-                        it.isEnabled = true
-                    }
-                }
-                EnumTrapID.SNAP_TRAPS.myName -> {
-                    binding.rgCaptureId.children.forEach {
-                        it.isEnabled = false
-                    }
-                    binding.rgCaptureId.clearCheck()
-
-                    binding.etBody.isEnabled = true
-                    binding.etTail.isEnabled = true
-                    binding.etFeet.isEnabled = true
-                    binding.etEar.isEnabled = true
-                }
             }
         }
     }
@@ -374,26 +326,25 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun updateMouse() {
-        val trapID: String = binding.autoCompTvTrapId.text.toString()
         val speciesID: Long = mapSpecie.getOrDefault(binding.autoCompTvSpecie.text.toString(), 1)
 
-        if (checkInput(speciesID, trapID)){
+        if (speciesID > 0){
             val mouse: Mouse = args.mouse.copy()
             mouse.speciesID = speciesID
-            mouse.trapID = trapID
+            mouse.trapID = if (binding.autoCompTvTrapId.text.toString().isBlank()) 0 else Integer.parseInt(binding.autoCompTvTrapId.text.toString())
             mouse.sex = sex
             mouse.age = age
-            mouse.captureID = if (trapID == EnumTrapID.SNAP_TRAPS.myName) null else captureID
+            mouse.captureID = captureID
             mouse.mouseDateTimeUpdated = Calendar.getInstance().time
 
             mouse.protocolID = mapProtocol.getOrDefault(binding.autoCompTvProtocol.text.toString(), null)
             mouse.sexActive = binding.cbSexActive.isChecked
             mouse.weight = giveOutPutFloat(binding.etWeight.text.toString())
 
-            mouse.body = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etBody.text.toString())
-            mouse.tail = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etTail.text.toString())
-            mouse.feet = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etFeet.text.toString())
-            mouse.ear = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etEar.text.toString())
+            mouse.body = giveOutPutFloat(binding.etBody.text.toString())
+            mouse.tail = giveOutPutFloat(binding.etTail.text.toString())
+            mouse.feet = giveOutPutFloat(binding.etFeet.text.toString())
+            mouse.ear = giveOutPutFloat(binding.etEar.text.toString())
 
             mouse.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
             mouse.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
@@ -452,10 +403,6 @@ class UpdateMouseFragment : Fragment() {
         Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
 
         findNavController().navigateUp()
-    }
-
-    private fun checkInput(specieID: Long, trapID: String): Boolean {
-        return specieID > 0 && trapID.isNotEmpty()
     }
 
     private fun giveOutPutInt(input: String?): Int?{

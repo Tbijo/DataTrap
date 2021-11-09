@@ -5,7 +5,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.ArrayAdapter
@@ -19,8 +18,6 @@ import com.example.datatrap.databinding.FragmentAddOccasionBinding
 import com.example.datatrap.models.*
 import com.example.datatrap.occasion.fragments.weather.Weather
 import com.example.datatrap.viewmodels.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import java.util.*
 
 class AddOccasionFragment : Fragment() {
@@ -181,12 +178,12 @@ class AddOccasionFragment : Fragment() {
         val methodType: Long = metTypeNameMap.getOrDefault(binding.autoCompTvMethodType.text.toString(), 1)
         val trapType: Long = trapTypeNameMap.getOrDefault(binding.autoCompTvTrapType.text.toString(), 1)
         val leg: String = binding.etLeg.text.toString()
+        val numTraps = binding.etNumTraps.text.toString()
 
-        if (checkInput(occasionNum, method, methodType, trapType, leg)) {
+        if (checkInput(occasionNum, method, methodType, trapType, leg, numTraps)) {
             val envType: Long? = envTypeNameMap.getOrDefault(binding.autoCompTvEnvType.text.toString(), null)
             val vegType: Long? = vegTypeNameMap.getOrDefault(binding.autoCompTvVegType.text.toString(), null)
             val gotCaught = false
-            val numTraps = if (binding.etNumTraps.text.toString().isBlank()) null else Integer.parseInt(binding.etNumTraps.text.toString())
             val numMice = 0
             val deviceID: String = Settings.Secure.getString(
                 requireContext().contentResolver,
@@ -215,7 +212,7 @@ class AddOccasionFragment : Fragment() {
                 Calendar.getInstance().time,
                 null,
                 gotCaught,
-                numTraps,
+                Integer.parseInt(numTraps),
                 numMice,
                 temper,
                 weat,
@@ -247,19 +244,20 @@ class AddOccasionFragment : Fragment() {
         method: Long,
         methodType: Long,
         trapType: Long,
-        leg: String
+        leg: String,
+        numTraps: String
     ): Boolean {
         return occasion.toString().isNotEmpty() && method.toString()
             .isNotEmpty() && methodType.toString().isNotEmpty() && trapType.toString()
-            .isNotEmpty() && leg.isNotEmpty()
+            .isNotEmpty() && leg.isNotEmpty() && numTraps.isNotEmpty()
     }
 
     private fun getCurrentWeather() {
         if (isOnline(requireContext())) {
             val weather = Weather(requireContext())
             weather.getCurrentWeatherByCoordinates(
-                args.locality.x,
-                args.locality.y,
+                args.locality.xA,
+                args.locality.yA,
                 object : Weather.VolleyResponseListener {
                     override fun onResponse(temp: Int, weather: String) {
                         temperature = temp.toFloat()

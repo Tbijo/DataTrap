@@ -25,12 +25,12 @@ class LocalityMapFragment : Fragment() {
 
         if (args.localities.isNotEmpty()) {
             args.localities.forEach {
-                val locality = LatLng(it.x.toDouble(), it.y.toDouble())
+                val locality = LatLng(it.xA.toDouble(), it.yA.toDouble())
                 googleMap.addMarker(MarkerOptions().position(locality).title(it.localityName))
             }
 
-            val lastLat = args.localities.last().x.toDouble()
-            val lastlon = args.localities.last().y.toDouble()
+            val lastLat = args.localities.last().xA.toDouble()
+            val lastlon = args.localities.last().yA.toDouble()
             val lastLatLon = LatLng(lastLat, lastlon)
             // bolo by treba nastavit najblizsiu takto sa nastavi najnovsia
             googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLon, 13F))

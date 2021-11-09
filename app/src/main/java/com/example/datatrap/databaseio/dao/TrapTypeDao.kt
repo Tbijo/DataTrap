@@ -10,6 +10,9 @@ interface TrapTypeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTrapType(trapType: TrapType)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun initInsert(trapType: TrapType)
+
     @Update
     suspend fun updateTrapType(trapType: TrapType)
 

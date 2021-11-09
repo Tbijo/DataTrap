@@ -5,12 +5,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.databinding.FragmentViewSpecieBinding
-import com.example.datatrap.models.Picture
 import com.example.datatrap.viewmodels.PictureViewModel
 
 class ViewSpecieFragment : Fragment() {
@@ -44,14 +42,20 @@ class ViewSpecieFragment : Fragment() {
     }
 
     private fun initSpecieValuesToView(){
-        binding.tvAuthority.text = args.specie.authority
-        binding.tvDescription.text = args.specie.description.toString()
+        binding.tvSpecieCodeView.text = args.specie.speciesCode
         binding.tvFullName.text = args.specie.fullName
+        binding.tvAuthority.text = args.specie.authority.toString()
+        binding.tvDescription.text = args.specie.description.toString()
         binding.tvMaxWeight.text = args.specie.maxWeight.toString()
         binding.tvMinWeight.text = args.specie.minWeight.toString()
         binding.tvNumberUpperFinger.text = args.specie.upperFingers.toString()
-        binding.tvSpecieCodeView.text = args.specie.speciesCode
         binding.tvSynonymum.text = args.specie.synonym.toString()
+
+        binding.tvBody.text = args.specie.bodyLength.toString()
+        binding.tvTail.text = args.specie.tailLength.toString()
+        binding.tvMinFeet.text = args.specie.feetLengthMin.toString()
+        binding.tvMaxFeet.text = args.specie.feetLengthMax.toString()
+        binding.tvSpecieNote.text = args.specie.note.toString()
     }
 
 }

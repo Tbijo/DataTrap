@@ -19,7 +19,7 @@ data class Specie(
 
     var synonym: String?,
 
-    var authority: String,
+    var authority: String?,
 
     var description: String?,
 
@@ -30,6 +30,14 @@ data class Specie(
     var minWeight: Float?, //kontrloly pri vstupoch
 
     var maxWeight: Float?, //kontrloly pri vstupoch
+
+    var bodyLength: Float?,
+
+    var tailLength: Float?,
+
+    var feetLengthMin: Float?,
+
+    var feetLengthMax: Float?,
 
     var note: String?,
 

@@ -102,18 +102,17 @@ class ViewMouseFragment : Fragment() {
         }
 
         mouseViewModel.gotMouse.observe(viewLifecycleOwner, {
+            val sexActive = if (it.sexActive == true) "Yes" else "No"
+            val dateFormated = SimpleDateFormat.getDateTimeInstance().format(it.mouseDateTimeCreated)
+            val locName = localityViewModel.getLocality(it.localityID).localityName
             if (args.mouse.sex == EnumSex.FEMALE.myName) {
-                val dateFormated = SimpleDateFormat.getDateTimeInstance().format(it.mouseDateTimeCreated)
-                val locName = localityViewModel.getLocality(it.localityID).localityName
                 val femaleLog =
-                    "Catch DateTime - $dateFormated, Locality - $locName, Trap Number - ${it.trapID}, Weight - ${it.weight}, Gravidity - ${it.gravidity}, Lactating - ${it.lactating}, Sex. Active - ${it.sexActive}"
+                    "Catch DateTime - $dateFormated, Locality - $locName, Trap Number - ${it.trapID}, Weight - ${it.weight}, Gravidity - ${it.gravidity}, Lactating - ${it.lactating}, Sex. Active - $sexActive"
                 logList.add(0, femaleLog)
                 adapter.setData(logList)
             } else {
-                val dateFormated = SimpleDateFormat.getDateTimeInstance().format(it.mouseDateTimeCreated)
-                val locName = localityViewModel.getLocality(it.localityID).localityName
                 val maleLog =
-                    "Catch DateTime - $dateFormated, Locality - $locName, Trap Number - ${it.trapID}, Weight - ${it.weight}, Sex. Active - ${it.sexActive}"
+                    "Catch DateTime - $dateFormated, Locality - $locName, Trap Number - ${it.trapID}, Weight - ${it.weight}, Sex. Active - $sexActive"
                 logList.add(0, maleLog)
                 adapter.setData(logList)
             }
@@ -138,7 +137,7 @@ class ViewMouseFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        listener.setTitle("Individual ID: ${args.mouse.code}")
+        listener.setTitle("Individual Code: ${args.mouse.code}")
     }
 
     private fun fillList(mouseList: List<Mouse>) {

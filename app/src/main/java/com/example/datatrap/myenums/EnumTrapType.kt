@@ -1,6 +1,6 @@
 package com.example.datatrap.myenums
 
-enum class EnumTrapID(val myName: String) {
+enum class EnumTrapType(val myName: String) {
     LIVE_TRAPS("Live Traps"),
     SNAP_TRAPS("Snap Traps");
 

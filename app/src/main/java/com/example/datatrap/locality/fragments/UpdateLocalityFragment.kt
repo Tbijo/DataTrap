@@ -12,7 +12,6 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateLocalityBinding
 import com.example.datatrap.locality.fragments.gps.GPSProvider
 import com.example.datatrap.models.Locality
-import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
@@ -27,7 +26,8 @@ class UpdateLocalityFragment : Fragment(){
     private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
     private lateinit var projectViewModel: ProjectViewModel
     private val args by navArgs<UpdateLocalityFragmentArgs>()
-    private lateinit var gpsProvider: GPSProvider
+    private lateinit var gpsProviderA: GPSProvider
+    private lateinit var gpsProviderB: GPSProvider
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,12 +37,17 @@ class UpdateLocalityFragment : Fragment(){
         prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
         projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
-        gpsProvider = GPSProvider(requireContext(), requireActivity(), this)
+        gpsProviderA = GPSProvider(requireContext(), requireActivity(), this)
+        gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
 
         initLocalityValuesToView()
 
-        binding.btnGetCoordinates.setOnClickListener {
-            getCoordinates()
+        binding.btnGetCoorA.setOnClickListener {
+            getCoordinatesA()
+        }
+
+        binding.btnUpGetCoorB.setOnClickListener {
+            getCoordinatesB()
         }
 
         setHasOptionsMenu(true)
@@ -68,10 +73,13 @@ class UpdateLocalityFragment : Fragment(){
 
     private fun initLocalityValuesToView(){
         binding.etLocalityName.setText(args.locality.localityName)
-        binding.etLocalityNote.setText(args.locality.note)
+        binding.etLocalityNote.setText(args.locality.note.toString())
         binding.etSessionNum.setText(args.locality.numSessions.toString())
-        binding.tvLatitude.text = args.locality.x.toString()
-        binding.tvLongnitude.text = args.locality.y.toString()
+
+        binding.etUpLatA.setText(args.locality.xA.toString())
+        binding.etUpLongA.setText(args.locality.yA.toString())
+        binding.etUpLatB.setText(args.locality.xB.toString())
+        binding.etUpLongB.setText(args.locality.yB.toString())
     }
 
     private fun deleteLocality() {
@@ -94,27 +102,31 @@ class UpdateLocalityFragment : Fragment(){
     }
 
     private fun updateProjectsNumLocal(){
-        val updateProjectList: List<Project> = prjLocalityViewModel.getProjectsForLocality(args.locality.localityId).value?.first()?.projects!!
-
-        updateProjectList.forEach {
-            it.numLocal = (it.numLocal - 1)
-            it.projectDateTimeUpdated = Calendar.getInstance().time
-            projectViewModel.updateProject(it)
-        }
+        prjLocalityViewModel.getProjectsForLocality(args.locality.localityId).observe(viewLifecycleOwner, {
+            it.first().projects.forEach { project ->
+                project.numLocal = (project.numLocal - 1)
+                project.projectDateTimeUpdated = Calendar.getInstance().time
+                projectViewModel.updateProject(project)
+            }
+        })
     }
 
     private fun updateLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val latitude = binding.tvLatitude.text.toString()
-        val longitude = binding.tvLongnitude.text.toString()
+        val latitudeA = binding.etUpLatA.text.toString()
+        val longitudeA = binding.etUpLongA.text.toString()
+        val latitudeB = binding.etUpLatB.text.toString()
+        val longitudeB = binding.etUpLongB.text.toString()
 
-        if (checkInput(localityName, latitude, longitude)){
+        if (checkInput(localityName, latitudeA, longitudeA, latitudeB, longitudeB)){
             val locality: Locality = args.locality.copy()
             locality.localityName = localityName
-            locality.x = latitude.toFloat()
-            locality.y = longitude.toFloat()
+            locality.xA = latitudeA.toFloat()
+            locality.yA = longitudeA.toFloat()
+            locality.xB = latitudeB.toFloat()
+            locality.yB = longitudeB.toFloat()
             locality.localityDateTimeUpdated = Calendar.getInstance().time
-            locality.note = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
+            locality.note = if (binding.etLocalityNote.text.toString().isBlank() || binding.etLocalityNote.text.toString() == "null") null else binding.etLocalityNote.text.toString()
 
             localityViewModel.updateLocality(locality)
 
@@ -128,17 +140,29 @@ class UpdateLocalityFragment : Fragment(){
 
     private fun checkInput(
         localityName: String,
-        latitude: String,
-        longnitude: String
+        latitudeA: String,
+        longnitudeA: String,
+        latitudeB: String,
+        longnitudeB: String
     ): Boolean {
-        return localityName.isNotEmpty() && latitude.isNotEmpty() && longnitude.isNotEmpty()
+        return localityName.isNotEmpty() && latitudeA.isNotEmpty() && longnitudeA.isNotEmpty() &&
+                latitudeB.isNotEmpty() && longnitudeB.isNotEmpty()
     }
 
-    private fun getCoordinates(){
-        gpsProvider.getCoordinates(object : GPSProvider.CoordinatesListener{
+    private fun getCoordinatesA(){
+        gpsProviderA.getCoordinates(object : GPSProvider.CoordinatesListener{
             override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
-                binding.tvLatitude.text = latitude.toString()
-                binding.tvLongnitude.text = longitude.toString()
+                binding.etUpLatA.setText(latitude.toString())
+                binding.etUpLongA.setText(longitude.toString())
+            }
+        })
+    }
+
+    private fun getCoordinatesB(){
+        gpsProviderB.getCoordinates(object : GPSProvider.CoordinatesListener{
+            override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
+                binding.etUpLatB.setText(latitude.toString())
+                binding.etUpLongB.setText(longitude.toString())
             }
         })
     }

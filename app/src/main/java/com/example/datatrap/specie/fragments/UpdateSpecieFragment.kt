@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -98,9 +97,9 @@ class UpdateSpecieFragment : Fragment() {
     private fun initSpecieValuesToView(){
         binding.etSpeciesCode.setText(args.specie.speciesCode)
         binding.etFullName.setText(args.specie.fullName)
-        binding.etAuthority.setText(args.specie.authority)
-        binding.etDescription.setText(args.specie.description)
-        binding.etSynonym.setText(args.specie.synonym)
+        binding.etAuthority.setText(args.specie.authority.toString())
+        binding.etDescription.setText(args.specie.description.toString())
+        binding.etSynonym.setText(args.specie.synonym.toString())
 
         when(args.specie.upperFingers){
             4 -> binding.rb4.isChecked = true
@@ -109,8 +108,14 @@ class UpdateSpecieFragment : Fragment() {
 
         binding.etMaxWeight.setText(args.specie.maxWeight.toString())
         binding.etMinWeight.setText(args.specie.maxWeight.toString())
+
+        binding.etUpBodyLen.setText(args.specie.bodyLength.toString())
+        binding.etUpTailLen.setText(args.specie.tailLength.toString())
+        binding.etUpMinFeet.setText(args.specie.feetLengthMin.toString())
+        binding.etUpFeetMax.setText(args.specie.feetLengthMax.toString())
+
         binding.cbIsSmallMammal.isChecked = args.specie.isSmallMammal
-        binding.etNote.setText(args.specie.note)
+        binding.etNote.setText(args.specie.note.toString())
     }
 
     private fun deleteSpecie() {
@@ -136,21 +141,26 @@ class UpdateSpecieFragment : Fragment() {
     private fun updateSpecie() {
         val speciesCode = binding.etSpeciesCode.text.toString()
         val fullName = binding.etFullName.text.toString()
-        val authority = binding.etAuthority.text.toString()
 
-        if (checkInput(speciesCode, fullName, authority)){
+        if (checkInput(speciesCode, fullName)){
 
             val specie: Specie = args.specie.copy()
             specie.speciesCode = speciesCode
             specie.fullName = fullName
-            specie.authority = authority
-            specie.synonym = if (binding.etSynonym.text.toString().isBlank()) null else binding.etSynonym.text.toString()
-            specie.description = if (binding.etDescription.text.toString().isBlank()) null else binding.etDescription.text.toString()
+            specie.authority = if (isTextNull(binding.etAuthority.text.toString())) null else binding.etAuthority.text.toString()
+            specie.synonym = if (isTextNull(binding.etSynonym.text.toString())) null else binding.etSynonym.text.toString()
+            specie.description = if (isTextNull(binding.etDescription.text.toString())) null else binding.etDescription.text.toString()
             specie.isSmallMammal = binding.cbIsSmallMammal.isChecked
             specie.upperFingers = upperFingers
-            specie.minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else binding.etMinWeight.text.toString().toFloat()
-            specie.maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else binding.etMaxWeight.text.toString().toFloat()
-            specie.note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()
+            specie.minWeight = if (isTextNull(binding.etMinWeight.text.toString())) null else binding.etMinWeight.text.toString().toFloat()
+            specie.maxWeight = if (isTextNull(binding.etMaxWeight.text.toString())) null else binding.etMaxWeight.text.toString().toFloat()
+
+            specie.bodyLength = if (isTextNull(binding.etUpBodyLen.text.toString())) null else binding.etUpBodyLen.text.toString().toFloat()
+            specie.tailLength = if (isTextNull(binding.etUpTailLen.text.toString())) null else binding.etUpTailLen.text.toString().toFloat()
+            specie.feetLengthMin = if (isTextNull(binding.etUpMinFeet.text.toString())) null else binding.etUpMinFeet.text.toString().toFloat()
+            specie.feetLengthMax = if (isTextNull(binding.etUpFeetMax.text.toString())) null else binding.etUpFeetMax.text.toString().toFloat()
+
+            specie.note = if (isTextNull(binding.etNote.text.toString())) null else binding.etNote.text.toString()
             specie.imgName = imgName
             specie.specieDateTimeUpdated = Calendar.getInstance().time
 
@@ -164,12 +174,15 @@ class UpdateSpecieFragment : Fragment() {
         }
     }
 
+    fun isTextNull(string: String): Boolean {
+        return string == "null" || string.isBlank()
+    }
+
     private fun checkInput(
         speciesCode: String,
         fullName: String,
-        authority: String,
     ): Boolean {
-        return speciesCode.isNotEmpty() && fullName.isNotEmpty() && authority.isNotEmpty()
+        return speciesCode.isNotEmpty() && fullName.isNotEmpty()
     }
 
 }

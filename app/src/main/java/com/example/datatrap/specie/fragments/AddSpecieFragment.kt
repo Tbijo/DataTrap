@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
@@ -31,7 +30,7 @@ class AddSpecieFragment : Fragment() {
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), Observer {
+        sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
 
@@ -73,18 +72,24 @@ class AddSpecieFragment : Fragment() {
     private fun insertSpecie() {
         val speciesCode = binding.etSpeciesCode.text.toString()
         val fullName = binding.etFullName.text.toString()
-        val authority = binding.etAuthority.text.toString()
 
-        if (checkInput(speciesCode, fullName, authority)){
+        if (checkInput(speciesCode, fullName)){
+            val authority = if (binding.etAuthority.text.toString().isBlank()) null else binding.etAuthority.text.toString()
             val synonym = if (binding.etSynonym.text.toString().isBlank()) null else binding.etSynonym.text.toString()
             val description = if (binding.etDescription.text.toString().isBlank()) null else binding.etDescription.text.toString()
             val isSmallMammal: Boolean = binding.cbIsSmallMammal.isChecked
             val minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else binding.etMinWeight.text.toString().toFloat()
             val maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else binding.etMaxWeight.text.toString().toFloat()
+
+            val bodyLen = if (binding.etBodyLen.text.toString().isBlank()) null else binding.etBodyLen.text.toString().toFloat()
+            val tailLen = if (binding.etTailLen.text.toString().isBlank()) null else binding.etTailLen.text.toString().toFloat()
+            val feetMinLen = if (binding.etMinFeet.text.toString().isBlank()) null else binding.etMinFeet.text.toString().toFloat()
+            val feetMaxLen = if (binding.etMaxFeet.text.toString().isBlank()) null else binding.etMaxFeet.text.toString().toFloat()
+
             val note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()
 
             val specie = Specie(0, speciesCode, fullName, synonym, authority, description,
-                isSmallMammal, upperFingers, minWeight, maxWeight, note, imgName, Calendar.getInstance().time, null)
+                isSmallMammal, upperFingers, minWeight, maxWeight,bodyLen, tailLen, feetMinLen, feetMaxLen, note, imgName, Calendar.getInstance().time, null)
 
             specieViewModel.insertSpecie(specie)
 
@@ -96,8 +101,8 @@ class AddSpecieFragment : Fragment() {
         }
     }
 
-    private fun checkInput(speciesCode: String, fullName: String, authority: String): Boolean {
-        return speciesCode.isNotEmpty() && fullName.isNotEmpty() && authority.isNotEmpty()
+    private fun checkInput(speciesCode: String, fullName: String): Boolean {
+        return speciesCode.isNotEmpty() && fullName.isNotEmpty()
     }
 
 }

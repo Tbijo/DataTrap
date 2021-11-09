@@ -3,7 +3,6 @@ package com.example.datatrap.mouse.fragments.recapture
 import android.app.AlertDialog
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
@@ -20,7 +19,7 @@ import com.example.datatrap.models.Specie
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
-import com.example.datatrap.myenums.EnumTrapID
+import com.example.datatrap.myenums.EnumTrapType
 import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.ProtocolViewModel
 import com.example.datatrap.viewmodels.SharedViewModel
@@ -64,7 +63,7 @@ class RecaptureMouseFragment : Fragment() {
         )
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), Observer {
+        sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
 
@@ -74,7 +73,6 @@ class RecaptureMouseFragment : Fragment() {
         fillDropDown()
 
         setListeners()
-        setListenerToTrapID()
 
         initMouseValuesToView()
 
@@ -95,10 +93,10 @@ class RecaptureMouseFragment : Fragment() {
         fillDropDown()
 
         val dropDownArrTrapID =
-            ArrayAdapter(requireContext(), R.layout.dropdown_names, EnumTrapID.myValues())
+            ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occasion.numTraps).toList())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
-        binding.autoCompTvTrapId.setText(args.mouse.trapID, false)
+        binding.autoCompTvTrapId.setText(args.mouse.trapID.toString(), false)
     }
 
     override fun onDestroy() {
@@ -206,20 +204,6 @@ class RecaptureMouseFragment : Fragment() {
             EnumCaptureID.RELEASED.myName -> binding.rbReleased.isChecked = true
             null -> binding.rbNullCapture.isChecked = true
         }
-
-        when (args.mouse.trapID) {
-            EnumTrapID.LIVE_TRAPS.myName -> {
-                binding.etBody.isEnabled = false
-                binding.etTail.isEnabled = false
-                binding.etFeet.isEnabled = false
-                binding.etEar.isEnabled = false
-            }
-            EnumTrapID.SNAP_TRAPS.myName -> {
-                binding.rgCaptureId.children.forEach {
-                    it.isEnabled = false
-                }
-            }
-        }
     }
 
     private fun setListeners() {
@@ -256,38 +240,6 @@ class RecaptureMouseFragment : Fragment() {
                 binding.rbEscaped.id -> captureID = EnumCaptureID.ESCAPED.myName
                 binding.rbReleased.id -> captureID = EnumCaptureID.RELEASED.myName
                 binding.rbNullCapture.id -> captureID = null
-            }
-        }
-    }
-
-    private fun setListenerToTrapID() {
-        binding.autoCompTvTrapId.setOnItemClickListener { parent, view, position, id ->
-            when (parent.getItemAtPosition(position) as String) {
-                EnumTrapID.LIVE_TRAPS.myName -> {
-                    binding.etBody.isEnabled = false
-                    binding.etBody.setText("")
-                    binding.etTail.isEnabled = false
-                    binding.etTail.setText("")
-                    binding.etFeet.isEnabled = false
-                    binding.etFeet.setText("")
-                    binding.etEar.isEnabled = false
-                    binding.etEar.setText("")
-
-                    binding.rgCaptureId.children.forEach {
-                        it.isEnabled = true
-                    }
-                }
-                EnumTrapID.SNAP_TRAPS.myName -> {
-                    binding.rgCaptureId.children.forEach {
-                        it.isEnabled = false
-                    }
-                    binding.rgCaptureId.clearCheck()
-
-                    binding.etBody.isEnabled = true
-                    binding.etTail.isEnabled = true
-                    binding.etFeet.isEnabled = true
-                    binding.etEar.isEnabled = true
-                }
             }
         }
     }
@@ -332,10 +284,9 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     private fun recaptureMouse() {
-        val trapID: String = binding.autoCompTvTrapId.text.toString()
         val speciesID: Long = mapSpecie.getOrDefault(binding.autoCompTvSpecie.text.toString(), 1)
 
-        if (checkInput(speciesID, trapID)) {
+        if (speciesID > 0) {
             // recapture mouse
             val mouse: Mouse = args.mouse.copy()
             mouse.mouseId = 0
@@ -346,10 +297,10 @@ class RecaptureMouseFragment : Fragment() {
             mouse.mouseDateTimeUpdated = null
             mouse.recapture = true
             mouse.speciesID = speciesID
-            mouse.trapID = trapID
+            mouse.trapID = if (binding.autoCompTvTrapId.text.toString().isBlank()) 0 else Integer.parseInt(binding.autoCompTvTrapId.text.toString())
             mouse.sex = sex
             mouse.age = age
-            mouse.captureID = if (trapID == EnumTrapID.SNAP_TRAPS.myName) null else captureID
+            mouse.captureID = captureID
 
             mouse.protocolID = mapProtocol.getOrDefault(binding.autoCompTvProtocol.text.toString(), null)
             mouse.sexActive = binding.cbSexActive.isChecked
@@ -357,10 +308,10 @@ class RecaptureMouseFragment : Fragment() {
             mouse.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
             mouse.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
 
-            mouse.body = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etBody.text.toString())
-            mouse.tail = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etTail.text.toString())
-            mouse.feet = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etFeet.text.toString())
-            mouse.ear = if (trapID == EnumTrapID.LIVE_TRAPS.myName) null else giveOutPutFloat(binding.etEar.text.toString())
+            mouse.body = giveOutPutFloat(binding.etBody.text.toString())
+            mouse.tail = giveOutPutFloat(binding.etTail.text.toString())
+            mouse.feet = giveOutPutFloat(binding.etFeet.text.toString())
+            mouse.ear = giveOutPutFloat(binding.etEar.text.toString())
 
             mouse.gravidity = if (sex == EnumSex.MALE.myName) null else binding.cbGravit.isChecked
             mouse.lactating = if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
@@ -425,10 +376,6 @@ class RecaptureMouseFragment : Fragment() {
         Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
 
         findNavController().navigateUp()
-    }
-
-    private fun checkInput(specieID: Long, trapID: String): Boolean {
-        return specieID > 0 && trapID.isNotEmpty()
     }
 
     private fun giveOutPutInt(input: String?): Int? {

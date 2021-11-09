@@ -10,6 +10,9 @@ interface SpecieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSpecie(specie: Specie)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun initInsert(specie: Specie)
+
     @Update
     suspend fun updateSpecie(specie: Specie)
 

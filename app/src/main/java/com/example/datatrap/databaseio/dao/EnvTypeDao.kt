@@ -10,6 +10,9 @@ interface EnvTypeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEnvType(envType: EnvType)
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun initInsert(envType: EnvType)
+
     @Update
     suspend fun updateEnvType(envType: EnvType)
 
