@@ -41,11 +41,10 @@ class ListSesOccasionFragment : Fragment() {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        occasionViewModel.getOccasionsForSession(args.session.sessionId).observe(viewLifecycleOwner, Observer {
+        occasionViewModel.getOccasionsForSession(args.session.sessionId).observe(viewLifecycleOwner, {
             adapter.setData(it)
+            newOccasionNumber = (it.size + 1)
         })
-
-        newOccasionNumber = (adapter.getListSize() + 1)
 
         binding.addOccasionFloatButton.setOnClickListener {
             val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToAddOccasionFragment(args.session, args.locality, newOccasionNumber)
