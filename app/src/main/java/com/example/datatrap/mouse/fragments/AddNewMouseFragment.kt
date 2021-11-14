@@ -6,7 +6,6 @@ import android.provider.Settings
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -18,7 +17,6 @@ import com.example.datatrap.mouse.fragments.generator.CodeGenerator
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
-import com.example.datatrap.myenums.EnumTrapType
 import com.example.datatrap.viewmodels.*
 import java.util.*
 
@@ -31,16 +29,11 @@ class AddNewMouseFragment : Fragment() {
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var protocolViewModel: ProtocolViewModel
     private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var projectViewModel: ProjectViewModel
-    private lateinit var sessionViewModel: SessionViewModel
-    private lateinit var occasionViewModel: OccasionViewModel
     private lateinit var userViewModel: UserViewModel
 
     private lateinit var listSpecie: List<Specie>
+    private lateinit var listProtocol: List<Protocol>
     private lateinit var activeMouseList: List<Mouse>
-
-    private lateinit var mapSpecie: MutableMap<String, Long>
-    private lateinit var mapProtocol: MutableMap<String, Long?>
 
     private var oldCode: Int = 0
     private var code: Int? = null
@@ -50,18 +43,7 @@ class AddNewMouseFragment : Fragment() {
     private var captureID: String? = null
     private var speciesID: Long = 0
     private var specie: Specie? = null
-    private var gravitidy: Boolean? = null
-    private var lactating: Boolean? = null
-    private var embryoRight: Int? = null
-    private var embryoLeft: Int? = null
-    private var embryoDiameter: Float? = null
-    private var MC: Boolean? = null
-    private var MCright: Int? = null
-    private var MCleft: Int? = null
-    private var body: Float? = null
-    private var tail: Float? = null
-    private var feet: Float? = null
-    private var ear: Float? = null
+    private var protocolID: Long? = null
 
     private val MILLIS_IN_SECOND = 1000L
     private val SECONDS_IN_MINUTE = 60
@@ -75,9 +57,6 @@ class AddNewMouseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentAddNewMouseBinding.inflate(inflater, container, false)
-        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
-        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
@@ -88,9 +67,6 @@ class AddNewMouseFragment : Fragment() {
         sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
-
-        mapSpecie = mutableMapOf()
-        mapProtocol = mutableMapOf()
 
         fillDropDown()
 
@@ -158,25 +134,42 @@ class AddNewMouseFragment : Fragment() {
     private fun fillDropDown() {
         specieViewModel.specieList.observe(viewLifecycleOwner, {
             listSpecie = it
+            val listCode = mutableListOf<String>()
             it.forEach { specie ->
-                mapSpecie[specie.speciesCode] = specie.specieId
+                listCode.add(specie.speciesCode)
             }
-            val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapSpecie.keys.toList())
+            val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, listCode)
             binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
         })
 
         protocolViewModel.procolList.observe(viewLifecycleOwner, {
+            listProtocol = it
+            val listProtName = mutableListOf<String>()
+            listProtName.add("null")
             it.forEach { protocol ->
-                mapProtocol[protocol.protocolName] = protocol.protocolId
+                listProtName.add(protocol.protocolName)
             }
-            mapProtocol["null"] = null
-
-            val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, mapProtocol.keys.toList())
+            val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, listProtName)
             binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
         })
     }
 
-    private fun setListeners(){
+    private fun setListeners() {
+        binding.autoCompTvSpecie.setOnItemClickListener { parent, view, position, id ->
+            val name: String = parent.getItemAtPosition(position) as String
+            specie = listSpecie.first {
+                it.speciesCode == name
+            }
+            speciesID = specie!!.specieId
+        }
+
+        binding.autoCompTvProtocol.setOnItemClickListener { parent, view, position, id ->
+            val name: String = parent.getItemAtPosition(position) as String
+            protocolID = listProtocol.firstOrNull {
+                it.protocolName == name
+            }?.protocolId
+        }
+
         binding.rgSex.setOnCheckedChangeListener{ radioGroup, radioButtonId ->
             when(radioButtonId){
                 binding.rbMale.id -> {
@@ -214,15 +207,14 @@ class AddNewMouseFragment : Fragment() {
         }
     }
 
-    private fun generateCode(){
-        val specieCode = binding.autoCompTvSpecie.text.toString()
-        val trapID = binding.autoCompTvTrapId.text.toString()
-        if (specieCode.isBlank() || specieCode == "Other" || specieCode == "PVP" || specieCode == "TRE" || specieCode == "C" || specieCode == "P"){
+    private fun generateCode() {
+        if (specie == null || specie!!.speciesCode == "Other" || specie!!.speciesCode == "PVP" || specie!!.speciesCode == "TRE" || specie!!.speciesCode == "C" || specie!!.speciesCode == "P") {
             Toast.makeText(requireContext(), "Choose a valiable specie code.", Toast.LENGTH_LONG).show()
             code = null
             binding.etCodeMouseAdd.setText("")
             return
         }
+
         if (captureID.isNullOrEmpty() || captureID == EnumCaptureID.ESCAPED.myName || captureID == EnumCaptureID.DIED.myName){
             Toast.makeText(requireContext(), "Choose a valiable capture ID.", Toast.LENGTH_LONG).show()
             code = null
@@ -230,11 +222,6 @@ class AddNewMouseFragment : Fragment() {
             return
         }
 
-        listSpecie.forEach {
-            if (it.speciesCode == specieCode){
-                specie = it
-            }
-        }
         userViewModel.getActiveUser()
     }
 
@@ -273,7 +260,6 @@ class AddNewMouseFragment : Fragment() {
             Toast.makeText(requireContext(), "Select a valid Specie", Toast.LENGTH_LONG).show()
             return
         }
-        speciesID = mapSpecie.getValue(binding.autoCompTvSpecie.text.toString())
 
         if (speciesID > 0 && code != null && code!! > 0 && code.toString().length < 5){
             val fragman = requireActivity().supportFragmentManager
@@ -290,34 +276,31 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun insertMouse() {
-        speciesID = mapSpecie.getOrDefault(binding.autoCompTvSpecie.text.toString(), 1)
-
         if (speciesID > 0){
             code = giveOutPutInt(binding.etCodeMouseAdd.text.toString())
 
-            val protocolID: Long? = mapProtocol.getOrDefault(binding.autoCompTvProtocol.text.toString(), null)
             val sexActive: Boolean? = binding.cbSexActive.isChecked
             val weight: Float? = giveOutPutFloat(binding.etWeight.text.toString())
-            val trapID: Int = if (binding.autoCompTvTrapId.text.toString().isBlank()) 0 else Integer.parseInt(binding.autoCompTvTrapId.text.toString())
+            val trapID: Int? = giveOutPutInt(binding.autoCompTvTrapId.text.toString())
 
-            body = giveOutPutFloat(binding.etBody.text.toString())
-            tail = giveOutPutFloat(binding.etTail.text.toString())
-            feet = giveOutPutFloat(binding.etFeet.text.toString())
-            ear = giveOutPutFloat(binding.etEar.text.toString())
+            val body = giveOutPutFloat(binding.etBody.text.toString())
+            val tail = giveOutPutFloat(binding.etTail.text.toString())
+            val feet = giveOutPutFloat(binding.etFeet.text.toString())
+            val ear = giveOutPutFloat(binding.etEar.text.toString())
 
             val testesLength: Float? = giveOutPutFloat(binding.etTestesLength.text.toString())
             val testesWidth: Float? = giveOutPutFloat(binding.etTestesWidth.text.toString())
 
-            gravitidy = if (sex == EnumSex.MALE.myName) null else binding.cbGravit.isChecked
-            lactating = if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
+            val gravitidy = if (sex == EnumSex.MALE.myName) null else binding.cbGravit.isChecked
+            val lactating = if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
             // počet embryí v oboch rohoch maternice a ich priemer
-            embryoRight = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
-            embryoLeft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
-            embryoDiameter = if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            MC = if (sex == EnumSex.MALE.myName) null else binding.cbMc.isChecked
+            val embryoRight = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
+            val embryoLeft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
+            val embryoDiameter = if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
+            val MC = if (sex == EnumSex.MALE.myName) null else binding.cbMc.isChecked
             // počet placentálnych polypov
-            MCright = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
-            MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
+            val MCright = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
+            val MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
 
             val note: String? = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
@@ -328,13 +311,7 @@ class AddNewMouseFragment : Fragment() {
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 
             // ulozit mys
-            var selSpecie: Specie? = null
-            listSpecie.forEach {
-                if (it.specieId == mouse.speciesID)
-                    selSpecie = it
-            }
-
-            if (mouse.weight != null && selSpecie?.minWeight != null && selSpecie?.maxWeight != null) {
+            if (mouse.weight != null && specie!!.minWeight != null && specie!!.maxWeight != null) {
                 checkWeightAndSave(mouse)
             } else {
                 executeTask(mouse)
@@ -361,12 +338,6 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun executeTask(mouse: Mouse){
-        // zvacsit numMice projektu do ktoreho sa pridava tato mys
-        updateProjectNumMice()
-
-        // zvacsit numMice occasion do ktorej sa pridava tato mys
-        updateOccasionNumMice()
-
         mouseViewModel.insertMouse(mouse)
 
         Toast.makeText(requireContext(), "New mouse added.", Toast.LENGTH_SHORT).show()
@@ -380,25 +351,6 @@ class AddNewMouseFragment : Fragment() {
 
     private fun giveOutPutFloat(input: String?): Float?{
         return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
-    }
-
-    private fun updateProjectNumMice(){
-        val session: Session = sessionViewModel.getSession(args.occasion.sessionID)
-        val updatedProject: Project = projectViewModel.getProject(session.projectID!!)
-
-        updatedProject.numMice = (updatedProject.numMice + 1)
-        updatedProject.projectDateTimeUpdated = Calendar.getInstance().time
-
-        projectViewModel.updateProject(updatedProject)
-    }
-
-    private fun updateOccasionNumMice(){
-        val updatedOccasion: Occasion = args.occasion
-
-        updatedOccasion.numMice = (updatedOccasion.numMice?.plus(1))
-        updatedOccasion.occasionDateTimeUpdated = Calendar.getInstance().time
-
-        occasionViewModel.updateOccasion(updatedOccasion)
     }
 
 }

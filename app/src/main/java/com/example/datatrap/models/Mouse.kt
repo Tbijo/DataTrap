@@ -38,7 +38,7 @@ data class Mouse(
     // cudzi kluc
     var localityID: Long,
 
-    var trapID: Int,
+    var trapID: Int?,
 
     var mouseDateTimeCreated: Date,
 

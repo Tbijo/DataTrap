@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -50,7 +49,7 @@ class ListPrjSessionFragment : Fragment() {
         recyclerView.addItemDecoration(dividerItemDecoration)
 
         sessionViewModel.getSessionsForProject(args.project.projectId)
-            .observe(viewLifecycleOwner, Observer { sessions ->
+            .observe(viewLifecycleOwner, { sessions ->
                 adapter.setData(sessions)
                 sessionList = sessions
             })

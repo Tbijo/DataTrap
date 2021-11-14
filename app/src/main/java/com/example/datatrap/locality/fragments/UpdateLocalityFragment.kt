@@ -88,9 +88,6 @@ class UpdateLocalityFragment : Fragment(){
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            // zmensit numLocal vo vsetkych projektoch ktore su vo vztahu s vymazavanou lokalitou
-            updateProjectsNumLocal()
-
             // odstranit lokalitu
             localityViewModel.deleteLocality(args.locality)
 
@@ -101,16 +98,6 @@ class UpdateLocalityFragment : Fragment(){
             .setTitle("Delete Locality?")
             .setMessage("Are you sure you want to delete this locality?")
             .create().show()
-    }
-
-    private fun updateProjectsNumLocal(){
-        prjLocalityViewModel.getProjectsForLocality(args.locality.localityId).observe(viewLifecycleOwner, {
-            it.first().projects.forEach { project ->
-                project.numLocal = (project.numLocal - 1)
-                project.projectDateTimeUpdated = Calendar.getInstance().time
-                projectViewModel.updateProject(project)
-            }
-        })
     }
 
     private fun updateLocality() {

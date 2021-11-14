@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,11 +12,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
 import com.example.datatrap.models.Locality
-import com.example.datatrap.models.Project
 import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
-import java.util.*
 
 class ListPrjLocalityFragment : Fragment() {
 
@@ -48,7 +45,7 @@ class ListPrjLocalityFragment : Fragment() {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        prjLocalityViewModel.getLocalitiesForProject(args.project.projectId).observe(viewLifecycleOwner, Observer {
+        prjLocalityViewModel.getLocalitiesForProject(args.project.projectId).observe(viewLifecycleOwner, {
             adapter.setData(it.first().localities)
             localityList = it.first().localities
         })
@@ -61,9 +58,6 @@ class ListPrjLocalityFragment : Fragment() {
             }
 
             override fun useLongClickListener(position: Int) {
-                // znizit stlpec numLocal v projekte
-                updateProjectNumLocal()
-
                 // vymazat kombinaciu projektu a vybranej lokality
                 deleteCombination(position)
             }
@@ -93,13 +87,6 @@ class ListPrjLocalityFragment : Fragment() {
         val locality: Locality = localityList[position]
         val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, locality.localityId)
         prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
-    }
-
-    private fun updateProjectNumLocal(){
-        val updatedProject: Project = args.project
-        updatedProject.numLocal = (updatedProject.numLocal - 1)
-        updatedProject.projectDateTimeUpdated = Calendar.getInstance().time
-        projectViewModel.updateProject(updatedProject)
     }
 
 }

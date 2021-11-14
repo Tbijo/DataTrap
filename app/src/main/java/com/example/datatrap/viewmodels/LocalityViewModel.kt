@@ -48,7 +48,7 @@ class LocalityViewModel(application: Application): AndroidViewModel(application)
         return locality
     }
 
-    fun searchLocalities(localityName: String): LiveData<List<Locality>> {   //LiveData
-        return localityRepository.searchLocalities(localityName)//.asLiveData()
+    fun searchLocalities(localityName: String): LiveData<List<Locality>> {
+        return localityRepository.searchLocalities(localityName)
     }
 }

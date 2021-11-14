@@ -83,7 +83,7 @@ class UpdateUserFragment : Fragment() {
         val password = binding.etPasswordUpdate.text.toString()
 
         if (checkInput(userName, password)){
-            val user: User = args.user
+            val user: User = args.user.copy()
             user.userName = userName
             user.password = password
             user.team = team

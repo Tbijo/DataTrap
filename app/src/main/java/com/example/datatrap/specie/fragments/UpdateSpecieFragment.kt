@@ -37,12 +37,12 @@ class UpdateSpecieFragment : Fragment() {
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
-        imgName = args.specie.imgName
-
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
+        imgName = args.specie.imgName
+
         pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
             // odstranit fyzicku zlozku
             val myFile = File(it.path)
@@ -152,13 +152,13 @@ class UpdateSpecieFragment : Fragment() {
             specie.description = if (isTextNull(binding.etDescription.text.toString())) null else binding.etDescription.text.toString()
             specie.isSmallMammal = binding.cbIsSmallMammal.isChecked
             specie.upperFingers = upperFingers
-            specie.minWeight = if (isTextNull(binding.etMinWeight.text.toString())) null else binding.etMinWeight.text.toString().toFloat()
-            specie.maxWeight = if (isTextNull(binding.etMaxWeight.text.toString())) null else binding.etMaxWeight.text.toString().toFloat()
+            specie.minWeight = giveOutPutFloat(binding.etMinWeight.text.toString())
+            specie.maxWeight = giveOutPutFloat(binding.etMaxWeight.text.toString())
 
-            specie.bodyLength = if (isTextNull(binding.etUpBodyLen.text.toString())) null else binding.etUpBodyLen.text.toString().toFloat()
-            specie.tailLength = if (isTextNull(binding.etUpTailLen.text.toString())) null else binding.etUpTailLen.text.toString().toFloat()
-            specie.feetLengthMin = if (isTextNull(binding.etUpMinFeet.text.toString())) null else binding.etUpMinFeet.text.toString().toFloat()
-            specie.feetLengthMax = if (isTextNull(binding.etUpFeetMax.text.toString())) null else binding.etUpFeetMax.text.toString().toFloat()
+            specie.bodyLength = giveOutPutFloat(binding.etUpBodyLen.text.toString())
+            specie.tailLength = giveOutPutFloat(binding.etUpTailLen.text.toString())
+            specie.feetLengthMin = giveOutPutFloat(binding.etUpMinFeet.text.toString())
+            specie.feetLengthMax = giveOutPutFloat(binding.etUpFeetMax.text.toString())
 
             specie.note = if (isTextNull(binding.etNote.text.toString())) null else binding.etNote.text.toString()
             specie.imgName = imgName
@@ -174,7 +174,7 @@ class UpdateSpecieFragment : Fragment() {
         }
     }
 
-    fun isTextNull(string: String): Boolean {
+    private fun isTextNull(string: String): Boolean {
         return string == "null" || string.isBlank()
     }
 
@@ -183,6 +183,10 @@ class UpdateSpecieFragment : Fragment() {
         fullName: String,
     ): Boolean {
         return speciesCode.isNotEmpty() && fullName.isNotEmpty()
+    }
+
+    private fun giveOutPutFloat(input: String?): Float?{
+        return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
     }
 
 }

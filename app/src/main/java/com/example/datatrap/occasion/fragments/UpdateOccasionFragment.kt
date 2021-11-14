@@ -33,20 +33,22 @@ class UpdateOccasionFragment : Fragment() {
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var vegTypeViewModel: VegetTypeViewModel
     private lateinit var localityViewModel: LocalityViewModel
-    private lateinit var sessionViewModel: SessionViewModel
     private lateinit var pictureViewModel: PictureViewModel
 
-    private lateinit var envTypeNameMap: MutableMap<String, Long?>
-    private lateinit var methodNameMap: MutableMap<String, Long>
-    private lateinit var metTypeNameMap: MutableMap<String, Long>
-    private lateinit var trapTypeNameMap: MutableMap<String, Long>
-    private lateinit var vegTypeNameMap: MutableMap<String, Long?>
-
-    private var temperature: Float? = null
-    private var weatherGlob: String? = null
+    private lateinit var envTypeList: List<EnvType>
+    private lateinit var methodList: List<Method>
+    private lateinit var metTypeList: List<MethodType>
+    private lateinit var vegTypeList: List<VegetType>
+    private lateinit var trapTypeList: List<TrapType>
 
     private lateinit var sharedViewModel: SharedViewModel
     private var imgName: String? = null
+
+    private var methodID: Long = 0
+    private var methodTypeID: Long = 0
+    private var trapTypeID: Long = 0
+    private var envTypeID: Long? = null
+    private var vegetTypeID: Long? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,16 +62,15 @@ class UpdateOccasionFragment : Fragment() {
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
-        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
-
-        imgName = args.occasion.imgName
 
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
+        imgName = args.occasion.imgName
 
+        // ak sa zavola Delete
         pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
             // odstranit fyzicku zlozku
             val myFile = File(it.path)
@@ -84,13 +85,9 @@ class UpdateOccasionFragment : Fragment() {
             findNavController().navigateUp()
         })
 
-        envTypeNameMap = mutableMapOf()
-        methodNameMap = mutableMapOf()
-        metTypeNameMap = mutableMapOf()
-        trapTypeNameMap = mutableMapOf()
-        vegTypeNameMap = mutableMapOf()
-
         fillDropDown()
+
+        setListeners()
 
         initOccasionValuesToView()
 
@@ -122,103 +119,139 @@ class UpdateOccasionFragment : Fragment() {
         fillDropDown()
     }
 
+    private fun setListeners() {
+        binding.autoCompTvEnvType.setOnItemClickListener { parent, view, position, id ->
+            val name: String = parent.getItemAtPosition(position) as String
+            envTypeID = envTypeList.firstOrNull() {
+                it.envTypeName == name
+            }?.envTypeId
+        }
+
+        binding.autoCompTvMethod.setOnItemClickListener { parent, view, position, id ->
+            val name: String = parent.getItemAtPosition(position) as String
+            methodID = methodList.first {
+                it.methodName == name
+            }.methodId
+        }
+
+        binding.autoCompTvMethodType.setOnItemClickListener { parent, view, position, id ->
+            val name: String = parent.getItemAtPosition(position) as String
+            methodTypeID = metTypeList.first {
+                it.methodTypeName == name
+            }.methodTypeId
+        }
+
+        binding.autoCompTvTrapType.setOnItemClickListener { parent, view, position, id ->
+            val name: String = parent.getItemAtPosition(position) as String
+            trapTypeID = trapTypeList.first {
+                it.trapTypeName == name
+            }.trapTypeId
+        }
+
+        binding.autoCompTvVegType.setOnItemClickListener { parent, view, position, id ->
+            val name: String = parent.getItemAtPosition(position) as String
+            vegetTypeID = vegTypeList.firstOrNull {
+                it.vegetTypeName == name
+            }?.vegetTypeId
+        }
+    }
+
     private fun fillDropDown() {
         envTypeViewModel.envTypeList.observe(viewLifecycleOwner, {
-            it.forEach { envType ->
-                envTypeNameMap[envType.envTypeName] = envType.envTypeId
+            envTypeList = it
+            val nameList = mutableListOf<String>()
+            nameList.add("null")
+            it.forEach { env ->
+                nameList.add(env.envTypeName)
             }
-            envTypeNameMap["null"] = null
             // env type adapter
             val dropDownArrAdapEnvType =
-                ArrayAdapter(
-                    requireContext(),
-                    R.layout.dropdown_names,
-                    envTypeNameMap.keys.toList()
-                )
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
             binding.autoCompTvEnvType.setAdapter(dropDownArrAdapEnvType)
             //set values
-            envTypeNameMap.forEach {
-                if (it.value == args.occasion.envTypeID){
-                    binding.autoCompTvEnvType.setText(it.key, false)
-                }
-            }
+            val current = it.firstOrNull { envType ->
+                envType.envTypeId == args.occasion.envTypeID
+            }?.envTypeName
+            binding.autoCompTvEnvType.setText(current.toString(), false)
         })
 
         methodViewModel.methodList.observe(viewLifecycleOwner, {
+            methodList = it
+            val nameList = mutableListOf<String>()
             it.forEach { method ->
-                methodNameMap[method.methodName] = method.methodId
+                nameList.add(method.methodName)
             }
             // method adapter
             val dropDownArrAdapMethod =
-                ArrayAdapter(requireContext(), R.layout.dropdown_names, methodNameMap.keys.toList())
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
             binding.autoCompTvMethod.setAdapter(dropDownArrAdapMethod)
             // set values
-            methodNameMap.forEach { map ->
-                if (map.value == args.occasion.methodID){
-                    binding.autoCompTvMethod.setText(map.key, false)
-                }
-            }
+            val current = it.first { method ->
+                method.methodId == args.occasion.methodID
+            }.methodName
+            binding.autoCompTvMethod.setText(current, false)
         })
 
-
         metTypeViewModel.methodTypeList.observe(viewLifecycleOwner, {
+            metTypeList = it
+            val nameList = mutableListOf<String>()
             it.forEach { metType ->
-                metTypeNameMap[metType.methodTypeName] = metType.methodTypeId
+                nameList.add(metType.methodTypeName)
             }
             // method type adapter
             val dropDownArrAdapMethodType =
-                ArrayAdapter(requireContext(), R.layout.dropdown_names, metTypeNameMap.keys.toList())
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
             binding.autoCompTvMethodType.setAdapter(dropDownArrAdapMethodType)
             // set Values
-            metTypeNameMap.forEach { map ->
-                if (map.value == args.occasion.methodTypeID){
-                    binding.autoCompTvMethodType.setText(map.key, false)
-                }
-            }
+            val current = it.first { methodType ->
+                methodType.methodTypeId == args.occasion.methodTypeID
+            }.methodTypeName
+            binding.autoCompTvMethodType.setText(current, false)
         })
 
         trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner, {
+            trapTypeList = it
+            val nameList = mutableListOf<String>()
             it.forEach { trapType ->
-                trapTypeNameMap[trapType.trapTypeName] = trapType.trapTypeId
+                nameList.add(trapType.trapTypeName)
             }
             // trap type adapter
             val dropDownArrAdapTrapType =
-                ArrayAdapter(requireContext(), R.layout.dropdown_names, trapTypeNameMap.keys.toList())
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
             binding.autoCompTvTrapType.setAdapter(dropDownArrAdapTrapType)
             // set values
-            trapTypeNameMap.forEach { map ->
-                if (map.value == args.occasion.trapTypeID){
-                    binding.autoCompTvTrapType.setText(map.key, false)
-                }
-            }
+            val current = it.first { trapType ->
+                trapType.trapTypeId == args.occasion.trapTypeID
+            }.trapTypeName
+            binding.autoCompTvTrapType.setText(current, false)
         })
 
         vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner, {
+            vegTypeList = it
+            val nameList = mutableListOf<String>()
+            nameList.add("null")
             it.forEach { vegType ->
-                vegTypeNameMap[vegType.vegetTypeName] = vegType.vegetTypeId
+                nameList.add(vegType.vegetTypeName)
             }
-            vegTypeNameMap["null"] = null
-
             // veget type adapter
             val dropDownArrAdapVegType =
-                ArrayAdapter(requireContext(), R.layout.dropdown_names, vegTypeNameMap.keys.toList())
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, nameList)
             binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
             // set values
-            vegTypeNameMap.forEach { map ->
-                if (map.value == args.occasion.vegetTypeID){
-                    binding.autoCompTvVegType.setText(map.key, false)
-                }
-            }
+            val current = it.firstOrNull { vegType ->
+                vegType.vegetTypeId == args.occasion.vegetTypeID
+            }?.vegetTypeName
+            binding.autoCompTvVegType.setText(current.toString(), false)
         })
 
     }
 
-    private fun goToCamera(){
+    private fun goToCamera() {
         val action = UpdateOccasionFragmentDirections.actionUpdateOccasionFragmentToTakePhotoFragment("Occasion", imgName)
         findNavController().navigate(action)
     }
 
-    private fun initOccasionValuesToView(){
+    private fun initOccasionValuesToView() {
         binding.etNumTraps.setText(args.occasion.numTraps.toString())
         binding.etTemperature.setText(args.occasion.temperature.toString())
         binding.etWeather.setText(args.occasion.weather.toString())
@@ -231,10 +264,6 @@ class UpdateOccasionFragment : Fragment() {
     private fun deleteOccasion() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
-
-            // zmensit numOcc v session
-            updateSessionNumOcc()
-
             if (imgName != null) {
                 pictureViewModel.getPictureById(imgName!!)
             } else {
@@ -254,27 +283,24 @@ class UpdateOccasionFragment : Fragment() {
 
     private fun updateOccasion() {
         val occasionNum: Int = args.occasion.occasion
-        val method: Long = methodNameMap.getOrDefault(binding.autoCompTvMethod.text.toString(), 1)
-        val methodType: Long = metTypeNameMap.getOrDefault(binding.autoCompTvMethodType.text.toString(), 1)
-        val trapType: Long = trapTypeNameMap.getOrDefault(binding.autoCompTvTrapType.text.toString(), 1)
         val leg: String = binding.etLeg.text.toString()
-        val numTraps = binding.etNumTraps.text.toString()
+        val numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
 
-        if (checkInput(occasionNum, method, methodType, trapType, leg, numTraps)){
+        if (checkInput(occasionNum, methodID, methodTypeID, trapTypeID, leg, numTraps)){
 
             val occasion: Occasion = args.occasion.copy()
-            occasion.methodID = method
-            occasion.methodTypeID = methodType
-            occasion.trapTypeID = trapType
+            occasion.methodID = methodID
+            occasion.methodTypeID = methodTypeID
+            occasion.trapTypeID = trapTypeID
             occasion.leg = leg
             occasion.occasionDateTimeUpdated = Calendar.getInstance().time
 
-            occasion.envTypeID = envTypeNameMap.getOrDefault(binding.autoCompTvEnvType.text.toString(), null)
-            occasion.vegetTypeID = vegTypeNameMap.getOrDefault(binding.autoCompTvVegType.text.toString(), null)
+            occasion.envTypeID = envTypeID
+            occasion.vegetTypeID = vegetTypeID
             occasion.gotCaught = binding.cbGotCaught.isChecked
-            occasion.numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
-            occasion.temperature = if (binding.etTemperature.text.toString().isBlank()) null else temperature
-            occasion.weather = if (binding.etWeather.text.toString().isBlank()) null else weatherGlob
+            occasion.numTraps = numTraps
+            occasion.temperature = if (binding.etTemperature.text.toString().isBlank()) null else binding.etTemperature.text.toString().toFloat()
+            occasion.weather = if (binding.etWeather.text.toString().isBlank()) null else binding.etWeather.text.toString()
             occasion.note = if (binding.etOccasionNote.text.toString().isBlank()) null else binding.etOccasionNote.text.toString()
             occasion.imgName = imgName
 
@@ -288,27 +314,23 @@ class UpdateOccasionFragment : Fragment() {
         }
     }
 
-    private fun updateSessionNumOcc(){
-        val updatedSession: Session = sessionViewModel.getSession(args.occasion.sessionID)
-        updatedSession.numOcc = (updatedSession.numOcc - 1)
-        updatedSession.sessionDateTimeUpdated = Calendar.getInstance().time
-        sessionViewModel.updateSession(updatedSession)
-    }
-
     private fun checkInput(
         occasion: Int,
         method: Long,
         methodType: Long,
         trapType: Long,
         leg: String,
-        numTraps: String
+        numTraps: Int
     ): Boolean {
-        return occasion.toString().isNotEmpty() && method.toString().isNotEmpty() &&
-                methodType.toString().isNotEmpty() && trapType.toString().isNotEmpty() &&
-                leg.isNotEmpty() && numTraps.isNotEmpty()
+        return occasion > 0 &&
+                method > 0 &&
+                methodType > 0 &&
+                trapType > 0 &&
+                leg.isNotBlank() &&
+                numTraps >= 0
     }
 
-    private fun getHistoryWeather(){
+    private fun getHistoryWeather() {
         if (isOnline(requireContext())){
             val weather = Weather(requireContext())
             val locality: Locality = localityViewModel.getLocality(args.occasion.localityID)
@@ -317,10 +339,8 @@ class UpdateOccasionFragment : Fragment() {
 
             weather.getHistoricalWeatherByCoordinates(locality.xA, locality.yA, unixtime, object: Weather.VolleyResponseListener{
                 override fun onResponse(temp: Int, weather: String) {
-                    temperature = temp.toFloat()
-                    binding.etTemperature.setText(temperature.toString())
-                    weatherGlob = weather
-                    binding.etWeather.setText(weatherGlob)
+                    binding.etTemperature.setText(temp.toString())
+                    binding.etWeather.setText(weather)
                 }
 
                 override fun onError(message: String) {

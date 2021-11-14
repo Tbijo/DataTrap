@@ -5,7 +5,6 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -20,7 +19,6 @@ import com.example.datatrap.models.relations.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
-import java.util.*
 
 class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -60,9 +58,6 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
-                // zvacsit pocet localit v projekte
-                updateProjectNumLocal()
-
                 // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
                 insertCombination(position)
 
@@ -135,16 +130,9 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         findNavController().navigate(action)
     }
 
-    private fun updateProjectNumLocal(){
-        val updatedProject: Project = args.project
-        updatedProject.numLocal = (updatedProject.numLocal + 1)
-        updatedProject.projectDateTimeUpdated = Calendar.getInstance().time
-        projectViewModel.updateProject(updatedProject)
-    }
-
     private fun searchLocalities(query: String?) {
         val searchQuery = "%$query%"
-        localityViewModel.searchLocalities(searchQuery).observe(viewLifecycleOwner, Observer { localities ->
+        localityViewModel.searchLocalities(searchQuery).observe(viewLifecycleOwner, { localities ->
             localities.let {
                 adapter.setData(it)
             }

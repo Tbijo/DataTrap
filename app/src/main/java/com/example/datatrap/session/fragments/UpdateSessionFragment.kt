@@ -61,16 +61,9 @@ class UpdateSessionFragment : Fragment() {
     private fun deleteSession() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
-
             // znizit numSess v lokalite
             updateLocalityNumSes()
-
-            // vymazat session
-            sessionViewModel.deleteSession(args.session)
-
-            Toast.makeText(requireContext(),"Session deleted.", Toast.LENGTH_LONG).show()
-
-            findNavController().navigateUp()
+            // dokonci sa po Update Locality
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Session?")
@@ -83,6 +76,13 @@ class UpdateSessionFragment : Fragment() {
         updatedLocality.numSessions = (updatedLocality.numSessions - 1)
         updatedLocality.localityDateTimeUpdated = Calendar.getInstance().time
         localityViewModel.updateLocality(updatedLocality)
+
+        // vymazat session
+        sessionViewModel.deleteSession(args.session)
+
+        Toast.makeText(requireContext(),"Session deleted.", Toast.LENGTH_LONG).show()
+
+        findNavController().navigateUp()
     }
 
     private fun updateSession() {

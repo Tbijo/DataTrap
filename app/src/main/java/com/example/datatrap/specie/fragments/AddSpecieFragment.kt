@@ -78,13 +78,13 @@ class AddSpecieFragment : Fragment() {
             val synonym = if (binding.etSynonym.text.toString().isBlank()) null else binding.etSynonym.text.toString()
             val description = if (binding.etDescription.text.toString().isBlank()) null else binding.etDescription.text.toString()
             val isSmallMammal: Boolean = binding.cbIsSmallMammal.isChecked
-            val minWeight = if (binding.etMinWeight.text.toString().isBlank()) null else binding.etMinWeight.text.toString().toFloat()
-            val maxWeight = if (binding.etMaxWeight.text.toString().isBlank()) null else binding.etMaxWeight.text.toString().toFloat()
+            val minWeight = giveOutPutFloat(binding.etMinWeight.text.toString())
+            val maxWeight = giveOutPutFloat(binding.etMaxWeight.text.toString())
 
-            val bodyLen = if (binding.etBodyLen.text.toString().isBlank()) null else binding.etBodyLen.text.toString().toFloat()
-            val tailLen = if (binding.etTailLen.text.toString().isBlank()) null else binding.etTailLen.text.toString().toFloat()
-            val feetMinLen = if (binding.etMinFeet.text.toString().isBlank()) null else binding.etMinFeet.text.toString().toFloat()
-            val feetMaxLen = if (binding.etMaxFeet.text.toString().isBlank()) null else binding.etMaxFeet.text.toString().toFloat()
+            val bodyLen = giveOutPutFloat(binding.etBodyLen.text.toString())
+            val tailLen = giveOutPutFloat(binding.etTailLen.text.toString())
+            val feetMinLen = giveOutPutFloat(binding.etMinFeet.text.toString())
+            val feetMaxLen = giveOutPutFloat(binding.etMaxFeet.text.toString())
 
             val note = if (binding.etNote.text.toString().isBlank()) null else binding.etNote.text.toString()
 
@@ -103,6 +103,10 @@ class AddSpecieFragment : Fragment() {
 
     private fun checkInput(speciesCode: String, fullName: String): Boolean {
         return speciesCode.isNotEmpty() && fullName.isNotEmpty()
+    }
+
+    private fun giveOutPutFloat(input: String?): Float?{
+        return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
     }
 
 }
