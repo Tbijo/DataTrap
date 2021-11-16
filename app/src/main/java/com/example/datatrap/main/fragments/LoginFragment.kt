@@ -27,6 +27,10 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
+        // skontrolovat ci uz nie su iny pouzivatelia aktivny
+        // ak su treba nastavit aktivitu na 0
+        inactiveAllUsers()
+
         binding.btnLogin.setOnClickListener {
             logIn()
         }
@@ -41,9 +45,6 @@ class LoginFragment : Fragment() {
 
         userViewModel.checkUser.observe(viewLifecycleOwner, { user ->
             if (user != null) {
-                // skontrolovat ci uz nie su iny pouzivatelia aktivny
-                // ak su treba nastavit aktivitu na 0
-                inactiveAllUsers()
                 // nastavit team
                 user.team = team!!
                 // tento pouzivatel je teraz aktivny vzdy moze byt len jeden

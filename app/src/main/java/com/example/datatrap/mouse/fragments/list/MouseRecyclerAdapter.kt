@@ -2,20 +2,16 @@ package com.example.datatrap.mouse.fragments.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.MouseRowBinding
-import com.example.datatrap.models.Mouse
-import com.example.datatrap.viewmodels.SpecieViewModel
+import com.example.datatrap.models.tuples.MouseOccList
+import java.text.SimpleDateFormat
 
-class MouseRecyclerAdapter(owner: ViewModelStoreOwner, private val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHolder>() {
+class MouseRecyclerAdapter : RecyclerView.Adapter<MouseRecyclerAdapter.MyViewHolder>() {
 
-    private var mouseList = emptyList<Mouse>()
-    private val specieViewModel: SpecieViewModel = ViewModelProvider(owner).get(SpecieViewModel::class.java)
+    private var mouseList = emptyList<MouseOccList>()
 
-    class MyViewHolder(val binding: MouseRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
+    class MyViewHolder(val binding: MouseRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.mouseRow.setOnClickListener {
                 listener.useClickListener(adapterPosition)
@@ -35,21 +31,20 @@ class MouseRecyclerAdapter(owner: ViewModelStoreOwner, private val viewLifecycle
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = mouseList[position]
 
-        specieViewModel.specieList.observe(viewLifecycleOwner, { specieList ->
-            holder.binding.tvIdIndividual.text = currenItem.code.toString()
+        holder.binding.tvIdIndividual.text = currenItem.mouseCode.toString()
 
-            holder.binding.tvMouseSpecieCode.text =
-                specieList.first { it.specieId == currenItem.speciesID }.speciesCode
+        holder.binding.tvMouseSpecieCode.text = currenItem.specieCode
 
-            holder.binding.tvCatchDateTime.text = "${currenItem.mouseDateTimeCreated}"
-        })
+        val dateFormated = SimpleDateFormat.getDateTimeInstance().format(currenItem.dateTime)
+        holder.binding.tvCatchDateTime.text = dateFormated
+
     }
 
     override fun getItemCount(): Int {
         return mouseList.size
     }
 
-    fun setData(mice: List<Mouse>){
+    fun setData(mice: List<MouseOccList>) {
         this.mouseList = mice
         notifyDataSetChanged()
     }
@@ -61,7 +56,7 @@ class MouseRecyclerAdapter(owner: ViewModelStoreOwner, private val viewLifecycle
 
     private lateinit var mListener: MyClickListener
 
-    fun setOnItemClickListener(listener: MyClickListener){
+    fun setOnItemClickListener(listener: MyClickListener) {
         mListener = listener
     }
 

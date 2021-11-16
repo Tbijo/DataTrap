@@ -33,7 +33,7 @@ class AddNewMouseFragment : Fragment() {
 
     private lateinit var listSpecie: List<Specie>
     private lateinit var listProtocol: List<Protocol>
-    private lateinit var activeMouseList: List<Mouse>
+    private lateinit var activeCodeList: List<Int>
 
     private var oldCode: Int = 0
     private var code: Int? = null
@@ -80,17 +80,14 @@ class AddNewMouseFragment : Fragment() {
 
         setListeners()
 
-        mouseViewModel.getActiveMiceOfLocality(
-            args.occasion.localityID,
-            Calendar.getInstance().time.time,
-            MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner, { mouseList ->
-            activeMouseList = mouseList
+        mouseViewModel.getActiveCodeOfLocality(args.occasion.localityID, Calendar.getInstance().time.time, MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner, { codeList ->
+            activeCodeList = codeList
         })
 
         // generate code this is to get team
         userViewModel.activeUser.observe(viewLifecycleOwner, { user ->
             if (user != null) {
-                val codeGen = CodeGenerator(oldCode, specie?.upperFingers!!, user.team, activeMouseList)
+                val codeGen = CodeGenerator(oldCode, specie?.upperFingers!!, user.team, activeCodeList)
                 code = codeGen.generateCode()
                 if(code == 0) {
                     Toast.makeText(requireContext(), "No code is available.", Toast.LENGTH_LONG).show()
@@ -276,8 +273,12 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun insertMouse() {
-        if (speciesID > 0){
+        if (speciesID > 0) {
             code = giveOutPutInt(binding.etCodeMouseAdd.text.toString())
+            if (code in activeCodeList) {
+                Toast.makeText(requireContext(), "Code is not available.", Toast.LENGTH_LONG).show()
+                return
+            }
 
             val sexActive: Boolean? = binding.cbSexActive.isChecked
             val weight: Float? = giveOutPutFloat(binding.etWeight.text.toString())

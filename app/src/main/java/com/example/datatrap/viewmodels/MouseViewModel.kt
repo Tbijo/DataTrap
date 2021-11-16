@@ -3,10 +3,13 @@ package com.example.datatrap.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Mouse
+import com.example.datatrap.models.tuples.MouseLog
+import com.example.datatrap.models.tuples.MouseOccList
+import com.example.datatrap.models.tuples.MouseRecapList
+import com.example.datatrap.models.tuples.MouseView
 import com.example.datatrap.repositories.MouseRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -14,56 +17,55 @@ import kotlinx.coroutines.launch
 class MouseViewModel(application: Application): AndroidViewModel(application) {
 
     private val mouseRepository: MouseRepository
-    val gotMouse: MutableLiveData<Mouse> = MutableLiveData()
 
     init {
         val mouseDao = TrapDatabase.getDatabase(application).mouseDao()
         mouseRepository = MouseRepository(mouseDao)
     }
 
-    fun insertMouse(mouse: Mouse){
+    fun insertMouse(mouse: Mouse) {
         viewModelScope.launch(Dispatchers.IO) {
             mouseRepository.insertMouse(mouse)
         }
     }
 
-    fun updateMouse(mouse: Mouse){
+    fun updateMouse(mouse: Mouse) {
         viewModelScope.launch(Dispatchers.IO) {
             mouseRepository.updateMouse(mouse)
         }
     }
 
-    fun deleteMouse(mouse: Mouse){
+    fun deleteMouse(mouseId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            mouseRepository.deleteMouse(mouse)
+            mouseRepository.deleteMouse(mouseId)
         }
     }
 
-    fun getMouse(idMouse: Long, deviceID: String) {
-        viewModelScope.launch {
-            val mouse = mouseRepository.getMouse(idMouse, deviceID)
-            gotMouse.value = mouse
-        }
+    fun getMouse(mouseId: Long): LiveData<Mouse> {
+        return mouseRepository.getMouse(mouseId)
     }
 
-    fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{
+    fun getMouseForView(idMouse: Long, deviceID: String): LiveData<MouseView> {
+        return mouseRepository.getMouseForView(idMouse, deviceID)
+    }
+
+    fun getMiceForOccasion(idOccasion: Long): LiveData<List<MouseOccList>> {
         return mouseRepository.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForRecapture(code: Int): LiveData<List<Mouse>>{
+    fun getMiceForRecapture(code: Int): LiveData<List<MouseRecapList>> {
         return mouseRepository.getMiceForRecapture(code)
     }
 
-    fun getMiceForLog(idMouse: Long, deviceID: String): LiveData<List<Mouse>>{
-        return mouseRepository.getMiceForLog(idMouse, deviceID)
+    fun getMiceForLog(primeMouseID: Long, deviceID: String): LiveData<List<MouseLog>> {
+        return mouseRepository.getMiceForLog(primeMouseID, deviceID)
     }
 
-    fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>{
-        return mouseRepository.getActiveMiceOfLocality(localityId, currentTime, twoYears)
+    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Int>> {
+        return mouseRepository.getActiveCodeOfLocality(localityId, currentTime, twoYears)
     }
 
     fun countMiceForLocality(localityId: Long): LiveData<Int> {
         return mouseRepository.countMiceForLocality(localityId)
-
     }
 }

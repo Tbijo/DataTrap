@@ -2,24 +2,14 @@ package com.example.datatrap.mouse.fragments.recapture.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.RecaptureRowBinding
-import com.example.datatrap.models.Locality
-import com.example.datatrap.models.Mouse
-import com.example.datatrap.models.Specie
-import com.example.datatrap.viewmodels.LocalityViewModel
-import com.example.datatrap.viewmodels.SpecieViewModel
+import com.example.datatrap.models.tuples.MouseRecapList
+import java.text.SimpleDateFormat
 
-class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner, private val viewLifecycleOwner: LifecycleOwner) : RecyclerView.Adapter<RecaptureMouseRecyclerAdapter.MyViewHolder>() {
+class RecaptureMouseRecyclerAdapter : RecyclerView.Adapter<RecaptureMouseRecyclerAdapter.MyViewHolder>() {
 
-    private var mouseList = emptyList<Mouse>()
-    private val specieViewModel: SpecieViewModel = ViewModelProvider(owner).get(SpecieViewModel::class.java)
-    private val localityViewModel: LocalityViewModel = ViewModelProvider(owner).get(LocalityViewModel::class.java)
-    private lateinit var specieList: List<Specie>
-    private lateinit var localList: List<Locality>
+    private var mouseList = emptyList<MouseRecapList>()
 
     class MyViewHolder(val binding: RecaptureRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
         init {
@@ -41,7 +31,7 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner, private val view
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = mouseList[position]
 
-        holder.binding.tvMouseId.text = currenItem.code.toString()
+        holder.binding.tvMouseCode.text = currenItem.code.toString()
 
         holder.binding.tvAge.text = currenItem.age.toString()
 
@@ -49,28 +39,33 @@ class RecaptureMouseRecyclerAdapter(owner: ViewModelStoreOwner, private val view
 
         holder.binding.tvSex.text = currenItem.sex.toString()
 
-        holder.binding.tvGravitRecap.text = if (currenItem.gravidity == true) "Yes" else "No"
+        holder.binding.tvGravitRecap.text = when (currenItem.gravidity) {
+            true -> "Yes"
+            false -> "No"
+            else -> "null"
+        }
 
-        holder.binding.tvLactaRecap.text = if (currenItem.lactating == true) "Yes" else "No"
+        holder.binding.tvLactaRecap.text = when (currenItem.lactating) {
+            true -> "Yes"
+            false -> "No"
+            else -> "null"
+        }
 
-        holder.binding.tvSexActiveRecap.text = if (currenItem.sexActive == true) "Yes" else "No"
+        holder.binding.tvSexActiveRecap.text = if (currenItem.sexActive) "Yes" else "No"
 
-        localityViewModel.localityList.observe(viewLifecycleOwner, { localList ->
-            holder.binding.tvLocality.text = localList.first {it.localityId == currenItem.localityID}.localityName
-        })
+        holder.binding.tvLocality.text = currenItem.localityName
 
-        specieViewModel.specieList.observe(viewLifecycleOwner, { specieList ->
-            holder.binding.tvSpecieRecap.text = specieList.first { it.specieId == currenItem.speciesID }.speciesCode
-        })
+        holder.binding.tvSpecieRecap.text = currenItem.specieCode
 
-        holder.binding.tvRecapDate.text = "${currenItem.mouseDateTimeCreated}"
+        val dateFormated = SimpleDateFormat.getDateTimeInstance().format(currenItem.dateTime)
+        holder.binding.tvRecapDate.text = dateFormated
     }
 
     override fun getItemCount(): Int {
         return mouseList.size
     }
 
-    fun setData(mice: List<Mouse>){
+    fun setData(mice: List<MouseRecapList>){
         this.mouseList = mice
         notifyDataSetChanged()
     }

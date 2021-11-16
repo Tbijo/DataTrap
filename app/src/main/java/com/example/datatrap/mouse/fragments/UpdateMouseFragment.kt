@@ -33,6 +33,7 @@ class UpdateMouseFragment : Fragment() {
     private lateinit var listSpecie: List<Specie>
     private lateinit var listProtocol: List<Protocol>
 
+    private lateinit var currentMouse: Mouse
     private var sex: String? = null
     private var imgName: String? = null
     private var age: String? = null
@@ -51,11 +52,17 @@ class UpdateMouseFragment : Fragment() {
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
+        mouseViewModel.getMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner, {
+            currentMouse = it
+            initMouseValuesToView(it)
+            fillDropDown(it)
+        })
+
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
-        imgName = args.mouse.imgName
+        imgName = args.mouseOccTuple.imgName
 
         pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
             // odstranit fyzicku zlozku
@@ -64,18 +71,14 @@ class UpdateMouseFragment : Fragment() {
             //odstranit zaznam z databazy
             pictureViewModel.deletePicture(it)
 
-            mouseViewModel.deleteMouse(args.mouse)
+            mouseViewModel.deleteMouse(args.mouseOccTuple.mouseId)
 
             Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
 
             findNavController().navigateUp()
         })
 
-        fillDropDown()
-
         setListeners()
-
-        initMouseValuesToView()
 
         setHasOptionsMenu(true)
         return binding.root
@@ -84,12 +87,9 @@ class UpdateMouseFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        fillDropDown()
-
-        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occasion.numTraps).toList())
-        binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
-
-        binding.autoCompTvTrapId.setText(args.mouse.trapID.toString(), false)
+        mouseViewModel.getMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner, {
+            fillDropDown(it)
+        })
     }
 
     override fun onDestroy() {
@@ -111,7 +111,7 @@ class UpdateMouseFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun fillDropDown() {
+    private fun fillDropDown(mouse: Mouse) {
         specieViewModel.specieList.observe(viewLifecycleOwner, {
             listSpecie = it
             val listCode = mutableListOf<String>()
@@ -123,7 +123,7 @@ class UpdateMouseFragment : Fragment() {
 
             // init values
             specie = it.first { specie ->
-                specie.specieId == args.mouse.speciesID
+                specie.specieId == mouse.speciesID
             }
             speciesID = specie?.specieId
             binding.autoCompTvSpecie.setText(specie?.speciesCode, false)
@@ -142,38 +142,43 @@ class UpdateMouseFragment : Fragment() {
 
             // init values
             val protocol = it.firstOrNull{ protocol ->
-                protocol.protocolId == args.mouse.protocolID
+                protocol.protocolId == mouse.protocolID
             }
             protocolID = protocol?.protocolId
             binding.autoCompTvProtocol.setText(protocol.toString(), false)
 
         })
+
+        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occasion.numTraps).toList())
+        binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
+
+        binding.autoCompTvTrapId.setText(mouse.trapID.toString(), false)
     }
 
-    private fun initMouseValuesToView() {
-        binding.cbGravit.isChecked = args.mouse.gravidity == true
-        binding.cbLactating.isChecked = args.mouse.lactating == true
-        binding.cbSexActive.isChecked = args.mouse.sexActive == true
-        binding.cbMc.isChecked = args.mouse.MC == true
+    private fun initMouseValuesToView(mouse: Mouse) {
+        binding.cbGravit.isChecked = mouse.gravidity == true
+        binding.cbLactating.isChecked = mouse.lactating == true
+        binding.cbSexActive.isChecked = mouse.sexActive == true
+        binding.cbMc.isChecked = mouse.MC == true
 
-        binding.etMouseCodeUpdate.setText(args.mouse.code.toString())
-        binding.etWeight.setText(args.mouse.weight.toString())
-        binding.etTestesLength.setText(args.mouse.testesLength.toString())
-        binding.etTestesWidth.setText(args.mouse.testesWidth.toString())
-        binding.etMouseNote.setText(args.mouse.note.toString())
+        binding.etMouseCodeUpdate.setText(mouse.code.toString())
+        binding.etWeight.setText(mouse.weight.toString())
+        binding.etTestesLength.setText(mouse.testesLength.toString())
+        binding.etTestesWidth.setText(mouse.testesWidth.toString())
+        binding.etMouseNote.setText(mouse.note.toString())
 
-        binding.etBody.setText(args.mouse.body.toString())
-        binding.etTail.setText(args.mouse.tail.toString())
-        binding.etFeet.setText(args.mouse.feet.toString())
-        binding.etEar.setText(args.mouse.ear.toString())
+        binding.etBody.setText(mouse.body.toString())
+        binding.etTail.setText(mouse.tail.toString())
+        binding.etFeet.setText(mouse.feet.toString())
+        binding.etEar.setText(mouse.ear.toString())
 
-        binding.etEmbryoRight.setText(args.mouse.embryoRight.toString())
-        binding.etEmbryoLeft.setText(args.mouse.embryoLeft.toString())
-        binding.etEmbryoDiameter.setText(args.mouse.embryoDiameter.toString())
-        binding.etMcRight.setText(args.mouse.MCright.toString())
-        binding.etMcLeft.setText(args.mouse.MCleft.toString())
+        binding.etEmbryoRight.setText(mouse.embryoRight.toString())
+        binding.etEmbryoLeft.setText(mouse.embryoLeft.toString())
+        binding.etEmbryoDiameter.setText(mouse.embryoDiameter.toString())
+        binding.etMcRight.setText(mouse.MCright.toString())
+        binding.etMcLeft.setText(mouse.MCleft.toString())
 
-        when(args.mouse.sex){
+        when(mouse.sex) {
             EnumSex.MALE.myName -> {
                 binding.rbMale.isChecked = true
                 hideNonMaleFields()
@@ -186,14 +191,14 @@ class UpdateMouseFragment : Fragment() {
             }
         }
 
-        when(args.mouse.age){
+        when(mouse.age) {
             EnumMouseAge.ADULT.myName -> binding.rbAdult.isChecked = true
             EnumMouseAge.SUBADULT.myName -> binding.rbSubadult.isChecked = true
             EnumMouseAge.JUVENILE.myName -> binding.rbJuvenile.isChecked = true
             null -> binding.rbNullAge.isChecked = true
         }
 
-        when(args.mouse.captureID){
+        when(mouse.captureID) {
             EnumCaptureID.CAPTURED.myName -> binding.rbCaptured.isChecked = true
             EnumCaptureID.DIED.myName -> binding.rbDied.isChecked = true
             EnumCaptureID.ESCAPED.myName -> binding.rbEscaped.isChecked = true
@@ -286,7 +291,7 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun goToCamera() {
-        val action = UpdateMouseFragmentDirections.actionUpdateMouseFragmentToTakePhotoFragment("Mouse", args.mouse.imgName)
+        val action = UpdateMouseFragmentDirections.actionUpdateMouseFragmentToTakePhotoFragment("Mouse", imgName)
         findNavController().navigate(action)
     }
 
@@ -297,7 +302,7 @@ class UpdateMouseFragment : Fragment() {
             if (imgName != null) {
                 pictureViewModel.getPictureById(imgName!!)
             } else {
-                mouseViewModel.deleteMouse(args.mouse)
+                mouseViewModel.deleteMouse(args.mouseOccTuple.mouseId)
 
                 Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
 
@@ -312,7 +317,7 @@ class UpdateMouseFragment : Fragment() {
 
     private fun updateMouse() {
         if (speciesID != null){
-            val mouse: Mouse = args.mouse.copy()
+            val mouse: Mouse = currentMouse.copy()
             mouse.speciesID = speciesID!!
             mouse.trapID = giveOutPutInt(binding.autoCompTvTrapId.text.toString())
             mouse.sex = sex

@@ -3,39 +3,47 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.MouseDao
 import com.example.datatrap.models.Mouse
+import com.example.datatrap.models.tuples.MouseLog
+import com.example.datatrap.models.tuples.MouseOccList
+import com.example.datatrap.models.tuples.MouseRecapList
+import com.example.datatrap.models.tuples.MouseView
 
 class MouseRepository(private val mouseDao: MouseDao) {
 
-    suspend fun insertMouse(mouse: Mouse){
+    suspend fun insertMouse(mouse: Mouse) {
         mouseDao.insertMouse(mouse)
     }
 
-    suspend fun updateMouse(mouse: Mouse){
+    suspend fun updateMouse(mouse: Mouse) {
         mouseDao.updateMouse(mouse)
     }
 
-    suspend fun deleteMouse(mouse: Mouse){
-        mouseDao.deleteMouse(mouse)
+    suspend fun deleteMouse(mouseId: Long) {
+        mouseDao.deleteMouse(mouseId)
     }
 
-    suspend fun getMouse(idMouse: Long, deviceID: String): Mouse {
-        return mouseDao.getMouse(idMouse, deviceID)
+    fun getMouse(mouseId: Long): LiveData<Mouse> {
+        return mouseDao.getMouse(mouseId)
     }
 
-    fun getMiceForOccasion(idOccasion: Long): LiveData<List<Mouse>>{
+    fun getMouseForView(idMouse: Long, deviceID: String): LiveData<MouseView> {
+        return mouseDao.getMouseForView(idMouse, deviceID)
+    }
+
+    fun getMiceForOccasion(idOccasion: Long): LiveData<List<MouseOccList>> {
         return mouseDao.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForRecapture(code: Int): LiveData<List<Mouse>>{
+    fun getMiceForRecapture(code: Int): LiveData<List<MouseRecapList>> {
         return mouseDao.getMiceForRecapture(code)
     }
 
-    fun getMiceForLog(idMouse: Long, deviceID: String): LiveData<List<Mouse>>{
-        return mouseDao.getMiceForLog(idMouse, deviceID)
+    fun getMiceForLog(primeMouseID: Long, deviceID: String): LiveData<List<MouseLog>> {
+        return mouseDao.getMiceForLog(primeMouseID, deviceID)
     }
 
-    fun getActiveMiceOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Mouse>>{
-        return mouseDao.getActiveMiceOfLocality(localityId, currentTime, twoYears)
+    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Int>> {
+        return mouseDao.getActiveCodeOfLocality(localityId, currentTime, twoYears)
     }
 
     fun countMiceForLocality(localityId: Long): LiveData<Int> {

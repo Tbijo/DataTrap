@@ -8,7 +8,7 @@
     android:id="@+id/recapture_row">
 
     <TextView
-        android:id="@+id/tv_mouse_id"
+        android:id="@+id/tv_mouse_code"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="12"
@@ -34,7 +34,7 @@
         android:layout_marginStart="16dp"
         android:text="Weight (g)"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/tv_mouse_id"
+        app:layout_constraintStart_toEndOf="@+id/tv_mouse_code"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
@@ -45,7 +45,7 @@
         android:layout_marginTop="8dp"
         android:text="Lokalita"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/tv_mouse_id"
+        app:layout_constraintStart_toEndOf="@+id/tv_mouse_code"
         app:layout_constraintTop_toBottomOf="@+id/textView29" />
 
     <TextView
@@ -184,7 +184,7 @@
         android:layout_marginTop="8dp"
         android:text="DateTime"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/tv_mouse_id"
+        app:layout_constraintStart_toEndOf="@+id/tv_mouse_code"
         app:layout_constraintTop_toBottomOf="@+id/textView33" />
 
     <TextView

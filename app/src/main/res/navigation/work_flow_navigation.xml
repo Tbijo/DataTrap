@@ -218,15 +218,15 @@
         android:id="@+id/updateMouseFragment"
         android:name="com.example.datatrap.mouse.fragments.UpdateMouseFragment"
         android:label="Update Mouse" >
-        <argument
-            android:name="mouse"
-            app:argType="com.example.datatrap.models.Mouse" />
         <action
             android:id="@+id/action_updateMouseFragment_to_takePhotoFragment"
             app:destination="@id/takePhotoFragment" />
         <argument
             android:name="occasion"
             app:argType="com.example.datatrap.models.Occasion" />
+        <argument
+            android:name="mouseOccTuple"
+            app:argType="com.example.datatrap.models.tuples.MouseOccList" />
     </fragment>
     <fragment
         android:id="@+id/addNewMouseFragment"
@@ -259,8 +259,8 @@
         android:label="View Mouse"
         tools:layout="@layout/fragment_view_mouse" >
         <argument
-            android:name="mouse"
-            app:argType="com.example.datatrap.models.Mouse" />
+            android:name="mouseOccTuple"
+            app:argType="com.example.datatrap.models.tuples.MouseOccList" />
     </fragment>
     <activity
         android:id="@+id/mainActivity"
@@ -273,8 +273,8 @@
         android:label="Recapture Mouse"
         tools:layout="@layout/fragment_recapture_mouse" >
         <argument
-            android:name="mouse"
-            app:argType="com.example.datatrap.models.Mouse" />
+            android:name="recapMouse"
+            app:argType="com.example.datatrap.models.tuples.MouseRecapList" />
         <argument
             android:name="occasion"
             app:argType="com.example.datatrap.models.Occasion" />

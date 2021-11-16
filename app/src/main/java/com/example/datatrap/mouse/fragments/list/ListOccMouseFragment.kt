@@ -3,7 +3,6 @@ package com.example.datatrap.mouse.fragments.list
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListOccMouseBinding
 import com.example.datatrap.models.Mouse
+import com.example.datatrap.models.tuples.MouseOccList
 import com.example.datatrap.viewmodels.MouseViewModel
 
 class ListOccMouseFragment : Fragment() {
@@ -21,7 +21,7 @@ class ListOccMouseFragment : Fragment() {
     private lateinit var mouseViewModel: MouseViewModel
     private lateinit var adapter: MouseRecyclerAdapter
     private val args by navArgs<ListOccMouseFragmentArgs>()
-    private lateinit var mouseList: List<Mouse>
+    private lateinit var mouseList: List<MouseOccList>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,7 +29,7 @@ class ListOccMouseFragment : Fragment() {
         _binding = FragmentListOccMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
-        adapter = MouseRecyclerAdapter(this, viewLifecycleOwner)
+        adapter = MouseRecyclerAdapter()
         val recyclerView = binding.mouseRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -54,7 +54,7 @@ class ListOccMouseFragment : Fragment() {
 
             override fun useLongClickListener(position: Int) {
                 //update
-                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(mouseList[position], args.occasion)
+                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(args.occasion, mouseList[position])
                 findNavController().navigate(action)
             }
 
@@ -87,7 +87,7 @@ class ListOccMouseFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun goToRecapture(){
+    private fun goToRecapture() {
         val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToRecaptureListMouseFragment(args.occasion)
         findNavController().navigate(action)
     }

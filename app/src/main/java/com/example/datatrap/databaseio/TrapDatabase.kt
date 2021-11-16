@@ -67,7 +67,6 @@ abstract class TrapDatabase: RoomDatabase() {
                 db.execSQL("CREATE TRIGGER IF NOT EXISTS OnMouseInsertUpdateOccasion BEFORE INSERT ON Mouse WHEN NEW.primeMouseID IS NULL BEGIN UPDATE Occasion SET numMice = (numMice + 1), occasionDateTimeUpdated = (strftime('%s','now') * 1000) WHERE occasionId = NEW.occasionID; END")
 
                 // Mouse Recap Insert, po pridani ak je sex prveho zaznamu iny ako aktualny tak sa vsetky nastavia podla aktualneho
-                //db.execSQL("CREATE TRIGGER IF NOT EXISTS OnMouseInsertChangeSexIfNecesary BEFORE INSERT ON Mouse WHEN NEW.primeMouseID IS NOT NULL AND NEW.sex <> (SELECT sex FROM Mouse WHERE mouseId = NEW.primeMouseID) BEGIN UPDATE Mouse SET sex = NEW.sex, mouseDateTimeUpdated = (strftime('%s','now') * 1000) WHERE primeMouseID = NEW.primeMouseID OR mouseId = NEW.primeMouseID; END")
                 db.execSQL("CREATE TRIGGER IF NOT EXISTS OnMouseInsertChangeSexIfNecesary BEFORE INSERT ON Mouse WHEN NEW.primeMouseID IS NOT NULL AND ((NEW.sex IS NOT NULL AND (SELECT sex FROM Mouse WHERE mouseId = NEW.primeMouseID) IS NOT NULL AND NEW.sex <> (SELECT sex FROM Mouse WHERE mouseId = NEW.primeMouseID)) OR (NEW.sex IS NULL AND (SELECT sex FROM Mouse WHERE mouseId = NEW.primeMouseID) IS NOT NULL) OR (NEW.sex IS NOT NULL AND (SELECT sex FROM Mouse WHERE mouseId = NEW.primeMouseID) IS NULL)) BEGIN UPDATE Mouse SET sex = NEW.sex, mouseDateTimeUpdated = (strftime('%s','now') * 1000) WHERE primeMouseID = NEW.primeMouseID OR mouseId = NEW.primeMouseID; END")
 
                 // Delete Mouse, po vymazani update Project numMice - 1
@@ -84,9 +83,6 @@ abstract class TrapDatabase: RoomDatabase() {
 
                 // DELETE Session, po vymazani update Project znizit numMice o vsetky pocty mysi v jej Occasionov
                 db.execSQL("CREATE TRIGGER IF NOT EXISTS OnSessionDeleteUpdateProject BEFORE DELETE ON Session BEGIN UPDATE Project SET numMice = (numMice - (SELECT SUM(numMice) FROM Occasion WHERE sessionID = OLD.sessionId)), projectDateTimeUpdated = (strftime('%s','now') * 1000) WHERE projectId = OLD.projectID; END")
-
-                // Delete Locality, po vymazani Update vsetky projekty ktore boli prepojene s lokalitou numLocal - 1
-                db.execSQL("CREATE TRIGGER IF NOT EXISTS OnLocalityDeleteUpdateProjects BEFORE DELETE ON Locality BEGIN UPDATE Project SET numLocal = (numLocal - 1), projectDateTimeUpdated = (strftime('%s','now') * 1000) WHERE projectId IN (SELECT projectId FROM ProjectLocalityCrossRef WHERE localityId = OLD.localityId); END")
 
                 // Delete PrjLocCrossRef, po vymazani kombinacie sa updatne Project numLocal - 1
                 db.execSQL("CREATE TRIGGER IF NOT EXISTS OnProjectLocalityCrossRefDeleteUpdateProject BEFORE DELETE ON ProjectLocalityCrossRef BEGIN UPDATE Project SET numLocal = (numLocal - 1), projectDateTimeUpdated = (strftime('%s','now') * 1000) WHERE projectId = OLD.projectId; END")

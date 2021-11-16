@@ -1,12 +1,10 @@
 package com.example.datatrap.mouse.fragments.recapture.list
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -14,7 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentRecaptureListMouseBinding
-import com.example.datatrap.models.Mouse
+import com.example.datatrap.models.tuples.MouseRecapList
 import com.example.datatrap.viewmodels.MouseViewModel
 
 class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
@@ -24,7 +22,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     private val args by navArgs<RecaptureListMouseFragmentArgs>()
     private lateinit var mouseViewModel: MouseViewModel
     private lateinit var adapter: RecaptureMouseRecyclerAdapter
-    private var mouseList: List<Mouse> = emptyList()
+    private var mouseList: List<MouseRecapList> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +30,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         _binding = FragmentRecaptureListMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
-        adapter = RecaptureMouseRecyclerAdapter(this, viewLifecycleOwner)
+        adapter = RecaptureMouseRecyclerAdapter()
         val recyclerView = binding.recaptureRecyclerview
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -47,11 +45,9 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
             override fun useClickListener(position: Int) {
                 goToRecaptureMouse(position)
             }
-
             override fun useLongClickListener(position: Int) {
                 Toast.makeText(requireContext(), "You have found an easter egg. :D", Toast.LENGTH_SHORT).show()
             }
-
         })
 
         setHasOptionsMenu(true)
@@ -83,7 +79,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun searchMice(code: Int) {
-        mouseViewModel.getMiceForRecapture(code).observe(viewLifecycleOwner, Observer { mice ->
+        mouseViewModel.getMiceForRecapture(code).observe(viewLifecycleOwner, { mice ->
             mice.let {
                 adapter.setData(it)
                 mouseList = it
@@ -91,7 +87,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         })
     }
 
-    private fun goToRecaptureMouse(position: Int){
+    private fun goToRecaptureMouse(position: Int) {
         val mouse = mouseList[position]
         val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occasion)
         findNavController().navigate(action)

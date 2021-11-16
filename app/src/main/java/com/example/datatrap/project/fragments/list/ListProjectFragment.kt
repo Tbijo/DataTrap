@@ -9,11 +9,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProjectBinding
 import com.example.datatrap.models.Project
@@ -21,8 +19,6 @@ import com.example.datatrap.viewmodels.ProjectViewModel
 import com.example.datatrap.viewmodels.UserViewModel
 import java.util.*
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.viewpager2.widget.ViewPager2
-
 
 class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
 
@@ -50,7 +46,7 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
         )
         binding.projectRecyclerview.addItemDecoration(dividerItemDecoration)
 
-        projectViewModel.projectList.observe(viewLifecycleOwner, Observer { projects ->
+        projectViewModel.projectList.observe(viewLifecycleOwner, { projects ->
             adapter.setData(projects)
         })
 
@@ -109,7 +105,7 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
     private fun searchProjects(query: String?) {
         val searchQuery = "%$query%"
         projectViewModel.searchProjects(searchQuery)
-            .observe(viewLifecycleOwner, Observer { projects ->
+            .observe(viewLifecycleOwner, { projects ->
                 projects.let {
                     adapter.setData(it)
                 }

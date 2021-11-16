@@ -1,20 +1,14 @@
 package com.example.datatrap.mouse.fragments.generator
 
 import android.util.Log
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import com.example.datatrap.models.Mouse
 import com.example.datatrap.myenums.EnumTeam
-import com.example.datatrap.viewmodels.MouseViewModel
 import java.util.*
 
 class CodeGenerator(
     private var code: Int,
     private val fingers: Int,
     private val team: Int?,
-    private var mouseList: List<Mouse>
+    private var codeList: List<Int>
 ) {
 
     private val codeRange = 1..9999
@@ -39,8 +33,8 @@ class CodeGenerator(
 
     private fun isCodeFreeInLocality(code: Int): Boolean {
         // volny bude vtedy ak datetime je starsi ako 2 roky
-        mouseList.forEach {
-            if (it.code == code) {
+        codeList.forEach {
+            if (it == code) {
                 return true
             }
         }
