@@ -147,7 +147,7 @@ class RecaptureMouseFragment : Fragment() {
         })
 
         val dropDownArrTrapID =
-            ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occasion.numTraps).toList())
+            ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occList.numTraps).toList())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
         binding.autoCompTvTrapId.setText(mouse.trapID.toString(), false)
@@ -301,8 +301,8 @@ class RecaptureMouseFragment : Fragment() {
             val mouse: Mouse = currentMouse.copy()
             mouse.mouseId = 0
             mouse.primeMouseID = if (args.recapMouse.primeMouseID == null) args.recapMouse.mouseId else args.recapMouse.primeMouseID
-            mouse.occasionID = args.occasion.occasionId
-            mouse.localityID = args.occasion.localityID
+            mouse.occasionID = args.occList.occasionId
+            mouse.localityID = args.occList.localityID
             mouse.mouseDateTimeCreated = Calendar.getInstance().time
             mouse.mouseDateTimeUpdated = null
             mouse.recapture = true

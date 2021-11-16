@@ -21,7 +21,7 @@ class AddLocalityFragment : Fragment() {
 
     private lateinit var localityViewModel: LocalityViewModel
     private lateinit var gpsProviderA: GPSProvider
-    private lateinit var gpsProviderB: GPSProvider
+    //private lateinit var gpsProviderB: GPSProvider
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,7 +30,7 @@ class AddLocalityFragment : Fragment() {
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
 
         gpsProviderA = GPSProvider(requireContext(), requireActivity(), this)
-        gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
+        //gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
 
         binding.btnGetCoorA.setOnClickListener {
             // ziskanie aktualnych suradnic
@@ -49,7 +49,7 @@ class AddLocalityFragment : Fragment() {
         super.onDestroy()
         _binding = null
         gpsProviderA.cancelLocationRequest()
-        gpsProviderB.cancelLocationRequest()
+        //gpsProviderB.cancelLocationRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -84,7 +84,7 @@ class AddLocalityFragment : Fragment() {
             Toast.makeText(requireContext(), "New locality added.", Toast.LENGTH_SHORT).show()
 
             gpsProviderA.cancelLocationRequest()
-            gpsProviderB.cancelLocationRequest()
+            //gpsProviderB.cancelLocationRequest()
 
             findNavController().navigateUp()
         }else{
@@ -96,24 +96,28 @@ class AddLocalityFragment : Fragment() {
         return localityName.isNotEmpty() && latitudeA.isNotEmpty() && longnitudeA.isNotEmpty() && latitudeB.isNotEmpty() && longnitudeB.isNotEmpty()
     }
 
-    private fun getCoordinatesA(){
+    private fun getCoordinatesA() {
         gpsProviderA.getCoordinates(object : GPSProvider.CoordinatesListener{
             override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
                 binding.etLatitudeA.setText(latitude.toString())
                 binding.etLongnitudeA.setText(longitude.toString())
             }
-
         })
     }
 
-    private fun getCoordinatesB(){
-        gpsProviderB.getCoordinates(object : GPSProvider.CoordinatesListener{
+    private fun getCoordinatesB() {
+        gpsProviderA.getCoordinates(object : GPSProvider.CoordinatesListener{
             override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
                 binding.etLatitudeB.setText(latitude.toString())
                 binding.etLongnitudeB.setText(longitude.toString())
             }
-
         })
+//        gpsProviderB.getCoordinates(object : GPSProvider.CoordinatesListener{
+//            override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
+//                binding.etLatitudeB.setText(latitude.toString())
+//                binding.etLongnitudeB.setText(longitude.toString())
+//            }
+//        })
     }
 
 }

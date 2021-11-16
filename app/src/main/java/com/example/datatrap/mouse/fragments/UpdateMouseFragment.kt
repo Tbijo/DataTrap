@@ -149,7 +149,7 @@ class UpdateMouseFragment : Fragment() {
 
         })
 
-        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occasion.numTraps).toList())
+        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occList.numTraps).toList())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
         binding.autoCompTvTrapId.setText(mouse.trapID.toString(), false)

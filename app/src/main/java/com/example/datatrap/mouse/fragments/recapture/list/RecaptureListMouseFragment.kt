@@ -5,6 +5,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -72,7 +73,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     override fun onQueryTextChange(newText: String?): Boolean {
-        if (!newText.isNullOrBlank()) {
+        if (!newText.isNullOrBlank() && newText.isDigitsOnly()) {
             searchMice(Integer.parseInt(newText))
         }
         return true
@@ -89,7 +90,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun goToRecaptureMouse(position: Int) {
         val mouse = mouseList[position]
-        val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occasion)
+        val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occList)
         findNavController().navigate(action)
     }
 

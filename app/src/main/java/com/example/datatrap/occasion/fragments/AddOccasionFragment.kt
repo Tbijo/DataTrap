@@ -210,7 +210,7 @@ class AddOccasionFragment : Fragment() {
     private fun goToCamera() {
         val action = AddOccasionFragmentDirections.actionAddOccasionFragmentToTakePhotoFragment(
             "Occasion",
-            null
+            imgName
         )
         findNavController().navigate(action)
     }

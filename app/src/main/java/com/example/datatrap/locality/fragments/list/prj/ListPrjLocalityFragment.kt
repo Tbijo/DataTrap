@@ -1,10 +1,12 @@
 package com.example.datatrap.locality.fragments.list.prj
 
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -58,8 +60,18 @@ class ListPrjLocalityFragment : Fragment() {
             }
 
             override fun useLongClickListener(position: Int) {
-                // vymazat kombinaciu projektu a vybranej lokality
-                deleteCombination(position)
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setPositiveButton("Yes"){_, _ ->
+
+                    // vymazat kombinaciu projektu a vybranej lokality
+                    deleteCombination(position)
+
+                    Toast.makeText(requireContext(),"Combination deleted.", Toast.LENGTH_LONG).show()
+                }
+                    .setNegativeButton("No"){_, _ -> }
+                    .setTitle("Delete Combination?")
+                    .setMessage("Are you sure you want to delete this combination?")
+                    .create().show()
             }
         })
 

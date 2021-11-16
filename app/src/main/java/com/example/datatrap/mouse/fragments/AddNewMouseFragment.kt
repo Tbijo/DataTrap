@@ -70,7 +70,7 @@ class AddNewMouseFragment : Fragment() {
 
         fillDropDown()
 
-        mouseViewModel.countMiceForLocality(args.occasion.localityID).observe(viewLifecycleOwner, {
+        mouseViewModel.countMiceForLocality(args.occList.localityID).observe(viewLifecycleOwner, {
             oldCode = it + 1
         })
 
@@ -80,7 +80,7 @@ class AddNewMouseFragment : Fragment() {
 
         setListeners()
 
-        mouseViewModel.getActiveCodeOfLocality(args.occasion.localityID, Calendar.getInstance().time.time, MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner, { codeList ->
+        mouseViewModel.getActiveCodeOfLocality(args.occList.localityID, Calendar.getInstance().time.time, MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner, { codeList ->
             activeCodeList = codeList
         })
 
@@ -105,7 +105,7 @@ class AddNewMouseFragment : Fragment() {
 
         fillDropDown()
 
-        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occasion.numTraps).toList())
+        val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occList.numTraps).toList())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
     }
 
@@ -306,8 +306,8 @@ class AddNewMouseFragment : Fragment() {
             val note: String? = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
-            val mouse = Mouse(0, code, deviceID, null, speciesID, protocolID, args.occasion.occasionId,
-                args.occasion.localityID, trapID, Calendar.getInstance().time, null, sex, age, gravitidy, lactating, sexActive,
+            val mouse = Mouse(0, code, deviceID, null, speciesID, protocolID, args.occList.occasionId,
+                args.occList.localityID, trapID, Calendar.getInstance().time, null, sex, age, gravitidy, lactating, sexActive,
                 weight, recapture = false, captureID, body, tail, feet, ear, testesLength, testesWidth, embryoRight, embryoLeft,
                 embryoDiameter, MC, MCright, MCleft, note, imgName)
 

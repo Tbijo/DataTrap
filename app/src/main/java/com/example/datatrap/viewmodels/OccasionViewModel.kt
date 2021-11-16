@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Occasion
+import com.example.datatrap.models.tuples.OccList
 import com.example.datatrap.repositories.OccasionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -32,21 +33,17 @@ class OccasionViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun deleteOccasion(occasion: Occasion){
+    fun deleteOccasion(occasionId: Long){
         viewModelScope.launch(Dispatchers.IO) {
-            occasionRepository.deleteOccasion(occasion)
+            occasionRepository.deleteOccasion(occasionId)
         }
     }
 
-    fun getOccasion(occasionId: Long): Occasion {
-        val occasion: Occasion
-        runBlocking {
-            occasion = occasionRepository.getOccasion(occasionId)
-        }
-        return occasion
+    fun getOccasion(occasionId: Long): LiveData<Occasion> {
+        return occasionRepository.getOccasion(occasionId)
     }
 
-    fun getOccasionsForSession(idSession: Long): LiveData<List<Occasion>>{
+    fun getOccasionsForSession(idSession: Long): LiveData<List<OccList>>{
         return occasionRepository.getOccasionsForSession(idSession)
     }
 }

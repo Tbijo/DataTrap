@@ -13,8 +13,6 @@ import com.example.datatrap.databinding.FragmentUpdateLocalityBinding
 import com.example.datatrap.locality.fragments.gps.GPSProvider
 import com.example.datatrap.models.Locality
 import com.example.datatrap.viewmodels.LocalityViewModel
-import com.example.datatrap.viewmodels.ProjectLocalityViewModel
-import com.example.datatrap.viewmodels.ProjectViewModel
 import java.util.*
 
 class UpdateLocalityFragment : Fragment(){
@@ -23,22 +21,18 @@ class UpdateLocalityFragment : Fragment(){
     private val binding get() = _binding!!
     
     private lateinit var localityViewModel: LocalityViewModel
-    private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
-    private lateinit var projectViewModel: ProjectViewModel
     private val args by navArgs<UpdateLocalityFragmentArgs>()
     private lateinit var gpsProviderA: GPSProvider
-    private lateinit var gpsProviderB: GPSProvider
+    //private lateinit var gpsProviderB: GPSProvider
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateLocalityBinding.inflate(inflater, container, false)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
-        prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
-        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
         gpsProviderA = GPSProvider(requireContext(), requireActivity(), this)
-        gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
+        //gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
 
         initLocalityValuesToView()
 
@@ -58,7 +52,7 @@ class UpdateLocalityFragment : Fragment(){
         super.onDestroy()
         _binding = null
         gpsProviderA.cancelLocationRequest()
-        gpsProviderB.cancelLocationRequest()
+        //gpsProviderB.cancelLocationRequest()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -123,7 +117,7 @@ class UpdateLocalityFragment : Fragment(){
             Toast.makeText(requireContext(), "Locality updated.", Toast.LENGTH_SHORT).show()
 
             gpsProviderA.cancelLocationRequest()
-            gpsProviderB.cancelLocationRequest()
+            //gpsProviderB.cancelLocationRequest()
 
             findNavController().navigateUp()
         }else{
@@ -142,7 +136,7 @@ class UpdateLocalityFragment : Fragment(){
                 latitudeB.isNotEmpty() && longnitudeB.isNotEmpty()
     }
 
-    private fun getCoordinatesA(){
+    private fun getCoordinatesA() {
         gpsProviderA.getCoordinates(object : GPSProvider.CoordinatesListener{
             override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
                 binding.etUpLatA.setText(latitude.toString())
@@ -151,13 +145,19 @@ class UpdateLocalityFragment : Fragment(){
         })
     }
 
-    private fun getCoordinatesB(){
-        gpsProviderB.getCoordinates(object : GPSProvider.CoordinatesListener{
+    private fun getCoordinatesB() {
+        gpsProviderA.getCoordinates(object : GPSProvider.CoordinatesListener{
             override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
                 binding.etUpLatB.setText(latitude.toString())
                 binding.etUpLongB.setText(longitude.toString())
             }
         })
+//        gpsProviderB.getCoordinates(object : GPSProvider.CoordinatesListener{
+//            override fun onReceivedCoordinates(latitude: Double, longitude: Double) {
+//                binding.etUpLatB.setText(latitude.toString())
+//                binding.etUpLongB.setText(longitude.toString())
+//            }
+//        })
     }
 
 }

@@ -5,12 +5,12 @@ import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.OccasionRowBinding
-import com.example.datatrap.models.Occasion
+import com.example.datatrap.models.tuples.OccList
 import java.text.SimpleDateFormat
 
 class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyViewHolder>() {
 
-    private var occasionList = emptyList<Occasion>()
+    private var occasionList = emptyList<OccList>()
 
     class MyViewHolder(val binding: OccasionRowBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -21,7 +21,7 @@ class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyV
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = occasionList[position]
         holder.binding.tvOccasion.text = currenItem.occasion.toString()
-        holder.binding.tvOccDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.occasionDateTimeCreated)
+        holder.binding.tvOccDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.dateTime)
         holder.binding.tvNumMouse.text = currenItem.numMice.toString()
         holder.binding.tvNumTraps.text = currenItem.numTraps.toString()
 
@@ -43,7 +43,7 @@ class OccasionRecyclerAdapter : RecyclerView.Adapter<OccasionRecyclerAdapter.MyV
         return occasionList.size
     }
 
-    fun setData(occasions: List<Occasion>){
+    fun setData(occasions: List<OccList>){
         this.occasionList = occasions
         notifyDataSetChanged()
     }

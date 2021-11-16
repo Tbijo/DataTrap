@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListOccMouseBinding
-import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.tuples.MouseOccList
 import com.example.datatrap.viewmodels.MouseViewModel
 
@@ -40,7 +39,7 @@ class ListOccMouseFragment : Fragment() {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        mouseViewModel.getMiceForOccasion(args.occasion.occasionId).observe(viewLifecycleOwner, { mice ->
+        mouseViewModel.getMiceForOccasion(args.occList.occasionId).observe(viewLifecycleOwner, { mice ->
             adapter.setData(mice)
             mouseList = mice
         })
@@ -54,7 +53,7 @@ class ListOccMouseFragment : Fragment() {
 
             override fun useLongClickListener(position: Int) {
                 //update
-                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(args.occasion, mouseList[position])
+                val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToUpdateMouseFragment(args.occList, mouseList[position])
                 findNavController().navigate(action)
             }
 
@@ -62,7 +61,7 @@ class ListOccMouseFragment : Fragment() {
 
         binding.addMouseFloatButton.setOnClickListener {
             // pridat novu mys
-            val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToAddNewMouseFragment(args.occasion)
+            val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToAddNewMouseFragment(args.occList)
             findNavController().navigate(action)
         }
 
@@ -88,7 +87,7 @@ class ListOccMouseFragment : Fragment() {
     }
 
     private fun goToRecapture() {
-        val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToRecaptureListMouseFragment(args.occasion)
+        val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToRecaptureListMouseFragment(args.occList)
         findNavController().navigate(action)
     }
 

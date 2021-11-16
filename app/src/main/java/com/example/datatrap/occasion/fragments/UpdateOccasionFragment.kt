@@ -44,6 +44,7 @@ class UpdateOccasionFragment : Fragment() {
     private lateinit var sharedViewModel: SharedViewModel
     private var imgName: String? = null
 
+    private lateinit var currentOccasion: Occasion
     private var methodID: Long = 0
     private var methodTypeID: Long = 0
     private var trapTypeID: Long = 0
@@ -64,11 +65,17 @@ class UpdateOccasionFragment : Fragment() {
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
         pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
 
+        occasionViewModel.getOccasion(args.occList.occasionId).observe(viewLifecycleOwner, {
+            currentOccasion = it
+            fillDropDown(it)
+            initOccasionValuesToView(it)
+        })
+
         sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
         sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
-        imgName = args.occasion.imgName
+        imgName = args.occList.imgName
 
         // ak sa zavola Delete
         pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
@@ -78,18 +85,14 @@ class UpdateOccasionFragment : Fragment() {
             //odstranit zaznam z databazy
             pictureViewModel.deletePicture(it)
             // vymazat occasion
-            occasionViewModel.deleteOccasion(args.occasion)
+            occasionViewModel.deleteOccasion(args.occList.occasionId)
 
             Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
 
             findNavController().navigateUp()
         })
 
-        fillDropDown()
-
         setListeners()
-
-        initOccasionValuesToView()
 
         setHasOptionsMenu(true)
         return binding.root
@@ -116,7 +119,9 @@ class UpdateOccasionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        fillDropDown()
+        occasionViewModel.getOccasion(args.occList.occasionId).observe(viewLifecycleOwner, {
+            fillDropDown(it)
+        })
     }
 
     private fun setListeners() {
@@ -156,7 +161,7 @@ class UpdateOccasionFragment : Fragment() {
         }
     }
 
-    private fun fillDropDown() {
+    private fun fillDropDown(occasion: Occasion) {
         envTypeViewModel.envTypeList.observe(viewLifecycleOwner, {
             envTypeList = it
             val nameList = mutableListOf<String>()
@@ -170,7 +175,7 @@ class UpdateOccasionFragment : Fragment() {
             binding.autoCompTvEnvType.setAdapter(dropDownArrAdapEnvType)
             //set values
             val current = it.firstOrNull { envType ->
-                envType.envTypeId == args.occasion.envTypeID
+                envType.envTypeId == occasion.envTypeID
             }?.envTypeName
             binding.autoCompTvEnvType.setText(current.toString(), false)
         })
@@ -187,7 +192,7 @@ class UpdateOccasionFragment : Fragment() {
             binding.autoCompTvMethod.setAdapter(dropDownArrAdapMethod)
             // set values
             val current = it.first { method ->
-                method.methodId == args.occasion.methodID
+                method.methodId == occasion.methodID
             }.methodName
             binding.autoCompTvMethod.setText(current, false)
         })
@@ -204,7 +209,7 @@ class UpdateOccasionFragment : Fragment() {
             binding.autoCompTvMethodType.setAdapter(dropDownArrAdapMethodType)
             // set Values
             val current = it.first { methodType ->
-                methodType.methodTypeId == args.occasion.methodTypeID
+                methodType.methodTypeId == occasion.methodTypeID
             }.methodTypeName
             binding.autoCompTvMethodType.setText(current, false)
         })
@@ -221,7 +226,7 @@ class UpdateOccasionFragment : Fragment() {
             binding.autoCompTvTrapType.setAdapter(dropDownArrAdapTrapType)
             // set values
             val current = it.first { trapType ->
-                trapType.trapTypeId == args.occasion.trapTypeID
+                trapType.trapTypeId == occasion.trapTypeID
             }.trapTypeName
             binding.autoCompTvTrapType.setText(current, false)
         })
@@ -239,7 +244,7 @@ class UpdateOccasionFragment : Fragment() {
             binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
             // set values
             val current = it.firstOrNull { vegType ->
-                vegType.vegetTypeId == args.occasion.vegetTypeID
+                vegType.vegetTypeId == occasion.vegetTypeID
             }?.vegetTypeName
             binding.autoCompTvVegType.setText(current.toString(), false)
         })
@@ -251,14 +256,14 @@ class UpdateOccasionFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun initOccasionValuesToView() {
-        binding.etNumTraps.setText(args.occasion.numTraps.toString())
-        binding.etTemperature.setText(args.occasion.temperature.toString())
-        binding.etWeather.setText(args.occasion.weather.toString())
-        binding.cbGotCaught.isChecked = args.occasion.gotCaught == true
+    private fun initOccasionValuesToView(occasion: Occasion) {
+        binding.etNumTraps.setText(occasion.numTraps.toString())
+        binding.etTemperature.setText(occasion.temperature.toString())
+        binding.etWeather.setText(occasion.weather.toString())
+        binding.cbGotCaught.isChecked = occasion.gotCaught == true
 
-        binding.etLeg.setText(args.occasion.leg)
-        binding.etOccasionNote.setText(args.occasion.note.toString())
+        binding.etLeg.setText(occasion.leg)
+        binding.etOccasionNote.setText(occasion.note.toString())
     }
 
     private fun deleteOccasion() {
@@ -268,7 +273,7 @@ class UpdateOccasionFragment : Fragment() {
                 pictureViewModel.getPictureById(imgName!!)
             } else {
                 // vymazat occasion
-                occasionViewModel.deleteOccasion(args.occasion)
+                occasionViewModel.deleteOccasion(args.occList.occasionId)
 
                 Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
 
@@ -282,13 +287,13 @@ class UpdateOccasionFragment : Fragment() {
     }
 
     private fun updateOccasion() {
-        val occasionNum: Int = args.occasion.occasion
+        val occasionNum: Int = currentOccasion.occasion
         val leg: String = binding.etLeg.text.toString()
         val numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
 
         if (checkInput(occasionNum, methodID, methodTypeID, trapTypeID, leg, numTraps)){
 
-            val occasion: Occasion = args.occasion.copy()
+            val occasion: Occasion = currentOccasion.copy()
             occasion.methodID = methodID
             occasion.methodTypeID = methodTypeID
             occasion.trapTypeID = trapTypeID
@@ -333,9 +338,9 @@ class UpdateOccasionFragment : Fragment() {
     private fun getHistoryWeather() {
         if (isOnline(requireContext())){
             val weather = Weather(requireContext())
-            val locality: Locality = localityViewModel.getLocality(args.occasion.localityID)
+            val locality: Locality = localityViewModel.getLocality(currentOccasion.localityID)
 
-            val unixtime = args.occasion.occasionDateTimeCreated.time
+            val unixtime = currentOccasion.occasionDateTimeCreated.time
 
             weather.getHistoricalWeatherByCoordinates(locality.xA, locality.yA, unixtime, object: Weather.VolleyResponseListener{
                 override fun onResponse(temp: Int, weather: String) {
