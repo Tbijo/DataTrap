@@ -9,9 +9,6 @@ interface PictureDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPicture(picture: Picture)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun initInsert(picture: Picture)
-
     @Delete
     suspend fun deletePicture(picture: Picture)
 

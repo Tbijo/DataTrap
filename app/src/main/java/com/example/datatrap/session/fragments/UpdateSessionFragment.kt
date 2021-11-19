@@ -10,8 +10,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateSessionBinding
-import com.example.datatrap.models.Locality
-import com.example.datatrap.viewmodels.LocalityViewModel
+import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
+import com.example.datatrap.viewmodels.LocalitySessionViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
 import java.util.*
 
@@ -19,18 +19,28 @@ class UpdateSessionFragment : Fragment() {
 
     private var _binding: FragmentUpdateSessionBinding? = null
     private val binding get() = _binding!!
-    private lateinit var sessionViewModel: SessionViewModel
-    private lateinit var localityViewModel: LocalityViewModel
     private val args by navArgs<UpdateSessionFragmentArgs>()
+
+    private lateinit var sessionViewModel: SessionViewModel
+    private lateinit var localitySessionViewModel: LocalitySessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateSessionBinding.inflate(inflater, container, false)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
+        localitySessionViewModel = ViewModelProvider(this).get(LocalitySessionViewModel::class.java)
 
         initSessionValuesToView()
+
+        binding.btnDelAssoc.isEnabled = false
+        binding.btnDelAssoc.setOnClickListener {
+            deleteAssociationWithLocality()
+        }
+
+        localitySessionViewModel.existsLocalSessCrossRef(args.locality.localityId, args.session.sessionId).observe(viewLifecycleOwner, {
+            binding.btnDelAssoc.isEnabled = it
+        })
 
         setHasOptionsMenu(true)
         return binding.root
@@ -58,12 +68,30 @@ class UpdateSessionFragment : Fragment() {
         binding.etNumOcc.setText(args.session.numOcc.toString())
     }
 
+    private fun deleteAssociationWithLocality() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setPositiveButton("Yes"){_, _ ->
+            // vymazat session
+            val localSessCrossRef = LocalitySessionCrossRef(args.locality.localityId, args.session.sessionId)
+            localitySessionViewModel.deleteLocalitySessionCrossRef(localSessCrossRef)
+
+            Toast.makeText(requireContext(),"Association deleted.", Toast.LENGTH_LONG).show()
+        }
+            .setNegativeButton("No"){_, _ -> }
+            .setTitle("Delete Association?")
+            .setMessage("Are you sure you want to delete this association?")
+            .create().show()
+    }
+
     private fun deleteSession() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
-            // znizit numSess v lokalite
-            updateLocalityNumSes()
-            // dokonci sa po Update Locality
+            // vymazat session
+            sessionViewModel.deleteSession(args.session)
+
+            Toast.makeText(requireContext(),"Session deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Session?")
@@ -71,24 +99,10 @@ class UpdateSessionFragment : Fragment() {
             .create().show()
     }
 
-    private fun updateLocalityNumSes(){
-        val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId)
-        updatedLocality.numSessions = (updatedLocality.numSessions - 1)
-        updatedLocality.localityDateTimeUpdated = Calendar.getInstance().time
-        localityViewModel.updateLocality(updatedLocality)
-
-        // vymazat session
-        sessionViewModel.deleteSession(args.session)
-
-        Toast.makeText(requireContext(),"Session deleted.", Toast.LENGTH_LONG).show()
-
-        findNavController().navigateUp()
-    }
-
     private fun updateSession() {
         val sessionNum = binding.etSession.text.toString()
         val numOcc = binding.etNumOcc.text.toString()
-        if (checkIput(sessionNum, numOcc)){
+        if (checkInput(sessionNum, numOcc)){
 
             val session = args.session.copy()
             session.session = Integer.parseInt(sessionNum)
@@ -105,7 +119,7 @@ class UpdateSessionFragment : Fragment() {
         }
     }
 
-    private fun checkIput(session: String, numOcc: String): Boolean {
+    private fun checkInput(session: String, numOcc: String): Boolean {
         return session.isNotEmpty() && numOcc.isNotEmpty()
     }
 

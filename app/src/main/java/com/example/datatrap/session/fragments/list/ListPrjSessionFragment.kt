@@ -14,9 +14,9 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListPrjSessionBinding
-import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Session
-import com.example.datatrap.viewmodels.LocalityViewModel
+import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
+import com.example.datatrap.viewmodels.LocalitySessionViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
 import java.util.*
 
@@ -25,7 +25,7 @@ class ListPrjSessionFragment : Fragment() {
     private var _binding: FragmentListPrjSessionBinding? = null
     private val binding get() = _binding!!
     private lateinit var sessionViewModel: SessionViewModel
-    private lateinit var localityViewModel: LocalityViewModel
+    private lateinit var localitySessionViewModel: LocalitySessionViewModel
     private lateinit var adapter: PrjSessionRecyclerAdapter
     private val args by navArgs<ListPrjSessionFragmentArgs>()
     private lateinit var sessionList: List<Session>
@@ -35,7 +35,7 @@ class ListPrjSessionFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListPrjSessionBinding.inflate(inflater, container, false)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
+        localitySessionViewModel = ViewModelProvider(this).get(LocalitySessionViewModel::class.java)
 
         adapter = PrjSessionRecyclerAdapter()
         val recyclerView = binding.prjSessionRecyclerview
@@ -56,14 +56,20 @@ class ListPrjSessionFragment : Fragment() {
 
         adapter.setOnItemClickListener(object : PrjSessionRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
-                // ideme do occasion
+                // vytvorit spojenie medzi vybranou locality a session
                 val session: Session = sessionList[position]
-                val action =
-                    ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(
-                        session,
-                        args.locality
-                    )
-                findNavController().navigate(action)
+                localitySessionViewModel.existsLocalSessCrossRef(args.locality.localityId, session.sessionId).observe(viewLifecycleOwner, {
+                    if (it == false) {
+                        val kombLocSess = LocalitySessionCrossRef(args.locality.localityId, session.sessionId)
+                        localitySessionViewModel.insertLocalitySessionCrossRef(kombLocSess)
+                    }
+                    // ideme do occasion
+                    val action =
+                        ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(
+                            session, args.locality
+                        )
+                    findNavController().navigate(action)
+                })
             }
 
             override fun useLongClickListener(position: Int) {
@@ -108,9 +114,6 @@ class ListPrjSessionFragment : Fragment() {
         val session: Session =
             Session(0, (sessionList.size + 1), deviceID, args.project.projectId, 0, Calendar.getInstance().time, null)
 
-        // zvacsit numSes v lokalite
-        updateLocalityNumSess()
-
         // ulozit session
         sessionViewModel.insertSession(session)
 
@@ -118,11 +121,6 @@ class ListPrjSessionFragment : Fragment() {
 
     }
 
-    private fun updateLocalityNumSess(){
-        val updatedLocality: Locality = localityViewModel.getLocality(args.locality.localityId)
-        updatedLocality.numSessions = (updatedLocality.numSessions + 1)
-        updatedLocality.localityDateTimeUpdated = Calendar.getInstance().time
-        localityViewModel.updateLocality(updatedLocality)
-    }
+
 
 }

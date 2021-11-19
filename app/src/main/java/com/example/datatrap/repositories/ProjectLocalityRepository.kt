@@ -2,8 +2,8 @@ package com.example.datatrap.repositories
 
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.ProjectLocalityDao
-import com.example.datatrap.models.relations.ProjectLocalityCrossRef
-import com.example.datatrap.models.relations.ProjectWithLocalities
+import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
+import com.example.datatrap.models.projectlocality.ProjectWithLocalities
 
 class ProjectLocalityRepository(private val projectLocalityDao: ProjectLocalityDao) {
 

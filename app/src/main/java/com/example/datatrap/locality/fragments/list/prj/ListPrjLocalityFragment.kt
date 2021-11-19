@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
 import com.example.datatrap.models.Locality
-import com.example.datatrap.models.relations.ProjectLocalityCrossRef
+import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
 
@@ -66,11 +66,11 @@ class ListPrjLocalityFragment : Fragment() {
                     // vymazat kombinaciu projektu a vybranej lokality
                     deleteCombination(position)
 
-                    Toast.makeText(requireContext(),"Combination deleted.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(),"Association deleted.", Toast.LENGTH_LONG).show()
                 }
                     .setNegativeButton("No"){_, _ -> }
-                    .setTitle("Delete Combination?")
-                    .setMessage("Are you sure you want to delete this combination?")
+                    .setTitle("Delete Association?")
+                    .setMessage("Are you sure you want to delete this association?")
                     .create().show()
             }
         })

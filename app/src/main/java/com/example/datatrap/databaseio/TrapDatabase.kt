@@ -8,16 +8,18 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.datatrap.databaseio.converters.DateLongConverters
 import com.example.datatrap.databaseio.dao.*
-import com.example.datatrap.models.relations.ProjectLocalityCrossRef
+import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
 import com.example.datatrap.databaseio.dao.ProjectLocalityDao
 import com.example.datatrap.models.*
+import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
 
 @Database(entities = [
     EnvType::class, Locality::class, Method::class, MethodType::class,
     Occasion::class, Picture::class, Project::class, Protocol::class,
     Session::class, Specie::class, TrapType::class, VegetType::class,
-    Mouse::class, ProjectLocalityCrossRef::class, User::class
-                     ], version = 5, exportSchema = false )
+    Mouse::class, ProjectLocalityCrossRef::class, User::class,
+    LocalitySessionCrossRef::class
+                     ], version = 1, exportSchema = false )
 @TypeConverters(DateLongConverters::class)
 abstract class TrapDatabase: RoomDatabase() {
     abstract fun envTypeDao(): EnvTypeDao
@@ -35,6 +37,7 @@ abstract class TrapDatabase: RoomDatabase() {
     abstract fun vegetTypeDao(): VegetTypeDao
     abstract fun projectLocalityDao(): ProjectLocalityDao
     abstract fun userDao(): UserDao
+    abstract fun localitySessionDao(): LocalitySessionDao
 
     companion object{
         @Volatile
@@ -81,13 +84,17 @@ abstract class TrapDatabase: RoomDatabase() {
                 // Insert Occasion, po pridani update Session numOcc + 1
                 db.execSQL("CREATE TRIGGER IF NOT EXISTS OnOccasionInsertUpdateSession BEFORE INSERT ON Occasion BEGIN UPDATE Session SET numOcc = (numOcc + 1), sessionDateTimeUpdated = (strftime('%s','now') * 1000) WHERE sessionId = NEW.sessionID; END")
 
-                // DELETE Session, po vymazani update Project znizit numMice o vsetky pocty mysi v jej Occasionov
-                db.execSQL("CREATE TRIGGER IF NOT EXISTS OnSessionDeleteUpdateProject BEFORE DELETE ON Session BEGIN UPDATE Project SET numMice = (numMice - (SELECT SUM(numMice) FROM Occasion WHERE sessionID = OLD.sessionId)), projectDateTimeUpdated = (strftime('%s','now') * 1000) WHERE projectId = OLD.projectID; END")
-
                 // Delete PrjLocCrossRef, po vymazani kombinacie sa updatne Project numLocal - 1
                 db.execSQL("CREATE TRIGGER IF NOT EXISTS OnProjectLocalityCrossRefDeleteUpdateProject BEFORE DELETE ON ProjectLocalityCrossRef BEGIN UPDATE Project SET numLocal = (numLocal - 1), projectDateTimeUpdated = (strftime('%s','now') * 1000) WHERE projectId = OLD.projectId; END")
                 // Insert PrjLocCrossRef, po pridani kombinacie sa updatne Project numLocal + 1
                 db.execSQL("CREATE TRIGGER IF NOT EXISTS OnProjectLocalityCrossRefInsertUpdateProject BEFORE INSERT ON ProjectLocalityCrossRef BEGIN UPDATE Project SET numLocal = (numLocal + 1), projectDateTimeUpdated = (strftime('%s','now') * 1000) WHERE projectId = NEW.projectId; END")
+
+                // DELETE Session, po vymazani update Project znizit numMice o vsetky pocty mysi v jej Occasionov
+                db.execSQL("CREATE TRIGGER IF NOT EXISTS OnSessionDeleteUpdateProject BEFORE DELETE ON Session BEGIN UPDATE Project SET numMice = (numMice - (SELECT CASE WHEN (SUM(numMice)) IS NULL THEN 0 ELSE SUM(numMice) END result FROM Occasion WHERE sessionID = OLD.sessionId)), projectDateTimeUpdated = (strftime('%s','now') * 1000) WHERE projectId = OLD.projectID; END")
+                // DELETE LocSessCrossRef, po vymazani update Locality numSession - 1
+                db.execSQL("CREATE TRIGGER IF NOT EXISTS OnLocSessDeleteUpdateLocality BEFORE DELETE ON LocalitySessionCrossRef BEGIN UPDATE Locality SET numSessions = numSessions - 1, localityDateTimeUpdated = (strftime('%s','now') * 1000) WHERE localityId = OLD.localityId; END")
+                // INSERT LocSessCrossRef, po pridani update Locality numSession + 1
+                db.execSQL("CREATE TRIGGER IF NOT EXISTS OnLocSessInsertUpdateLocality BEFORE INSERT ON LocalitySessionCrossRef BEGIN UPDATE Locality SET numSessions = numSessions + 1, localityDateTimeUpdated = (strftime('%s','now') * 1000) WHERE localityId = NEW.localityId; END")
             }
         }
     }

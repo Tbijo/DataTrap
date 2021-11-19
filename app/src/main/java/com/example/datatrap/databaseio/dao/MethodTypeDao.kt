@@ -10,9 +10,6 @@ interface MethodTypeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMethodType(methodType: MethodType)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun initInsert(methodType: MethodType)
-
     @Update
     suspend fun updateMethodType(methodType: MethodType)
 

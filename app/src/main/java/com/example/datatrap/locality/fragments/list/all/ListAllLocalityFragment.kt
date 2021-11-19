@@ -15,7 +15,7 @@ import com.example.datatrap.databinding.FragmentListAllLocalityBinding
 import com.example.datatrap.locality.fragments.list.prj.PrjLocalityRecyclerAdapter
 import com.example.datatrap.models.Locality
 import com.example.datatrap.models.Project
-import com.example.datatrap.models.relations.ProjectLocalityCrossRef
+import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
@@ -61,7 +61,7 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
                 // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
                 insertCombination(position)
 
-                Toast.makeText(requireContext(), "Combination created.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Association created.", Toast.LENGTH_SHORT).show()
 
                 findNavController().navigateUp()
             }

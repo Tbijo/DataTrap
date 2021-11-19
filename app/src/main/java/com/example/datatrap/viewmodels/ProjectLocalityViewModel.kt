@@ -5,8 +5,8 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
-import com.example.datatrap.models.relations.ProjectLocalityCrossRef
-import com.example.datatrap.models.relations.ProjectWithLocalities
+import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
+import com.example.datatrap.models.projectlocality.ProjectWithLocalities
 import com.example.datatrap.repositories.ProjectLocalityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

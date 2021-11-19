@@ -2,8 +2,8 @@ package com.example.datatrap.databaseio.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.datatrap.models.relations.ProjectLocalityCrossRef
-import com.example.datatrap.models.relations.ProjectWithLocalities
+import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
+import com.example.datatrap.models.projectlocality.ProjectWithLocalities
 
 @Dao
 interface ProjectLocalityDao {

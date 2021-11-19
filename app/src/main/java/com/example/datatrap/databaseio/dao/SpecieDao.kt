@@ -10,9 +10,6 @@ interface SpecieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSpecie(specie: Specie)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun initInsert(specie: Specie)
-
     @Update
     suspend fun updateSpecie(specie: Specie)
 
@@ -22,8 +19,6 @@ interface SpecieDao {
     @Query("SELECT * FROM Specie WHERE specieId = :specieId")
     suspend fun getSpecie(specieId: Long): Specie
 
-    // pouzije sa pri fragmente na vyber pri pridavani mouse
-        // ale vyberu sa len ich nazvy vo view
     @Query("SELECT * FROM Specie")
     fun getSpecies(): LiveData<List<Specie>>
 

@@ -1,4 +1,4 @@
-package com.example.datatrap.models.relations
+package com.example.datatrap.models.projectlocality
 
 import androidx.room.Embedded
 import androidx.room.Junction
