@@ -45,8 +45,8 @@
         android:name="com.example.datatrap.specie.fragments.UpdateSpecieFragment"
         android:label="Update Specie" >
         <argument
-            android:name="specie"
-            app:argType="com.example.datatrap.models.Specie" />
+            android:name="specList"
+            app:argType="com.example.datatrap.models.tuples.SpecList" />
         <action
             android:id="@+id/action_updateSpecieFragment_to_getPictureFragment"
             app:destination="@id/getPictureFragment" />
@@ -74,8 +74,8 @@
         android:label="View Specie"
         tools:layout="@layout/fragment_view_specie" >
         <argument
-            android:name="specie"
-            app:argType="com.example.datatrap.models.Specie" />
+            android:name="specList"
+            app:argType="com.example.datatrap.models.tuples.SpecList" />
     </fragment>
     <fragment
         android:id="@+id/getPictureFragment"

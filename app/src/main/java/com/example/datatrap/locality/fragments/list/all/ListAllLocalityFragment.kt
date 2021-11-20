@@ -13,9 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListAllLocalityBinding
 import com.example.datatrap.locality.fragments.list.prj.PrjLocalityRecyclerAdapter
-import com.example.datatrap.models.Locality
-import com.example.datatrap.models.Project
 import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
+import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
@@ -29,7 +28,7 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var projectViewModel: ProjectViewModel
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListAllLocalityFragmentArgs>()
-    private lateinit var localityList: List<Locality>
+    private lateinit var localityList: List<LocList>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +50,7 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        localityViewModel.localityList.observe(viewLifecycleOwner, {localities ->
+        localityViewModel.localityList.observe(viewLifecycleOwner, { localities ->
             adapter.setData(localities)
             localityList = localities
         })
@@ -68,7 +67,7 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
             override fun useLongClickListener(position: Int) {
                 // tu sa pojde upravit alebo vymazat lokalita
-                val locality: Locality = localityList[position]
+                val locality: LocList = localityList[position]
                 val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToUpdateLocalityFragment(locality)
                 findNavController().navigate(action)
             }
@@ -115,10 +114,8 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         return true
     }
 
-    private fun insertCombination(position: Int){
-        val locality: Locality = localityList[position]
-        val project: Project = args.project
-        val projectLocalityCrossRef = ProjectLocalityCrossRef(project.projectId, locality.localityId)
+    private fun insertCombination(position: Int) {
+        val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, localityList[position].localityId)
         // vytvorit kombinaciu
         prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
     }

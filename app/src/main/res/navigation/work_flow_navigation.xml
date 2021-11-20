@@ -100,8 +100,8 @@
         android:label="Update Locality"
         tools:layout="@layout/fragment_update_locality" >
         <argument
-            android:name="locality"
-            app:argType="com.example.datatrap.models.Locality" />
+            android:name="locList"
+            app:argType="com.example.datatrap.models.tuples.LocList" />
     </fragment>
     <fragment
         android:id="@+id/localityMapFragment"
@@ -109,8 +109,8 @@
         android:label="Map"
         tools:layout="@layout/fragment_locality_map" >
         <argument
-            android:name="localities"
-            app:argType="com.example.datatrap.models.Locality[]" />
+            android:name="locaLists"
+            app:argType="com.example.datatrap.models.tuples.LocList[]" />
     </fragment>
     <fragment
         android:id="@+id/listPrjSessionFragment"
@@ -127,8 +127,8 @@
             android:name="project"
             app:argType="com.example.datatrap.models.Project" />
         <argument
-            android:name="locality"
-            app:argType="com.example.datatrap.models.Locality" />
+            android:name="locList"
+            app:argType="com.example.datatrap.models.tuples.LocList" />
     </fragment>
     <fragment
         android:id="@+id/updateSessionFragment"
@@ -139,8 +139,8 @@
             android:name="session"
             app:argType="com.example.datatrap.models.Session" />
         <argument
-            android:name="locality"
-            app:argType="com.example.datatrap.models.Locality" />
+            android:name="locList"
+            app:argType="com.example.datatrap.models.tuples.LocList" />
     </fragment>
     <fragment
         android:id="@+id/listSesOccasionFragment"
@@ -160,8 +160,8 @@
             android:name="session"
             app:argType="com.example.datatrap.models.Session" />
         <argument
-            android:name="locality"
-            app:argType="com.example.datatrap.models.Locality" />
+            android:name="locList"
+            app:argType="com.example.datatrap.models.tuples.LocList" />
     </fragment>
     <fragment
         android:id="@+id/addOccasionFragment"
@@ -172,8 +172,8 @@
             android:name="session"
             app:argType="com.example.datatrap.models.Session" />
         <argument
-            android:name="locality"
-            app:argType="com.example.datatrap.models.Locality" />
+            android:name="locList"
+            app:argType="com.example.datatrap.models.tuples.LocList" />
         <argument
             android:name="newOccasionNumber"
             app:argType="integer" />
@@ -192,6 +192,9 @@
         <action
             android:id="@+id/action_updateOccasionFragment_to_takePhotoFragment"
             app:destination="@id/takePhotoFragment" />
+        <argument
+            android:name="locList"
+            app:argType="com.example.datatrap.models.tuples.LocList" />
     </fragment>
     <fragment
         android:id="@+id/listOccMouseFragment"

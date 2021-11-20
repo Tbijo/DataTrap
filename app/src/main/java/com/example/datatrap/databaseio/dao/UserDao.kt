@@ -20,11 +20,17 @@ interface UserDao {
     fun getUsers(): LiveData<List<User>>
 
     @Query("SELECT * FROM User WHERE isActive = 1")
-    suspend fun getActiveUser(): User
+    fun getActiveUser(): LiveData<User>
 
-    @Query("SELECT * FROM User WHERE isActive = 1")
-    suspend fun getActiveUsers(): List<User>
+    @Query("UPDATE User SET isActive = 0")
+    suspend fun inactiveAllUsers()
 
-    @Query("SELECT * From User WHERE userName = :userName AND password = :password")
-    suspend fun checkUser(userName: String, password: String): User
+    @Query("SELECT userId FROM User WHERE userName = :userName AND password = :password")
+    fun checkUser(userName: String, password: String): LiveData<Long>
+
+    @Query("UPDATE User SET team = :team, isActive = 1 WHERE userId = :userId")
+    suspend fun setActiveUser(team: Int, userId: Long)
+
+    @Query("UPDATE User SET isActive = 0 WHERE isActive = 1")
+    suspend fun inactivateUser()
 }

@@ -12,6 +12,7 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateLocalityBinding
 import com.example.datatrap.locality.fragments.gps.GPSProvider
 import com.example.datatrap.models.Locality
+import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.viewmodels.LocalityViewModel
 import java.util.*
 
@@ -24,6 +25,7 @@ class UpdateLocalityFragment : Fragment(){
     private val args by navArgs<UpdateLocalityFragmentArgs>()
     private lateinit var gpsProviderA: GPSProvider
     //private lateinit var gpsProviderB: GPSProvider
+    private lateinit var currentLocality: Locality
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,7 +36,10 @@ class UpdateLocalityFragment : Fragment(){
         gpsProviderA = GPSProvider(requireContext(), requireActivity(), this)
         //gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
 
-        initLocalityValuesToView()
+        localityViewModel.getLocality(args.locList.localityId).observe(viewLifecycleOwner, {
+            initLocalityValuesToView(it)
+            currentLocality = it
+        })
 
         binding.btnGetCoorA.setOnClickListener {
             getCoordinatesA()
@@ -67,15 +72,15 @@ class UpdateLocalityFragment : Fragment(){
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initLocalityValuesToView(){
-        binding.etLocalityName.setText(args.locality.localityName)
-        binding.etLocalityNote.setText(args.locality.note.toString())
-        binding.etSessionNum.setText(args.locality.numSessions.toString())
+    private fun initLocalityValuesToView(locality: Locality){
+        binding.etLocalityName.setText(locality.localityName)
+        binding.etLocalityNote.setText(locality.note.toString())
+        binding.etSessionNum.setText(locality.numSessions.toString())
 
-        binding.etUpLatA.setText(args.locality.xA.toString())
-        binding.etUpLongA.setText(args.locality.yA.toString())
-        binding.etUpLatB.setText(args.locality.xB.toString())
-        binding.etUpLongB.setText(args.locality.yB.toString())
+        binding.etUpLatA.setText(locality.xA.toString())
+        binding.etUpLongA.setText(locality.yA.toString())
+        binding.etUpLatB.setText(locality.xB.toString())
+        binding.etUpLongB.setText(locality.yB.toString())
     }
 
     private fun deleteLocality() {
@@ -83,7 +88,7 @@ class UpdateLocalityFragment : Fragment(){
         builder.setPositiveButton("Yes"){_, _ ->
 
             // odstranit lokalitu
-            localityViewModel.deleteLocality(args.locality)
+            localityViewModel.deleteLocality(args.locList.localityId)
 
             Toast.makeText(requireContext(),"Locality deleted.", Toast.LENGTH_LONG).show()
             findNavController().navigateUp()
@@ -102,7 +107,7 @@ class UpdateLocalityFragment : Fragment(){
         val longitudeB = binding.etUpLongB.text.toString()
 
         if (checkInput(localityName, latitudeA, longitudeA, latitudeB, longitudeB)){
-            val locality: Locality = args.locality.copy()
+            val locality: Locality = currentLocality.copy()
             locality.localityName = localityName
             locality.numSessions = Integer.parseInt(binding.etSessionNum.text.toString())
             locality.xA = latitudeA.toFloat()

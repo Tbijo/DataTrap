@@ -11,6 +11,7 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListSesOccasionBinding
+import com.example.datatrap.models.tuples.OccList
 import com.example.datatrap.viewmodels.OccasionViewModel
 
 class ListSesOccasionFragment : Fragment() {
@@ -22,6 +23,7 @@ class ListSesOccasionFragment : Fragment() {
     private val args by navArgs<ListSesOccasionFragmentArgs>()
 
     private var newOccasionNumber: Int = 0
+    private lateinit var occList: List<OccList>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,11 +44,27 @@ class ListSesOccasionFragment : Fragment() {
 
         occasionViewModel.getOccasionsForSession(args.session.sessionId).observe(viewLifecycleOwner, {
             adapter.setData(it)
+            occList = it
             newOccasionNumber = (it.size + 1)
         })
 
+        adapter.setOnItemClickListener(object : OccasionRecyclerAdapter.MyClickListener {
+            override fun useClickListener(position: Int) {
+                // tu sa pojde do Mouse s occasion
+                val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToListOccMouseFragment(occList[position])
+                findNavController().navigate(action)
+            }
+
+            override fun useLongClickListener(position: Int) {
+                // tu sa pojde do update occasion
+                val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToUpdateOccasionFragment(occList[position], args.locList)
+                findNavController().navigate(action)
+            }
+
+        })
+
         binding.addOccasionFloatButton.setOnClickListener {
-            val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToAddOccasionFragment(args.session, args.locality, newOccasionNumber)
+            val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToAddOccasionFragment(args.session, args.locList, newOccasionNumber)
             findNavController().navigate(action)
         }
 

@@ -6,14 +6,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Locality
+import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.repositories.LocalityRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class LocalityViewModel(application: Application): AndroidViewModel(application) {
 
-    val localityList: LiveData<List<Locality>>
+    val localityList: LiveData<List<LocList>>
     private val localityRepository: LocalityRepository
 
     init {
@@ -22,33 +22,29 @@ class LocalityViewModel(application: Application): AndroidViewModel(application)
         localityList = localityRepository.localityList
     }
 
-    fun insertLocality(locality: Locality){
+    fun insertLocality(locality: Locality) {
         viewModelScope.launch(Dispatchers.IO){
             localityRepository.insertLocality(locality)
         }
     }
 
-    fun updateLocality(locality: Locality){
+    fun updateLocality(locality: Locality) {
         viewModelScope.launch(Dispatchers.IO){
             localityRepository.updateLocality(locality)
         }
     }
 
-    fun deleteLocality(locality: Locality){
+    fun deleteLocality(localityId: Long) {
         viewModelScope.launch(Dispatchers.IO){
-            localityRepository.deleteLocality(locality)
+            localityRepository.deleteLocality(localityId)
         }
     }
 
-    fun getLocality(localityId: Long): Locality {
-        val locality: Locality
-        runBlocking {
-            locality = localityRepository.getLocality(localityId)
-        }
-        return locality
+    fun getLocality(localityId: Long): LiveData<Locality> {
+        return localityRepository.getLocality(localityId)
     }
 
-    fun searchLocalities(localityName: String): LiveData<List<Locality>> {
+    fun searchLocalities(localityName: String): LiveData<List<LocList>> {
         return localityRepository.searchLocalities(localityName)
     }
 }

@@ -336,13 +336,13 @@ class UpdateOccasionFragment : Fragment() {
     }
 
     private fun getHistoryWeather() {
-        if (isOnline(requireContext())){
+        if (isOnline(requireContext())) {
             val weather = Weather(requireContext())
-            val locality: Locality = localityViewModel.getLocality(currentOccasion.localityID)
+            val locality = args.locList
 
             val unixtime = currentOccasion.occasionDateTimeCreated.time
 
-            weather.getHistoricalWeatherByCoordinates(locality.xA, locality.yA, unixtime, object: Weather.VolleyResponseListener{
+            weather.getHistoricalWeatherByCoordinates(locality.xA, locality.yA, unixtime, object: Weather.VolleyResponseListener {
                 override fun onResponse(temp: Int, weather: String) {
                     binding.etTemperature.setText(temp.toString())
                     binding.etWeather.setText(weather)

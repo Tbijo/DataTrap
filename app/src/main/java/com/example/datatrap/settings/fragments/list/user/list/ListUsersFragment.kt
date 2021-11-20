@@ -51,7 +51,7 @@ class ListUsersFragment : Fragment() {
                 // a predchadzajuceho neaktivneho
                 // nepovolit manipulaciu s rootom
                 if (userList[position].userName != "root" && userList[position].password != "toor"){
-                    inactiveAllUsers()
+                    userViewModel.inactiveAllUsers()
                     val user: User = userList[position]
                     user.isActive = 1
                     userViewModel.updateUser(user)
@@ -85,16 +85,6 @@ class ListUsersFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    private fun inactiveAllUsers(){
-        val activeUserList: List<User> = userViewModel.getActiveUsers()
-        if (activeUserList.isNotEmpty()){
-            activeUserList.forEach {
-                it.isActive = 0
-                userViewModel.updateUser(it)
-            }
-        }
     }
 
 }

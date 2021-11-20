@@ -38,7 +38,7 @@ class UpdateSessionFragment : Fragment() {
             deleteAssociationWithLocality()
         }
 
-        localitySessionViewModel.existsLocalSessCrossRef(args.locality.localityId, args.session.sessionId).observe(viewLifecycleOwner, {
+        localitySessionViewModel.existsLocalSessCrossRef(args.locList.localityId, args.session.sessionId).observe(viewLifecycleOwner, {
             binding.btnDelAssoc.isEnabled = it
         })
 
@@ -72,7 +72,7 @@ class UpdateSessionFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
             // vymazat session
-            val localSessCrossRef = LocalitySessionCrossRef(args.locality.localityId, args.session.sessionId)
+            val localSessCrossRef = LocalitySessionCrossRef(args.locList.localityId, args.session.sessionId)
             localitySessionViewModel.deleteLocalitySessionCrossRef(localSessCrossRef)
 
             Toast.makeText(requireContext(),"Association deleted.", Toast.LENGTH_LONG).show()

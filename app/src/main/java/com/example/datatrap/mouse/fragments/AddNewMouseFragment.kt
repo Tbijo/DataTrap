@@ -13,6 +13,7 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddNewMouseBinding
 import com.example.datatrap.models.*
+import com.example.datatrap.models.tuples.SpecSelectList
 import com.example.datatrap.mouse.fragments.generator.CodeGenerator
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
@@ -31,7 +32,7 @@ class AddNewMouseFragment : Fragment() {
     private lateinit var sharedViewModel: SharedViewModel
     private lateinit var userViewModel: UserViewModel
 
-    private lateinit var listSpecie: List<Specie>
+    private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
     private lateinit var activeCodeList: List<Int>
 
@@ -42,8 +43,9 @@ class AddNewMouseFragment : Fragment() {
     private var age: String? = null
     private var captureID: String? = null
     private var speciesID: Long = 0
-    private var specie: Specie? = null
+    private var specie: SpecSelectList? = null
     private var protocolID: Long? = null
+    private lateinit var currentUser: User
 
     private val MILLIS_IN_SECOND = 1000L
     private val SECONDS_IN_MINUTE = 60
@@ -84,16 +86,9 @@ class AddNewMouseFragment : Fragment() {
             activeCodeList = codeList
         })
 
-        // generate code this is to get team
-        userViewModel.activeUser.observe(viewLifecycleOwner, { user ->
-            if (user != null) {
-                val codeGen = CodeGenerator(oldCode, specie?.upperFingers!!, user.team, activeCodeList)
-                code = codeGen.generateCode()
-                if(code == 0) {
-                    Toast.makeText(requireContext(), "No code is available.", Toast.LENGTH_LONG).show()
-                }
-                binding.etCodeMouseAdd.setText(code.toString())
-            }
+        // get user for
+        userViewModel.getActiveUser().observe(viewLifecycleOwner, {
+            currentUser = it
         })
 
         setHasOptionsMenu(true)
@@ -129,7 +124,7 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun fillDropDown() {
-        specieViewModel.specieList.observe(viewLifecycleOwner, {
+        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner, {
             listSpecie = it
             val listCode = mutableListOf<String>()
             it.forEach { specie ->
@@ -219,7 +214,14 @@ class AddNewMouseFragment : Fragment() {
             return
         }
 
-        userViewModel.getActiveUser()
+        if (currentUser != null) {
+            val codeGen = CodeGenerator(oldCode, specie?.upperFingers!!, currentUser.team, activeCodeList)
+            code = codeGen.generateCode()
+            if(code == 0) {
+                Toast.makeText(requireContext(), "No code is available.", Toast.LENGTH_LONG).show()
+            }
+            binding.etCodeMouseAdd.setText(code.toString())
+        }
     }
 
     private fun hideNonMaleFields(){

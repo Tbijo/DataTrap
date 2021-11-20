@@ -8,27 +8,35 @@ class UserRepository(private val userDao: UserDao) {
 
     val userList: LiveData<List<User>> = userDao.getUsers()
 
-    suspend fun insertUser(user: User){
+    suspend fun insertUser(user: User) {
         userDao.insertUser(user)
     }
 
-    suspend fun updateUser(user: User){
+    suspend fun updateUser(user: User) {
         userDao.updateUser(user)
     }
 
-    suspend fun deleteUser(user: User){
+    suspend fun deleteUser(user: User) {
         userDao.deleteUser(user)
     }
 
-    suspend fun getActiveUser(): User {
+    fun getActiveUser(): LiveData<User> {
         return userDao.getActiveUser()
     }
 
-    suspend fun getActiveUsers(): List<User>{
-        return userDao.getActiveUsers()
+    suspend fun inactiveAllUsers() {
+        return userDao.inactiveAllUsers()
     }
 
-    suspend fun checkUser(userName: String, password: String): User {
+    fun checkUser(userName: String, password: String): LiveData<Long> {
         return userDao.checkUser(userName, password)
+    }
+
+    suspend fun setActiveUser(team: Int, userId: Long) {
+        userDao.setActiveUser(team, userId)
+    }
+
+    suspend fun inactivateUser() {
+        userDao.inactivateUser()
     }
 }

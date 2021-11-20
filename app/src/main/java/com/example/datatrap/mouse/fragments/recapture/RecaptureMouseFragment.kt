@@ -15,6 +15,7 @@ import com.example.datatrap.databinding.FragmentRecaptureMouseBinding
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.Protocol
 import com.example.datatrap.models.Specie
+import com.example.datatrap.models.tuples.SpecSelectList
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
@@ -35,7 +36,7 @@ class RecaptureMouseFragment : Fragment() {
     private lateinit var sharedViewModel: SharedViewModel
     var deviceID: String = ""
 
-    private lateinit var listSpecie: List<Specie>
+    private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
 
     private lateinit var currentMouse: Mouse
@@ -43,7 +44,7 @@ class RecaptureMouseFragment : Fragment() {
     private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
-    private var specie: Specie? = null
+    private var specie: SpecSelectList? = null
     private var speciesID: Long? = null
     private var protocolID: Long? = null
 
@@ -109,7 +110,7 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     private fun fillDropDown(mouse: Mouse) {
-        specieViewModel.specieList.observe(viewLifecycleOwner, {
+        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner, {
             listSpecie = it
             val listCode = mutableListOf<String>()
             it.forEach { specie ->

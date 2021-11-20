@@ -3,21 +3,17 @@ package com.example.datatrap.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.User
 import com.example.datatrap.repositories.UserRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     private val userRepository: UserRepository
     val userList: LiveData<List<User>>
-    val checkUser: MutableLiveData<User> = MutableLiveData()
-    val activeUser: MutableLiveData<User> = MutableLiveData()
 
     init {
         val userDao = TrapDatabase.getDatabase(application).userDao()
@@ -43,25 +39,29 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun getActiveUser() {
-        viewModelScope.launch {
-            val user = userRepository.getActiveUser()
-            activeUser.value = user
+    fun getActiveUser(): LiveData<User> {
+        return userRepository.getActiveUser()
+    }
+
+    fun inactiveAllUsers() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.inactiveAllUsers()
         }
     }
 
-    fun getActiveUsers(): List<User> {
-        var list: List<User>
-        runBlocking {
-            list = userRepository.getActiveUsers()
-        }
-        return list
+    fun checkUser(userName: String, password: String): LiveData<Long> {
+        return userRepository.checkUser(userName, password)
     }
 
-    fun checkUser(userName: String, password: String) {
-        viewModelScope.launch {
-            val user: User = userRepository.checkUser(userName, password)
-            checkUser.value = user
+    fun setActiveUser(team: Int, userId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.setActiveUser(team, userId)
+        }
+    }
+
+    fun inactivateUser() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userRepository.inactivateUser()
         }
     }
 }

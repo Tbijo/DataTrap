@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.LocalityRowBinding
-import com.example.datatrap.models.Locality
+import com.example.datatrap.models.tuples.LocList
 import java.text.SimpleDateFormat
 
 class PrjLocalityRecyclerAdapter : RecyclerView.Adapter<PrjLocalityRecyclerAdapter.MyViewHolder>() {
 
-    private var localityList = emptyList<Locality>()
+    private var localityList = emptyList<LocList>()
 
-    class MyViewHolder(val binding: LocalityRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
+    class MyViewHolder(val binding: LocalityRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.localityRow.setOnClickListener {
                 listener.useClickListener(adapterPosition)
@@ -31,7 +31,7 @@ class PrjLocalityRecyclerAdapter : RecyclerView.Adapter<PrjLocalityRecyclerAdapt
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = localityList[position]
         holder.binding.tvName.text = currenItem.localityName
-        holder.binding.tvDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.localityDateTimeCreated)
+        holder.binding.tvDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.dateTime)
         holder.binding.tvNumSes.text = currenItem.numSessions.toString()
     }
 
@@ -39,7 +39,7 @@ class PrjLocalityRecyclerAdapter : RecyclerView.Adapter<PrjLocalityRecyclerAdapt
         return localityList.size
     }
 
-    fun setData(localities: List<Locality>){
+    fun setData(localities: List<LocList>){
         this.localityList = localities
         notifyDataSetChanged()
     }

@@ -6,14 +6,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Specie
+import com.example.datatrap.models.tuples.SpecList
+import com.example.datatrap.models.tuples.SpecSelectList
 import com.example.datatrap.repositories.SpecieRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class SpecieViewModel(application: Application): AndroidViewModel(application) {
 
-    val specieList: LiveData<List<Specie>>
+    val specieList: LiveData<List<SpecList>>
     private val specieRepository: SpecieRepository
 
     init {
@@ -34,21 +35,21 @@ class SpecieViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun deleteSpecie(specie: Specie){
+    fun deleteSpecie(specieId: Long){
         viewModelScope.launch(Dispatchers.IO) {
-            specieRepository.deleteSpecie(specie)
+            specieRepository.deleteSpecie(specieId)
         }
     }
 
-    fun getSpecie(specieId: Long): Specie {
-        val specie: Specie
-        runBlocking {
-            specie = specieRepository.getSpecie(specieId)
-        }
-        return specie
+    fun getSpecie(specieId: Long): LiveData<Specie> {
+        return specieRepository.getSpecie(specieId)
     }
 
-    fun searchSpecies(specieCode: String): LiveData<List<Specie>>{
+    fun getSpeciesForSelect(): LiveData<List<SpecSelectList>> {
+        return specieRepository.getSpeciesForSelect()
+    }
+
+    fun searchSpecies(specieCode: String): LiveData<List<SpecList>>{
         return specieRepository.searchSpecies(specieCode)
     }
 }

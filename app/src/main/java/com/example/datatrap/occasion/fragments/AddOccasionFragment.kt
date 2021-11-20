@@ -70,8 +70,7 @@ class AddOccasionFragment : Fragment() {
         setListeners()
 
         // nastavit leg na meno usera
-        userViewModel.getActiveUser()
-        userViewModel.activeUser.observe(viewLifecycleOwner, {
+        userViewModel.getActiveUser().observe(viewLifecycleOwner, {
             if (it != null) {
                 binding.etLeg.setText(it.userName)
             }
@@ -242,7 +241,7 @@ class AddOccasionFragment : Fragment() {
                 0,
                 occasionNum,
                 deviceID,
-                args.locality.localityId,
+                args.locList.localityId,
                 args.session.sessionId,
                 method,
                 methodType,
@@ -292,8 +291,8 @@ class AddOccasionFragment : Fragment() {
         if (isOnline(requireContext())) {
             val weather = Weather(requireContext())
             weather.getCurrentWeatherByCoordinates(
-                args.locality.xA,
-                args.locality.yA,
+                args.locList.xA,
+                args.locList.yA,
                 object : Weather.VolleyResponseListener {
                     override fun onResponse(temp: Int, weather: String) {
                         binding.etTemperature.setText(temp.toString())

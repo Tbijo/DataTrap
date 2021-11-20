@@ -3,7 +3,6 @@ package com.example.datatrap.project.fragments.list
 import android.os.Bundle
 import android.provider.Settings
 import android.text.InputType
-import android.util.Log
 import android.view.*
 import android.widget.EditText
 import android.widget.Toast
@@ -55,16 +54,6 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
             showAddDialog("New Project", "Project Name", "Add new project?")
         }
 
-        // log out
-        userViewModel.activeUser.observe(viewLifecycleOwner, {
-            if (it != null) {
-                it.isActive = 0
-                userViewModel.updateUser(it)
-                val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToMainActivity()
-                findNavController().navigate(action)
-            }
-        })
-
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -89,7 +78,9 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun logOut() {
-        userViewModel.getActiveUser()
+        userViewModel.inactivateUser()
+        val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToMainActivity()
+        findNavController().navigate(action)
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {

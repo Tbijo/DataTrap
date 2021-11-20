@@ -3,28 +3,34 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.SpecieDao
 import com.example.datatrap.models.Specie
+import com.example.datatrap.models.tuples.SpecList
+import com.example.datatrap.models.tuples.SpecSelectList
 
 class SpecieRepository(private val specieDao: SpecieDao) {
 
-    suspend fun insertSpecie(specie: Specie){
+    val specieList: LiveData<List<SpecList>> = specieDao.getSpecies()
+
+    suspend fun insertSpecie(specie: Specie) {
         specieDao.insertSpecie(specie)
     }
 
-    suspend fun updateSpecie(specie: Specie){
+    suspend fun updateSpecie(specie: Specie) {
         specieDao.updateSpecie(specie)
     }
 
-    suspend fun deleteSpecie(specie: Specie){
-        specieDao.deleteSpecie(specie)
+    suspend fun deleteSpecie(specieId: Long) {
+        specieDao.deleteSpecie(specieId)
     }
 
-    suspend fun getSpecie(specieId: Long): Specie {
+    fun getSpecie(specieId: Long): LiveData<Specie> {
         return specieDao.getSpecie(specieId)
     }
 
-    val specieList: LiveData<List<Specie>> = specieDao.getSpecies()
+    fun getSpeciesForSelect(): LiveData<List<SpecSelectList>> {
+        return specieDao.getSpeciesForSelect()
+    }
 
-    fun searchSpecies(specieCode: String): LiveData<List<Specie>> {
+    fun searchSpecies(specieCode: String): LiveData<List<SpecList>> {
         return specieDao.searchSpecies(specieCode)
     }
 

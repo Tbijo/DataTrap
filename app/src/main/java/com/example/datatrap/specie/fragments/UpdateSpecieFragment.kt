@@ -28,6 +28,7 @@ class UpdateSpecieFragment : Fragment() {
 
     private var imgName: String? = null
     private var upperFingers: Int? = null
+    private lateinit var currentSpecie: Specie
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +42,7 @@ class UpdateSpecieFragment : Fragment() {
         sharedViewModel.dataToShare.observe(requireActivity(), {
             imgName = it
         })
-        imgName = args.specie.imgName
+        imgName = args.specList.imgName
 
         pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
             // odstranit fyzicku zlozku
@@ -50,7 +51,7 @@ class UpdateSpecieFragment : Fragment() {
             //odstranit zaznam z databazy
             pictureViewModel.deletePicture(it)
 
-            specieViewModel.deleteSpecie(args.specie)
+            specieViewModel.deleteSpecie(args.specList.specieId)
 
             Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
 
@@ -65,7 +66,10 @@ class UpdateSpecieFragment : Fragment() {
             }
         }
 
-        initSpecieValuesToView()
+        specieViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
+            currentSpecie = it
+            initSpecieValuesToView(it)
+        })
 
         setHasOptionsMenu(true)
         return binding.root
@@ -94,28 +98,28 @@ class UpdateSpecieFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun initSpecieValuesToView(){
-        binding.etSpeciesCode.setText(args.specie.speciesCode)
-        binding.etFullName.setText(args.specie.fullName)
-        binding.etAuthority.setText(args.specie.authority.toString())
-        binding.etDescription.setText(args.specie.description.toString())
-        binding.etSynonym.setText(args.specie.synonym.toString())
+    private fun initSpecieValuesToView(specie: Specie){
+        binding.etSpeciesCode.setText(specie.speciesCode)
+        binding.etFullName.setText(specie.fullName)
+        binding.etAuthority.setText(specie.authority.toString())
+        binding.etDescription.setText(specie.description.toString())
+        binding.etSynonym.setText(specie.synonym.toString())
 
-        when(args.specie.upperFingers){
+        when(specie.upperFingers){
             4 -> binding.rb4.isChecked = true
             5 -> binding.rb5.isChecked = true
         }
 
-        binding.etMaxWeight.setText(args.specie.maxWeight.toString())
-        binding.etMinWeight.setText(args.specie.maxWeight.toString())
+        binding.etMaxWeight.setText(specie.maxWeight.toString())
+        binding.etMinWeight.setText(specie.maxWeight.toString())
 
-        binding.etUpBodyLen.setText(args.specie.bodyLength.toString())
-        binding.etUpTailLen.setText(args.specie.tailLength.toString())
-        binding.etUpMinFeet.setText(args.specie.feetLengthMin.toString())
-        binding.etUpFeetMax.setText(args.specie.feetLengthMax.toString())
+        binding.etUpBodyLen.setText(specie.bodyLength.toString())
+        binding.etUpTailLen.setText(specie.tailLength.toString())
+        binding.etUpMinFeet.setText(specie.feetLengthMin.toString())
+        binding.etUpFeetMax.setText(specie.feetLengthMax.toString())
 
-        binding.cbIsSmallMammal.isChecked = args.specie.isSmallMammal
-        binding.etNote.setText(args.specie.note.toString())
+        binding.cbIsSmallMammal.isChecked = specie.isSmallMammal
+        binding.etNote.setText(specie.note.toString())
     }
 
     private fun deleteSpecie() {
@@ -125,7 +129,7 @@ class UpdateSpecieFragment : Fragment() {
             if (imgName != null) {
                 pictureViewModel.getPictureById(imgName!!)
             } else {
-                specieViewModel.deleteSpecie(args.specie)
+                specieViewModel.deleteSpecie(args.specList.specieId)
 
                 Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
 
@@ -144,7 +148,7 @@ class UpdateSpecieFragment : Fragment() {
 
         if (checkInput(speciesCode, fullName)){
 
-            val specie: Specie = args.specie.copy()
+            val specie: Specie = currentSpecie.copy()
             specie.speciesCode = speciesCode
             specie.fullName = fullName
             specie.authority = if (isTextNull(binding.etAuthority.text.toString())) null else binding.etAuthority.text.toString()

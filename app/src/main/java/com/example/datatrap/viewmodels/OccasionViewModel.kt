@@ -10,7 +10,6 @@ import com.example.datatrap.models.tuples.OccList
 import com.example.datatrap.repositories.OccasionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class OccasionViewModel(application: Application): AndroidViewModel(application) {
 

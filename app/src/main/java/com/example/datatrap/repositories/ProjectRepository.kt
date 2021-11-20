@@ -6,6 +6,8 @@ import com.example.datatrap.models.Project
 
 class ProjectRepository(private val projectDao: ProjectDao) {
 
+    val projectList: LiveData<List<Project>> = projectDao.getProjects()
+
     suspend fun insertProject(project: Project){
         projectDao.insertProject(project)
     }
@@ -17,12 +19,6 @@ class ProjectRepository(private val projectDao: ProjectDao) {
     suspend fun deleteProject(project: Project){
         projectDao.deleteProject(project)
     }
-
-    suspend fun getProject(projectId: Long): Project {
-        return projectDao.getProject(projectId)
-    }
-
-    val projectList: LiveData<List<Project>> = projectDao.getProjects()
 
     fun searchProjects(projectName: String): LiveData<List<Project>>{
         return projectDao.searchProjects(projectName)

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -74,8 +73,7 @@ class ListSpecieFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun searchForData(query: String?) {
         val searchQuery = "%$query%"
-
-        specieViewModel.searchSpecies(searchQuery).observe(viewLifecycleOwner, Observer { species ->
+        specieViewModel.searchSpecies(searchQuery).observe(viewLifecycleOwner, { species ->
             species.let {
                 adapter.setData(it)
             }

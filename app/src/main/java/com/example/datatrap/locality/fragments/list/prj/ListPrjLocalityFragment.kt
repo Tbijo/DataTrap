@@ -13,8 +13,8 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
-import com.example.datatrap.models.Locality
 import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
+import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
 import com.example.datatrap.viewmodels.ProjectViewModel
 
@@ -26,7 +26,7 @@ class ListPrjLocalityFragment : Fragment() {
     private lateinit var projectViewModel: ProjectViewModel
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListPrjLocalityFragmentArgs>()
-    private lateinit var localityList: List<Locality>
+    private lateinit var localityList: List<LocList>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,8 +48,20 @@ class ListPrjLocalityFragment : Fragment() {
         recyclerView.addItemDecoration(dividerItemDecoration)
 
         prjLocalityViewModel.getLocalitiesForProject(args.project.projectId).observe(viewLifecycleOwner, {
-            adapter.setData(it.first().localities)
-            localityList = it.first().localities
+            val locList = mutableListOf<LocList>()
+            it.first().localities.forEach { locality ->
+                val loc = LocList(
+                    locality.localityId,
+                    locality.localityName,
+                    locality.localityDateTimeCreated,
+                    locality.xA,
+                    locality.yA,
+                    locality.numSessions
+                )
+                locList.add(loc)
+            }
+            adapter.setData(locList)
+            localityList = locList
         })
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
@@ -61,14 +73,14 @@ class ListPrjLocalityFragment : Fragment() {
 
             override fun useLongClickListener(position: Int) {
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setPositiveButton("Yes"){_, _ ->
+                builder.setPositiveButton("Yes") {_, _ ->
 
                     // vymazat kombinaciu projektu a vybranej lokality
                     deleteCombination(position)
 
                     Toast.makeText(requireContext(),"Association deleted.", Toast.LENGTH_LONG).show()
                 }
-                    .setNegativeButton("No"){_, _ -> }
+                    .setNegativeButton("No") {_, _ -> }
                     .setTitle("Delete Association?")
                     .setMessage("Are you sure you want to delete this association?")
                     .create().show()
@@ -90,14 +102,12 @@ class ListPrjLocalityFragment : Fragment() {
     }
 
     private fun goToSession(position: Int){
-        val locality: Locality = localityList[position]
-        val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(args.project, locality)
+        val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(args.project, localityList[position])
         findNavController().navigate(action)
     }
 
     private fun deleteCombination(position: Int){
-        val locality: Locality = localityList[position]
-        val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, locality.localityId)
+        val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, localityList[position].localityId)
         prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
     }
 

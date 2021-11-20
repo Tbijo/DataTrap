@@ -58,15 +58,15 @@ class ListPrjSessionFragment : Fragment() {
             override fun useClickListener(position: Int) {
                 // vytvorit spojenie medzi vybranou locality a session
                 val session: Session = sessionList[position]
-                localitySessionViewModel.existsLocalSessCrossRef(args.locality.localityId, session.sessionId).observe(viewLifecycleOwner, {
+                localitySessionViewModel.existsLocalSessCrossRef(args.locList.localityId, session.sessionId).observe(viewLifecycleOwner, {
                     if (it == false) {
-                        val kombLocSess = LocalitySessionCrossRef(args.locality.localityId, session.sessionId)
+                        val kombLocSess = LocalitySessionCrossRef(args.locList.localityId, session.sessionId)
                         localitySessionViewModel.insertLocalitySessionCrossRef(kombLocSess)
                     }
                     // ideme do occasion
                     val action =
                         ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(
-                            session, args.locality
+                            session, args.locList
                         )
                     findNavController().navigate(action)
                 })
@@ -77,7 +77,7 @@ class ListPrjSessionFragment : Fragment() {
                 val session: Session = sessionList[position]
                 val action =
                     ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(
-                        session, args.locality
+                        session, args.locList
                     )
                 findNavController().navigate(action)
             }

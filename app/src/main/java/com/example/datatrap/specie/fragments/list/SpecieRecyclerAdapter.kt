@@ -6,10 +6,11 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.SpecieRowBinding
 import com.example.datatrap.models.Specie
+import com.example.datatrap.models.tuples.SpecList
 
 class SpecieRecyclerAdapter : RecyclerView.Adapter<SpecieRecyclerAdapter.MyViewHolder>() {
 
-    private var specieList = emptyList<Specie>()
+    private var specieList = emptyList<SpecList>()
 
     class MyViewHolder(val binding: SpecieRowBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -40,7 +41,7 @@ class SpecieRecyclerAdapter : RecyclerView.Adapter<SpecieRecyclerAdapter.MyViewH
         return specieList.size
     }
 
-    fun setData(species: List<Specie>){
+    fun setData(species: List<SpecList>){
         this.specieList = species
         notifyDataSetChanged()
     }

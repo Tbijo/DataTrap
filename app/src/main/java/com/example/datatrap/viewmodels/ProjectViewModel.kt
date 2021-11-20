@@ -40,14 +40,6 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun getProject(projectId: Long): Project {
-        val project: Project
-        runBlocking {
-            project = projectRepository.getProject(projectId)
-        }
-        return project
-    }
-
     fun searchProjects(projectName: String): LiveData<List<Project>>{
         return projectRepository.searchProjects(projectName)
     }

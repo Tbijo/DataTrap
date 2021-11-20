@@ -38,14 +38,6 @@ class SessionViewModel(application: Application): AndroidViewModel(application) 
         }
     }
 
-    fun getSession(sessionId: Long): Session {
-        val session: Session
-        runBlocking {
-            session = sessionRepository.getSession(sessionId)
-        }
-        return session
-    }
-
     fun getSessionsForProject(projectId: Long): LiveData<List<Session>>{
         return sessionRepository.getSessionsForProject(projectId)
     }

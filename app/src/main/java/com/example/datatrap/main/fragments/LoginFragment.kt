@@ -1,7 +1,6 @@
 package com.example.datatrap.main.fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -30,7 +29,7 @@ class LoginFragment : Fragment() {
 
         // skontrolovat ci uz nie su iny pouzivatelia aktivny
         // ak su treba nastavit aktivitu na 0
-        inactiveAllUsers()
+        userViewModel.inactiveAllUsers()
 
         binding.btnLogin.setOnClickListener {
             logIn()
@@ -44,24 +43,6 @@ class LoginFragment : Fragment() {
             }
         }
 
-        userViewModel.checkUser.observe(viewLifecycleOwner, { user ->
-            if (user != null) {
-                // nastavit team
-                user.team = team!!
-                // tento pouzivatel je teraz aktivny vzdy moze byt len jeden
-                user.isActive = 1
-
-                userViewModel.updateUser(user)
-
-                Toast.makeText(requireContext(), "Log in successful.", Toast.LENGTH_SHORT).show()
-                val action = LoginFragmentDirections.actionLoginFragmentToProjectActivity()
-                findNavController().navigate(action)
-            } else {
-                Toast.makeText(requireContext(), "Wrong user name or password.", Toast.LENGTH_LONG)
-                    .show()
-            }
-        })
-
         return binding.root
     }
 
@@ -74,36 +55,33 @@ class LoginFragment : Fragment() {
         super.onResume()
         // skontrolovat ci uz nie su iny pouzivatelia aktivny
         // ak su treba nastavit aktivitu na 0
-        inactiveAllUsers()
+        userViewModel.inactiveAllUsers()
     }
 
     private fun logIn() {
         val userName = binding.etUserName.text.toString()
         val pass = binding.etPassword.text.toString()
         if (checkInput(userName, pass, team)) {
-            checkAuthority(userName, pass)
+            userViewModel.checkUser(userName, pass).observe(viewLifecycleOwner, {
+                if (it != null) {
+
+                    userViewModel.setActiveUser(team!!, it)
+                    Toast.makeText(requireContext(), "Log in successful.", Toast.LENGTH_SHORT).show()
+                    val action = LoginFragmentDirections.actionLoginFragmentToProjectActivity()
+                    findNavController().navigate(action)
+
+                } else {
+                    Toast.makeText(requireContext(), "Wrong user name or password.", Toast.LENGTH_LONG)
+                        .show()
+                }
+            })
         } else {
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG)
                 .show()
         }
     }
 
-    private fun checkAuthority(userName: String, pass: String) {
-        userViewModel.checkUser(userName, pass)
-    }
-
     private fun checkInput(userName: String, pass: String, team: Int?): Boolean {
         return userName.isNotEmpty() && pass.isNotEmpty() && team != null
-    }
-
-    private fun inactiveAllUsers() {
-        val listActiveUsers = userViewModel.getActiveUsers()
-
-        if (listActiveUsers.isNotEmpty()) {
-            listActiveUsers.forEach { user ->
-                user.isActive = 0
-                userViewModel.updateUser(user)
-            }
-        }
     }
 }
