@@ -28,7 +28,7 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.inactiveAllUsers()
     }
 
-    fun checkUser(userName: String, password: String): LiveData<Long> {
+    suspend fun checkUser(userName: String, password: String): Long {
         return userDao.checkUser(userName, password)
     }
 

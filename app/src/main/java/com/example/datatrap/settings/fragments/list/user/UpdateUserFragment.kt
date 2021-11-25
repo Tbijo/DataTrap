@@ -33,7 +33,7 @@ class UpdateUserFragment : Fragment() {
 
         initUserValuseToView()
 
-        binding.rgTeamUpdate.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgTeamUpdate.setOnCheckedChangeListener { _, radioButtonId ->
             when(radioButtonId){
                 binding.rbEven.id -> team =  EnumTeam.EVEN_TEAM.numTeam
                 binding.rbOdd.id -> team =  EnumTeam.ODD_TEAM.numTeam

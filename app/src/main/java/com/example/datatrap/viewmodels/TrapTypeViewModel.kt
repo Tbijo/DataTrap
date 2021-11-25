@@ -21,19 +21,19 @@ class TrapTypeViewModel(application: Application): AndroidViewModel(application)
         trapTypeList = trapTypeRepository.trapTypeList
     }
 
-    fun insertTrapType(trapType: TrapType){
+    fun insertTrapType(trapType: TrapType) {
         viewModelScope.launch(Dispatchers.IO) {
             trapTypeRepository.insertTrapType(trapType)
         }
     }
 
-    fun updateTrapType(trapType: TrapType){
+    fun updateTrapType(trapType: TrapType) {
         viewModelScope.launch(Dispatchers.IO) {
             trapTypeRepository.updateTrapType(trapType)
         }
     }
 
-    fun deleteTrapType(trapType: TrapType){
+    fun deleteTrapType(trapType: TrapType) {
         viewModelScope.launch(Dispatchers.IO) {
             trapTypeRepository.deleteTrapType(trapType)
         }

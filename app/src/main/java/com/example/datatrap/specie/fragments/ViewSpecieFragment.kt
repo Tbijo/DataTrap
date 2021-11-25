@@ -10,7 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.databinding.FragmentViewSpecieBinding
 import com.example.datatrap.models.Specie
-import com.example.datatrap.viewmodels.PictureViewModel
+import com.example.datatrap.picture.fragments.ViewImageFragment
+import com.example.datatrap.viewmodels.SpecieImageViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
 
 class ViewSpecieFragment : Fragment() {
@@ -18,26 +19,35 @@ class ViewSpecieFragment : Fragment() {
     private var _binding: FragmentViewSpecieBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<ViewSpecieFragmentArgs>()
-    private lateinit var pictureViewModel: PictureViewModel
     private lateinit var specieViewModel: SpecieViewModel
+    private lateinit var specieImageViewModel: SpecieImageViewModel
+    private var path: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentViewSpecieBinding.inflate(inflater, container, false)
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
+        specieImageViewModel = ViewModelProvider(this).get(SpecieImageViewModel::class.java)
 
-        if (args.specList.imgName != null){
-            pictureViewModel.getPictureById(args.specList.imgName!!)
-        }
-        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
-            binding.ivPicture.setImageURI(it.path.toUri())
+        specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
+            if (it != null) {
+                binding.ivPicture.setImageURI(it.path.toUri())
+                path = it.path
+            }
         })
 
         specieViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
             initSpecieValuesToView(it)
         })
+
+        binding.ivPicture.setOnClickListener {
+            if (path != null) {
+                val fragman = requireActivity().supportFragmentManager
+                val floatFrag = ViewImageFragment(path!!)
+                floatFrag.show(fragman, "FloatFragViewImage")
+            }
+        }
 
         return binding.root
     }
@@ -47,7 +57,7 @@ class ViewSpecieFragment : Fragment() {
         _binding = null
     }
 
-    private fun initSpecieValuesToView(specie: Specie){
+    private fun initSpecieValuesToView(specie: Specie) {
         binding.tvSpecieCodeView.text = specie.speciesCode
         binding.tvFullName.text = specie.fullName
         binding.tvAuthority.text = specie.authority.toString()

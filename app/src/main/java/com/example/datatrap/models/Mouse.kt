@@ -1,6 +1,7 @@
 package com.example.datatrap.models
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
@@ -27,15 +28,19 @@ data class Mouse(
     var primeMouseID: Long?,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var speciesID: Long,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var protocolID: Long?,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var occasionID: Long,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var localityID: Long,
 
     var trapID: Int?,
@@ -86,6 +91,4 @@ data class Mouse(
 
     var note: String?,
 
-    // cudzi kluc
-    var imgName: String?,
 ): Parcelable

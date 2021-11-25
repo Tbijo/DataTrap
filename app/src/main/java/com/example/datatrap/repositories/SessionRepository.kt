@@ -6,19 +6,19 @@ import com.example.datatrap.models.Session
 
 class SessionRepository(private val sessionDao: SessionDao) {
 
-    suspend fun insertSession(session: Session){
+    suspend fun insertSession(session: Session) {
         sessionDao.insertSession(session)
     }
 
-    suspend fun updateSession(session: Session){
+    suspend fun updateSession(session: Session) {
         sessionDao.updateSession(session)
     }
 
-    suspend fun deleteSession(session: Session){
+    suspend fun deleteSession(session: Session) {
         sessionDao.deleteSession(session)
     }
 
-    fun getSessionsForProject(projectId: Long): LiveData<List<Session>>{
+    fun getSessionsForProject(projectId: Long): LiveData<List<Session>> {
         return sessionDao.getSessionsForProject(projectId)
     }
 }

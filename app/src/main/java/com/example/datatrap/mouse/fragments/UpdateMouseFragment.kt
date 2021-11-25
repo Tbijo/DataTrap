@@ -28,15 +28,14 @@ class UpdateMouseFragment : Fragment() {
     private lateinit var mouseViewModel: MouseViewModel
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var protocolViewModel: ProtocolViewModel
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var pictureViewModel: PictureViewModel
+    private lateinit var mouseImageViewModel: MouseImageViewModel
 
     private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
 
     private lateinit var currentMouse: Mouse
+    private var mouseImage: MouseImage? = null
     private var sex: String? = null
-    private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
     private var specie: SpecSelectList? = null
@@ -48,8 +47,7 @@ class UpdateMouseFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateMouseBinding.inflate(inflater, container, false)
         mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
-        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
-
+        mouseImageViewModel = ViewModelProvider(this).get(MouseImageViewModel::class.java)
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
@@ -59,24 +57,8 @@ class UpdateMouseFragment : Fragment() {
             fillDropDown(it)
         })
 
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), {
-            imgName = it
-        })
-        imgName = args.mouseOccTuple.imgName
-
-        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
-            // odstranit fyzicku zlozku
-            val myFile = File(it.path)
-            if (myFile.exists()) myFile.delete()
-            //odstranit zaznam z databazy
-            pictureViewModel.deletePicture(it)
-
-            mouseViewModel.deleteMouse(args.mouseOccTuple.mouseId)
-
-            Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
-
-            findNavController().navigateUp()
+        mouseImageViewModel.getImageForMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner, {
+            mouseImage = it
         })
 
         setListeners()
@@ -110,6 +92,14 @@ class UpdateMouseFragment : Fragment() {
             R.id.menu_delete -> deleteMouse()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun deleteImage() {
+        if (mouseImage != null) {
+            // odstranit fyzicku zlozku
+            val myFile = File(mouseImage!!.path)
+            if (myFile.exists()) myFile.delete()
+        }
     }
 
     private fun fillDropDown(mouse: Mouse) {
@@ -209,7 +199,7 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun setListeners() {
-        binding.autoCompTvSpecie.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvSpecie.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             specie = listSpecie.first {
                 it.speciesCode == name
@@ -217,14 +207,14 @@ class UpdateMouseFragment : Fragment() {
             speciesID = specie!!.specieId
         }
 
-        binding.autoCompTvProtocol.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvProtocol.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             protocolID = listProtocol.firstOrNull {
                 it.protocolName == name
             }?.protocolId
         }
 
-        binding.rgSex.setOnCheckedChangeListener{ radioGroup, radioButtonId ->
+        binding.rgSex.setOnCheckedChangeListener{ _, radioButtonId ->
             when(radioButtonId){
                 binding.rbMale.id -> {
                     sex = EnumSex.MALE.myName
@@ -241,7 +231,7 @@ class UpdateMouseFragment : Fragment() {
             }
         }
 
-        binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgAge.setOnCheckedChangeListener { _, radioButtonId ->
             when(radioButtonId){
                 binding.rbAdult.id -> age = EnumMouseAge.ADULT.myName
                 binding.rbJuvenile.id -> age = EnumMouseAge.JUVENILE.myName
@@ -250,7 +240,7 @@ class UpdateMouseFragment : Fragment() {
             }
         }
 
-        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgCaptureId.setOnCheckedChangeListener { _, radioButtonId ->
             when(radioButtonId){
                 binding.rbCaptured.id -> captureID = EnumCaptureID.CAPTURED.myName
                 binding.rbDied.id -> captureID = EnumCaptureID.DIED.myName
@@ -292,7 +282,8 @@ class UpdateMouseFragment : Fragment() {
     }
 
     private fun goToCamera() {
-        val action = UpdateMouseFragmentDirections.actionUpdateMouseFragmentToTakePhotoFragment("Mouse", imgName)
+        val action = UpdateMouseFragmentDirections.actionUpdateMouseFragmentToTakePhotoFragment("Mouse",
+            args.mouseOccTuple.mouseId)
         findNavController().navigate(action)
     }
 
@@ -300,15 +291,13 @@ class UpdateMouseFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            if (imgName != null) {
-                pictureViewModel.getPictureById(imgName!!)
-            } else {
-                mouseViewModel.deleteMouse(args.mouseOccTuple.mouseId)
+            deleteImage()
 
-                Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
+            mouseViewModel.deleteMouse(args.mouseOccTuple.mouseId)
 
-                findNavController().navigateUp()
-            }
+            Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Mouse?")
@@ -350,7 +339,6 @@ class UpdateMouseFragment : Fragment() {
             mouse.MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
 
             mouse.note = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
-            mouse.imgName = imgName
 
             // update mouse
             if (mouse.weight != null) {

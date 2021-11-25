@@ -20,13 +20,13 @@ class ProjectLocalityViewModel(application: Application): AndroidViewModel(appli
         projectLocalityRepository = ProjectLocalityRepository(projectLocalityDao)
     }
 
-    fun insertProjectLocality(projectLocalityCrossRef: ProjectLocalityCrossRef){
+    fun insertProjectLocality(projectLocalityCrossRef: ProjectLocalityCrossRef) {
         viewModelScope.launch(Dispatchers.IO) {
             projectLocalityRepository.insertProjectLocality(projectLocalityCrossRef)
         }
     }
 
-    fun deleteProjectLocality(projectLocalityCrossRef: ProjectLocalityCrossRef){
+    fun deleteProjectLocality(projectLocalityCrossRef: ProjectLocalityCrossRef) {
         viewModelScope.launch(Dispatchers.IO) {
             projectLocalityRepository.deleteProjectLocality(projectLocalityCrossRef)
         }

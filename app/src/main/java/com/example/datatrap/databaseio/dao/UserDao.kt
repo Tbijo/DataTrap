@@ -26,7 +26,7 @@ interface UserDao {
     suspend fun inactiveAllUsers()
 
     @Query("SELECT userId FROM User WHERE userName = :userName AND password = :password")
-    fun checkUser(userName: String, password: String): LiveData<Long>
+    suspend fun checkUser(userName: String, password: String): Long
 
     @Query("UPDATE User SET team = :team, isActive = 1 WHERE userId = :userId")
     suspend fun setActiveUser(team: Int, userId: Long)

@@ -1,5 +1,6 @@
 package com.example.datatrap.models.projectlocality
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
@@ -16,7 +17,10 @@ data class ProjectLocalityCrossRef(
     // bude obsahovat primarne kluce oboch tabuliek
     // ani jeden z nich vsak nebude primarny kluc lebo ich kombinacia bude
 
+    @ColumnInfo(index = true)
     var projectId: Long, // primarny kluc tabulky project
+
+    @ColumnInfo(index = true)
     var localityId: Long // primarny kluc tabulky locality
 
     // ak chceme vsetky projekty ktore su vo vztahu s lokalitou treba na to pomocnu triedu      -   LocalityWithProjects

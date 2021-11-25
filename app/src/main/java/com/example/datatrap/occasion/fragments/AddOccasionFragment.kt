@@ -38,14 +38,13 @@ class AddOccasionFragment : Fragment() {
     private lateinit var vegTypeList: List<VegetType>
     private lateinit var trapTypeList: List<TrapType>
 
-    private lateinit var sharedViewModel: SharedViewModel
-    private var imgName: String? = null
-
     private var methodID: Long = 0
     private var methodTypeID: Long = 0
     private var trapTypeID: Long = 0
     private var envTypeID: Long? = null
     private var vegetTypeID: Long? = null
+
+    private var occasionId: Long = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,11 +58,6 @@ class AddOccasionFragment : Fragment() {
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
-
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), {
-            imgName = it
-        })
 
         fillDropDown()
 
@@ -105,35 +99,35 @@ class AddOccasionFragment : Fragment() {
     }
 
     private fun setListeners() {
-        binding.autoCompTvEnvType.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvEnvType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            envTypeID = envTypeList.firstOrNull() {
+            envTypeID = envTypeList.firstOrNull {
                 it.envTypeName == name
             }?.envTypeId
         }
 
-        binding.autoCompTvMethod.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvMethod.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             methodID = methodList.first {
                 it.methodName == name
             }.methodId
         }
 
-        binding.autoCompTvMethodType.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvMethodType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             methodTypeID = metTypeList.first {
                 it.methodTypeName == name
             }.methodTypeId
         }
 
-        binding.autoCompTvTrapType.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvTrapType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             trapTypeID = trapTypeList.first {
                 it.trapTypeName == name
             }.trapTypeId
         }
 
-        binding.autoCompTvVegType.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvVegType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             vegetTypeID = vegTypeList.firstOrNull {
                 it.vegetTypeName == name
@@ -207,14 +201,25 @@ class AddOccasionFragment : Fragment() {
     }
 
     private fun goToCamera() {
+        if (occasionId <= 0) {
+            Toast.makeText(requireContext(), "You need to insert a occasion first.", Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
         val action = AddOccasionFragmentDirections.actionAddOccasionFragmentToTakePhotoFragment(
             "Occasion",
-            imgName
+            occasionId
         )
         findNavController().navigate(action)
     }
 
     private fun insertOccasion() {
+        if (occasionId > 0) {
+            Toast.makeText(requireContext(), "Occasion already inserted.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         val occasionNum: Int = args.newOccasionNumber
         val method: Long = methodID
         val methodType: Long = methodTypeID
@@ -256,15 +261,17 @@ class AddOccasionFragment : Fragment() {
                 temper,
                 weat,
                 leg,
-                note,
-                imgName
+                note
             )
 
             occasionViewModel.insertOccasion(occasion)
 
             Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
 
-            findNavController().navigateUp()
+            occasionViewModel.occasionId.observe(viewLifecycleOwner, {
+                occasionId = it
+            })
+
         } else {
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG)
                 .show()

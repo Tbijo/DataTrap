@@ -32,7 +32,8 @@ class ListPrjSessionFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentListPrjSessionBinding.inflate(inflater, container, false)
         sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
         localitySessionViewModel = ViewModelProvider(this).get(LocalitySessionViewModel::class.java)
@@ -58,18 +59,17 @@ class ListPrjSessionFragment : Fragment() {
             override fun useClickListener(position: Int) {
                 // vytvorit spojenie medzi vybranou locality a session
                 val session: Session = sessionList[position]
-                localitySessionViewModel.existsLocalSessCrossRef(args.locList.localityId, session.sessionId).observe(viewLifecycleOwner, {
-                    if (it == false) {
-                        val kombLocSess = LocalitySessionCrossRef(args.locList.localityId, session.sessionId)
-                        localitySessionViewModel.insertLocalitySessionCrossRef(kombLocSess)
-                    }
-                    // ideme do occasion
-                    val action =
-                        ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(
-                            session, args.locList
-                        )
-                    findNavController().navigate(action)
-                })
+
+                val kombLocSess =
+                    LocalitySessionCrossRef(args.locList.localityId, session.sessionId)
+                localitySessionViewModel.insertLocalitySessionCrossRef(kombLocSess)
+
+                // ideme do occasion
+                val action =
+                    ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(
+                        session, args.locList
+                    )
+                findNavController().navigate(action)
             }
 
             override fun useLongClickListener(position: Int) {
@@ -110,9 +110,18 @@ class ListPrjSessionFragment : Fragment() {
     }
 
     private fun insertSession() {
-        val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
+        val deviceID: String =
+            Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
         val session: Session =
-            Session(0, (sessionList.size + 1), deviceID, args.project.projectId, 0, Calendar.getInstance().time, null)
+            Session(
+                0,
+                (sessionList.size + 1),
+                deviceID,
+                args.project.projectId,
+                0,
+                Calendar.getInstance().time,
+                null
+            )
 
         // ulozit session
         sessionViewModel.insertSession(session)
@@ -120,7 +129,6 @@ class ListPrjSessionFragment : Fragment() {
         Toast.makeText(requireContext(), "New session added.", Toast.LENGTH_SHORT).show()
 
     }
-
 
 
 }

@@ -41,8 +41,6 @@ data class Specie(
 
     var note: String?,
 
-    var imgName: String?,
-
     var specieDateTimeCreated: Date,
 
     var specieDateTimeUpdated: Date?

@@ -21,20 +21,20 @@ class ProtocolViewModel(application: Application): AndroidViewModel(application)
         procolList = protocolRepository.protocolList
     }
 
-    fun insertProtocol(protocol: Protocol){
-        viewModelScope.launch(Dispatchers.IO){
+    fun insertProtocol(protocol: Protocol) {
+        viewModelScope.launch(Dispatchers.IO) {
             protocolRepository.insertProtocol(protocol)
         }
     }
 
-    fun updateProtocol(protocol: Protocol){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updateProtocol(protocol: Protocol) {
+        viewModelScope.launch(Dispatchers.IO) {
             protocolRepository.updateProtocol(protocol)
         }
     }
 
-    fun deleteProtocol(protocol: Protocol){
-        viewModelScope.launch(Dispatchers.IO){
+    fun deleteProtocol(protocol: Protocol) {
+        viewModelScope.launch(Dispatchers.IO) {
             protocolRepository.deleteProtocol(protocol)
         }
     }

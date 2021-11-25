@@ -10,8 +10,8 @@ class SpecieRepository(private val specieDao: SpecieDao) {
 
     val specieList: LiveData<List<SpecList>> = specieDao.getSpecies()
 
-    suspend fun insertSpecie(specie: Specie) {
-        specieDao.insertSpecie(specie)
+    suspend fun insertSpecie(specie: Specie): Long {
+        return specieDao.insertSpecie(specie)
     }
 
     suspend fun updateSpecie(specie: Specie) {

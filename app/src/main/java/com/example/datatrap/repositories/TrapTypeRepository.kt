@@ -6,17 +6,17 @@ import com.example.datatrap.models.TrapType
 
 class TrapTypeRepository(private val trapTypeDao: TrapTypeDao) {
 
-    suspend fun insertTrapType(trapType: TrapType){
+    val trapTypeList: LiveData<List<TrapType>> = trapTypeDao.getTrapTypes()
+
+    suspend fun insertTrapType(trapType: TrapType) {
         trapTypeDao.insertTrapType(trapType)
     }
 
-    suspend fun updateTrapType(trapType: TrapType){
+    suspend fun updateTrapType(trapType: TrapType) {
         trapTypeDao.updateTrapType(trapType)
     }
 
-    suspend fun deleteTrapType(trapType: TrapType){
+    suspend fun deleteTrapType(trapType: TrapType) {
         trapTypeDao.deleteTrapType(trapType)
     }
-
-    val trapTypeList: LiveData<List<TrapType>> = trapTypeDao.getTrapTypes()
 }

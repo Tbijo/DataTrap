@@ -35,13 +35,32 @@ class LoginFragment : Fragment() {
             logIn()
         }
 
-        binding.rgTeam.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgTeam.setOnCheckedChangeListener { _, radioButtonId ->
             when (radioButtonId) {
                 binding.rbEven.id -> team = EnumTeam.EVEN_TEAM.numTeam
                 binding.rbOdd.id -> team = EnumTeam.ODD_TEAM.numTeam
                 binding.rbSing.id -> team = EnumTeam.SINGLE.numTeam
             }
         }
+
+        // overenie pouzivatela
+        // neda sa urobit priamo lebo ak vykonam zmenu UPDATE v tomto pripade
+        // observer sa bude volat tak funguje Room
+
+        // ak volam nieco cez suspend a ukladam to do premennej MutableLiveData
+        // cez .value nesmie sa pouzit Dispatchers.IO chyba: Can not use .value on Background Thread
+        userViewModel.userId.observe(viewLifecycleOwner, {
+            if (it != null) {
+                userViewModel.setActiveUser(team!!, it)
+                Toast.makeText(requireContext(), "Log in successful.", Toast.LENGTH_SHORT).show()
+                val action = LoginFragmentDirections.actionLoginFragmentToProjectActivity()
+                findNavController().navigate(action)
+
+            } else {
+                Toast.makeText(requireContext(), "Wrong user name or password.", Toast.LENGTH_LONG)
+                    .show()
+            }
+        })
 
         return binding.root
     }
@@ -62,19 +81,7 @@ class LoginFragment : Fragment() {
         val userName = binding.etUserName.text.toString()
         val pass = binding.etPassword.text.toString()
         if (checkInput(userName, pass, team)) {
-            userViewModel.checkUser(userName, pass).observe(viewLifecycleOwner, {
-                if (it != null) {
-
-                    userViewModel.setActiveUser(team!!, it)
-                    Toast.makeText(requireContext(), "Log in successful.", Toast.LENGTH_SHORT).show()
-                    val action = LoginFragmentDirections.actionLoginFragmentToProjectActivity()
-                    findNavController().navigate(action)
-
-                } else {
-                    Toast.makeText(requireContext(), "Wrong user name or password.", Toast.LENGTH_LONG)
-                        .show()
-                }
-            })
+            userViewModel.checkUser(userName, pass)
         } else {
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG)
                 .show()

@@ -21,19 +21,19 @@ class MethodTypeViewModel(application: Application): AndroidViewModel(applicatio
         methodTypeList = methodTypeRepository.methodTypeList
     }
 
-    fun insertMethodType(methodType: MethodType){
+    fun insertMethodType(methodType: MethodType) {
         viewModelScope.launch(Dispatchers.IO){
             methodTypeRepository.insertMethodType(methodType)
         }
     }
 
-    fun updateMethodType(methodType: MethodType){
+    fun updateMethodType(methodType: MethodType) {
         viewModelScope.launch(Dispatchers.IO){
             methodTypeRepository.updateMethodType(methodType)
         }
     }
 
-    fun deleteMethodType(methodType: MethodType){
+    fun deleteMethodType(methodType: MethodType) {
         viewModelScope.launch(Dispatchers.IO){
             methodTypeRepository.deleteMethodType(methodType)
         }

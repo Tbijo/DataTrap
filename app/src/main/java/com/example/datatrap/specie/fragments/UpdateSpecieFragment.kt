@@ -11,8 +11,8 @@ import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateSpecieBinding
 import com.example.datatrap.models.Specie
-import com.example.datatrap.viewmodels.PictureViewModel
-import com.example.datatrap.viewmodels.SharedViewModel
+import com.example.datatrap.models.SpecieImage
+import com.example.datatrap.viewmodels.SpecieImageViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
 import java.io.File
 import java.util.*
@@ -23,12 +23,11 @@ class UpdateSpecieFragment : Fragment() {
     private val binding get() = _binding!!
     private val args by navArgs<UpdateSpecieFragmentArgs>()
     private lateinit var specieViewModel: SpecieViewModel
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var pictureViewModel: PictureViewModel
+    private lateinit var specieImageViewModel: SpecieImageViewModel
 
-    private var imgName: String? = null
     private var upperFingers: Int? = null
     private lateinit var currentSpecie: Specie
+    private var specieImage: SpecieImage? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,29 +35,9 @@ class UpdateSpecieFragment : Fragment() {
     ): View? {
         _binding = FragmentUpdateSpecieBinding.inflate(inflater, container, false)
         specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
+        specieImageViewModel = ViewModelProvider(this).get(SpecieImageViewModel::class.java)
 
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), {
-            imgName = it
-        })
-        imgName = args.specList.imgName
-
-        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
-            // odstranit fyzicku zlozku
-            val myFile = File(it.path)
-            if (myFile.exists()) myFile.delete()
-            //odstranit zaznam z databazy
-            pictureViewModel.deletePicture(it)
-
-            specieViewModel.deleteSpecie(args.specList.specieId)
-
-            Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
-
-            findNavController().navigateUp()
-        })
-
-        binding.rgUpperFingers.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgUpperFingers.setOnCheckedChangeListener { _, radioButtonId ->
             when (radioButtonId){
                 binding.rb4.id -> upperFingers = 4
                 binding.rb5.id -> upperFingers = 5
@@ -69,6 +48,10 @@ class UpdateSpecieFragment : Fragment() {
         specieViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
             currentSpecie = it
             initSpecieValuesToView(it)
+        })
+
+        specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
+            specieImage = it
         })
 
         setHasOptionsMenu(true)
@@ -93,12 +76,22 @@ class UpdateSpecieFragment : Fragment() {
         _binding = null
     }
 
-    private fun goToCamera(){
-        val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureFragment(imgName)
+    private fun deleteImage() {
+        if (specieImage != null) {
+            // odstranit fyzicku zlozku
+            val myFile = File(specieImage!!.path)
+            if (myFile.exists()) myFile.delete()
+        }
+    }
+
+    private fun goToCamera() {
+        val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureFragment(
+            args.specList.specieId
+        )
         findNavController().navigate(action)
     }
 
-    private fun initSpecieValuesToView(specie: Specie){
+    private fun initSpecieValuesToView(specie: Specie) {
         binding.etSpeciesCode.setText(specie.speciesCode)
         binding.etFullName.setText(specie.fullName)
         binding.etAuthority.setText(specie.authority.toString())
@@ -126,15 +119,13 @@ class UpdateSpecieFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            if (imgName != null) {
-                pictureViewModel.getPictureById(imgName!!)
-            } else {
-                specieViewModel.deleteSpecie(args.specList.specieId)
+            deleteImage()
 
-                Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
+            specieViewModel.deleteSpecie(args.specList.specieId)
 
-                findNavController().navigateUp()
-            }
+            Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Specie?")
@@ -165,7 +156,6 @@ class UpdateSpecieFragment : Fragment() {
             specie.feetLengthMax = giveOutPutFloat(binding.etUpFeetMax.text.toString())
 
             specie.note = if (isTextNull(binding.etNote.text.toString())) null else binding.etNote.text.toString()
-            specie.imgName = imgName
             specie.specieDateTimeUpdated = Calendar.getInstance().time
 
             specieViewModel.updateSpecie(specie)

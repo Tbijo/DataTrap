@@ -3,6 +3,7 @@ package com.example.datatrap.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.User
@@ -14,6 +15,7 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
 
     private val userRepository: UserRepository
     val userList: LiveData<List<User>>
+    var userId = MutableLiveData<Long>()
 
     init {
         val userDao = TrapDatabase.getDatabase(application).userDao()
@@ -49,8 +51,11 @@ class UserViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
-    fun checkUser(userName: String, password: String): LiveData<Long> {
-        return userRepository.checkUser(userName, password)
+    fun checkUser(userName: String, password: String) {
+        viewModelScope.launch {
+            val value = userRepository.checkUser(userName, password)
+            userId.value = value
+        }
     }
 
     fun setActiveUser(team: Int, userId: Long) {

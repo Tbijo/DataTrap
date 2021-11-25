@@ -216,6 +216,9 @@
         <action
             android:id="@+id/action_listOccMouseFragment_to_recaptureListMouseFragment"
             app:destination="@id/recaptureListMouseFragment" />
+        <action
+            android:id="@+id/action_listOccMouseFragment_to_viewOccasionFragment"
+            app:destination="@id/viewOccasionFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateMouseFragment"
@@ -252,9 +255,8 @@
             android:name="fragmentName"
             app:argType="string" />
         <argument
-            android:name="picName"
-            app:argType="string"
-            app:nullable="true" />
+            android:name="parentId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/viewMouseFragment"
@@ -296,5 +298,14 @@
         <argument
             android:name="occList"
             app:argType="com.example.datatrap.models.tuples.OccList" />
+    </fragment>
+    <fragment
+        android:id="@+id/viewOccasionFragment"
+        android:name="com.example.datatrap.occasion.fragments.ViewOccasionFragment"
+        android:label="fragment_view_occasion"
+        tools:layout="@layout/fragment_view_occasion" >
+        <argument
+            android:name="occasionId"
+            app:argType="long" />
     </fragment>
 </navigation>

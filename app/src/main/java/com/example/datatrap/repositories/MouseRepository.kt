@@ -10,8 +10,8 @@ import com.example.datatrap.models.tuples.MouseView
 
 class MouseRepository(private val mouseDao: MouseDao) {
 
-    suspend fun insertMouse(mouse: Mouse) {
-        mouseDao.insertMouse(mouse)
+    suspend fun insertMouse(mouse: Mouse): Long {
+        return mouseDao.insertMouse(mouse)
     }
 
     suspend fun updateMouse(mouse: Mouse) {
@@ -34,8 +34,8 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForRecapture(code: Int): LiveData<List<MouseRecapList>> {
-        return mouseDao.getMiceForRecapture(code)
+    fun getMiceForRecapture(code: Int, currentTime: Long, twoYears: Long): LiveData<List<MouseRecapList>> {
+        return mouseDao.getMiceForRecapture(code, currentTime, twoYears)
     }
 
     fun getMiceForLog(primeMouseID: Long, deviceID: String): LiveData<List<MouseLog>> {

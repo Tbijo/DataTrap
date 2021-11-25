@@ -83,8 +83,7 @@
         android:label="Get Picture"
         tools:layout="@layout/fragment_get_picture_specie" >
         <argument
-            android:name="picName"
-            app:argType="string"
-            app:nullable="true" />
+            android:name="parentId"
+            app:argType="long" />
     </fragment>
 </navigation>

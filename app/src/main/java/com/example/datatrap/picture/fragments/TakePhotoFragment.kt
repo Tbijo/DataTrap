@@ -7,6 +7,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.Settings
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,9 +22,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentTakePhotoBinding
-import com.example.datatrap.models.Picture
-import com.example.datatrap.viewmodels.PictureViewModel
-import com.example.datatrap.viewmodels.SharedViewModel
+import com.example.datatrap.models.MouseImage
+import com.example.datatrap.models.OccasionImage
+import com.example.datatrap.viewmodels.MouseImageViewModel
+import com.example.datatrap.viewmodels.OccasionImageViewModel
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
@@ -34,46 +37,33 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentTakePhotoBinding? = null
     private val binding get() = _binding!!
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var pictureViewModel: PictureViewModel
     private val args by navArgs<TakePhotoFragmentArgs>()
+    private val occasion = "Occasion"
+    private val mouse = "Mouse"
+    private lateinit var mouseImageViewModel: MouseImageViewModel
+    private lateinit var occasionImageViewModel: OccasionImageViewModel
+    private var mouseImage: MouseImage? = null
+    private var occasionImage: OccasionImage? = null
 
-    private var picture: Picture? = null
-    private var oldPicName: String? = null
-    private var picPath: String? = null
-    private var picUri: Uri? = null
-    private var picName: String? = null
+    private var imagePathUri: Uri? = null
+    private var imageName: String? = null
+    private lateinit var deviceID: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTakePhotoBinding.inflate(inflater, container, false)
-        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
 
-        oldPicName = args.picName
+        deviceID = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
-        if (oldPicName != null) {
-            pictureViewModel.getPictureById(oldPicName!!)
-        } else {
-            binding.tvTakePicture.text = getString(R.string.noPicture)
-        }
-        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
-            // ak mame fotku tak ju nacitame
-            if (it != null) {
-                picture = it
-                binding.tvTakePicture.text = getString(R.string.pictureAdded)
-                binding.ivTakePicture.setImageURI(it.path.toUri())
-                picName = oldPicName
-            }
-        })
+        setImageIfExists()
 
         binding.btnTakePicture.setOnClickListener {
             if (hasStoragePermission()) {
                 when (args.fragmentName) {
-                    "Occasion" -> takePicture("Occasion")
-                    "Mouse" -> takePicture("Mouse")
+                    occasion -> takeImage(occasion)
+                    mouse -> takeImage(mouse)
                 }
             } else {
                 requestStoragePermission()
@@ -82,31 +72,14 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
         binding.btnAddPicture.setOnClickListener {
             // ak je vsetko v poriadku treba
-            // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze
+            // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze aj subor
             // pridat novu fotku do galerie
-            // poslat novy nazov a odist
-            if (oldPicName != picName && picName != null) {
-                val newPicture =
-                    Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
-                // vymazat povodnu fotku z databazy
-                if (picture != null) {
-                    pictureViewModel.deletePicture(picture!!)
-                    // vymazat povodnu fotku ako subor
-                    val myFile = File(picture!!.path)
-                    if (myFile.exists()) myFile.delete()
-                }
-                // ulozit novu
-                pictureViewModel.insertPicture(newPicture)
-                // zobrazit v galerii
-                galleryAddPic(picUri!!, picName!!)
-                // poslat ID novej fotky
-                sharedViewModel.setData(picName!!)
-            } else {
-                // v pripade povodnej fotky len poslat povodny nazov a odist
-                sharedViewModel.setData(picName!!)
-            }
 
-            findNavController().navigateUp()
+            if (imageName == null && mouseImage == null && occasionImage == null) {
+                Toast.makeText(requireContext(), "No image was found.", Toast.LENGTH_LONG).show()
+            } else {
+                saveAndAddImage()
+            }
         }
 
         return binding.root
@@ -117,8 +90,49 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
         _binding = null
     }
 
-    private fun takePicture(what: String) {
+    private fun setImageIfExists() {
+        when (args.fragmentName) {
+            mouse -> {
+                mouseImageViewModel = ViewModelProvider(this).get(MouseImageViewModel::class.java)
+                mouseImageViewModel.getImageForMouse(args.parentId).observe(viewLifecycleOwner, {
+                    // ci mame fotku
+                    if (it != null) {
+                        mouseImage = it
+                        binding.tvTakePicture.text = getString(R.string.pictureAdded)
+                        binding.ivTakePicture.setImageURI(it.path.toUri())
+                        binding.etPicNote.setText(it.note)
+                    } else {
+                        binding.tvTakePicture.text = getString(R.string.noPicture)
+                    }
+                })
+            }
+
+            occasion -> {
+                occasionImageViewModel = ViewModelProvider(this).get(OccasionImageViewModel::class.java)
+                occasionImageViewModel.getImageForOccasion(args.parentId).observe(viewLifecycleOwner, {
+                    // ci mame fotku
+                    if (it != null) {
+                        occasionImage = it
+                        binding.tvTakePicture.text = getString(R.string.pictureAdded)
+                        binding.ivTakePicture.setImageURI(it.path.toUri())
+                        binding.etPicNote.setText(it.note)
+                    } else {
+                        binding.tvTakePicture.text = getString(R.string.noPicture)
+                    }
+                })
+            }
+        }
+    }
+
+    private fun takeImage(what: String) {
+        Log.d("takeImage", "Ideme robit fotku")
         Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // odstranit predch. subor ak existuje
+            if (imagePathUri != null) {
+                val myFile = File(imagePathUri.toString())
+                if (myFile.exists()) myFile.delete()
+            }
+            // potom vytvorit novy
             takePictureIntent.resolveActivity(activity?.packageManager!!)?.also {
                 val photoFile: File? = try {
                     createImageFile(what)
@@ -128,12 +142,12 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     null
                 }
                 photoFile?.also {
-                    picUri = FileProvider.getUriForFile(
+                    imagePathUri = FileProvider.getUriForFile(
                         requireContext(),
                         "com.example.datatrap.fileprovider",
                         it
                     )
-                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, picUri)
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imagePathUri)
                     resultLauncher.launch(takePictureIntent)
                 }
             }
@@ -142,6 +156,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     @Throws(IOException::class)
     private fun createImageFile(what: String): File {
+        Log.d("createImageFile", "Vyrabame fotku")
         val date = Calendar.getInstance().time
         val formatter = SimpleDateFormat.getDateTimeInstance()
         val dateTime = formatter.format(date)
@@ -151,30 +166,34 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             ".jpg",
             storageDir
         ).apply {
-            picPath = absolutePath
-            picName = nameWithoutExtension
+            imageName = nameWithoutExtension
         }
     }
 
     private var resultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            Log.d("resultLauncher", "Fotka sa vratila")
             if (result.resultCode != Activity.RESULT_OK) {
+                Log.d("resultLauncher", "Fotka Nepresla")
                 // sem sa pojde ak pouzivatel neprijal fotku
                 // treba vymazat empty file ktora bola vytvorena
-                val myFile = File(picPath)
-                if (myFile.exists()) myFile.delete()
+                val myFile = File(imagePathUri.toString())
+                if (myFile.exists()) {
+                    myFile.delete()
+                    Toast.makeText(requireContext(), "Empty file deleted.", Toast.LENGTH_SHORT).show()
+                }
                 binding.tvTakePicture.text = getString(R.string.noPicture)
-                picUri = null
-                picPath = null
-                picName = null
-                Toast.makeText(requireContext(), "Empty File deleted.", Toast.LENGTH_SHORT).show()
+                imagePathUri = null
+                imageName = null
+                Toast.makeText(requireContext(), "Parameters cleared.", Toast.LENGTH_SHORT).show()
             } else {
-                binding.ivTakePicture.setImageURI(picUri)
+                Log.d("resultLauncher", "Fotka Presla")
+                binding.ivTakePicture.setImageURI(imagePathUri)
                 binding.tvTakePicture.text = getString(R.string.pictureAdded)
             }
         }
 
-    private fun galleryAddPic(imageUri: Uri, title: String) {
+    private fun galleryAddImage(imageUri: Uri, title: String) {
         val bitmap =
             MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
         MediaStore.Images.Media.insertImage(
@@ -183,7 +202,79 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             title,
             "Image of $title"
         )
-        Toast.makeText(requireContext(), "Picture Added to Gallery", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Image Added to Gallery", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun saveAndAddImage() {
+        val note = binding.etPicNote.text.toString()
+        when (args.fragmentName) {
+            mouse -> {
+                // vytvara sa nova fotka pre mys, stara nebola
+                if (mouseImage == null) {
+                    mouseImage = MouseImage(0, imageName!!, imagePathUri.toString(), note, args.parentId, deviceID)
+                    mouseImageViewModel.insertImage(mouseImage!!)
+                    galleryAddImage(imagePathUri!!, imageName!!)
+
+                // existuje stara fotka
+                } else {
+                    // ostava stara fotka
+                    if (imageName == null) {
+                        mouseImage!!.note = note
+                        mouseImageViewModel.insertImage(mouseImage!!)
+
+                    // nahradza sa stara fotka novou fotkou
+                    } else {
+                        // vymazat fyzicky subor fotky
+                        val myFile = File(mouseImage!!.path)
+                        if (myFile.exists()) myFile.delete()
+                        // vymazat zaznam fotky z databazy
+                        mouseImageViewModel.deleteImage(mouseImage!!.mouseImgId)
+                        // pre istotu
+                        mouseImage = null
+                        // pridat zaznam novej fotky do databazy subor uz existuje
+                        mouseImage = MouseImage(0, imageName!!, imagePathUri.toString(), note, args.parentId, deviceID)
+                        mouseImageViewModel.insertImage(mouseImage!!)
+                        // pridat novu fotku do galerie
+                        galleryAddImage(imagePathUri!!, imageName!!)
+                    }
+                }
+            }
+
+            occasion -> {
+                // vytvara sa nova fotka pre akciu, stara nebola
+                if (occasionImage == null) {
+                    occasionImage = OccasionImage(0, imageName!!, imagePathUri.toString(), note, args.parentId, deviceID)
+                    occasionImageViewModel.insertImage(occasionImage!!)
+                    galleryAddImage(imagePathUri!!, imageName!!)
+
+                // existuje stara fotka
+                } else {
+                    // ostava stara fotka
+                    if (imageName == null) {
+                        occasionImage!!.note = note
+                        occasionImageViewModel.insertImage(occasionImage!!)
+
+                    // nahradza sa stara fotka novou fotkou
+                    } else {
+                        // vymazat fyzicky subor fotky
+                        val myFile = File(occasionImage!!.path)
+                        if (myFile.exists()) myFile.delete()
+                        // vymazat zaznam fotky z databazy
+                        occasionImageViewModel.deleteImage(occasionImage!!.occasionImgId)
+                        // pre istotu
+                        occasionImage = null
+                        // pridat zaznam novej fotky do databazy subor uz existuje
+                        occasionImage = OccasionImage(0, imageName!!, imagePathUri.toString(), note, args.parentId, deviceID)
+                        occasionImageViewModel.insertImage(occasionImage!!)
+                        // pridat novu fotku do galerie
+                        galleryAddImage(imagePathUri!!, imageName!!)
+                    }
+                }
+            }
+        }
+
+        findNavController().navigateUp()
+
     }
 
     ///////
@@ -211,7 +302,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun hasStoragePermission() =
         EasyPermissions.hasPermissions(
             requireContext(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE    // sem pojdu permissiony ktore chceme skontrolovat ci su povolene
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE    // sem pojdu permissiony ktore chceme skontrolovat ci su povolene
         )
 
     private fun requestStoragePermission() {
@@ -219,7 +310,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             this,
             "This app can not work without Storage Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
             1,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE    // co chceme povolit
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE    // co chceme povolit
         )
     }
 

@@ -4,11 +4,12 @@ import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.OccasionDao
 import com.example.datatrap.models.Occasion
 import com.example.datatrap.models.tuples.OccList
+import com.example.datatrap.models.tuples.OccasionView
 
 class OccasionRepository(private val occasionDao: OccasionDao) {
 
-    suspend fun insertOccasion(occasion: Occasion) {
-        occasionDao.insertOccasion(occasion)
+    suspend fun insertOccasion(occasion: Occasion): Long {
+        return occasionDao.insertOccasion(occasion)
     }
 
     suspend fun updateOccasion(occasion: Occasion) {
@@ -21,6 +22,10 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
 
     fun getOccasion(occasionId: Long): LiveData<Occasion> {
         return occasionDao.getOccasion(occasionId)
+    }
+
+    fun getOccasionView(occasionId: Long): LiveData<OccasionView> {
+        return occasionDao.getOccasionView(occasionId)
     }
 
     fun getOccasionsForSession(idSession: Long): LiveData<List<OccList>> {

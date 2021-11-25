@@ -22,19 +22,19 @@ class MethodViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun insertMethod(method: Method){
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             methodRepository.insertMethod(method)
         }
     }
 
     fun updateMethod(method: Method){
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             methodRepository.updateMethod(method)
         }
     }
 
     fun deleteMethod(method: Method){
-        viewModelScope.launch(Dispatchers.IO){
+        viewModelScope.launch(Dispatchers.IO) {
             methodRepository.deleteMethod(method)
         }
     }

@@ -15,11 +15,11 @@ import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
 
 @Database(entities = [
     EnvType::class, Locality::class, Method::class, MethodType::class,
-    Occasion::class, Picture::class, Project::class, Protocol::class,
-    Session::class, Specie::class, TrapType::class, VegetType::class,
-    Mouse::class, ProjectLocalityCrossRef::class, User::class,
-    LocalitySessionCrossRef::class
-                     ], version = 1, exportSchema = false )
+    Occasion::class, Project::class, Protocol::class, Session::class,
+    Specie::class, TrapType::class, VegetType::class, Mouse::class,
+    ProjectLocalityCrossRef::class, User::class, LocalitySessionCrossRef::class,
+    MouseImage::class, OccasionImage::class, SpecieImage::class
+                     ], version = 1, exportSchema = false)
 @TypeConverters(DateLongConverters::class)
 abstract class TrapDatabase: RoomDatabase() {
     abstract fun envTypeDao(): EnvTypeDao
@@ -28,7 +28,6 @@ abstract class TrapDatabase: RoomDatabase() {
     abstract fun methodTypeDao(): MethodTypeDao
     abstract fun mouseDao(): MouseDao
     abstract fun occasionDao(): OccasionDao
-    abstract fun pictureDao(): PictureDao
     abstract fun projectDao(): ProjectDao
     abstract fun protocolDao(): ProtocolDao
     abstract fun sessionDao(): SessionDao
@@ -38,6 +37,9 @@ abstract class TrapDatabase: RoomDatabase() {
     abstract fun projectLocalityDao(): ProjectLocalityDao
     abstract fun userDao(): UserDao
     abstract fun localitySessionDao(): LocalitySessionDao
+    abstract fun mouseImageDao(): MouseImageDao
+    abstract fun occasionImageDao(): OccasionImageDao
+    abstract fun specieImageDao(): SpecieImageDao
 
     companion object{
         @Volatile

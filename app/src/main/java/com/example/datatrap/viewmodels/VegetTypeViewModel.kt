@@ -21,19 +21,19 @@ class VegetTypeViewModel(application: Application): AndroidViewModel(application
         vegetTypeList = vegetTypeRepository.vegetTypeList
     }
 
-    fun insertVegetType(vegetType: VegetType){
+    fun insertVegetType(vegetType: VegetType) {
         viewModelScope.launch(Dispatchers.IO) {
             vegetTypeRepository.insertVegetType(vegetType)
         }
     }
 
-    fun updateVegetType(vegetType: VegetType){
+    fun updateVegetType(vegetType: VegetType) {
         viewModelScope.launch(Dispatchers.IO) {
             vegetTypeRepository.updateVegetType(vegetType)
         }
     }
 
-    fun deleteVegetType(vegetType: VegetType){
+    fun deleteVegetType(vegetType: VegetType) {
         viewModelScope.launch(Dispatchers.IO) {
             vegetTypeRepository.deleteVegetType(vegetType)
         }

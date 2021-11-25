@@ -1,6 +1,7 @@
 package com.example.datatrap.models
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
@@ -28,24 +29,31 @@ data class Occasion(
     var deviceID: String,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var localityID: Long,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var sessionID: Long,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var methodID: Long,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var methodTypeID: Long,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var trapTypeID: Long,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var envTypeID: Long?,
 
     // cudzi kluc
+    @ColumnInfo(index = true)
     var vegetTypeID: Long?,
 
     var occasionDateTimeCreated: Date,
@@ -64,8 +72,6 @@ data class Occasion(
 
     var leg: String,
 
-    var note: String?,
+    var note: String?
 
-    // cudzi kluc
-    var imgName: String?
 ): Parcelable

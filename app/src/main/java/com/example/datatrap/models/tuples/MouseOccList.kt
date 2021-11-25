@@ -11,6 +11,5 @@ data class MouseOccList(
     val mouseCode: Int?,
     val specieCode: String,
     val dateTime: Date,
-    val sex: String?,
-    val imgName: String?
+    val sex: String?
 ): Parcelable

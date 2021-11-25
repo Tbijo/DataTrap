@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +19,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentGetPictureSpecieBinding
-import com.example.datatrap.models.Picture
-import com.example.datatrap.viewmodels.PictureViewModel
-import com.example.datatrap.viewmodels.SharedViewModel
+import com.example.datatrap.models.SpecieImage
+import com.example.datatrap.viewmodels.SpecieImageViewModel
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
@@ -31,36 +31,23 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
     private var _binding: FragmentGetPictureSpecieBinding? = null
     private val binding get() = _binding!!
-    private lateinit var sharedViewModel: SharedViewModel
-    private lateinit var pictureViewModel: PictureViewModel
     private val args by navArgs<GetPictureSpecieFragmentArgs>()
+    private lateinit var specieImageViewModel: SpecieImageViewModel
 
-    private var picture: Picture? = null
-    private var oldPicName: String? = null
-    private var picName: String? = null
-    private var picUri: Uri? = null
+    private var imageName: String? = null
+    private var imageUri: Uri? = null
+    private var specieImage: SpecieImage? = null
+    private lateinit var deviceID: String
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentGetPictureSpecieBinding.inflate(inflater, container, false)
-        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
+        specieImageViewModel = ViewModelProvider(this).get(SpecieImageViewModel::class.java)
 
-        oldPicName = args.picName
+        deviceID = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
-        if (oldPicName != null){
-            pictureViewModel.getPictureById(oldPicName!!)
-        } else {
-            binding.tvGetPicture.text = getString(R.string.noPicture)
-        }
-        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
-            // ak mame fotku tak hu nacitame
-            picture = it
-            binding.ivGetPicture.setImageURI(it.path.toUri())
-            picName = oldPicName
-            binding.tvGetPicture.text = getString(R.string.pictureAdded)
-        })
+        setImageIfExists()
 
         binding.btnGetPicture.setOnClickListener {
             if (hasStoragePermission()) {
@@ -73,27 +60,12 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
         binding.btnAddPicture.setOnClickListener {
             // ak je vsetko v poriadku treba
-            // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze
-            // poslat novy nazov a odist
-            if (picName != oldPicName && picName != null) {
-                val newPicture = Picture(picName!!, picUri.toString(), binding.etPicNote.text.toString())
-                // vymazat povodnu fotku z databazy
-                if (picture != null) {
-                    pictureViewModel.deletePicture(picture!!)
-                    // vymazat povodnu fotku ako subor
-                    val myFile = File(picture!!.path)
-                    if (myFile.exists()) myFile.delete()
-                }
-                // a novu ulozit
-                pictureViewModel.insertPicture(newPicture)
-                // poslat ID novej fotky
-                sharedViewModel.setData(picName!!)
+            // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze aj fyzicky
+            if (imageName == null && specieImage == null) {
+                Toast.makeText(requireContext(), "No image was found.", Toast.LENGTH_LONG).show()
             } else {
-                // v pripade povodnej fotky len poslat povodny nazov a odist
-                sharedViewModel.setData(args.picName!!)
+                saveImage()
             }
-
-            findNavController().navigateUp()
         }
 
         return binding.root
@@ -104,6 +76,54 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
         _binding = null
     }
 
+    private fun saveImage() {
+        val note = binding.etPicNote.text.toString()
+
+        // vytvara sa nova fotka, stara nebola
+        if (specieImage == null) {
+            specieImage = SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, deviceID)
+            specieImageViewModel.insertImage(specieImage!!)
+
+        // stara fotka existuje
+        } else {
+
+            // ostava stara fotka
+            if (imageName == null) {
+                specieImage!!.note = note
+                specieImageViewModel.insertImage(specieImage!!)
+
+            // nahradi sa stara fotka novou fotkou
+            } else {
+                // vymazat subor starej fotky
+                val myFile = File(specieImage!!.path)
+                if (myFile.exists()) myFile.delete()
+                // vymazat zaznam starej fotky v databaze
+                specieImageViewModel.deleteImage(specieImage!!.specieImgId)
+                // pre istotu
+                specieImage = null
+                // pridat zaznam novej fotky do databazy subor uz existuje
+                specieImage = SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, deviceID)
+                specieImageViewModel.insertImage(specieImage!!)
+            }
+        }
+
+        findNavController().navigateUp()
+    }
+
+    private fun setImageIfExists() {
+        specieImageViewModel.getImageForSpecie(args.parentId).observe(viewLifecycleOwner, {
+            // ak mame fotku tak hu nacitame
+            if (it != null) {
+                specieImage = it
+                binding.ivGetPicture.setImageURI(it.path.toUri())
+                binding.tvGetPicture.text = getString(R.string.pictureAdded)
+                binding.etPicNote.setText(it.note)
+            } else {
+                binding.tvGetPicture.text = getString(R.string.noPicture)
+            }
+        })
+    }
+
     private fun getPicture(){
         val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
         resultLauncher.launch(gallery)
@@ -112,12 +132,12 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
     private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             // pouzivatel akceptoval fotku
-            picUri = result.data?.data
+            imageUri = result.data?.data
             val date = Calendar.getInstance().time
             val formatter = SimpleDateFormat.getDateTimeInstance()
             val dateTime = formatter.format(date)
-            picName = "Specie_$dateTime"
-            binding.ivGetPicture.setImageURI(picUri)
+            imageName = "Specie_$dateTime"
+            binding.ivGetPicture.setImageURI(imageUri)
             binding.tvGetPicture.text = getString(R.string.pictureAdded)
         }
     }
@@ -148,7 +168,7 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
     private fun hasStoragePermission() =
         EasyPermissions.hasPermissions(
             requireContext(),
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
 
     private fun requestStoragePermission() {
@@ -156,7 +176,7 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
             this,
             "This app can not work without Storage Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
             1,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
     }
 

@@ -3,6 +3,7 @@ package com.example.datatrap.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Mouse
@@ -12,11 +13,13 @@ import com.example.datatrap.models.tuples.MouseRecapList
 import com.example.datatrap.models.tuples.MouseView
 import com.example.datatrap.repositories.MouseRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class MouseViewModel(application: Application): AndroidViewModel(application) {
 
     private val mouseRepository: MouseRepository
+    val mouseId: MutableLiveData<Long> = MutableLiveData<Long>()
 
     init {
         val mouseDao = TrapDatabase.getDatabase(application).mouseDao()
@@ -24,8 +27,8 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
     }
 
     fun insertMouse(mouse: Mouse) {
-        viewModelScope.launch(Dispatchers.IO) {
-            mouseRepository.insertMouse(mouse)
+        viewModelScope.launch {
+            mouseId.value = mouseRepository.insertMouse(mouse)
         }
     }
 
@@ -53,8 +56,8 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         return mouseRepository.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForRecapture(code: Int): LiveData<List<MouseRecapList>> {
-        return mouseRepository.getMiceForRecapture(code)
+    fun getMiceForRecapture(code: Int, currentTime: Long, twoYears: Long): LiveData<List<MouseRecapList>> {
+        return mouseRepository.getMiceForRecapture(code, currentTime, twoYears)
     }
 
     fun getMiceForLog(primeMouseID: Long, deviceID: String): LiveData<List<MouseLog>> {

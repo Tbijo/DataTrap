@@ -26,5 +26,5 @@ data class MouseView(
     val specieFullName: String?, // Specie
     val specieCode: String,
     val legit: String, // Occasion
-    val projectName: String // Project
+    val projectName: String, // Project
 )

@@ -9,7 +9,6 @@ import com.example.datatrap.models.Session
 import com.example.datatrap.repositories.SessionRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class SessionViewModel(application: Application): AndroidViewModel(application) {
 
@@ -20,25 +19,25 @@ class SessionViewModel(application: Application): AndroidViewModel(application) 
         sessionRepository = SessionRepository(sessionDao)
     }
 
-    fun insertSession(session: Session){
-        viewModelScope.launch(Dispatchers.IO){
+    fun insertSession(session: Session) {
+        viewModelScope.launch(Dispatchers.IO) {
             sessionRepository.insertSession(session)
         }
     }
 
-    fun updateSession(session: Session){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updateSession(session: Session) {
+        viewModelScope.launch(Dispatchers.IO) {
             sessionRepository.updateSession(session)
         }
     }
 
-    fun deleteSession(session: Session){
-        viewModelScope.launch(Dispatchers.IO){
+    fun deleteSession(session: Session) {
+        viewModelScope.launch(Dispatchers.IO) {
             sessionRepository.deleteSession(session)
         }
     }
 
-    fun getSessionsForProject(projectId: Long): LiveData<List<Session>>{
+    fun getSessionsForProject(projectId: Long): LiveData<List<Session>> {
         return sessionRepository.getSessionsForProject(projectId)
     }
 }

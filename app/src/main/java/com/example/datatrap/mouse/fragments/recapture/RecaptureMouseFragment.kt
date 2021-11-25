@@ -14,14 +14,12 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentRecaptureMouseBinding
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.Protocol
-import com.example.datatrap.models.Specie
 import com.example.datatrap.models.tuples.SpecSelectList
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.ProtocolViewModel
-import com.example.datatrap.viewmodels.SharedViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
 import java.util.*
 
@@ -33,7 +31,6 @@ class RecaptureMouseFragment : Fragment() {
     private lateinit var mouseViewModel: MouseViewModel
     private lateinit var specieViewModel: SpecieViewModel
     private lateinit var protocolViewModel: ProtocolViewModel
-    private lateinit var sharedViewModel: SharedViewModel
     var deviceID: String = ""
 
     private lateinit var listSpecie: List<SpecSelectList>
@@ -41,12 +38,13 @@ class RecaptureMouseFragment : Fragment() {
 
     private lateinit var currentMouse: Mouse
     private var sex: String? = null
-    private var imgName: String? = null
     private var age: String? = null
     private var captureID: String? = null
     private var specie: SpecSelectList? = null
     private var speciesID: Long? = null
     private var protocolID: Long? = null
+
+    private var mouseId: Long = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,15 +64,9 @@ class RecaptureMouseFragment : Fragment() {
         protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
         deviceID = Settings.Secure.getString(
-        requireContext().contentResolver,
-        Settings.Secure.ANDROID_ID
+            requireContext().contentResolver,
+            Settings.Secure.ANDROID_ID
         )
-
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), {
-            imgName = it
-        })
-        imgName = null
 
         setListeners()
 
@@ -116,7 +108,8 @@ class RecaptureMouseFragment : Fragment() {
             it.forEach { specie ->
                 listCode.add(specie.speciesCode)
             }
-            val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, listCode)
+            val dropDownArrSpecie =
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, listCode)
             binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
 
             // init values
@@ -135,11 +128,12 @@ class RecaptureMouseFragment : Fragment() {
             it.forEach { protocol ->
                 listProtName.add(protocol.protocolName)
             }
-            val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, listProtName)
+            val dropDownArrProtocol =
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, listProtName)
             binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
 
             // init values
-            val protocol = it.firstOrNull{ protocol ->
+            val protocol = it.firstOrNull { protocol ->
                 protocol.protocolId == mouse.protocolID
             }
             protocolID = protocol?.protocolId
@@ -148,7 +142,11 @@ class RecaptureMouseFragment : Fragment() {
         })
 
         val dropDownArrTrapID =
-            ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occList.numTraps).toList())
+            ArrayAdapter(
+                requireContext(),
+                R.layout.dropdown_names,
+                (1..args.occList.numTraps).toList()
+            )
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
         binding.autoCompTvTrapId.setText(mouse.trapID.toString(), false)
@@ -206,7 +204,7 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     private fun setListeners() {
-        binding.autoCompTvSpecie.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvSpecie.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             specie = listSpecie.first {
                 it.speciesCode == name
@@ -214,14 +212,14 @@ class RecaptureMouseFragment : Fragment() {
             speciesID = specie!!.specieId
         }
 
-        binding.autoCompTvProtocol.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvProtocol.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             protocolID = listProtocol.firstOrNull {
                 it.protocolName == name
             }?.protocolId
         }
 
-        binding.rgSex.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgSex.setOnCheckedChangeListener { _, radioButtonId ->
             when (radioButtonId) {
                 binding.rbMale.id -> {
                     sex = EnumSex.MALE.myName
@@ -238,7 +236,7 @@ class RecaptureMouseFragment : Fragment() {
             }
         }
 
-        binding.rgAge.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgAge.setOnCheckedChangeListener { _, radioButtonId ->
             when (radioButtonId) {
                 binding.rbAdult.id -> age = EnumMouseAge.ADULT.myName
                 binding.rbJuvenile.id -> age = EnumMouseAge.JUVENILE.myName
@@ -247,7 +245,7 @@ class RecaptureMouseFragment : Fragment() {
             }
         }
 
-        binding.rgCaptureId.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgCaptureId.setOnCheckedChangeListener { _, radioButtonId ->
             when (radioButtonId) {
                 binding.rbCaptured.id -> captureID = EnumCaptureID.CAPTURED.myName
                 binding.rbDied.id -> captureID = EnumCaptureID.DIED.myName
@@ -289,19 +287,30 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     private fun goToCamera() {
-        val action =
-            RecaptureMouseFragmentDirections.actionRecaptureMouseFragmentToTakePhotoFragment(
+        if (mouseId <= 0) {
+            Toast.makeText(requireContext(), "You need to insert a mouse first.", Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
+        val action = RecaptureMouseFragmentDirections.actionRecaptureMouseFragmentToTakePhotoFragment(
                 "Mouse",
-                imgName
+                mouseId
             )
         findNavController().navigate(action)
     }
 
     private fun recaptureMouse() {
+        if (mouseId > 0) {
+            Toast.makeText(requireContext(), "Mouse already inserted.", Toast.LENGTH_LONG).show()
+            return
+        }
+
         if (speciesID != null) {
             val mouse: Mouse = currentMouse.copy()
             mouse.mouseId = 0
-            mouse.primeMouseID = if (args.recapMouse.primeMouseID == null) args.recapMouse.mouseId else args.recapMouse.primeMouseID
+            mouse.primeMouseID =
+                if (args.recapMouse.primeMouseID == null) args.recapMouse.mouseId else args.recapMouse.primeMouseID
             mouse.occasionID = args.occList.occasionId
             mouse.localityID = args.occList.localityID
             mouse.mouseDateTimeCreated = Calendar.getInstance().time
@@ -325,7 +334,8 @@ class RecaptureMouseFragment : Fragment() {
             mouse.ear = giveOutPutFloat(binding.etEar.text.toString())
 
             mouse.gravidity = if (sex == EnumSex.MALE.myName) null else binding.cbGravit.isChecked
-            mouse.lactating = if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
+            mouse.lactating =
+                if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
             //počet embryí v oboch rohoch maternice a ich priemer
             mouse.embryoRight =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
@@ -337,10 +347,12 @@ class RecaptureMouseFragment : Fragment() {
             //počet placentálnych polypov
             mouse.MCright =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
-            mouse.MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
+            mouse.MCleft =
+                if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
 
-            mouse.note = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
-            mouse.imgName = imgName
+            mouse.note = if (binding.etMouseNote.text.toString()
+                    .isBlank()
+            ) null else binding.etMouseNote.text.toString()
 
             // recapture
             if (mouse.weight != null && specie?.minWeight != null && specie?.maxWeight != null) {
@@ -375,7 +387,9 @@ class RecaptureMouseFragment : Fragment() {
 
         Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
 
-        findNavController().navigateUp()
+        mouseViewModel.mouseId.observe(viewLifecycleOwner, {
+            mouseId = it
+        })
     }
 
     private fun giveOutPutInt(input: String?): Int? {

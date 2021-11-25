@@ -11,6 +11,5 @@ data class OccList(
     val occasion: Int,
     val dateTime: Date,
     val numMice: Int?,
-    val numTraps: Int,
-    val imgName: String?
+    val numTraps: Int
 ): Parcelable

@@ -9,7 +9,6 @@ data class SpecList(
 
     var speciesCode: String,
 
-    var fullName: String,
+    var fullName: String
 
-    val imgName: String?
 ): Parcelable

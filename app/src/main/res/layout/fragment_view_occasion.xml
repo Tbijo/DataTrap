@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".occasion.fragments.ViewOccasionFragment">
+
+    <ImageView
+        android:id="@+id/iv_occ_image"
+        android:layout_width="190dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/textView174"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Order of Occasion in Session"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView179"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_occ_image" />
+
+    <TextView
+        android:id="@+id/tv_occ_num"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="22"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_locality_name"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView174" />
+
+    <TextView
+        android:id="@+id/textView179"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Locality"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView174"
+        app:layout_constraintTop_toBottomOf="@+id/iv_occ_image" />
+
+    <TextView
+        android:id="@+id/tv_locality_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Topolcany"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_occ_num"
+        app:layout_constraintTop_toBottomOf="@+id/textView179" />
+
+    <TextView
+        android:id="@+id/textView181"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Method"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView182"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_occ_num" />
+
+    <TextView
+        android:id="@+id/textView182"
+        android:layout_width="0dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="16dp"
+        android:text="Method Type"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView181"
+        app:layout_constraintTop_toBottomOf="@+id/tv_locality_name" />
+
+    <TextView
+        android:id="@+id/textView183"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Trap Type"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView184"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_method" />
+
+    <TextView
+        android:id="@+id/textView184"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Environment Type"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView183"
+        app:layout_constraintTop_toBottomOf="@+id/tv_method_type" />
+
+    <TextView
+        android:id="@+id/textView185"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Vegetation Type"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView191"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_trap_type" />
+
+    <TextView
+        android:id="@+id/tv_method"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="MethodName"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_method_type"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView181" />
+
+    <TextView
+        android:id="@+id/tv_method_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="MethodTypeName"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_method"
+        app:layout_constraintTop_toBottomOf="@+id/textView182" />
+
+    <TextView
+        android:id="@+id/tv_trap_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="TrapTypeName"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_env_type"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView183" />
+
+    <TextView
+        android:id="@+id/tv_env_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="EnvTypeName"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_trap_type"
+        app:layout_constraintTop_toBottomOf="@+id/textView184" />
+
+    <TextView
+        android:id="@+id/tv_veg_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="VegTypeName"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_occ_datetime"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView185" />
+
+    <TextView
+        android:id="@+id/textView191"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Occasion Created DateTime"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView185"
+        app:layout_constraintTop_toBottomOf="@+id/tv_env_type" />
+
+    <TextView
+        android:id="@+id/textView192"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Number of Traps"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView193"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_veg_type" />
+
+    <TextView
+        android:id="@+id/textView193"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Number of Mice"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView192"
+        app:layout_constraintTop_toBottomOf="@+id/tv_occ_datetime" />
+
+    <TextView
+        android:id="@+id/textView194"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Temperature °C"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView195"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_occ_num_traps" />
+
+    <TextView
+        android:id="@+id/textView195"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Weather"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView194"
+        app:layout_constraintTop_toBottomOf="@+id/tv_occ_num_mice" />
+
+    <TextView
+        android:id="@+id/textView196"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Legitimation"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView197"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_temp" />
+
+    <TextView
+        android:id="@+id/textView197"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Caught something"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView196"
+        app:layout_constraintTop_toBottomOf="@+id/tv_weather" />
+
+    <TextView
+        android:id="@+id/textView198"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Note"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_leg" />
+
+    <TextView
+        android:id="@+id/tv_occ_datetime"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="11.12.2019 12:12:12"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_veg_type"
+        app:layout_constraintTop_toBottomOf="@+id/textView191" />
+
+    <TextView
+        android:id="@+id/tv_occ_num_traps"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="11"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_occ_num_mice"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView192" />
+
+    <TextView
+        android:id="@+id/tv_occ_num_mice"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="22"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_occ_num_traps"
+        app:layout_constraintTop_toBottomOf="@+id/textView193" />
+
+    <TextView
+        android:id="@+id/tv_temp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="22"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_weather"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView194" />
+
+    <TextView
+        android:id="@+id/tv_weather"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Sunny"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_temp"
+        app:layout_constraintTop_toBottomOf="@+id/textView195" />
+
+    <TextView
+        android:id="@+id/tv_leg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Marosko"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_got_caught"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView196" />
+
+    <TextView
+        android:id="@+id/tv_got_caught"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="No"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_leg"
+        app:layout_constraintTop_toBottomOf="@+id/textView197" />
+
+    <TextView
+        android:id="@+id/tv_occ_note"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="note note note"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView198" />
+</androidx.constraintlayout.widget.ConstraintLayout>

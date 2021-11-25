@@ -33,7 +33,7 @@ class UpdateOccasionFragment : Fragment() {
     private lateinit var trapTypeViewModel: TrapTypeViewModel
     private lateinit var vegTypeViewModel: VegetTypeViewModel
     private lateinit var localityViewModel: LocalityViewModel
-    private lateinit var pictureViewModel: PictureViewModel
+    private lateinit var occasionImageViewModel: OccasionImageViewModel
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -41,10 +41,8 @@ class UpdateOccasionFragment : Fragment() {
     private lateinit var vegTypeList: List<VegetType>
     private lateinit var trapTypeList: List<TrapType>
 
-    private lateinit var sharedViewModel: SharedViewModel
-    private var imgName: String? = null
-
     private lateinit var currentOccasion: Occasion
+    private var occasionImage: OccasionImage? = null
     private var methodID: Long = 0
     private var methodTypeID: Long = 0
     private var trapTypeID: Long = 0
@@ -63,33 +61,16 @@ class UpdateOccasionFragment : Fragment() {
         trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
         vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
         localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
-        pictureViewModel = ViewModelProvider(this).get(PictureViewModel::class.java)
+        occasionImageViewModel = ViewModelProvider(this).get(OccasionImageViewModel::class.java)
+
+        occasionImageViewModel.getImageForOccasion(args.occList.occasionId).observe(viewLifecycleOwner, {
+            occasionImage = it
+        })
 
         occasionViewModel.getOccasion(args.occList.occasionId).observe(viewLifecycleOwner, {
             currentOccasion = it
             fillDropDown(it)
             initOccasionValuesToView(it)
-        })
-
-        sharedViewModel = ViewModelProvider(requireActivity()).get(SharedViewModel::class.java)
-        sharedViewModel.dataToShare.observe(requireActivity(), {
-            imgName = it
-        })
-        imgName = args.occList.imgName
-
-        // ak sa zavola Delete
-        pictureViewModel.gotPicture.observe(viewLifecycleOwner, {
-            // odstranit fyzicku zlozku
-            val myFile = File(it.path)
-            if (myFile.exists()) myFile.delete()
-            //odstranit zaznam z databazy
-            pictureViewModel.deletePicture(it)
-            // vymazat occasion
-            occasionViewModel.deleteOccasion(args.occList.occasionId)
-
-            Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
-
-            findNavController().navigateUp()
         })
 
         setListeners()
@@ -124,36 +105,44 @@ class UpdateOccasionFragment : Fragment() {
         })
     }
 
+    private fun deleteImage() {
+        if (occasionImage != null) {
+            // odstranit fyzicku zlozku
+            val myFile = File(occasionImage!!.path)
+            if (myFile.exists()) myFile.delete()
+        }
+    }
+
     private fun setListeners() {
-        binding.autoCompTvEnvType.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvEnvType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            envTypeID = envTypeList.firstOrNull() {
+            envTypeID = envTypeList.firstOrNull {
                 it.envTypeName == name
             }?.envTypeId
         }
 
-        binding.autoCompTvMethod.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvMethod.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             methodID = methodList.first {
                 it.methodName == name
             }.methodId
         }
 
-        binding.autoCompTvMethodType.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvMethodType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             methodTypeID = metTypeList.first {
                 it.methodTypeName == name
             }.methodTypeId
         }
 
-        binding.autoCompTvTrapType.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvTrapType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             trapTypeID = trapTypeList.first {
                 it.trapTypeName == name
             }.trapTypeId
         }
 
-        binding.autoCompTvVegType.setOnItemClickListener { parent, view, position, id ->
+        binding.autoCompTvVegType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
             vegetTypeID = vegTypeList.firstOrNull {
                 it.vegetTypeName == name
@@ -176,8 +165,9 @@ class UpdateOccasionFragment : Fragment() {
             //set values
             val current = it.firstOrNull { envType ->
                 envType.envTypeId == occasion.envTypeID
-            }?.envTypeName
-            binding.autoCompTvEnvType.setText(current.toString(), false)
+            }
+            envTypeID = current?.envTypeId
+            binding.autoCompTvEnvType.setText(current?.envTypeName.toString(), false)
         })
 
         methodViewModel.methodList.observe(viewLifecycleOwner, {
@@ -193,8 +183,9 @@ class UpdateOccasionFragment : Fragment() {
             // set values
             val current = it.first { method ->
                 method.methodId == occasion.methodID
-            }.methodName
-            binding.autoCompTvMethod.setText(current, false)
+            }
+            methodID = current.methodId
+            binding.autoCompTvMethod.setText(current.methodName, false)
         })
 
         metTypeViewModel.methodTypeList.observe(viewLifecycleOwner, {
@@ -210,8 +201,9 @@ class UpdateOccasionFragment : Fragment() {
             // set Values
             val current = it.first { methodType ->
                 methodType.methodTypeId == occasion.methodTypeID
-            }.methodTypeName
-            binding.autoCompTvMethodType.setText(current, false)
+            }
+            methodTypeID = current.methodTypeId
+            binding.autoCompTvMethodType.setText(current.methodTypeName, false)
         })
 
         trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner, {
@@ -227,8 +219,9 @@ class UpdateOccasionFragment : Fragment() {
             // set values
             val current = it.first { trapType ->
                 trapType.trapTypeId == occasion.trapTypeID
-            }.trapTypeName
-            binding.autoCompTvTrapType.setText(current, false)
+            }
+            trapTypeID = current.trapTypeId
+            binding.autoCompTvTrapType.setText(current.trapTypeName, false)
         })
 
         vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner, {
@@ -245,14 +238,16 @@ class UpdateOccasionFragment : Fragment() {
             // set values
             val current = it.firstOrNull { vegType ->
                 vegType.vegetTypeId == occasion.vegetTypeID
-            }?.vegetTypeName
-            binding.autoCompTvVegType.setText(current.toString(), false)
+            }
+            vegetTypeID = current?.vegetTypeId
+            binding.autoCompTvVegType.setText(current?.vegetTypeName.toString(), false)
         })
 
     }
 
     private fun goToCamera() {
-        val action = UpdateOccasionFragmentDirections.actionUpdateOccasionFragmentToTakePhotoFragment("Occasion", imgName)
+        val action = UpdateOccasionFragmentDirections.actionUpdateOccasionFragmentToTakePhotoFragment("Occasion",
+            args.occList.occasionId)
         findNavController().navigate(action)
     }
 
@@ -269,16 +264,15 @@ class UpdateOccasionFragment : Fragment() {
     private fun deleteOccasion() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
-            if (imgName != null) {
-                pictureViewModel.getPictureById(imgName!!)
-            } else {
-                // vymazat occasion
-                occasionViewModel.deleteOccasion(args.occList.occasionId)
 
-                Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
+            deleteImage()
 
-                findNavController().navigateUp()
-            }
+            // vymazat occasion
+            occasionViewModel.deleteOccasion(args.occList.occasionId)
+
+            Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
+
+            findNavController().navigateUp()
         }
             .setNegativeButton("No"){_, _ -> }
             .setTitle("Delete Occasion?")
@@ -291,7 +285,7 @@ class UpdateOccasionFragment : Fragment() {
         val leg: String = binding.etLeg.text.toString()
         val numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
 
-        if (checkInput(occasionNum, methodID, methodTypeID, trapTypeID, leg, numTraps)){
+        if (checkInput(occasionNum, methodID, methodTypeID, trapTypeID, leg, numTraps)) {
 
             val occasion: Occasion = currentOccasion.copy()
             occasion.methodID = methodID
@@ -304,10 +298,9 @@ class UpdateOccasionFragment : Fragment() {
             occasion.vegetTypeID = vegetTypeID
             occasion.gotCaught = binding.cbGotCaught.isChecked
             occasion.numTraps = numTraps
-            occasion.temperature = if (binding.etTemperature.text.toString().isBlank()) null else binding.etTemperature.text.toString().toFloat()
+            occasion.temperature = giveOutPutFloat(binding.etTemperature.text.toString())
             occasion.weather = if (binding.etWeather.text.toString().isBlank()) null else binding.etWeather.text.toString()
             occasion.note = if (binding.etOccasionNote.text.toString().isBlank()) null else binding.etOccasionNote.text.toString()
-            occasion.imgName = imgName
 
             occasionViewModel.updateOccasion(occasion)
 
@@ -351,7 +344,6 @@ class UpdateOccasionFragment : Fragment() {
                 override fun onError(message: String) {
                     Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
                 }
-
             })
         }else{
             Toast.makeText(requireContext(), "Connect to Internet.", Toast.LENGTH_LONG).show()
@@ -368,6 +360,10 @@ class UpdateOccasionFragment : Fragment() {
             )
         }
         return false
+    }
+
+    private fun giveOutPutFloat(input: String?): Float?{
+        return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
     }
 
 }

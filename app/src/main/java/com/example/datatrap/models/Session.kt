@@ -1,6 +1,7 @@
 package com.example.datatrap.models
 
 import android.os.Parcelable
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
@@ -22,6 +23,7 @@ data class Session(
     var deviceID: String,
     
     // cudzi kluc
+    @ColumnInfo(index = true)
     var projectID: Long?,
 
     var numOcc: Int,

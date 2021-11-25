@@ -15,6 +15,7 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentRecaptureListMouseBinding
 import com.example.datatrap.models.tuples.MouseRecapList
 import com.example.datatrap.viewmodels.MouseViewModel
+import java.util.*
 
 class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
@@ -24,6 +25,14 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     private lateinit var mouseViewModel: MouseViewModel
     private lateinit var adapter: RecaptureMouseRecyclerAdapter
     private var mouseList: List<MouseRecapList> = emptyList()
+
+    private val MILLIS_IN_SECOND = 1000L
+    private val SECONDS_IN_MINUTE = 60
+    private val MINUTES_IN_HOUR = 60
+    private val HOURS_IN_DAY = 24
+    private val DAYS_IN_YEAR = 365
+    private val MILLISECONDS_IN_2_YEAR: Long =
+        2 * MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -63,6 +72,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.mouse_list_menu, menu)
         menu.findItem(R.id.menu_recapture).isVisible = false
+        menu.findItem(R.id.menu_occ_info).isVisible = false
         val searchItem = menu.findItem(R.id.menu_search)
         val searchView = searchItem?.actionView as? SearchView
         searchView?.setOnQueryTextListener(this)
@@ -80,7 +90,7 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun searchMice(code: Int) {
-        mouseViewModel.getMiceForRecapture(code).observe(viewLifecycleOwner, { mice ->
+        mouseViewModel.getMiceForRecapture(code, Calendar.getInstance().time.time, MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner, { mice ->
             mice.let {
                 adapter.setData(it)
                 mouseList = it

@@ -26,7 +26,7 @@ class AddUserFragment : Fragment() {
         _binding = FragmentAddUserBinding.inflate(inflater, container, false)
         userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
-        binding.rgTeamAdd.setOnCheckedChangeListener { radioGroup, radioButtonId ->
+        binding.rgTeamAdd.setOnCheckedChangeListener { _, radioButtonId ->
             when(radioButtonId){
                 binding.rbEven.id -> team = EnumTeam.EVEN_TEAM.numTeam
                 binding.rbOdd.id -> team = EnumTeam.ODD_TEAM.numTeam

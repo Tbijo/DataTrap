@@ -3,6 +3,7 @@ package com.example.datatrap.viewmodels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Specie
@@ -14,8 +15,9 @@ import kotlinx.coroutines.launch
 
 class SpecieViewModel(application: Application): AndroidViewModel(application) {
 
-    val specieList: LiveData<List<SpecList>>
     private val specieRepository: SpecieRepository
+    val specieList: LiveData<List<SpecList>>
+    val specieId: MutableLiveData<Long> = MutableLiveData<Long>()
 
     init {
         val specieDao = TrapDatabase.getDatabase(application).specieDao()
@@ -23,19 +25,19 @@ class SpecieViewModel(application: Application): AndroidViewModel(application) {
         specieList = specieRepository.specieList
     }
 
-    fun insertSpecie(specie: Specie){
-        viewModelScope.launch(Dispatchers.IO) {
-            specieRepository.insertSpecie(specie)
+    fun insertSpecie(specie: Specie) {
+        viewModelScope.launch {
+            specieId.value = specieRepository.insertSpecie(specie)
         }
     }
 
-    fun updateSpecie(specie: Specie){
+    fun updateSpecie(specie: Specie) {
         viewModelScope.launch(Dispatchers.IO) {
             specieRepository.updateSpecie(specie)
         }
     }
 
-    fun deleteSpecie(specieId: Long){
+    fun deleteSpecie(specieId: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             specieRepository.deleteSpecie(specieId)
         }
@@ -49,7 +51,7 @@ class SpecieViewModel(application: Application): AndroidViewModel(application) {
         return specieRepository.getSpeciesForSelect()
     }
 
-    fun searchSpecies(specieCode: String): LiveData<List<SpecList>>{
+    fun searchSpecies(specieCode: String): LiveData<List<SpecList>> {
         return specieRepository.searchSpecies(specieCode)
     }
 }

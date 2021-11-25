@@ -24,8 +24,8 @@ class DrawnFragment(private val uniCode: Int, private val fingers: Int) : Dialog
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View? {
+
         _binding = FragmentDrawnBinding.inflate(inflater, container, false)
 
         callResources()

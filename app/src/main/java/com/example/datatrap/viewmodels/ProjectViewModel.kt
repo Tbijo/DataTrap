@@ -9,7 +9,6 @@ import com.example.datatrap.models.Project
 import com.example.datatrap.repositories.ProjectRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class ProjectViewModel(application: Application): AndroidViewModel(application) {
 
@@ -22,25 +21,25 @@ class ProjectViewModel(application: Application): AndroidViewModel(application) 
         projectList = projectRepository.projectList
     }
 
-    fun insertProject(project: Project){
-        viewModelScope.launch(Dispatchers.IO){
+    fun insertProject(project: Project) {
+        viewModelScope.launch(Dispatchers.IO) {
             projectRepository.insertProject(project)
         }
     }
 
-    fun updateProject(project: Project){
-        viewModelScope.launch(Dispatchers.IO){
+    fun updateProject(project: Project) {
+        viewModelScope.launch(Dispatchers.IO) {
             projectRepository.updateProject(project)
         }
     }
 
-    fun deleteProject(project: Project){
-        viewModelScope.launch(Dispatchers.IO){
+    fun deleteProject(project: Project) {
+        viewModelScope.launch(Dispatchers.IO) {
             projectRepository.deleteProject(project)
         }
     }
 
-    fun searchProjects(projectName: String): LiveData<List<Project>>{
+    fun searchProjects(projectName: String): LiveData<List<Project>> {
         return projectRepository.searchProjects(projectName)
     }
 }

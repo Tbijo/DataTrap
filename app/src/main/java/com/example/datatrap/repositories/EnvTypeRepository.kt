@@ -6,21 +6,17 @@ import com.example.datatrap.models.EnvType
 
 class EnvTypeRepository(private val envTypeDao: EnvTypeDao) {
 
-    suspend fun insertEnvType(envType: EnvType){
+    val envTypeList: LiveData<List<EnvType>> = envTypeDao.getEnvTypes()
+
+    suspend fun insertEnvType(envType: EnvType) {
         envTypeDao.insertEnvType(envType)
     }
 
-    suspend fun updateEnvType(envType: EnvType){
+    suspend fun updateEnvType(envType: EnvType) {
         envTypeDao.updateEnvType(envType)
     }
 
-    suspend fun deleteEnvType(envType: EnvType){
+    suspend fun deleteEnvType(envType: EnvType) {
         envTypeDao.deleteEnvType(envType)
     }
-
-    fun getEnvTypes(): LiveData<List<EnvType>> {
-        return envTypeDao.getEnvTypes()
-    }
-
-    val envTypeList: LiveData<List<EnvType>> = envTypeDao.getEnvTypes()
 }

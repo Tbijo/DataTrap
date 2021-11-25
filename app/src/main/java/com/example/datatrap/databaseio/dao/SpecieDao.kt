@@ -10,7 +10,7 @@ import com.example.datatrap.models.tuples.SpecSelectList
 interface SpecieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSpecie(specie: Specie)
+    suspend fun insertSpecie(specie: Specie): Long
 
     @Update
     suspend fun updateSpecie(specie: Specie)
@@ -21,7 +21,7 @@ interface SpecieDao {
     @Query("SELECT * FROM Specie WHERE specieId = :specieId")
     fun getSpecie(specieId: Long): LiveData<Specie>
 
-    @Query("SELECT specieId, speciesCode, fullName, imgName FROM Specie")
+    @Query("SELECT specieId, speciesCode, fullName FROM Specie")
     fun getSpecies(): LiveData<List<SpecList>>
 
     @Query("SELECT specieId, speciesCode, upperFingers, minWeight, maxWeight FROM Specie")

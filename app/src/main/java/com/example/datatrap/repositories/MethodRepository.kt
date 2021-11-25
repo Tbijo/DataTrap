@@ -6,17 +6,17 @@ import com.example.datatrap.models.Method
 
 class MethodRepository(private val methodDao: MethodDao) {
 
-    suspend fun insertMethod(method: Method){
+    val methodList: LiveData<List<Method>> = methodDao.getMethods()
+
+    suspend fun insertMethod(method: Method) {
         methodDao.insertMethod(method)
     }
 
-    suspend fun updateMethod(method: Method){
+    suspend fun updateMethod(method: Method) {
         methodDao.updateMethod(method)
     }
 
-    suspend fun deleteMethod(method: Method){
+    suspend fun deleteMethod(method: Method) {
         methodDao.deleteMethod(method)
     }
-
-    val methodList: LiveData<List<Method>> = methodDao.getMethods()
 }

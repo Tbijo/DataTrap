@@ -82,8 +82,14 @@ class ListOccMouseFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.menu_recapture -> goToRecapture()
+            R.id.menu_occ_info -> goToOccasionView()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun goToOccasionView() {
+        val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToViewOccasionFragment(args.occList.occasionId)
+        findNavController().navigate(action)
     }
 
     private fun goToRecapture() {

@@ -8,19 +8,19 @@ class ProjectRepository(private val projectDao: ProjectDao) {
 
     val projectList: LiveData<List<Project>> = projectDao.getProjects()
 
-    suspend fun insertProject(project: Project){
+    suspend fun insertProject(project: Project) {
         projectDao.insertProject(project)
     }
 
-    suspend fun updateProject(project: Project){
+    suspend fun updateProject(project: Project) {
         projectDao.updateProject(project)
     }
 
-    suspend fun deleteProject(project: Project){
+    suspend fun deleteProject(project: Project) {
         projectDao.deleteProject(project)
     }
 
-    fun searchProjects(projectName: String): LiveData<List<Project>>{
+    fun searchProjects(projectName: String): LiveData<List<Project>> {
         return projectDao.searchProjects(projectName)
     }
 }
