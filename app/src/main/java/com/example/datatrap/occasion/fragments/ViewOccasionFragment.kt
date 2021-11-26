@@ -34,7 +34,9 @@ class ViewOccasionFragment : Fragment() {
         _binding = FragmentViewOccasionBinding.inflate(inflater, container, false)
 
         occasionViewModel.getOccasionView(args.occasionId).observe(viewLifecycleOwner, {
-            initOccasionValuesToView(it)
+            if (it != null) {
+                initOccasionValuesToView(it)
+            }
         })
 
         occasionImageViewModel.getImageForOccasion(args.occasionId).observe(viewLifecycleOwner, {

@@ -302,8 +302,8 @@
     <fragment
         android:id="@+id/viewOccasionFragment"
         android:name="com.example.datatrap.occasion.fragments.ViewOccasionFragment"
-        android:label="fragment_view_occasion"
-        tools:layout="@layout/fragment_view_occasion" >
+        android:label="View Occasion"
+        tools:layout="@layout/fragment_view_occasion">
         <argument
             android:name="occasionId"
             app:argType="long" />
