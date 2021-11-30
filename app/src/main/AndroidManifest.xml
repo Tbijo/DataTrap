@@ -46,7 +46,7 @@
         <activity
             android:name=".about.AboutActivity"/>
         <activity
-            android:name=".bugreport.BugReportActivity"/>
+            android:name=".emailData.EmailDataActivity"/>
         <activity
             android:name=".settings.SettingsActivity"/>
         <activity

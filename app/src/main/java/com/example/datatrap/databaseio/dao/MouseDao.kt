@@ -46,4 +46,8 @@ interface MouseDao {
     // pocet mysi v lokalite
     @Query("SELECT COUNT(Code) FROM Mouse WHERE localityID = :localityId AND Code IS NOT NULL AND Recapture = 0")
     fun countMiceForLocality(localityId: Long): LiveData<Int>
+
+    // mysi do csv email
+    @Query("SELECT * FROM Mouse")
+    fun getMiceForEmail(): LiveData<List<Mouse>>
 }

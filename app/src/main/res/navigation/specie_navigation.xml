@@ -21,7 +21,7 @@
             app:destination="@id/settingsActivity" />
         <action
             android:id="@+id/action_listSpecieFragment_to_bugReportActivity"
-            app:destination="@id/bugReportActivity" />
+            app:destination="@id/emailDataActivity" />
         <action
             android:id="@+id/action_listSpecieFragment_to_aboutActivity"
             app:destination="@id/aboutActivity" />
@@ -52,9 +52,9 @@
             app:destination="@id/getPictureFragment" />
     </fragment>
     <activity
-        android:id="@+id/bugReportActivity"
-        android:name="com.example.datatrap.bugreport.BugReportActivity"
-        android:label="Report a Bug" />
+        android:id="@+id/emailDataActivity"
+        android:name="com.example.datatrap.emailData.EmailDataActivity"
+        android:label="Email Data" />
     <activity
         android:id="@+id/aboutActivity"
         android:name="com.example.datatrap.about.AboutActivity"

@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/menu_rat"
-        android:title="Rat Num."
+        android:title="Rat Code"
         android:icon="@drawable/ic_rat"
         app:showAsAction="ifRoom"/>
 

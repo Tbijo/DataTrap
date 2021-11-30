@@ -71,4 +71,8 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
     fun countMiceForLocality(localityId: Long): LiveData<Int> {
         return mouseRepository.countMiceForLocality(localityId)
     }
+
+    fun getMiceForEmail(): LiveData<List<Mouse>> {
+        return mouseRepository.getMiceForEmail()
+    }
 }

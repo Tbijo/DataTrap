@@ -19,9 +19,9 @@
             android:title="Settings" />
 
         <item
-            android:id="@+id/bugReportActivity"
+            android:id="@+id/emailDataActivity"
             android:icon="@drawable/ic_email"
-            android:title="Report a bug" />
+            android:title="Email Data" />
 
         <item
             android:id="@+id/aboutActivity"

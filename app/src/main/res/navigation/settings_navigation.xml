@@ -18,7 +18,7 @@
             app:destination="@id/specieActivity" />
         <action
             android:id="@+id/action_listMainFragment_to_bugReportActivity"
-            app:destination="@id/bugReportActivity" />
+            app:destination="@id/emailDataActivity" />
         <action
             android:id="@+id/action_listMainFragment_to_listVegetTypeFragment"
             app:destination="@id/listVegetTypeFragment" />
@@ -49,9 +49,9 @@
         android:name="com.example.datatrap.specie.SpecieActivity"
         android:label="Species" />
     <activity
-        android:id="@+id/bugReportActivity"
-        android:name="com.example.datatrap.bugreport.BugReportActivity"
-        android:label="Report a Bug" />
+        android:id="@+id/emailDataActivity"
+        android:name="com.example.datatrap.emailData.EmailDataActivity"
+        android:label="Email Data" />
     <activity
         android:id="@+id/aboutActivity"
         android:name="com.example.datatrap.about.AboutActivity"

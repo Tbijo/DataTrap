@@ -18,4 +18,7 @@ interface SessionDao {
 
     @Query("SELECT * FROM Session WHERE projectID = :projectId")
     fun getSessionsForProject(projectId: Long): LiveData<List<Session>>
+
+    @Query("SELECT * FROM Session")
+    fun getSessionsForEmail(): LiveData<List<Session>>
 }

@@ -27,4 +27,7 @@ interface OccasionDao {
     @Query("SELECT occasionId, localityID, occasion, occasionDateTimeCreated AS dateTime, numMice, numTraps FROM Occasion WHERE sessionID = :idSession")
     fun getOccasionsForSession(idSession: Long): LiveData<List<OccList>>
 
+    @Query("SELECT * FROM Occasion")
+    fun getOccasionsForEmail(): LiveData<List<Occasion>>
+
 }

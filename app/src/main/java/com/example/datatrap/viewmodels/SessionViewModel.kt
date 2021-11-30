@@ -40,4 +40,8 @@ class SessionViewModel(application: Application): AndroidViewModel(application) 
     fun getSessionsForProject(projectId: Long): LiveData<List<Session>> {
         return sessionRepository.getSessionsForProject(projectId)
     }
+
+    fun getSessionsForEmail(): LiveData<List<Session>> {
+        return sessionRepository.getSessionsForEmail()
+    }
 }

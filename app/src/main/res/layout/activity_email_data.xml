@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/bugreport_drawerlayout"
-    tools:context=".bugreport.BugReportActivity">
+    android:id="@+id/emaildata_drawerlayout"
+    tools:context=".emailData.EmailDataActivity">
 
     <fragment
-        android:id="@+id/bugreport_fragmentContainerView"
+        android:id="@+id/emaildata_fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="409dp"
         android:layout_height="729dp"
@@ -18,10 +18,10 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/bugreport_navigation" />
+        app:navGraph="@navigation/emaildata_navigation" />
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/bugreport_navigationview"
+        android:id="@+id/emaildata_navigationview"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

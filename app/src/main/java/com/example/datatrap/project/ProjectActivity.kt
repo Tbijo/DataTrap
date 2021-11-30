@@ -34,7 +34,7 @@ class ProjectActivity : AppCompatActivity(), OnActiveFragment {
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 
-    //override fun onBackPressed(){}
+    override fun onBackPressed(){}
 
     override fun setTitle(title: String) {
         supportActionBar?.title = title

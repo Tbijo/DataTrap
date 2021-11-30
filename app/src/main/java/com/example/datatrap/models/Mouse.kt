@@ -89,6 +89,6 @@ data class Mouse(
 
     var MCleft: Int?,
 
-    var note: String?,
+    var note: String?
 
 ): Parcelable

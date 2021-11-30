@@ -2,14 +2,14 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bugreport_navigation"
-    app:startDestination="@id/bugReportFragment">
+    android:id="@+id/emaildata_navigation"
+    app:startDestination="@id/emailDataFragment">
 
     <fragment
-        android:id="@+id/bugReportFragment"
-        android:name="com.example.datatrap.bugreport.BugReportFragment"
-        android:label="Bug Report"
-        tools:layout="@layout/fragment_bug_report" >
+        android:id="@+id/emailDataFragment"
+        android:name="com.example.datatrap.emailData.EmailDataFragment"
+        android:label="Email Data"
+        tools:layout="@layout/fragment_email_data">
         <action
             android:id="@+id/action_bugReportFragment_to_specieActivity"
             app:destination="@id/specieActivity" />

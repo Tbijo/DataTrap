@@ -17,7 +17,7 @@ class AboutFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentAboutBinding.inflate(inflater, container, false)
 
-        binding.textView.text = "About Activity"
+        binding.textView.text = "This will be use for Synchronization"
 
         return binding.root
     }

@@ -21,4 +21,8 @@ class SessionRepository(private val sessionDao: SessionDao) {
     fun getSessionsForProject(projectId: Long): LiveData<List<Session>> {
         return sessionDao.getSessionsForProject(projectId)
     }
+
+    fun getSessionsForEmail(): LiveData<List<Session>> {
+        return sessionDao.getSessionsForEmail()
+    }
 }

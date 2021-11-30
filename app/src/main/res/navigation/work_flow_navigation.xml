@@ -21,7 +21,7 @@
             app:destination="@id/aboutActivity" />
         <action
             android:id="@+id/action_listAllProjectFragment_to_bugReportActivity"
-            app:destination="@id/bugReportActivity" />
+            app:destination="@id/emailDataActivity" />
         <action
             android:id="@+id/action_listAllProjectFragment_to_settingsActivity"
             app:destination="@id/settingsActivity" />
@@ -46,9 +46,9 @@
         android:name="com.example.datatrap.about.AboutActivity"
         android:label="About" />
     <activity
-        android:id="@+id/bugReportActivity"
-        android:name="com.example.datatrap.bugreport.BugReportActivity"
-        android:label="Report a Bug" />
+        android:id="@+id/emailDataActivity"
+        android:name="com.example.datatrap.emailData.EmailDataActivity"
+        android:label="Email Data" />
     <activity
         android:id="@+id/settingsActivity"
         android:name="com.example.datatrap.settings.SettingsActivity"
