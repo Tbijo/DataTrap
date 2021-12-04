@@ -24,9 +24,9 @@
             android:title="Email Data" />
 
         <item
-            android:id="@+id/aboutActivity"
-            android:icon="@drawable/ic_info"
-            android:title="About" />
+            android:id="@+id/synchronizeActivity"
+            android:icon="@drawable/ic_upload"
+            android:title="Synchronize" />
 
     </group>
 </menu>

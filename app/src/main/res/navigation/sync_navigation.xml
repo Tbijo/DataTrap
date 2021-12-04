@@ -2,13 +2,13 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/about_navigation"
-    app:startDestination="@id/aboutFragment">
+    android:id="@+id/sync_navigation"
+    app:startDestination="@id/synchronizeFragment">
     <fragment
-        android:id="@+id/aboutFragment"
-        android:name="com.example.datatrap.about.AboutFragment"
-        android:label="About"
-        tools:layout="@layout/fragment_about" >
+        android:id="@+id/synchronizeFragment"
+        android:name="com.example.datatrap.sync.SynchronizeFragment"
+        android:label="Synchronize With Server"
+        tools:layout="@layout/fragment_synchronize">
         <action
             android:id="@+id/action_aboutFragment_to_bugReportActivity"
             app:destination="@id/emailDataActivity" />

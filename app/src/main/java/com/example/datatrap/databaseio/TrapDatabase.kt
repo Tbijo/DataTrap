@@ -18,7 +18,7 @@ import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
     Occasion::class, Project::class, Protocol::class, Session::class,
     Specie::class, TrapType::class, VegetType::class, Mouse::class,
     ProjectLocalityCrossRef::class, User::class, LocalitySessionCrossRef::class,
-    MouseImage::class, OccasionImage::class, SpecieImage::class
+    MouseImage::class, OccasionImage::class, SpecieImage::class, SynchronizeDate::class
                      ], version = 1, exportSchema = false)
 @TypeConverters(DateLongConverters::class)
 abstract class TrapDatabase: RoomDatabase() {
@@ -40,6 +40,7 @@ abstract class TrapDatabase: RoomDatabase() {
     abstract fun mouseImageDao(): MouseImageDao
     abstract fun occasionImageDao(): OccasionImageDao
     abstract fun specieImageDao(): SpecieImageDao
+    abstract fun synchronizeDao(): SynchronizeDateDao
 
     companion object{
         @Volatile

@@ -1,4 +1,4 @@
-package com.example.datatrap.about
+package com.example.datatrap.sync
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,27 +9,27 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.datatrap.R
-import com.example.datatrap.databinding.ActivityAboutBinding
+import com.example.datatrap.databinding.ActivitySynchronizeBinding
 
-class AboutActivity : AppCompatActivity() {
+class SynchronizeActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAboutBinding
+    private lateinit var binding: ActivitySynchronizeBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityAboutBinding.inflate(layoutInflater)
+        binding = ActivitySynchronizeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        navController = findNavController(R.id.about_fragmentContainerView)
-        appBarConfiguration = AppBarConfiguration(navController.graph, binding.aboutDrawerlayout)
-        binding.aboutNavigationview.setupWithNavController(navController)
-        setupActionBarWithNavController(navController, binding.aboutDrawerlayout)
+        navController = findNavController(R.id.sync_fragmentContainerView)
+        appBarConfiguration = AppBarConfiguration(navController.graph, binding.syncDrawerlayout)
+        binding.syncNavigationview.setupWithNavController(navController)
+        setupActionBarWithNavController(navController, binding.syncDrawerlayout)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.about_fragmentContainerView)
+        val navController = findNavController(R.id.sync_fragmentContainerView)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 

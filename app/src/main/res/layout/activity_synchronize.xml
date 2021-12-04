@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/about_drawerlayout"
-    tools:context=".about.AboutActivity">
+    android:id="@+id/sync_drawerlayout"
+    tools:context=".sync.SynchronizeActivity">
 
     <fragment
-        android:id="@+id/about_fragmentContainerView"
+        android:id="@+id/sync_fragmentContainerView"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="409dp"
         android:layout_height="729dp"
@@ -18,10 +18,10 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navGraph="@navigation/about_navigation" />
+        app:navGraph="@navigation/sync_navigation" />
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/about_navigationview"
+        android:id="@+id/sync_navigationview"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

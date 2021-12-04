@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_list_main" >
         <action
             android:id="@+id/action_listMainFragment_to_aboutActivity"
-            app:destination="@id/aboutActivity" />
+            app:destination="@id/synchronizeActivity" />
         <action
             android:id="@+id/action_listMainFragment_to_specieActivity"
             app:destination="@id/specieActivity" />
@@ -53,9 +53,9 @@
         android:name="com.example.datatrap.emailData.EmailDataActivity"
         android:label="Email Data" />
     <activity
-        android:id="@+id/aboutActivity"
-        android:name="com.example.datatrap.about.AboutActivity"
-        android:label="About" />
+        android:id="@+id/synchronizeActivity"
+        android:name="com.example.datatrap.sync.SynchronizeActivity"
+        android:label="Synchronize With Server" />
     <fragment
         android:id="@+id/listVegetTypeFragment"
         android:name="com.example.datatrap.settings.fragments.list.vegettype.list.ListVegetTypeFragment"

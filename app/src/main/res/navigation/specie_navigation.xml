@@ -24,7 +24,7 @@
             app:destination="@id/emailDataActivity" />
         <action
             android:id="@+id/action_listSpecieFragment_to_aboutActivity"
-            app:destination="@id/aboutActivity" />
+            app:destination="@id/synchronizeActivity" />
         <action
             android:id="@+id/action_listSpecieFragment_to_projectActivity"
             app:destination="@id/projectActivity" />
@@ -56,9 +56,9 @@
         android:name="com.example.datatrap.emailData.EmailDataActivity"
         android:label="Email Data" />
     <activity
-        android:id="@+id/aboutActivity"
-        android:name="com.example.datatrap.about.AboutActivity"
-        android:label="About" />
+        android:id="@+id/synchronizeActivity"
+        android:name="com.example.datatrap.sync.SynchronizeActivity"
+        android:label="Synchronize With Server" />
     <activity
         android:id="@+id/settingsActivity"
         android:name="com.example.datatrap.settings.SettingsActivity"
