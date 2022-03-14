@@ -6,7 +6,7 @@ import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -17,18 +17,19 @@ import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.viewmodels.*
-import java.io.File
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class UpdateMouseFragment : Fragment() {
 
     private var _binding: FragmentUpdateMouseBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<UpdateMouseFragmentArgs>()
-    private lateinit var mouseViewModel: MouseViewModel
-    private lateinit var specieViewModel: SpecieViewModel
-    private lateinit var protocolViewModel: ProtocolViewModel
-    private lateinit var mouseImageViewModel: MouseImageViewModel
+    private val mouseViewModel: MouseViewModel by viewModels()
+    private val specieViewModel: SpecieViewModel by viewModels()
+    private val protocolViewModel: ProtocolViewModel by viewModels()
+    private val mouseImageViewModel: MouseImageViewModel by viewModels()
 
     private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
@@ -46,20 +47,16 @@ class UpdateMouseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateMouseBinding.inflate(inflater, container, false)
-        mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
-        mouseImageViewModel = ViewModelProvider(this).get(MouseImageViewModel::class.java)
-        specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
-        mouseViewModel.getMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner, {
+        mouseViewModel.getMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
             currentMouse = it
             initMouseValuesToView(it)
             fillDropDown(it)
-        })
+        }
 
-        mouseImageViewModel.getImageForMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner, {
+        mouseImageViewModel.getImageForMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
             mouseImage = it
-        })
+        }
 
         setListeners()
 
@@ -70,9 +67,9 @@ class UpdateMouseFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        mouseViewModel.getMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner, {
+        mouseViewModel.getMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
             fillDropDown(it)
-        })
+        }
     }
 
     override fun onDestroy() {
@@ -94,22 +91,15 @@ class UpdateMouseFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun deleteImage() {
-        if (mouseImage != null) {
-            // odstranit fyzicku zlozku
-            val myFile = File(mouseImage!!.path)
-            if (myFile.exists()) myFile.delete()
-        }
-    }
-
     private fun fillDropDown(mouse: Mouse) {
-        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner, {
+        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner) {
             listSpecie = it
             val listCode = mutableListOf<String>()
             it.forEach { specie ->
                 listCode.add(specie.speciesCode)
             }
-            val dropDownArrSpecie = ArrayAdapter(requireContext(), R.layout.dropdown_names, listCode)
+            val dropDownArrSpecie =
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, listCode)
             binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
 
             // init values
@@ -119,26 +109,27 @@ class UpdateMouseFragment : Fragment() {
             speciesID = specie?.specieId
             binding.autoCompTvSpecie.setText(specie?.speciesCode, false)
 
-        })
+        }
 
-        protocolViewModel.procolList.observe(viewLifecycleOwner, {
+        protocolViewModel.procolList.observe(viewLifecycleOwner) {
             listProtocol = it
             val listProtName = mutableListOf<String>()
             listProtName.add("null")
             it.forEach { protocol ->
                 listProtName.add(protocol.protocolName)
             }
-            val dropDownArrProtocol = ArrayAdapter(requireContext(), R.layout.dropdown_names, listProtName)
+            val dropDownArrProtocol =
+                ArrayAdapter(requireContext(), R.layout.dropdown_names, listProtName)
             binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
 
             // init values
-            val protocol = it.firstOrNull{ protocol ->
+            val protocol = it.firstOrNull { protocol ->
                 protocol.protocolId == mouse.protocolID
             }
             protocolID = protocol?.protocolId
             binding.autoCompTvProtocol.setText(protocol.toString(), false)
 
-        })
+        }
 
         val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occList.numTraps).toList())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
@@ -291,9 +282,7 @@ class UpdateMouseFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            deleteImage()
-
-            mouseViewModel.deleteMouse(args.mouseOccTuple.mouseId)
+            mouseViewModel.deleteMouse(args.mouseOccTuple.mouseId, mouseImage?.path)
 
             Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
 
@@ -338,7 +327,7 @@ class UpdateMouseFragment : Fragment() {
             mouse.MCright = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
             mouse.MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
 
-            mouse.note = if (binding.etMouseNote.text.toString().isBlank()) null else binding.etMouseNote.text.toString()
+            mouse.note = binding.etMouseNote.text.toString().ifBlank { null }
 
             // update mouse
             if (mouse.weight != null) {

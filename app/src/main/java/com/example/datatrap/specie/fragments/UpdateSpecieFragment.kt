@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -14,16 +14,17 @@ import com.example.datatrap.models.Specie
 import com.example.datatrap.models.SpecieImage
 import com.example.datatrap.viewmodels.SpecieImageViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
-import java.io.File
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class UpdateSpecieFragment : Fragment() {
 
     private var _binding: FragmentUpdateSpecieBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<UpdateSpecieFragmentArgs>()
-    private lateinit var specieViewModel: SpecieViewModel
-    private lateinit var specieImageViewModel: SpecieImageViewModel
+    private val specieViewModel: SpecieViewModel by viewModels()
+    private val specieImageViewModel: SpecieImageViewModel by viewModels()
 
     private var upperFingers: Int? = null
     private lateinit var currentSpecie: Specie
@@ -34,8 +35,6 @@ class UpdateSpecieFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentUpdateSpecieBinding.inflate(inflater, container, false)
-        specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        specieImageViewModel = ViewModelProvider(this).get(SpecieImageViewModel::class.java)
 
         binding.rgUpperFingers.setOnCheckedChangeListener { _, radioButtonId ->
             when (radioButtonId){
@@ -45,14 +44,14 @@ class UpdateSpecieFragment : Fragment() {
             }
         }
 
-        specieViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
+        specieViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
             currentSpecie = it
             initSpecieValuesToView(it)
-        })
+        }
 
-        specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
+        specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
             specieImage = it
-        })
+        }
 
         setHasOptionsMenu(true)
         return binding.root
@@ -74,14 +73,6 @@ class UpdateSpecieFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
-    }
-
-    private fun deleteImage() {
-        if (specieImage != null) {
-            // odstranit fyzicku zlozku
-            val myFile = File(specieImage!!.path)
-            if (myFile.exists()) myFile.delete()
-        }
     }
 
     private fun goToCamera() {
@@ -119,9 +110,7 @@ class UpdateSpecieFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            deleteImage()
-
-            specieViewModel.deleteSpecie(args.specList.specieId)
+            specieViewModel.deleteSpecie(args.specList.specieId, specieImage?.path)
 
             Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
 

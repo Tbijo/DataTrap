@@ -1,25 +1,21 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.VegetType
 import com.example.datatrap.repositories.VegetTypeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class VegetTypeViewModel(application: Application): AndroidViewModel(application) {
-
-    val vegetTypeList: LiveData<List<VegetType>>
+@HiltViewModel
+class VegetTypeViewModel @Inject constructor(
     private val vegetTypeRepository: VegetTypeRepository
+): ViewModel() {
 
-    init {
-        val vegetTypeDao = TrapDatabase.getDatabase(application).vegetTypeDao()
-        vegetTypeRepository = VegetTypeRepository(vegetTypeDao)
-        vegetTypeList = vegetTypeRepository.vegetTypeList
-    }
+    val vegetTypeList: LiveData<List<VegetType>> = vegetTypeRepository.vegetTypeList
 
     fun insertVegetType(vegetType: VegetType) {
         viewModelScope.launch(Dispatchers.IO) {

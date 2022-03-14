@@ -1,25 +1,21 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Method
 import com.example.datatrap.repositories.MethodRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MethodViewModel(application: Application): AndroidViewModel(application) {
-
-    val methodList: LiveData<List<Method>>
+@HiltViewModel
+class MethodViewModel @Inject constructor(
     private val methodRepository: MethodRepository
+): ViewModel() {
 
-    init {
-        val methodDao = TrapDatabase.getDatabase(application).methodDao()
-        methodRepository = MethodRepository(methodDao)
-        methodList = methodRepository.methodList
-    }
+    val methodList: LiveData<List<Method>> = methodRepository.methodList
 
     fun insertMethod(method: Method){
         viewModelScope.launch(Dispatchers.IO) {

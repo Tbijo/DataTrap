@@ -9,31 +9,31 @@ import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateOccasionBinding
 import com.example.datatrap.models.*
-import com.example.datatrap.occasion.fragments.weather.Weather
 import com.example.datatrap.viewmodels.*
-import java.io.File
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class UpdateOccasionFragment : Fragment() {
 
     private var _binding: FragmentUpdateOccasionBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<UpdateOccasionFragmentArgs>()
 
-    private lateinit var occasionViewModel: OccasionViewModel
-    private lateinit var envTypeViewModel: EnvTypeViewModel
-    private lateinit var methodViewModel: MethodViewModel
-    private lateinit var metTypeViewModel: MethodTypeViewModel
-    private lateinit var trapTypeViewModel: TrapTypeViewModel
-    private lateinit var vegTypeViewModel: VegetTypeViewModel
-    private lateinit var localityViewModel: LocalityViewModel
-    private lateinit var occasionImageViewModel: OccasionImageViewModel
+    private val occasionViewModel: OccasionViewModel by viewModels()
+    private val envTypeViewModel: EnvTypeViewModel by viewModels()
+    private val methodViewModel: MethodViewModel by viewModels()
+    private val metTypeViewModel: MethodTypeViewModel by viewModels()
+    private val trapTypeViewModel: TrapTypeViewModel by viewModels()
+    private val vegTypeViewModel: VegetTypeViewModel by viewModels()
+    private val occasionImageViewModel: OccasionImageViewModel by viewModels()
+    private val volleyViewModel: VolleyViewModel by viewModels()
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -54,26 +54,26 @@ class UpdateOccasionFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateOccasionBinding.inflate(inflater, container, false)
 
-        occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
-        envTypeViewModel = ViewModelProvider(this).get(EnvTypeViewModel::class.java)
-        methodViewModel = ViewModelProvider(this).get(MethodViewModel::class.java)
-        metTypeViewModel = ViewModelProvider(this).get(MethodTypeViewModel::class.java)
-        trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
-        vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
-        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
-        occasionImageViewModel = ViewModelProvider(this).get(OccasionImageViewModel::class.java)
-
-        occasionImageViewModel.getImageForOccasion(args.occList.occasionId).observe(viewLifecycleOwner, {
+        occasionImageViewModel.getImageForOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
             occasionImage = it
-        })
+        }
 
-        occasionViewModel.getOccasion(args.occList.occasionId).observe(viewLifecycleOwner, {
+        occasionViewModel.getOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
             currentOccasion = it
             fillDropDown(it)
             initOccasionValuesToView(it)
-        })
+        }
 
         setListeners()
+
+        volleyViewModel.weatherCoor.observe(viewLifecycleOwner) {
+            binding.etTemperature.setText(it.temp.toString())
+            binding.etWeather.setText(it.weather)
+        }
+
+        volleyViewModel.errorWeather.observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+        }
 
         setHasOptionsMenu(true)
         return binding.root
@@ -100,16 +100,8 @@ class UpdateOccasionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        occasionViewModel.getOccasion(args.occList.occasionId).observe(viewLifecycleOwner, {
+        occasionViewModel.getOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
             fillDropDown(it)
-        })
-    }
-
-    private fun deleteImage() {
-        if (occasionImage != null) {
-            // odstranit fyzicku zlozku
-            val myFile = File(occasionImage!!.path)
-            if (myFile.exists()) myFile.delete()
         }
     }
 
@@ -151,7 +143,7 @@ class UpdateOccasionFragment : Fragment() {
     }
 
     private fun fillDropDown(occasion: Occasion) {
-        envTypeViewModel.envTypeList.observe(viewLifecycleOwner, {
+        envTypeViewModel.envTypeList.observe(viewLifecycleOwner) {
             envTypeList = it
             val nameList = mutableListOf<String>()
             nameList.add("null")
@@ -168,9 +160,9 @@ class UpdateOccasionFragment : Fragment() {
             }
             envTypeID = current?.envTypeId
             binding.autoCompTvEnvType.setText(current?.envTypeName.toString(), false)
-        })
+        }
 
-        methodViewModel.methodList.observe(viewLifecycleOwner, {
+        methodViewModel.methodList.observe(viewLifecycleOwner) {
             methodList = it
             val nameList = mutableListOf<String>()
             it.forEach { method ->
@@ -186,9 +178,9 @@ class UpdateOccasionFragment : Fragment() {
             }
             methodID = current.methodId
             binding.autoCompTvMethod.setText(current.methodName, false)
-        })
+        }
 
-        metTypeViewModel.methodTypeList.observe(viewLifecycleOwner, {
+        metTypeViewModel.methodTypeList.observe(viewLifecycleOwner) {
             metTypeList = it
             val nameList = mutableListOf<String>()
             it.forEach { metType ->
@@ -204,9 +196,9 @@ class UpdateOccasionFragment : Fragment() {
             }
             methodTypeID = current.methodTypeId
             binding.autoCompTvMethodType.setText(current.methodTypeName, false)
-        })
+        }
 
-        trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner, {
+        trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner) {
             trapTypeList = it
             val nameList = mutableListOf<String>()
             it.forEach { trapType ->
@@ -222,9 +214,9 @@ class UpdateOccasionFragment : Fragment() {
             }
             trapTypeID = current.trapTypeId
             binding.autoCompTvTrapType.setText(current.trapTypeName, false)
-        })
+        }
 
-        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner, {
+        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner) {
             vegTypeList = it
             val nameList = mutableListOf<String>()
             nameList.add("null")
@@ -241,7 +233,7 @@ class UpdateOccasionFragment : Fragment() {
             }
             vegetTypeID = current?.vegetTypeId
             binding.autoCompTvVegType.setText(current?.vegetTypeName.toString(), false)
-        })
+        }
 
     }
 
@@ -265,10 +257,8 @@ class UpdateOccasionFragment : Fragment() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            deleteImage()
-
             // vymazat occasion
-            occasionViewModel.deleteOccasion(args.occList.occasionId)
+            occasionViewModel.deleteOccasion(args.occList.occasionId, occasionImage?.path)
 
             Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
 
@@ -299,8 +289,8 @@ class UpdateOccasionFragment : Fragment() {
             occasion.gotCaught = binding.cbGotCaught.isChecked
             occasion.numTraps = numTraps
             occasion.temperature = giveOutPutFloat(binding.etTemperature.text.toString())
-            occasion.weather = if (binding.etWeather.text.toString().isBlank()) null else binding.etWeather.text.toString()
-            occasion.note = if (binding.etOccasionNote.text.toString().isBlank()) null else binding.etOccasionNote.text.toString()
+            occasion.weather = binding.etWeather.text.toString().ifBlank { null }
+            occasion.note = binding.etOccasionNote.text.toString().ifBlank { null }
 
             occasionViewModel.updateOccasion(occasion)
 
@@ -330,21 +320,15 @@ class UpdateOccasionFragment : Fragment() {
 
     private fun getHistoryWeather() {
         if (isOnline(requireContext())) {
-            val weather = Weather(requireContext())
             val locality = args.locList
 
+            if (locality.xA == null || locality.yA == null){
+                Toast.makeText(requireContext(), "No coordinates in this locality.", Toast.LENGTH_LONG).show()
+                return
+            }
             val unixtime = currentOccasion.occasionDateTimeCreated.time
 
-            weather.getHistoricalWeatherByCoordinates(locality.xA, locality.yA, unixtime, object: Weather.VolleyResponseListener {
-                override fun onResponse(temp: Int, weather: String) {
-                    binding.etTemperature.setText(temp.toString())
-                    binding.etWeather.setText(weather)
-                }
-
-                override fun onError(message: String) {
-                    Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
-                }
-            })
+            volleyViewModel.getHistoricalWeatherByCoordinates(locality.xA!!, locality.yA!!, unixtime)
         }else{
             Toast.makeText(requireContext(), "Connect to Internet.", Toast.LENGTH_LONG).show()
         }

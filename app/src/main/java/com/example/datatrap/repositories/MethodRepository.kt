@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.MethodDao
 import com.example.datatrap.models.Method
 
-class MethodRepository(private val methodDao: MethodDao) {
+class MethodRepository(
+    private val methodDao: MethodDao
+) {
 
     val methodList: LiveData<List<Method>> = methodDao.getMethods()
 

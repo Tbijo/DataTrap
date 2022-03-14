@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -18,14 +18,18 @@ import com.example.datatrap.models.Session
 import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
 import com.example.datatrap.viewmodels.LocalitySessionViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ListPrjSessionFragment : Fragment() {
 
     private var _binding: FragmentListPrjSessionBinding? = null
     private val binding get() = _binding!!
-    private lateinit var sessionViewModel: SessionViewModel
-    private lateinit var localitySessionViewModel: LocalitySessionViewModel
+
+    private val sessionViewModel: SessionViewModel by viewModels()
+    private val localitySessionViewModel: LocalitySessionViewModel by viewModels()
+
     private lateinit var adapter: PrjSessionRecyclerAdapter
     private val args by navArgs<ListPrjSessionFragmentArgs>()
     private lateinit var sessionList: List<Session>
@@ -35,8 +39,6 @@ class ListPrjSessionFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentListPrjSessionBinding.inflate(inflater, container, false)
-        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        localitySessionViewModel = ViewModelProvider(this).get(LocalitySessionViewModel::class.java)
 
         adapter = PrjSessionRecyclerAdapter()
         val recyclerView = binding.prjSessionRecyclerview
@@ -50,10 +52,10 @@ class ListPrjSessionFragment : Fragment() {
         recyclerView.addItemDecoration(dividerItemDecoration)
 
         sessionViewModel.getSessionsForProject(args.project.projectId)
-            .observe(viewLifecycleOwner, { sessions ->
+            .observe(viewLifecycleOwner) { sessions ->
                 adapter.setData(sessions)
                 sessionList = sessions
-            })
+            }
 
         adapter.setOnItemClickListener(object : PrjSessionRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {

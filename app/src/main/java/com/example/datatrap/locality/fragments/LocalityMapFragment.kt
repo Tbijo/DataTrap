@@ -25,15 +25,19 @@ class LocalityMapFragment : Fragment() {
 
         if (args.locaLists.isNotEmpty()) {
             args.locaLists.forEach {
-                val locality = LatLng(it.xA.toDouble(), it.yA.toDouble())
-                googleMap.addMarker(MarkerOptions().position(locality).title(it.localityName))
+                if (it.xA != null && it.yA != null) {
+                    val locality = LatLng(it.xA!!.toDouble(), it.yA!!.toDouble())
+                    googleMap.addMarker(MarkerOptions().position(locality).title(it.localityName))
+                }
             }
 
-            val lastLat = args.locaLists.last().xA.toDouble()
-            val lastlon = args.locaLists.last().yA.toDouble()
-            val lastLatLon = LatLng(lastLat, lastlon)
-            // bolo by treba nastavit najblizsiu takto sa nastavi najnovsia
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLon, 13F))
+            val lastLat = args.locaLists.last().xA
+            val lastlon = args.locaLists.last().yA
+            if (lastLat != null && lastlon != null) {
+                val lastLatLon = LatLng(lastLat.toDouble(), lastlon.toDouble())
+                // bolo by treba nastavit najblizsiu takto sa nastavi najnovsia
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(lastLatLon, 13F))
+            }
         }
     }
 

@@ -9,7 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
@@ -19,13 +19,15 @@ import com.example.datatrap.viewmodels.ProjectViewModel
 import com.example.datatrap.viewmodels.UserViewModel
 import java.util.*
 import androidx.recyclerview.widget.DividerItemDecoration
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentListProjectBinding? = null
     private val binding get() = _binding!!
-    private lateinit var projectViewModel: ProjectViewModel
-    private lateinit var userViewModel: UserViewModel
+    private val projectViewModel: ProjectViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
     private lateinit var adapter: ProjectRecyclerAdapter
 
     override fun onCreateView(
@@ -33,8 +35,6 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentListProjectBinding.inflate(inflater, container, false)
-        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
-        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         adapter = ProjectRecyclerAdapter()
         binding.projectRecyclerview.adapter = adapter
@@ -46,9 +46,9 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
         )
         binding.projectRecyclerview.addItemDecoration(dividerItemDecoration)
 
-        projectViewModel.projectList.observe(viewLifecycleOwner, { projects ->
+        projectViewModel.projectList.observe(viewLifecycleOwner) { projects ->
             adapter.setData(projects)
-        })
+        }
 
         binding.addProjectFloatButton.setOnClickListener {
             showAddDialog("New Project", "Project Name", "Add new project?")
@@ -97,11 +97,11 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
     private fun searchProjects(query: String?) {
         val searchQuery = "%$query%"
         projectViewModel.searchProjects(searchQuery)
-            .observe(viewLifecycleOwner, { projects ->
+            .observe(viewLifecycleOwner) { projects ->
                 projects.let {
                     adapter.setData(it)
                 }
-            })
+            }
     }
 
     private fun showAddDialog(title: String, hint: String, message: String) {

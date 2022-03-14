@@ -21,13 +21,13 @@ data class Locality(
 
     var localityDateTimeUpdated: Date?,
 
-    var xA: Float, // latitudeA
+    var xA: Float?, // latitudeA
 
-    var yA: Float, // longitudeA
+    var yA: Float?, // longitudeA
 
-    var xB: Float, // latitudeB
+    var xB: Float?, // latitudeB
 
-    var yB: Float, // longitudeB
+    var yB: Float?, // longitudeB
 
     var numSessions: Int,
 

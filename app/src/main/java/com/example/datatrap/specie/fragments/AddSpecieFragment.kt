@@ -4,19 +4,22 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddSpecieBinding
 import com.example.datatrap.models.Specie
 import com.example.datatrap.viewmodels.SpecieViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class AddSpecieFragment : Fragment() {
 
     private var _binding: FragmentAddSpecieBinding? = null
     private val binding get() = _binding!!
-    private lateinit var specieViewModel: SpecieViewModel
+
+    private val specieViewModel: SpecieViewModel by viewModels()
 
     private var upperFingers: Int? = null
 
@@ -27,7 +30,6 @@ class AddSpecieFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAddSpecieBinding.inflate(inflater, container, false)
-        specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
 
         binding.rgUpperFingers.setOnCheckedChangeListener { _, radioButtonId ->
             when (radioButtonId) {
@@ -85,15 +87,9 @@ class AddSpecieFragment : Fragment() {
         val fullName = binding.etFullName.text.toString()
 
         if (checkInput(speciesCode, fullName)) {
-            val authority = if (binding.etAuthority.text.toString()
-                    .isBlank()
-            ) null else binding.etAuthority.text.toString()
-            val synonym = if (binding.etSynonym.text.toString()
-                    .isBlank()
-            ) null else binding.etSynonym.text.toString()
-            val description = if (binding.etDescription.text.toString()
-                    .isBlank()
-            ) null else binding.etDescription.text.toString()
+            val authority = binding.etAuthority.text.toString().ifBlank { null }
+            val synonym = binding.etSynonym.text.toString().ifBlank { null }
+            val description = binding.etDescription.text.toString().ifBlank { null }
             val isSmallMammal: Boolean = binding.cbIsSmallMammal.isChecked
             val minWeight = giveOutPutFloat(binding.etMinWeight.text.toString())
             val maxWeight = giveOutPutFloat(binding.etMaxWeight.text.toString())
@@ -103,9 +99,7 @@ class AddSpecieFragment : Fragment() {
             val feetMinLen = giveOutPutFloat(binding.etMinFeet.text.toString())
             val feetMaxLen = giveOutPutFloat(binding.etMaxFeet.text.toString())
 
-            val note = if (binding.etNote.text.toString()
-                    .isBlank()
-            ) null else binding.etNote.text.toString()
+            val note = binding.etNote.text.toString().ifBlank { null }
 
             val specie = Specie(
                 0,
@@ -131,9 +125,9 @@ class AddSpecieFragment : Fragment() {
 
             Toast.makeText(requireContext(), "Specie Added.", Toast.LENGTH_SHORT).show()
 
-            specieViewModel.specieId.observe(viewLifecycleOwner, {
+            specieViewModel.specieId.observe(viewLifecycleOwner) {
                 specieId = it
-            })
+            }
         } else {
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG)
                 .show()

@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import com.example.datatrap.databinding.FragmentEmailDataBinding
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.Occasion
@@ -22,18 +22,20 @@ import com.example.datatrap.models.Project
 import com.example.datatrap.models.Session
 import com.example.datatrap.viewmodels.*
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.IOException
 
+@AndroidEntryPoint
 class EmailDataFragment : Fragment() {
 
     private var _binding: FragmentEmailDataBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var mouseViewModel: MouseViewModel
-    private lateinit var projectViewModel: ProjectViewModel
-    private lateinit var occasionViewModel: OccasionViewModel
-    private lateinit var sessionViewModel: SessionViewModel
+    private val mouseViewModel: MouseViewModel by viewModels()
+    private val projectViewModel: ProjectViewModel by viewModels()
+    private val occasionViewModel: OccasionViewModel by viewModels()
+    private val sessionViewModel: SessionViewModel by viewModels()
 
     private var mouseUri: Uri? = null
     private var occasionUri: Uri? = null
@@ -55,23 +57,18 @@ class EmailDataFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentEmailDataBinding.inflate(inflater, container, false)
 
-        mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
-        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
-        occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
-        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-
-        mouseViewModel.getMiceForEmail().observe(viewLifecycleOwner, {
+        mouseViewModel.getMiceForEmail().observe(viewLifecycleOwner) {
             mouseList = it
-        })
-        projectViewModel.projectList.observe(viewLifecycleOwner, {
+        }
+        projectViewModel.projectList.observe(viewLifecycleOwner) {
             projectList = it
-        })
-        sessionViewModel.getSessionsForEmail().observe(viewLifecycleOwner, {
+        }
+        sessionViewModel.getSessionsForEmail().observe(viewLifecycleOwner) {
             sessionList = it
-        })
-        occasionViewModel.getOccasionsForEmail().observe(viewLifecycleOwner, {
+        }
+        occasionViewModel.getOccasionsForEmail().observe(viewLifecycleOwner) {
             occasionList = it
-        })
+        }
 
         binding.btnGenFile.setOnClickListener {
            if (mouseList.isNotEmpty() && projectList.isNotEmpty() && sessionList.isNotEmpty() && occasionList.isNotEmpty()) {
@@ -89,8 +86,8 @@ class EmailDataFragment : Fragment() {
                 if (projectUri != null && mouseUri != null && sessionUri != null && occasionUri != null) {
                     if (binding.etEmail.text.toString().isNotBlank()) {
                         val recipient = binding.etEmail.text.toString()
-                        val subject = if (binding.etSubject.text.toString().isBlank()) "Exported Database" else binding.etSubject.text.toString()
-                        val message = if (binding.etMessage.text.toString().isBlank()) "Here is the data from the App" else binding.etMessage.text.toString()
+                        val subject = binding.etSubject.text.toString().ifBlank { "Exported Database" }
+                        val message = binding.etMessage.text.toString().ifBlank { "Here is the data from the App" }
 
                         sendEmail(recipient, subject, message, arrayListOf(projectUri!!, mouseUri!!, sessionUri!!, occasionUri!!))
                     } else {

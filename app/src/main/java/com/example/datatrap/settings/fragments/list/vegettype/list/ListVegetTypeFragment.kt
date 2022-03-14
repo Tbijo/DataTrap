@@ -9,30 +9,29 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListVegetTypeBinding
 import com.example.datatrap.models.VegetType
-import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.VegetTypeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ListVegetTypeFragment : Fragment() {
 
     private var _binding: FragmentListVegetTypeBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: VegTypeRecyclerAdapter
-    private lateinit var vegTypeViewModel: VegetTypeViewModel
+    private val vegTypeViewModel: VegetTypeViewModel by viewModels()
     private lateinit var vegTypeList: List<VegetType>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListVegetTypeBinding.inflate(inflater, container, false)
-        vegTypeViewModel = ViewModelProvider(this).get(VegetTypeViewModel::class.java)
 
         adapter = VegTypeRecyclerAdapter()
         binding.vegTypeRecyclerview.adapter = adapter
@@ -44,10 +43,10 @@ class ListVegetTypeFragment : Fragment() {
         )
         binding.vegTypeRecyclerview.addItemDecoration(dividerItemDecoration)
 
-        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner, { vegTypes ->
+        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner) { vegTypes ->
             adapter.setData(vegTypes)
             vegTypeList = vegTypes
-        })
+        }
 
         binding.addVegtypeFloatButton.setOnClickListener {
             showAddDialog("New Vegetation Type", "Add new vegetation type?")

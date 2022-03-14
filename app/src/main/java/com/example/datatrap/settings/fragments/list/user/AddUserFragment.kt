@@ -4,19 +4,21 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddUserBinding
 import com.example.datatrap.models.User
 import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class AddUserFragment : Fragment() {
 
     private var _binding: FragmentAddUserBinding? = null
     private val binding get() = _binding!!
-    private lateinit var userViewModel: UserViewModel
+    private val userViewModel: UserViewModel by viewModels()
 
     private var team: Int = 0
 
@@ -24,7 +26,6 @@ class AddUserFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentAddUserBinding.inflate(inflater, container, false)
-        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         binding.rgTeamAdd.setOnCheckedChangeListener { _, radioButtonId ->
             when(radioButtonId){

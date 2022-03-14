@@ -1,27 +1,22 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
+import androidx.lifecycle.*
 import com.example.datatrap.models.Occasion
 import com.example.datatrap.models.tuples.OccList
 import com.example.datatrap.models.tuples.OccasionView
 import com.example.datatrap.repositories.OccasionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
 
-class OccasionViewModel(application: Application): AndroidViewModel(application) {
-
+@HiltViewModel
+class OccasionViewModel @Inject constructor(
     private val occasionRepository: OccasionRepository
-    val occasionId: MutableLiveData<Long> = MutableLiveData<Long>()
+): ViewModel() {
 
-    init {
-        val occasionDao = TrapDatabase.getDatabase(application).occasionDao()
-        occasionRepository = OccasionRepository(occasionDao)
-    }
+    val occasionId: MutableLiveData<Long> = MutableLiveData<Long>()
 
     fun insertOccasion(occasion: Occasion) {
         viewModelScope.launch {
@@ -35,9 +30,20 @@ class OccasionViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun deleteOccasion(occasionId: Long) {
+    fun deleteOccasion(occasionId: Long, imagePath: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            occasionRepository.deleteOccasion(occasionId)
+            val job1 = launch {
+                if (imagePath != null) {
+                    // odstranit fyzicku zlozku
+                    val myFile = File(imagePath)
+                    if (myFile.exists()) myFile.delete()
+                }
+            }
+            val job2 = launch {
+                occasionRepository.deleteOccasion(occasionId)
+            }
+            job1.join()
+            job2.join()
         }
     }
 

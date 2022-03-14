@@ -1,23 +1,20 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.OccasionImage
 import com.example.datatrap.repositories.OccasionImageRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
 
-class OccasionImageViewModel(application: Application) : AndroidViewModel(application) {
-
+@HiltViewModel
+class OccasionImageViewModel @Inject constructor(
     private val occasionImageRepository: OccasionImageRepository
-
-    init {
-        val occasionImageDao = TrapDatabase.getDatabase(application).occasionImageDao()
-        occasionImageRepository = OccasionImageRepository(occasionImageDao)
-    }
+) : ViewModel() {
 
     fun insertImage(occasionImage: OccasionImage) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -25,9 +22,17 @@ class OccasionImageViewModel(application: Application) : AndroidViewModel(applic
         }
     }
 
-    fun deleteImage(occasionImgId: Long) {
+    fun deleteImage(occasionImgId: Long, imagePath: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            occasionImageRepository.deleteImage(occasionImgId)
+            val job1 = launch {
+                val myFile = File(imagePath)
+                if (myFile.exists()) myFile.delete()
+            }
+            val job2 = launch {
+                occasionImageRepository.deleteImage(occasionImgId)
+            }
+            job1.join()
+            job2.join()
         }
     }
 

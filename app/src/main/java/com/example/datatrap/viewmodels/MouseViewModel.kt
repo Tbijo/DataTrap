@@ -1,30 +1,24 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
+import androidx.lifecycle.*
 import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.tuples.MouseLog
 import com.example.datatrap.models.tuples.MouseOccList
 import com.example.datatrap.models.tuples.MouseRecapList
 import com.example.datatrap.models.tuples.MouseView
 import com.example.datatrap.repositories.MouseRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
 
-class MouseViewModel(application: Application): AndroidViewModel(application) {
-
+@HiltViewModel
+class MouseViewModel @Inject constructor(
     private val mouseRepository: MouseRepository
-    val mouseId: MutableLiveData<Long> = MutableLiveData<Long>()
+): ViewModel() {
 
-    init {
-        val mouseDao = TrapDatabase.getDatabase(application).mouseDao()
-        mouseRepository = MouseRepository(mouseDao)
-    }
+    val mouseId: MutableLiveData<Long> = MutableLiveData<Long>()
 
     fun insertMouse(mouse: Mouse) {
         viewModelScope.launch {
@@ -38,9 +32,20 @@ class MouseViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun deleteMouse(mouseId: Long) {
+    fun deleteMouse(mouseId: Long, imagePath: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            mouseRepository.deleteMouse(mouseId)
+            val job1 = launch {
+                if (imagePath != null) {
+                    // odstranit fyzicku zlozku
+                    val myFile = File(imagePath)
+                    if (myFile.exists()) myFile.delete()
+                }
+            }
+            val job2 = launch {
+                mouseRepository.deleteMouse(mouseId)
+            }
+            job1.join()
+            job2.join()
         }
     }
 

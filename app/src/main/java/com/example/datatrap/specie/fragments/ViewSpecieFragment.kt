@@ -6,40 +6,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.databinding.FragmentViewSpecieBinding
 import com.example.datatrap.models.Specie
 import com.example.datatrap.picture.fragments.ViewImageFragment
 import com.example.datatrap.viewmodels.SpecieImageViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ViewSpecieFragment : Fragment() {
 
     private var _binding: FragmentViewSpecieBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<ViewSpecieFragmentArgs>()
-    private lateinit var specieViewModel: SpecieViewModel
-    private lateinit var specieImageViewModel: SpecieImageViewModel
+    private val specieViewModel: SpecieViewModel by viewModels()
+    private val specieImageViewModel: SpecieImageViewModel by viewModels()
     private var path: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentViewSpecieBinding.inflate(inflater, container, false)
-        specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        specieImageViewModel = ViewModelProvider(this).get(SpecieImageViewModel::class.java)
 
-        specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
+        specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.ivPicture.setImageURI(it.path.toUri())
                 path = it.path
             }
-        })
+        }
 
-        specieViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner, {
+        specieViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
             initSpecieValuesToView(it)
-        })
+        }
 
         binding.ivPicture.setOnClickListener {
             if (path != null) {

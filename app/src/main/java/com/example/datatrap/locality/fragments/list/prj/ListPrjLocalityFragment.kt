@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -16,14 +16,14 @@ import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
 import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
 import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
-import com.example.datatrap.viewmodels.ProjectViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListPrjLocalityFragment : Fragment() {
 
     private var _binding: FragmentListPrjLocalityBinding? = null
     private val binding get() = _binding!!
-    private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
-    private lateinit var projectViewModel: ProjectViewModel
+    private val prjLocalityViewModel: ProjectLocalityViewModel by viewModels()
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListPrjLocalityFragmentArgs>()
     private lateinit var localityList: List<LocList>
@@ -33,8 +33,6 @@ class ListPrjLocalityFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
 
         _binding = FragmentListPrjLocalityBinding.inflate(inflater, container, false)
-        prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
-        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
         adapter = PrjLocalityRecyclerAdapter()
         val recyclerView = binding.prjLocalityRecyclerview
@@ -47,7 +45,7 @@ class ListPrjLocalityFragment : Fragment() {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        prjLocalityViewModel.getLocalitiesForProject(args.project.projectId).observe(viewLifecycleOwner, {
+        prjLocalityViewModel.getLocalitiesForProject(args.project.projectId).observe(viewLifecycleOwner) {
             val locList = mutableListOf<LocList>()
             it.first().localities.forEach { locality ->
                 val loc = LocList(
@@ -62,7 +60,7 @@ class ListPrjLocalityFragment : Fragment() {
             }
             adapter.setData(locList)
             localityList = locList
-        })
+        }
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
 

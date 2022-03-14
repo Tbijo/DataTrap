@@ -1,29 +1,23 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
+import androidx.lifecycle.*
 import com.example.datatrap.models.Specie
 import com.example.datatrap.models.tuples.SpecList
 import com.example.datatrap.models.tuples.SpecSelectList
 import com.example.datatrap.repositories.SpecieRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
 
-class SpecieViewModel(application: Application): AndroidViewModel(application) {
-
+@HiltViewModel
+class SpecieViewModel @Inject constructor(
     private val specieRepository: SpecieRepository
-    val specieList: LiveData<List<SpecList>>
-    val specieId: MutableLiveData<Long> = MutableLiveData<Long>()
+): ViewModel() {
 
-    init {
-        val specieDao = TrapDatabase.getDatabase(application).specieDao()
-        specieRepository = SpecieRepository(specieDao)
-        specieList = specieRepository.specieList
-    }
+    val specieList: LiveData<List<SpecList>> = specieRepository.specieList
+    val specieId: MutableLiveData<Long> = MutableLiveData<Long>()
 
     fun insertSpecie(specie: Specie) {
         viewModelScope.launch {
@@ -37,9 +31,20 @@ class SpecieViewModel(application: Application): AndroidViewModel(application) {
         }
     }
 
-    fun deleteSpecie(specieId: Long) {
+    fun deleteSpecie(specieId: Long, imagePath: String?) {
         viewModelScope.launch(Dispatchers.IO) {
-            specieRepository.deleteSpecie(specieId)
+            val job1 = launch {
+                if (imagePath != null) {
+                    // odstranit fyzicku zlozku
+                    val myFile = File(imagePath)
+                    if (myFile.exists()) myFile.delete()
+                }
+            }
+            val job2 = launch {
+                specieRepository.deleteSpecie(specieId)
+            }
+            job1.join()
+            job2.join()
         }
     }
 

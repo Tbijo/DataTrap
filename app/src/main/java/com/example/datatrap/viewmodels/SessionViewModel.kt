@@ -1,23 +1,19 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Session
 import com.example.datatrap.repositories.SessionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SessionViewModel(application: Application): AndroidViewModel(application) {
-
+@HiltViewModel
+class SessionViewModel @Inject constructor(
     private val sessionRepository: SessionRepository
-
-    init {
-        val sessionDao = TrapDatabase.getDatabase(application).sessionDao()
-        sessionRepository = SessionRepository(sessionDao)
-    }
+) : ViewModel() {
 
     fun insertSession(session: Session) {
         viewModelScope.launch(Dispatchers.IO) {

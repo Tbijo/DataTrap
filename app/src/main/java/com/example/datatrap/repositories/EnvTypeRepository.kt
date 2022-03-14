@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.EnvTypeDao
 import com.example.datatrap.models.EnvType
 
-class EnvTypeRepository(private val envTypeDao: EnvTypeDao) {
+class EnvTypeRepository(
+    private val envTypeDao: EnvTypeDao
+) {
 
     val envTypeList: LiveData<List<EnvType>> = envTypeDao.getEnvTypes()
 

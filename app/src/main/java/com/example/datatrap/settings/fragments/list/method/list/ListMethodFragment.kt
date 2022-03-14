@@ -9,30 +9,29 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListMethodBinding
 import com.example.datatrap.models.Method
-import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.MethodViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ListMethodFragment : Fragment() {
 
     private var _binding: FragmentListMethodBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: MethodRecyclerAdapter
-    private lateinit var methodViewModel: MethodViewModel
+    private val methodViewModel: MethodViewModel by viewModels()
     private lateinit var methodList: List<Method>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListMethodBinding.inflate(inflater, container, false)
-        methodViewModel = ViewModelProvider(this).get(MethodViewModel::class.java)
 
         adapter = MethodRecyclerAdapter()
         binding.methodRecyclerview.adapter = adapter
@@ -44,10 +43,10 @@ class ListMethodFragment : Fragment() {
         )
         binding.methodRecyclerview.addItemDecoration(dividerItemDecoration)
 
-        methodViewModel.methodList.observe(viewLifecycleOwner, {
+        methodViewModel.methodList.observe(viewLifecycleOwner) {
             adapter.setData(it)
             methodList = it
-        })
+        }
 
         binding.addMethodFloatButton.setOnClickListener {
             showAddDialog("Add Method", "Add new Method?")

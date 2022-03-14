@@ -1,23 +1,20 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.SpecieImage
 import com.example.datatrap.repositories.SpecieImageRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
+import javax.inject.Inject
 
-class SpecieImageViewModel(application: Application) : AndroidViewModel(application) {
-
+@HiltViewModel
+class SpecieImageViewModel @Inject constructor(
     private val specieImageRepository: SpecieImageRepository
-
-    init {
-        val specieImageDao = TrapDatabase.getDatabase(application).specieImageDao()
-        specieImageRepository = SpecieImageRepository(specieImageDao)
-    }
+) : ViewModel() {
 
     fun insertImage(specieImage: SpecieImage) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -25,9 +22,18 @@ class SpecieImageViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun deleteImage(specieImgId: Long) {
+    fun deleteImage(specieImgId: Long, imagePath: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            specieImageRepository.deleteImage(specieImgId)
+            val job1 = launch {
+                // vymazat subor starej fotky
+                val myFile = File(imagePath)
+                if (myFile.exists()) myFile.delete()
+            }
+            val job2 = launch {
+                specieImageRepository.deleteImage(specieImgId)
+            }
+            job1.join()
+            job2.join()
         }
     }
 

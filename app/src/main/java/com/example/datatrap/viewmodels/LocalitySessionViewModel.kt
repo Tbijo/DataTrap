@@ -1,23 +1,19 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
 import com.example.datatrap.repositories.LocalitySessionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LocalitySessionViewModel(application: Application): AndroidViewModel(application) {
-
+@HiltViewModel
+class LocalitySessionViewModel @Inject constructor (
     private val localitySessionRepository: LocalitySessionRepository
-
-    init {
-        val localitySessionDao = TrapDatabase.getDatabase(application).localitySessionDao()
-        localitySessionRepository = LocalitySessionRepository(localitySessionDao)
-    }
+): ViewModel() {
 
     fun insertLocalitySessionCrossRef(localitySessionCrossRef: LocalitySessionCrossRef) {
         viewModelScope.launch(Dispatchers.IO) {

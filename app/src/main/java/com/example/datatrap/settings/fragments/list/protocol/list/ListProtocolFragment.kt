@@ -9,30 +9,29 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProtocolBinding
 import com.example.datatrap.models.Protocol
-import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.ProtocolViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ListProtocolFragment : Fragment() {
 
     private var _binding: FragmentListProtocolBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: ProtocolRecyclerAdapter
-    private lateinit var protocolViewModel: ProtocolViewModel
+    private val protocolViewModel: ProtocolViewModel by viewModels()
     private lateinit var protocolList: List<Protocol>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListProtocolBinding.inflate(inflater, container, false)
-        protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
         adapter = ProtocolRecyclerAdapter()
         binding.protocolRecyclerview.adapter = adapter
@@ -44,10 +43,10 @@ class ListProtocolFragment : Fragment() {
         )
         binding.protocolRecyclerview.addItemDecoration(dividerItemDecoration)
 
-        protocolViewModel.procolList.observe(viewLifecycleOwner, { protocols ->
+        protocolViewModel.procolList.observe(viewLifecycleOwner) { protocols ->
             adapter.setData(protocols)
             protocolList = protocols
-        })
+        }
 
         binding.addProtocolFloatButton.setOnClickListener {
             showAddDialog("New Protocol", "Add new protocol?")

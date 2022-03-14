@@ -1,27 +1,20 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
+import androidx.lifecycle.*
 import com.example.datatrap.models.User
 import com.example.datatrap.repositories.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UserViewModel(application: Application) : AndroidViewModel(application) {
-
+@HiltViewModel
+class UserViewModel @Inject constructor(
     private val userRepository: UserRepository
-    val userList: LiveData<List<User>>
-    var userId = MutableLiveData<Long>()
+) : ViewModel() {
 
-    init {
-        val userDao = TrapDatabase.getDatabase(application).userDao()
-        userRepository = UserRepository(userDao)
-        userList = userRepository.userList
-    }
+    val userList: LiveData<List<User>> = userRepository.userList
+    var userId = MutableLiveData<Long>()
 
     fun insertUser(user: User) {
         viewModelScope.launch(Dispatchers.IO) {

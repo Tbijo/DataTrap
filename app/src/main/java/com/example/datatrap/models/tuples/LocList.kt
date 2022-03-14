@@ -13,9 +13,9 @@ data class LocList(
 
     var dateTime: Date,
 
-    var xA: Float,
+    var xA: Float?,
 
-    var yA: Float,
+    var yA: Float?,
 
     var numSessions: Int
 ): Parcelable

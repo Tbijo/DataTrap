@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -13,23 +13,23 @@ import com.example.datatrap.databinding.FragmentUpdateSessionBinding
 import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
 import com.example.datatrap.viewmodels.LocalitySessionViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class UpdateSessionFragment : Fragment() {
 
     private var _binding: FragmentUpdateSessionBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<UpdateSessionFragmentArgs>()
 
-    private lateinit var sessionViewModel: SessionViewModel
-    private lateinit var localitySessionViewModel: LocalitySessionViewModel
+    private val sessionViewModel: SessionViewModel by viewModels()
+    private val localitySessionViewModel: LocalitySessionViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateSessionBinding.inflate(inflater, container, false)
-        sessionViewModel = ViewModelProvider(this).get(SessionViewModel::class.java)
-        localitySessionViewModel = ViewModelProvider(this).get(LocalitySessionViewModel::class.java)
 
         initSessionValuesToView()
 
@@ -38,9 +38,9 @@ class UpdateSessionFragment : Fragment() {
             deleteAssociationWithLocality()
         }
 
-        localitySessionViewModel.existsLocalSessCrossRef(args.locList.localityId, args.session.sessionId).observe(viewLifecycleOwner, {
+        localitySessionViewModel.existsLocalSessCrossRef(args.locList.localityId, args.session.sessionId).observe(viewLifecycleOwner) {
             binding.btnDelAssoc.isEnabled = it
-        })
+        }
 
         setHasOptionsMenu(true)
         return binding.root

@@ -17,7 +17,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -26,6 +26,7 @@ import com.example.datatrap.models.MouseImage
 import com.example.datatrap.models.OccasionImage
 import com.example.datatrap.viewmodels.MouseImageViewModel
 import com.example.datatrap.viewmodels.OccasionImageViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
@@ -33,6 +34,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
+@AndroidEntryPoint
 class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentTakePhotoBinding? = null
@@ -40,8 +42,8 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private val args by navArgs<TakePhotoFragmentArgs>()
     private val occasion = "Occasion"
     private val mouse = "Mouse"
-    private lateinit var mouseImageViewModel: MouseImageViewModel
-    private lateinit var occasionImageViewModel: OccasionImageViewModel
+    private val mouseImageViewModel: MouseImageViewModel by viewModels()
+    private val occasionImageViewModel: OccasionImageViewModel by viewModels()
     private var mouseImage: MouseImage? = null
     private var occasionImage: OccasionImage? = null
 
@@ -93,8 +95,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private fun setImageIfExists() {
         when (args.fragmentName) {
             mouse -> {
-                mouseImageViewModel = ViewModelProvider(this).get(MouseImageViewModel::class.java)
-                mouseImageViewModel.getImageForMouse(args.parentId).observe(viewLifecycleOwner, {
+                mouseImageViewModel.getImageForMouse(args.parentId).observe(viewLifecycleOwner) {
                     // ci mame fotku
                     if (it != null) {
                         mouseImage = it
@@ -104,12 +105,11 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     } else {
                         binding.tvTakePicture.text = getString(R.string.noPicture)
                     }
-                })
+                }
             }
 
             occasion -> {
-                occasionImageViewModel = ViewModelProvider(this).get(OccasionImageViewModel::class.java)
-                occasionImageViewModel.getImageForOccasion(args.parentId).observe(viewLifecycleOwner, {
+                occasionImageViewModel.getImageForOccasion(args.parentId).observe(viewLifecycleOwner) {
                     // ci mame fotku
                     if (it != null) {
                         occasionImage = it
@@ -119,7 +119,7 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                     } else {
                         binding.tvTakePicture.text = getString(R.string.noPicture)
                     }
-                })
+                }
             }
         }
     }
@@ -224,11 +224,10 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
                     // nahradza sa stara fotka novou fotkou
                     } else {
-                        // vymazat fyzicky subor fotky
-                        val myFile = File(mouseImage!!.path)
-                        if (myFile.exists()) myFile.delete()
+
                         // vymazat zaznam fotky z databazy
-                        mouseImageViewModel.deleteImage(mouseImage!!.mouseImgId)
+                        // vymazat fyzicky subor fotky
+                        mouseImageViewModel.deleteImage(mouseImage!!.mouseImgId, mouseImage!!.path)
                         // pre istotu
                         mouseImage = null
                         // pridat zaznam novej fotky do databazy subor uz existuje
@@ -256,11 +255,10 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
                     // nahradza sa stara fotka novou fotkou
                     } else {
-                        // vymazat fyzicky subor fotky
-                        val myFile = File(occasionImage!!.path)
-                        if (myFile.exists()) myFile.delete()
+
                         // vymazat zaznam fotky z databazy
-                        occasionImageViewModel.deleteImage(occasionImage!!.occasionImgId)
+                        // vymazat fyzicky subor fotky
+                        occasionImageViewModel.deleteImage(occasionImage!!.occasionImgId, occasionImage!!.path)
                         // pre istotu
                         occasionImage = null
                         // pridat zaznam novej fotky do databazy subor uz existuje

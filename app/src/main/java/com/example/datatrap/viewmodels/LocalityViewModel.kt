@@ -1,26 +1,22 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Locality
 import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.repositories.LocalityRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LocalityViewModel(application: Application): AndroidViewModel(application) {
-
-    val localityList: LiveData<List<LocList>>
+@HiltViewModel
+class LocalityViewModel @Inject constructor (
     private val localityRepository: LocalityRepository
+): ViewModel() {
 
-    init {
-        val localityDao = TrapDatabase.getDatabase(application).localityDao()
-        localityRepository = LocalityRepository(localityDao)
-        localityList = localityRepository.localityList
-    }
+    val localityList: LiveData<List<LocList>> = localityRepository.localityList
 
     fun insertLocality(locality: Locality) {
         viewModelScope.launch(Dispatchers.IO){

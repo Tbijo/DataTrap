@@ -5,7 +5,9 @@ import com.example.datatrap.databaseio.dao.LocalityDao
 import com.example.datatrap.models.Locality
 import com.example.datatrap.models.tuples.LocList
 
-class LocalityRepository(private val localityDao: LocalityDao) {
+class LocalityRepository(
+    private val localityDao: LocalityDao
+) {
 
     val localityList: LiveData<List<LocList>> = localityDao.getLocalities()
 

@@ -6,7 +6,7 @@ import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.core.text.isDigitsOnly
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -15,14 +15,16 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentRecaptureListMouseBinding
 import com.example.datatrap.models.tuples.MouseRecapList
 import com.example.datatrap.viewmodels.MouseViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentRecaptureListMouseBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<RecaptureListMouseFragmentArgs>()
-    private lateinit var mouseViewModel: MouseViewModel
+    private val mouseViewModel: MouseViewModel by viewModels()
     private lateinit var adapter: RecaptureMouseRecyclerAdapter
     private var mouseList: List<MouseRecapList> = emptyList()
 
@@ -38,7 +40,6 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentRecaptureListMouseBinding.inflate(inflater, container, false)
-        mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
         adapter = RecaptureMouseRecyclerAdapter()
         val recyclerView = binding.recaptureRecyclerview
@@ -90,12 +91,12 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun searchMice(code: Int) {
-        mouseViewModel.getMiceForRecapture(code, Calendar.getInstance().time.time, MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner, { mice ->
+        mouseViewModel.getMiceForRecapture(code, Calendar.getInstance().time.time, MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner) { mice ->
             mice.let {
                 adapter.setData(it)
                 mouseList = it
             }
-        })
+        }
     }
 
     private fun goToRecaptureMouse(position: Int) {

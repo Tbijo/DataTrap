@@ -1,25 +1,21 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Protocol
 import com.example.datatrap.repositories.ProtocolRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProtocolViewModel(application: Application): AndroidViewModel(application) {
-
-    val procolList: LiveData<List<Protocol>>
+@HiltViewModel
+class ProtocolViewModel @Inject constructor(
     private val protocolRepository: ProtocolRepository
+): ViewModel() {
 
-    init {
-        val protocolDao = TrapDatabase.getDatabase(application).protocolDao()
-        protocolRepository = ProtocolRepository(protocolDao)
-        procolList = protocolRepository.protocolList
-    }
+    val procolList: LiveData<List<Protocol>> = protocolRepository.protocolList
 
     fun insertProtocol(protocol: Protocol) {
         viewModelScope.launch(Dispatchers.IO) {

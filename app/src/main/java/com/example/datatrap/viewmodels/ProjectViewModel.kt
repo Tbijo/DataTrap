@@ -1,25 +1,21 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.Project
 import com.example.datatrap.repositories.ProjectRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProjectViewModel(application: Application): AndroidViewModel(application) {
-
-    val projectList: LiveData<List<Project>>
+@HiltViewModel
+class ProjectViewModel @Inject constructor(
     private val projectRepository: ProjectRepository
+): ViewModel() {
 
-    init {
-        val projectDao = TrapDatabase.getDatabase(application).projectDao()
-        projectRepository = ProjectRepository(projectDao)
-        projectList = projectRepository.projectList
-    }
+    val projectList: LiveData<List<Project>> = projectRepository.projectList
 
     fun insertProject(project: Project) {
         viewModelScope.launch(Dispatchers.IO) {

@@ -10,7 +10,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.ActivitySpecieBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SpecieActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySpecieBinding

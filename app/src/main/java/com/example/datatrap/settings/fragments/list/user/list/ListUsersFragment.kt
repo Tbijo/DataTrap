@@ -6,21 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListUsersBinding
 import com.example.datatrap.models.User
 import com.example.datatrap.viewmodels.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListUsersFragment : Fragment() {
 
     private var _binding: FragmentListUsersBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: UserRecyclerView
-    private lateinit var userViewModel: UserViewModel
+    private val userViewModel: UserViewModel by viewModels()
 
     private lateinit var userList: List<User>
 
@@ -28,7 +29,6 @@ class ListUsersFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListUsersBinding.inflate(inflater, container, false)
-        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         adapter = UserRecyclerView()
         binding.userRecyclerview.adapter = adapter
@@ -40,10 +40,10 @@ class ListUsersFragment : Fragment() {
         )
         binding.userRecyclerview.addItemDecoration(dividerItemDecoration)
 
-        userViewModel.userList.observe(viewLifecycleOwner, {
+        userViewModel.userList.observe(viewLifecycleOwner) {
             adapter.setData(it)
             userList = it
-        })
+        }
 
         adapter.setOnItemClickListener(object : UserRecyclerView.MyClickListener{
             override fun useClickListener(position: Int) {

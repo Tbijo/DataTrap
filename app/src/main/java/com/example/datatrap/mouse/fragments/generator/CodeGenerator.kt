@@ -2,7 +2,6 @@ package com.example.datatrap.mouse.fragments.generator
 
 import android.util.Log
 import com.example.datatrap.myenums.EnumTeam
-import java.util.*
 
 class CodeGenerator(
     private var code: Int,

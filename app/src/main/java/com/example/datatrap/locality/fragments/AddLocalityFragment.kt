@@ -5,21 +5,23 @@ import android.provider.Settings
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddLocalityBinding
 import com.example.datatrap.locality.fragments.gps.GPSProvider
 import com.example.datatrap.models.Locality
 import com.example.datatrap.viewmodels.LocalityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class AddLocalityFragment : Fragment() {
 
     private var _binding: FragmentAddLocalityBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var localityViewModel: LocalityViewModel
+    private val localityViewModel: LocalityViewModel by viewModels()
     private lateinit var gpsProviderA: GPSProvider
     //private lateinit var gpsProviderB: GPSProvider
 
@@ -27,7 +29,6 @@ class AddLocalityFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentAddLocalityBinding.inflate(inflater, container, false)
-        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
 
         gpsProviderA = GPSProvider(requireContext(), requireActivity(), this)
         //gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
@@ -65,18 +66,18 @@ class AddLocalityFragment : Fragment() {
 
     private fun insertLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val latitudeA = binding.etLatitudeA.text.toString()
-        val longnitudeA = binding.etLongnitudeA.text.toString()
-        val latitudeB = binding.etLatitudeB.text.toString()
-        val longnitudeB = binding.etLongnitudeB.text.toString()
+        val latitudeA = binding.etLatitudeA.text.toString().ifBlank { null }
+        val longnitudeA = binding.etLongnitudeA.text.toString().ifBlank { null }
+        val latitudeB = binding.etLatitudeB.text.toString().ifBlank { null }
+        val longnitudeB = binding.etLongnitudeB.text.toString().ifBlank { null }
 
-        if (checkInput(localityName, latitudeA, longnitudeA, latitudeB, longnitudeB)){
+        if (checkInput(localityName)){
             val localityNote = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
             val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
             val locality = Locality(0, localityName, deviceID, Calendar.getInstance().time,
-                null, latitudeA.toFloat(), longnitudeA.toFloat(),
-                latitudeB.toFloat(), longnitudeB.toFloat(),
+                null, latitudeA?.toFloat(), longnitudeA?.toFloat(),
+                latitudeB?.toFloat(), longnitudeB?.toFloat(),
                 0, localityNote)
 
             localityViewModel.insertLocality(locality)
@@ -92,8 +93,8 @@ class AddLocalityFragment : Fragment() {
         }
     }
 
-    private fun checkInput(localityName: String, latitudeA: String, longnitudeA: String, latitudeB: String, longnitudeB: String): Boolean {
-        return localityName.isNotEmpty() && latitudeA.isNotEmpty() && longnitudeA.isNotEmpty() && latitudeB.isNotEmpty() && longnitudeB.isNotEmpty()
+    private fun checkInput(localityName: String): Boolean {
+        return localityName.isNotEmpty()
     }
 
     private fun getCoordinatesA() {

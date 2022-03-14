@@ -9,30 +9,29 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListMethodTypeBinding
 import com.example.datatrap.models.MethodType
-import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.MethodTypeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ListMethodTypeFragment : Fragment() {
 
     private var _binding: FragmentListMethodTypeBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: MetTypeRecyclerAdapter
-    private lateinit var methodTypeViewModel: MethodTypeViewModel
+    private val methodTypeViewModel: MethodTypeViewModel by viewModels()
     private lateinit var methodTypeList: List<MethodType>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListMethodTypeBinding.inflate(inflater, container, false)
-        methodTypeViewModel = ViewModelProvider(this).get(MethodTypeViewModel::class.java)
 
         adapter = MetTypeRecyclerAdapter()
         binding.methodTypeRecyclerview.adapter = adapter
@@ -44,10 +43,10 @@ class ListMethodTypeFragment : Fragment() {
         )
         binding.methodTypeRecyclerview.addItemDecoration(dividerItemDecoration)
 
-        methodTypeViewModel.methodTypeList.observe(viewLifecycleOwner, { methodTypes ->
+        methodTypeViewModel.methodTypeList.observe(viewLifecycleOwner) { methodTypes ->
             adapter.setData(methodTypes)
             methodTypeList = methodTypes
-        })
+        }
 
         binding.addMethodtypeFloatButton.setOnClickListener {
             // add method type

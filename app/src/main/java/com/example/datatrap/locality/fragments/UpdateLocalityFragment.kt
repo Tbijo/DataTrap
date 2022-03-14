@@ -5,23 +5,24 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateLocalityBinding
 import com.example.datatrap.locality.fragments.gps.GPSProvider
 import com.example.datatrap.models.Locality
-import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.viewmodels.LocalityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class UpdateLocalityFragment : Fragment(){
 
     private var _binding: FragmentUpdateLocalityBinding? = null
     private val binding get() = _binding!!
     
-    private lateinit var localityViewModel: LocalityViewModel
+    private val localityViewModel: LocalityViewModel by viewModels()
     private val args by navArgs<UpdateLocalityFragmentArgs>()
     private lateinit var gpsProviderA: GPSProvider
     //private lateinit var gpsProviderB: GPSProvider
@@ -31,15 +32,14 @@ class UpdateLocalityFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateLocalityBinding.inflate(inflater, container, false)
-        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
 
         gpsProviderA = GPSProvider(requireContext(), requireActivity(), this)
         //gpsProviderB = GPSProvider(requireContext(), requireActivity(), this)
 
-        localityViewModel.getLocality(args.locList.localityId).observe(viewLifecycleOwner, {
+        localityViewModel.getLocality(args.locList.localityId).observe(viewLifecycleOwner) {
             initLocalityValuesToView(it)
             currentLocality = it
-        })
+        }
 
         binding.btnGetCoorA.setOnClickListener {
             getCoordinatesA()
@@ -101,19 +101,19 @@ class UpdateLocalityFragment : Fragment(){
 
     private fun updateLocality() {
         val localityName = binding.etLocalityName.text.toString()
-        val latitudeA = binding.etUpLatA.text.toString()
-        val longitudeA = binding.etUpLongA.text.toString()
-        val latitudeB = binding.etUpLatB.text.toString()
-        val longitudeB = binding.etUpLongB.text.toString()
+        val latitudeA = binding.etUpLatA.text.toString().ifBlank { null }
+        val longitudeA = binding.etUpLongA.text.toString().ifBlank { null }
+        val latitudeB = binding.etUpLatB.text.toString().ifBlank { null }
+        val longitudeB = binding.etUpLongB.text.toString().ifBlank { null }
 
-        if (checkInput(localityName, latitudeA, longitudeA, latitudeB, longitudeB)){
+        if (checkInput(localityName)){
             val locality: Locality = currentLocality.copy()
             locality.localityName = localityName
             locality.numSessions = Integer.parseInt(binding.etSessionNum.text.toString())
-            locality.xA = latitudeA.toFloat()
-            locality.yA = longitudeA.toFloat()
-            locality.xB = latitudeB.toFloat()
-            locality.yB = longitudeB.toFloat()
+            locality.xA = latitudeA?.toFloat()
+            locality.yA = longitudeA?.toFloat()
+            locality.xB = latitudeB?.toFloat()
+            locality.yB = longitudeB?.toFloat()
             locality.localityDateTimeUpdated = Calendar.getInstance().time
             locality.note = if (binding.etLocalityNote.text.toString().isBlank() || binding.etLocalityNote.text.toString() == "null") null else binding.etLocalityNote.text.toString()
 
@@ -132,13 +132,8 @@ class UpdateLocalityFragment : Fragment(){
 
     private fun checkInput(
         localityName: String,
-        latitudeA: String,
-        longnitudeA: String,
-        latitudeB: String,
-        longnitudeB: String
     ): Boolean {
-        return localityName.isNotEmpty() && latitudeA.isNotEmpty() && longnitudeA.isNotEmpty() &&
-                latitudeB.isNotEmpty() && longnitudeB.isNotEmpty()
+        return localityName.isNotEmpty()
     }
 
     private fun getCoordinatesA() {

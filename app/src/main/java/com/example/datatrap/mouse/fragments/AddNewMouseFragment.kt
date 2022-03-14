@@ -7,7 +7,7 @@ import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -19,17 +19,19 @@ import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.viewmodels.*
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class AddNewMouseFragment : Fragment() {
 
     private var _binding: FragmentAddNewMouseBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<AddNewMouseFragmentArgs>()
-    private lateinit var mouseViewModel: MouseViewModel
-    private lateinit var specieViewModel: SpecieViewModel
-    private lateinit var protocolViewModel: ProtocolViewModel
-    private lateinit var userViewModel: UserViewModel
+    private val mouseViewModel: MouseViewModel by viewModels()
+    private val specieViewModel: SpecieViewModel by viewModels()
+    private val protocolViewModel: ProtocolViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
     private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
@@ -60,17 +62,12 @@ class AddNewMouseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAddNewMouseBinding.inflate(inflater, container, false)
-        mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
-        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
-
-        specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
 
         fillDropDown()
 
-        mouseViewModel.countMiceForLocality(args.occList.localityID).observe(viewLifecycleOwner, {
+        mouseViewModel.countMiceForLocality(args.occList.localityID).observe(viewLifecycleOwner) {
             oldCode = it + 1
-        })
+        }
 
         binding.btnGenCode.setOnClickListener {
             generateCode()
@@ -82,14 +79,14 @@ class AddNewMouseFragment : Fragment() {
             args.occList.localityID,
             Calendar.getInstance().time.time,
             MILLISECONDS_IN_2_YEAR
-        ).observe(viewLifecycleOwner, { codeList ->
+        ).observe(viewLifecycleOwner) { codeList ->
             activeCodeList = codeList
-        })
+        }
 
         // get user for
-        userViewModel.getActiveUser().observe(viewLifecycleOwner, {
+        userViewModel.getActiveUser().observe(viewLifecycleOwner) {
             currentUser = it
-        })
+        }
 
         setHasOptionsMenu(true)
         return binding.root
@@ -128,7 +125,7 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun fillDropDown() {
-        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner, {
+        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner) {
             listSpecie = it
             val listCode = mutableListOf<String>()
             it.forEach { specie ->
@@ -137,9 +134,9 @@ class AddNewMouseFragment : Fragment() {
             val dropDownArrSpecie =
                 ArrayAdapter(requireContext(), R.layout.dropdown_names, listCode)
             binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
-        })
+        }
 
-        protocolViewModel.procolList.observe(viewLifecycleOwner, {
+        protocolViewModel.procolList.observe(viewLifecycleOwner) {
             listProtocol = it
             val listProtName = mutableListOf<String>()
             listProtName.add("null")
@@ -149,7 +146,7 @@ class AddNewMouseFragment : Fragment() {
             val dropDownArrProtocol =
                 ArrayAdapter(requireContext(), R.layout.dropdown_names, listProtName)
             binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
-        })
+        }
     }
 
     private fun setListeners() {
@@ -410,9 +407,9 @@ class AddNewMouseFragment : Fragment() {
 
         Toast.makeText(requireContext(), "New mouse added.", Toast.LENGTH_SHORT).show()
 
-        mouseViewModel.mouseId.observe(viewLifecycleOwner, {
+        mouseViewModel.mouseId.observe(viewLifecycleOwner) {
             mouseId = it
-        })
+        }
     }
 
     private fun giveOutPutInt(input: String?): Int? {

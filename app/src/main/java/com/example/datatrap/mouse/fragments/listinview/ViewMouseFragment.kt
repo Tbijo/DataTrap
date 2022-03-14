@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,15 +19,17 @@ import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.myinterfaces.OnActiveFragment
 import com.example.datatrap.picture.fragments.ViewImageFragment
 import com.example.datatrap.viewmodels.*
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 
+@AndroidEntryPoint
 class ViewMouseFragment : Fragment() {
 
     private var _binding: FragmentViewMouseBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<ViewMouseFragmentArgs>()
-    private lateinit var mouseViewModel: MouseViewModel
-    private lateinit var mouseImageViewModel: MouseImageViewModel
+    private val mouseViewModel: MouseViewModel by viewModels()
+    private val mouseImageViewModel: MouseImageViewModel by viewModels()
     private lateinit var adapter: MouseHistRecyclerAdapter
 
     private val logList = mutableListOf<String>()
@@ -38,8 +40,6 @@ class ViewMouseFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentViewMouseBinding.inflate(inflater, container, false)
-        mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
-        mouseImageViewModel = ViewModelProvider(this).get(MouseImageViewModel::class.java)
 
         val deviceID = Settings.Secure.getString(
             requireContext().contentResolver,
@@ -56,21 +56,21 @@ class ViewMouseFragment : Fragment() {
         )
         binding.recyclerMouse.addItemDecoration(dividerItemDecoration)
 
-        mouseImageViewModel.getImageForMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner, {
+        mouseImageViewModel.getImageForMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.ivMouse.setImageURI(it.path.toUri())
                 path = it.path
             }
-        })
+        }
 
-        mouseViewModel.getMouseForView(args.mouseOccTuple.mouseId, deviceID).observe(viewLifecycleOwner, { mouseView ->
+        mouseViewModel.getMouseForView(args.mouseOccTuple.mouseId, deviceID).observe(viewLifecycleOwner) { mouseView ->
             initMouseValues(mouseView)
-        })
+        }
 
         val id = if (args.mouseOccTuple.primeMouseID == null) args.mouseOccTuple.mouseId else args.mouseOccTuple.primeMouseID
-        mouseViewModel.getMiceForLog(id!!, deviceID).observe(viewLifecycleOwner, { mouseLog ->
+        mouseViewModel.getMiceForLog(id!!, deviceID).observe(viewLifecycleOwner) { mouseLog ->
             fillLogs(mouseLog)
-        })
+        }
 
         binding.ivMouse.setOnClickListener {
             if (path != null) {

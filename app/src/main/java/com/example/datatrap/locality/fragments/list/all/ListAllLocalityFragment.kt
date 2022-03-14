@@ -5,7 +5,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -17,15 +17,15 @@ import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
 import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.viewmodels.LocalityViewModel
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
-import com.example.datatrap.viewmodels.ProjectViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentListAllLocalityBinding? = null
     private val binding get() = _binding!!
-    private lateinit var localityViewModel: LocalityViewModel
-    private lateinit var prjLocalityViewModel: ProjectLocalityViewModel
-    private lateinit var projectViewModel: ProjectViewModel
+    private val localityViewModel: LocalityViewModel by viewModels()
+    private val prjLocalityViewModel: ProjectLocalityViewModel by viewModels()
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListAllLocalityFragmentArgs>()
     private lateinit var localityList: List<LocList>
@@ -35,9 +35,6 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         savedInstanceState: Bundle?): View? {
 
         _binding = FragmentListAllLocalityBinding.inflate(inflater, container, false)
-        localityViewModel = ViewModelProvider(this).get(LocalityViewModel::class.java)
-        prjLocalityViewModel = ViewModelProvider(this).get(ProjectLocalityViewModel::class.java)
-        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
         adapter = PrjLocalityRecyclerAdapter()
         val recyclerView = binding.localityRecyclerview
@@ -50,10 +47,10 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        localityViewModel.localityList.observe(viewLifecycleOwner, { localities ->
+        localityViewModel.localityList.observe(viewLifecycleOwner) { localities ->
             adapter.setData(localities)
             localityList = localities
-        })
+        }
 
         adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
@@ -129,11 +126,11 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private fun searchLocalities(query: String?) {
         val searchQuery = "%$query%"
-        localityViewModel.searchLocalities(searchQuery).observe(viewLifecycleOwner, { localities ->
+        localityViewModel.searchLocalities(searchQuery).observe(viewLifecycleOwner) { localities ->
             localities.let {
                 adapter.setData(it)
             }
-        })
+        }
     }
 
 }

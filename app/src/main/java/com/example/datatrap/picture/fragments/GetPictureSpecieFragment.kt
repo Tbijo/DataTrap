@@ -14,25 +14,26 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentGetPictureSpecieBinding
 import com.example.datatrap.models.SpecieImage
 import com.example.datatrap.viewmodels.SpecieImageViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 
+@AndroidEntryPoint
 class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentGetPictureSpecieBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<GetPictureSpecieFragmentArgs>()
-    private lateinit var specieImageViewModel: SpecieImageViewModel
+    private val specieImageViewModel: SpecieImageViewModel by viewModels()
 
     private var imageName: String? = null
     private var imageUri: Uri? = null
@@ -41,11 +42,12 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
         _binding = FragmentGetPictureSpecieBinding.inflate(inflater, container, false)
-        specieImageViewModel = ViewModelProvider(this).get(SpecieImageViewModel::class.java)
 
-        deviceID = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
+        deviceID =
+            Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
         setImageIfExists()
 
@@ -81,10 +83,11 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
 
         // vytvara sa nova fotka, stara nebola
         if (specieImage == null) {
-            specieImage = SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, deviceID)
+            specieImage =
+                SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, deviceID)
             specieImageViewModel.insertImage(specieImage!!)
 
-        // stara fotka existuje
+            // stara fotka existuje
         } else {
 
             // ostava stara fotka
@@ -92,17 +95,16 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
                 specieImage!!.note = note
                 specieImageViewModel.insertImage(specieImage!!)
 
-            // nahradi sa stara fotka novou fotkou
+                // nahradi sa stara fotka novou fotkou
             } else {
-                // vymazat subor starej fotky
-                val myFile = File(specieImage!!.path)
-                if (myFile.exists()) myFile.delete()
+
                 // vymazat zaznam starej fotky v databaze
-                specieImageViewModel.deleteImage(specieImage!!.specieImgId)
+                specieImageViewModel.deleteImage(specieImage!!.specieImgId, specieImage!!.path)
                 // pre istotu
                 specieImage = null
                 // pridat zaznam novej fotky do databazy subor uz existuje
-                specieImage = SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, deviceID)
+                specieImage =
+                    SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, deviceID)
                 specieImageViewModel.insertImage(specieImage!!)
             }
         }
@@ -111,7 +113,7 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
     }
 
     private fun setImageIfExists() {
-        specieImageViewModel.getImageForSpecie(args.parentId).observe(viewLifecycleOwner, {
+        specieImageViewModel.getImageForSpecie(args.parentId).observe(viewLifecycleOwner) {
             // ak mame fotku tak hu nacitame
             if (it != null) {
                 specieImage = it
@@ -121,26 +123,27 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
             } else {
                 binding.tvGetPicture.text = getString(R.string.noPicture)
             }
-        })
+        }
     }
 
-    private fun getPicture(){
+    private fun getPicture() {
         val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
         resultLauncher.launch(gallery)
     }
 
-    private var resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            // pouzivatel akceptoval fotku
-            imageUri = result.data?.data
-            val date = Calendar.getInstance().time
-            val formatter = SimpleDateFormat.getDateTimeInstance()
-            val dateTime = formatter.format(date)
-            imageName = "Specie_$dateTime"
-            binding.ivGetPicture.setImageURI(imageUri)
-            binding.tvGetPicture.text = getString(R.string.pictureAdded)
+    private var resultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                // pouzivatel akceptoval fotku
+                imageUri = result.data?.data
+                val date = Calendar.getInstance().time
+                val formatter = SimpleDateFormat.getDateTimeInstance()
+                val dateTime = formatter.format(date)
+                imageName = "Specie_$dateTime"
+                binding.ivGetPicture.setImageURI(imageUri)
+                binding.tvGetPicture.text = getString(R.string.pictureAdded)
+            }
         }
-    }
 
     ////////////////////
 

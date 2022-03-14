@@ -6,18 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentLoginBinding
 import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
-    private lateinit var userViewModel: UserViewModel
+    private val userViewModel: UserViewModel by viewModels()
     private var team: Int? = null
 
     override fun onCreateView(
@@ -25,7 +27,6 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        userViewModel = ViewModelProvider(this).get(UserViewModel::class.java)
 
         // skontrolovat ci uz nie su iny pouzivatelia aktivny
         // ak su treba nastavit aktivitu na 0
@@ -49,7 +50,7 @@ class LoginFragment : Fragment() {
 
         // ak volam nieco cez suspend a ukladam to do premennej MutableLiveData
         // cez .value nesmie sa pouzit Dispatchers.IO chyba: Can not use .value on Background Thread
-        userViewModel.userId.observe(viewLifecycleOwner, {
+        userViewModel.userId.observe(viewLifecycleOwner) {
             if (it != null) {
                 userViewModel.setActiveUser(team!!, it)
                 Toast.makeText(requireContext(), "Log in successful.", Toast.LENGTH_SHORT).show()
@@ -60,7 +61,7 @@ class LoginFragment : Fragment() {
                 Toast.makeText(requireContext(), "Wrong user name or password.", Toast.LENGTH_LONG)
                     .show()
             }
-        })
+        }
 
         return binding.root
     }

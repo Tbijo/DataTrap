@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -13,12 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListSesOccasionBinding
 import com.example.datatrap.models.tuples.OccList
 import com.example.datatrap.viewmodels.OccasionViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListSesOccasionFragment : Fragment() {
 
     private var _binding: FragmentListSesOccasionBinding? = null
     private val binding get() = _binding!!
-    private lateinit var occasionViewModel: OccasionViewModel
+    private val occasionViewModel: OccasionViewModel by viewModels()
     private lateinit var adapter: OccasionRecyclerAdapter
     private val args by navArgs<ListSesOccasionFragmentArgs>()
 
@@ -29,7 +31,6 @@ class ListSesOccasionFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListSesOccasionBinding.inflate(inflater, container, false)
-        occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
 
         adapter = OccasionRecyclerAdapter()
         val recyclerView = binding.sesOccasionRecyclerview
@@ -42,11 +43,11 @@ class ListSesOccasionFragment : Fragment() {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        occasionViewModel.getOccasionsForSession(args.session.sessionId).observe(viewLifecycleOwner, {
+        occasionViewModel.getOccasionsForSession(args.session.sessionId).observe(viewLifecycleOwner) {
             adapter.setData(it)
             occList = it
             newOccasionNumber = (it.size + 1)
-        })
+        }
 
         adapter.setOnItemClickListener(object : OccasionRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {

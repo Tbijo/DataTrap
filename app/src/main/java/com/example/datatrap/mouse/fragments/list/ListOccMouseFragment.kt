@@ -3,7 +3,7 @@ package com.example.datatrap.mouse.fragments.list
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -12,12 +12,14 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListOccMouseBinding
 import com.example.datatrap.models.tuples.MouseOccList
 import com.example.datatrap.viewmodels.MouseViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ListOccMouseFragment : Fragment() {
 
     private var _binding: FragmentListOccMouseBinding? = null
     private val binding get() = _binding!!
-    private lateinit var mouseViewModel: MouseViewModel
+    private val mouseViewModel: MouseViewModel by viewModels()
     private lateinit var adapter: MouseRecyclerAdapter
     private val args by navArgs<ListOccMouseFragmentArgs>()
     private lateinit var mouseList: List<MouseOccList>
@@ -26,7 +28,6 @@ class ListOccMouseFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListOccMouseBinding.inflate(inflater, container, false)
-        mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
 
         adapter = MouseRecyclerAdapter()
         val recyclerView = binding.mouseRecyclerview
@@ -39,10 +40,10 @@ class ListOccMouseFragment : Fragment() {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        mouseViewModel.getMiceForOccasion(args.occList.occasionId).observe(viewLifecycleOwner, { mice ->
+        mouseViewModel.getMiceForOccasion(args.occList.occasionId).observe(viewLifecycleOwner) { mice ->
             adapter.setData(mice)
             mouseList = mice
-        })
+        }
 
         adapter.setOnItemClickListener(object : MouseRecyclerAdapter.MyClickListener{
             override fun useClickListener(position: Int) {
@@ -63,6 +64,10 @@ class ListOccMouseFragment : Fragment() {
             // pridat novu mys
             val action = ListOccMouseFragmentDirections.actionListOccMouseFragmentToAddNewMouseFragment(args.occList)
             findNavController().navigate(action)
+        }
+        //TODO("Vytvorit fragment aby sa dalo zadat viacero vstupov naraz")
+        binding.addMouseFloatButton.setOnLongClickListener {
+            true
         }
 
         setHasOptionsMenu(true)

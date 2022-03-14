@@ -7,7 +7,7 @@ import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -21,16 +21,18 @@ import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.ProtocolViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class RecaptureMouseFragment : Fragment() {
 
     private var _binding: FragmentRecaptureMouseBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<RecaptureMouseFragmentArgs>()
-    private lateinit var mouseViewModel: MouseViewModel
-    private lateinit var specieViewModel: SpecieViewModel
-    private lateinit var protocolViewModel: ProtocolViewModel
+    private val mouseViewModel: MouseViewModel by viewModels()
+    private val specieViewModel: SpecieViewModel by viewModels()
+    private val protocolViewModel: ProtocolViewModel by viewModels()
     var deviceID: String = ""
 
     private lateinit var listSpecie: List<SpecSelectList>
@@ -52,16 +54,11 @@ class RecaptureMouseFragment : Fragment() {
     ): View? {
         _binding = FragmentRecaptureMouseBinding.inflate(inflater, container, false)
 
-        mouseViewModel = ViewModelProvider(this).get(MouseViewModel::class.java)
-
-        mouseViewModel.getMouse(args.recapMouse.mouseId).observe(viewLifecycleOwner, {
+        mouseViewModel.getMouse(args.recapMouse.mouseId).observe(viewLifecycleOwner) {
             currentMouse = it
             initMouseValuesToView(it)
             fillDropDown(it)
-        })
-
-        specieViewModel = ViewModelProvider(this).get(SpecieViewModel::class.java)
-        protocolViewModel = ViewModelProvider(this).get(ProtocolViewModel::class.java)
+        }
 
         deviceID = Settings.Secure.getString(
             requireContext().contentResolver,
@@ -77,9 +74,9 @@ class RecaptureMouseFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        mouseViewModel.getMouse(args.recapMouse.mouseId).observe(viewLifecycleOwner, {
+        mouseViewModel.getMouse(args.recapMouse.mouseId).observe(viewLifecycleOwner) {
             fillDropDown(it)
-        })
+        }
     }
 
     override fun onDestroy() {
@@ -102,7 +99,7 @@ class RecaptureMouseFragment : Fragment() {
     }
 
     private fun fillDropDown(mouse: Mouse) {
-        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner, {
+        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner) {
             listSpecie = it
             val listCode = mutableListOf<String>()
             it.forEach { specie ->
@@ -119,9 +116,9 @@ class RecaptureMouseFragment : Fragment() {
             speciesID = specie?.specieId
             binding.autoCompTvSpecie.setText(specie?.speciesCode, false)
 
-        })
+        }
 
-        protocolViewModel.procolList.observe(viewLifecycleOwner, {
+        protocolViewModel.procolList.observe(viewLifecycleOwner) {
             listProtocol = it
             val listProtName = mutableListOf<String>()
             listProtName.add("null")
@@ -139,7 +136,7 @@ class RecaptureMouseFragment : Fragment() {
             protocolID = protocol?.protocolId
             binding.autoCompTvProtocol.setText(protocol.toString(), false)
 
-        })
+        }
 
         val dropDownArrTrapID =
             ArrayAdapter(
@@ -350,9 +347,7 @@ class RecaptureMouseFragment : Fragment() {
             mouse.MCleft =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
 
-            mouse.note = if (binding.etMouseNote.text.toString()
-                    .isBlank()
-            ) null else binding.etMouseNote.text.toString()
+            mouse.note = binding.etMouseNote.text.toString().ifBlank { null }
 
             // recapture
             if (mouse.weight != null && specie?.minWeight != null && specie?.maxWeight != null) {
@@ -387,9 +382,9 @@ class RecaptureMouseFragment : Fragment() {
 
         Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
 
-        mouseViewModel.mouseId.observe(viewLifecycleOwner, {
+        mouseViewModel.mouseId.observe(viewLifecycleOwner) {
             mouseId = it
-        })
+        }
     }
 
     private fun giveOutPutInt(input: String?): Int? {

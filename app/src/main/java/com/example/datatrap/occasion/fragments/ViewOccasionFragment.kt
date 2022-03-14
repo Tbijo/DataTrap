@@ -6,21 +6,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.databinding.FragmentViewOccasionBinding
 import com.example.datatrap.models.tuples.OccasionView
 import com.example.datatrap.picture.fragments.ViewImageFragment
 import com.example.datatrap.viewmodels.OccasionImageViewModel
 import com.example.datatrap.viewmodels.OccasionViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 
+@AndroidEntryPoint
 class ViewOccasionFragment : Fragment() {
 
     private var _binding: FragmentViewOccasionBinding? = null
     private val binding get() = _binding!!
-    private lateinit var occasionViewModel: OccasionViewModel
-    private lateinit var occasionImageViewModel: OccasionImageViewModel
+    private val occasionViewModel: OccasionViewModel by viewModels()
+    private val occasionImageViewModel: OccasionImageViewModel by viewModels()
     private val args by navArgs<ViewOccasionFragmentArgs>()
 
     private var path: String? = null
@@ -28,23 +30,21 @@ class ViewOccasionFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
-        occasionViewModel = ViewModelProvider(this).get(OccasionViewModel::class.java)
-        occasionImageViewModel = ViewModelProvider(this).get(OccasionImageViewModel::class.java)
 
         _binding = FragmentViewOccasionBinding.inflate(inflater, container, false)
 
-        occasionViewModel.getOccasionView(args.occasionId).observe(viewLifecycleOwner, {
+        occasionViewModel.getOccasionView(args.occasionId).observe(viewLifecycleOwner) {
             if (it != null) {
                 initOccasionValuesToView(it)
             }
-        })
+        }
 
-        occasionImageViewModel.getImageForOccasion(args.occasionId).observe(viewLifecycleOwner, {
+        occasionImageViewModel.getImageForOccasion(args.occasionId).observe(viewLifecycleOwner) {
             if (it != null) {
                 binding.ivOccImage.setImageURI(it.path.toUri())
                 path = it.path
             }
-        })
+        }
 
         binding.ivOccImage.setOnClickListener {
             if (path != null) {

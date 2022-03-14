@@ -1,24 +1,20 @@
 package com.example.datatrap.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.databaseio.TrapDatabase
 import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
 import com.example.datatrap.models.projectlocality.ProjectWithLocalities
 import com.example.datatrap.repositories.ProjectLocalityRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ProjectLocalityViewModel(application: Application): AndroidViewModel(application) {
-
+@HiltViewModel
+class ProjectLocalityViewModel @Inject constructor(
     private val projectLocalityRepository: ProjectLocalityRepository
-
-    init {
-        val projectLocalityDao = TrapDatabase.getDatabase(application).projectLocalityDao()
-        projectLocalityRepository = ProjectLocalityRepository(projectLocalityDao)
-    }
+): ViewModel() {
 
     fun insertProjectLocality(projectLocalityCrossRef: ProjectLocalityCrossRef) {
         viewModelScope.launch(Dispatchers.IO) {

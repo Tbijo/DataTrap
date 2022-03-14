@@ -4,7 +4,9 @@ import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.LocalitySessionDao
 import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
 
-class LocalitySessionRepository(private val localitySessionDao: LocalitySessionDao) {
+class LocalitySessionRepository(
+    private val localitySessionDao: LocalitySessionDao
+) {
 
     suspend fun insertLocalitySessionCrossRef(localitySessionCrossRef: LocalitySessionCrossRef) {
         localitySessionDao.insertLocalitySessionCrossRef(localitySessionCrossRef)

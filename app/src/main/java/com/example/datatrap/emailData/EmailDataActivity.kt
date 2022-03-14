@@ -10,7 +10,9 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.ActivityEmailDataBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class EmailDataActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityEmailDataBinding

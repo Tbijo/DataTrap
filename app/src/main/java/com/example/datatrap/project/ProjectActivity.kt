@@ -11,7 +11,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.ActivityProjectBinding
 import com.example.datatrap.myinterfaces.OnActiveFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class ProjectActivity : AppCompatActivity(), OnActiveFragment {
 
     private lateinit var binding: ActivityProjectBinding

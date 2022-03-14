@@ -5,20 +5,22 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentUpdateProjectBinding
 import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.ProjectViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class UpdateProjectFragment : Fragment() {
 
     private var _binding: FragmentUpdateProjectBinding? = null
     private val binding get() = _binding!!
-    private lateinit var projectViewModel: ProjectViewModel
+    private val projectViewModel: ProjectViewModel by viewModels()
     private val args by navArgs<UpdateProjectFragmentArgs>()
 
     override fun onCreateView(
@@ -26,7 +28,6 @@ class UpdateProjectFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
 
         _binding = FragmentUpdateProjectBinding.inflate(inflater, container, false)
-        projectViewModel = ViewModelProvider(this).get(ProjectViewModel::class.java)
 
         initProjectValuesToView()
 

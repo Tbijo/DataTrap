@@ -9,30 +9,29 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListTrapTypeBinding
 import com.example.datatrap.models.TrapType
-import com.example.datatrap.settings.fragments.list.envtype.list.EnvTypeRecyclerAdapter
 import com.example.datatrap.viewmodels.TrapTypeViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
+@AndroidEntryPoint
 class ListTrapTypeFragment : Fragment() {
 
     private var _binding: FragmentListTrapTypeBinding? = null
     private val binding get() = _binding!!
     private lateinit var adapter: TrapTypeRecyclerAdapter
-    private lateinit var trapTypeViewModel: TrapTypeViewModel
+    private val trapTypeViewModel: TrapTypeViewModel by viewModels()
     private lateinit var trapTypeList: List<TrapType>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListTrapTypeBinding.inflate(inflater, container, false)
-        trapTypeViewModel = ViewModelProvider(this).get(TrapTypeViewModel::class.java)
 
         adapter = TrapTypeRecyclerAdapter()
         binding.trapTypeRecyclerview.adapter = adapter
@@ -44,10 +43,10 @@ class ListTrapTypeFragment : Fragment() {
         )
         binding.trapTypeRecyclerview.addItemDecoration(dividerItemDecoration)
 
-        trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner, { trapTypes ->
+        trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner) { trapTypes ->
             adapter.setData(trapTypes)
             trapTypeList = trapTypes
-        })
+        }
 
         binding.addTraptypeFloatButton.setOnClickListener {
             showAddDialog("New Trap Type", "Add new trap type?")
