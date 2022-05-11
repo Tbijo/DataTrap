@@ -26,6 +26,7 @@ class UpdateMouseFragment : Fragment() {
     private var _binding: FragmentUpdateMouseBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<UpdateMouseFragmentArgs>()
+
     private val mouseViewModel: MouseViewModel by viewModels()
     private val specieViewModel: SpecieViewModel by viewModels()
     private val protocolViewModel: ProtocolViewModel by viewModels()
@@ -33,6 +34,7 @@ class UpdateMouseFragment : Fragment() {
 
     private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
+    private lateinit var trapList: List<Int>
 
     private lateinit var currentMouse: Mouse
     private var mouseImage: MouseImage? = null
@@ -56,6 +58,10 @@ class UpdateMouseFragment : Fragment() {
 
         mouseImageViewModel.getImageForMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
             mouseImage = it
+        }
+
+        mouseViewModel.getTrapsIdInOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
+            trapList = it
         }
 
         setListeners()
@@ -316,27 +322,30 @@ class UpdateMouseFragment : Fragment() {
             mouse.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
             mouse.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
 
-            mouse.gravidity = if (sex == EnumSex.MALE.myName) null else binding.cbGravit.isChecked
-            mouse.lactating = if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
+            mouse.gravidity = binding.cbGravit.isChecked
+            mouse.lactating = binding.cbLactating.isChecked
             //počet embryí v oboch rohoch maternice a ich priemer
             mouse.embryoRight = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
             mouse.embryoLeft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
             mouse.embryoDiameter = if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            mouse.MC = if (sex == EnumSex.MALE.myName) null else binding.cbMc.isChecked
+            mouse.MC = binding.cbMc.isChecked
             //počet placentálnych polypov
             mouse.MCright = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
             mouse.MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
-
             mouse.note = binding.etMouseNote.text.toString().ifBlank { null }
 
             // update mouse
             if (mouse.weight != null) {
                 checkWeightAndSave(mouse)
-            } else {
+            }
+            else if (mouse.trapID != null && mouse.trapID in trapList) {
+                checkTrapAvailability(mouse)
+            }
+            else {
                 executeTask(mouse)
             }
 
-        }else{
+        } else {
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
     }
@@ -345,13 +354,28 @@ class UpdateMouseFragment : Fragment() {
         if (mouse.weight!! > specie?.maxWeight!! || mouse.weight!! < specie?.minWeight!!){
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes"){_, _ ->
-                executeTask(mouse)
+                checkTrapAvailability(mouse)
             }
                 .setNegativeButton("No"){_, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
         }else{
+            checkTrapAvailability(mouse)
+        }
+    }
+
+    private fun checkTrapAvailability(mouse: Mouse) {
+        if (mouse.trapID != null && mouse.trapID in trapList) {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setPositiveButton("Yes") { _, _ ->
+                executeTask(mouse)
+            }
+                .setNegativeButton("No") { _, _ -> }
+                .setTitle("Warning: Trap In Use")
+                .setMessage("Selected trap is in use, save anyway?")
+                .create().show()
+        } else {
             executeTask(mouse)
         }
     }

@@ -30,13 +30,16 @@ class RecaptureMouseFragment : Fragment() {
     private var _binding: FragmentRecaptureMouseBinding? = null
     private val binding get() = _binding!!
     private val args by navArgs<RecaptureMouseFragmentArgs>()
+
     private val mouseViewModel: MouseViewModel by viewModels()
     private val specieViewModel: SpecieViewModel by viewModels()
     private val protocolViewModel: ProtocolViewModel by viewModels()
+
     var deviceID: String = ""
 
     private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
+    private lateinit var trapList: List<Int>
 
     private lateinit var currentMouse: Mouse
     private var sex: String? = null
@@ -58,6 +61,10 @@ class RecaptureMouseFragment : Fragment() {
             currentMouse = it
             initMouseValuesToView(it)
             fillDropDown(it)
+        }
+
+        mouseViewModel.getTrapsIdInOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
+            trapList = it
         }
 
         deviceID = Settings.Secure.getString(
@@ -330,9 +337,8 @@ class RecaptureMouseFragment : Fragment() {
             mouse.feet = giveOutPutFloat(binding.etFeet.text.toString())
             mouse.ear = giveOutPutFloat(binding.etEar.text.toString())
 
-            mouse.gravidity = if (sex == EnumSex.MALE.myName) null else binding.cbGravit.isChecked
-            mouse.lactating =
-                if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
+            mouse.gravidity = binding.cbGravit.isChecked
+            mouse.lactating = binding.cbLactating.isChecked
             //počet embryí v oboch rohoch maternice a ich priemer
             mouse.embryoRight =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
@@ -340,7 +346,7 @@ class RecaptureMouseFragment : Fragment() {
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
             mouse.embryoDiameter =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            mouse.MC = if (sex == EnumSex.MALE.myName) null else binding.cbMc.isChecked
+            mouse.MC = binding.cbMc.isChecked
             //počet placentálnych polypov
             mouse.MCright =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
@@ -352,7 +358,11 @@ class RecaptureMouseFragment : Fragment() {
             // recapture
             if (mouse.weight != null && specie?.minWeight != null && specie?.maxWeight != null) {
                 checkWeightAndSave(mouse)
-            } else {
+            }
+            else if (mouse.trapID != null && mouse.trapID in trapList) {
+                checkTrapAvailability(mouse)
+            }
+            else {
                 executeTask(mouse)
             }
 
@@ -366,11 +376,26 @@ class RecaptureMouseFragment : Fragment() {
         if (mouse.weight!! > specie!!.maxWeight!! || mouse.weight!! < specie!!.minWeight!!) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes") { _, _ ->
-                executeTask(mouse)
+                checkTrapAvailability(mouse)
             }
                 .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
+                .create().show()
+        } else {
+            checkTrapAvailability(mouse)
+        }
+    }
+
+    private fun checkTrapAvailability(mouse: Mouse) {
+        if (mouse.trapID != null && mouse.trapID in trapList) {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setPositiveButton("Yes") { _, _ ->
+                executeTask(mouse)
+            }
+                .setNegativeButton("No") { _, _ -> }
+                .setTitle("Warning: Trap In Use")
+                .setMessage("Selected trap is in use, save anyway?")
                 .create().show()
         } else {
             executeTask(mouse)

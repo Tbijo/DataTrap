@@ -1,0 +1,1542 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "27cc02ed6059938e7f9db6860f01066a",
+    "entities": [
+      {
+        "tableName": "EnvType",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`envTypeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `envTypeName` TEXT NOT NULL, `envTypeDateTimeCreated` INTEGER NOT NULL, `envTypeDateTimeUpdated` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "envTypeId",
+            "columnName": "envTypeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "envTypeName",
+            "columnName": "envTypeName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "envTypeDateTimeCreated",
+            "columnName": "envTypeDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "envTypeDateTimeUpdated",
+            "columnName": "envTypeDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "envTypeId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Locality",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`localityId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `localityName` TEXT NOT NULL, `deviceID` TEXT NOT NULL, `localityDateTimeCreated` INTEGER NOT NULL, `localityDateTimeUpdated` INTEGER, `xA` REAL, `yA` REAL, `xB` REAL, `yB` REAL, `numSessions` INTEGER NOT NULL, `note` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "localityId",
+            "columnName": "localityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityName",
+            "columnName": "localityName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityDateTimeCreated",
+            "columnName": "localityDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityDateTimeUpdated",
+            "columnName": "localityDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "xA",
+            "columnName": "xA",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "yA",
+            "columnName": "yA",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "xB",
+            "columnName": "xB",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "yB",
+            "columnName": "yB",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numSessions",
+            "columnName": "numSessions",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "localityId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Method",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`methodId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `methodName` TEXT NOT NULL, `methodDateTimeCreated` INTEGER NOT NULL, `methodDateTimeUpdated` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "methodId",
+            "columnName": "methodId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methodName",
+            "columnName": "methodName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methodDateTimeCreated",
+            "columnName": "methodDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methodDateTimeUpdated",
+            "columnName": "methodDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "methodId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "MethodType",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`methodTypeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `methodTypeName` TEXT NOT NULL, `methTypeDateTimeCreated` INTEGER NOT NULL, `methTypeDateTimeUpdated` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "methodTypeId",
+            "columnName": "methodTypeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methodTypeName",
+            "columnName": "methodTypeName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methTypeDateTimeCreated",
+            "columnName": "methTypeDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methTypeDateTimeUpdated",
+            "columnName": "methTypeDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "methodTypeId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Occasion",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`occasionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `occasion` INTEGER NOT NULL, `deviceID` TEXT NOT NULL, `localityID` INTEGER NOT NULL, `sessionID` INTEGER NOT NULL, `methodID` INTEGER NOT NULL, `methodTypeID` INTEGER NOT NULL, `trapTypeID` INTEGER NOT NULL, `envTypeID` INTEGER, `vegetTypeID` INTEGER, `occasionDateTimeCreated` INTEGER NOT NULL, `occasionDateTimeUpdated` INTEGER, `gotCaught` INTEGER, `numTraps` INTEGER NOT NULL, `numMice` INTEGER, `temperature` REAL, `weather` TEXT, `leg` TEXT NOT NULL, `note` TEXT, FOREIGN KEY(`localityID`) REFERENCES `Locality`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`sessionID`) REFERENCES `Session`(`sessionId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`methodID`) REFERENCES `Method`(`methodId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`methodTypeID`) REFERENCES `MethodType`(`methodTypeId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`trapTypeID`) REFERENCES `TrapType`(`trapTypeId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`envTypeID`) REFERENCES `EnvType`(`envTypeId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`vegetTypeID`) REFERENCES `VegetType`(`vegetTypeId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "occasionId",
+            "columnName": "occasionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "occasion",
+            "columnName": "occasion",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityID",
+            "columnName": "localityID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionID",
+            "columnName": "sessionID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methodID",
+            "columnName": "methodID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "methodTypeID",
+            "columnName": "methodTypeID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trapTypeID",
+            "columnName": "trapTypeID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "envTypeID",
+            "columnName": "envTypeID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "vegetTypeID",
+            "columnName": "vegetTypeID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "occasionDateTimeCreated",
+            "columnName": "occasionDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "occasionDateTimeUpdated",
+            "columnName": "occasionDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "gotCaught",
+            "columnName": "gotCaught",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numTraps",
+            "columnName": "numTraps",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numMice",
+            "columnName": "numMice",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "temperature",
+            "columnName": "temperature",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "weather",
+            "columnName": "weather",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "leg",
+            "columnName": "leg",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "occasionId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Occasion_localityID",
+            "unique": false,
+            "columnNames": [
+              "localityID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Occasion_localityID` ON `${TABLE_NAME}` (`localityID`)"
+          },
+          {
+            "name": "index_Occasion_sessionID",
+            "unique": false,
+            "columnNames": [
+              "sessionID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Occasion_sessionID` ON `${TABLE_NAME}` (`sessionID`)"
+          },
+          {
+            "name": "index_Occasion_methodID",
+            "unique": false,
+            "columnNames": [
+              "methodID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Occasion_methodID` ON `${TABLE_NAME}` (`methodID`)"
+          },
+          {
+            "name": "index_Occasion_methodTypeID",
+            "unique": false,
+            "columnNames": [
+              "methodTypeID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Occasion_methodTypeID` ON `${TABLE_NAME}` (`methodTypeID`)"
+          },
+          {
+            "name": "index_Occasion_trapTypeID",
+            "unique": false,
+            "columnNames": [
+              "trapTypeID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Occasion_trapTypeID` ON `${TABLE_NAME}` (`trapTypeID`)"
+          },
+          {
+            "name": "index_Occasion_envTypeID",
+            "unique": false,
+            "columnNames": [
+              "envTypeID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Occasion_envTypeID` ON `${TABLE_NAME}` (`envTypeID`)"
+          },
+          {
+            "name": "index_Occasion_vegetTypeID",
+            "unique": false,
+            "columnNames": [
+              "vegetTypeID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Occasion_vegetTypeID` ON `${TABLE_NAME}` (`vegetTypeID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Locality",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "localityID"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          },
+          {
+            "table": "Session",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sessionID"
+            ],
+            "referencedColumns": [
+              "sessionId"
+            ]
+          },
+          {
+            "table": "Method",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "methodID"
+            ],
+            "referencedColumns": [
+              "methodId"
+            ]
+          },
+          {
+            "table": "MethodType",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "methodTypeID"
+            ],
+            "referencedColumns": [
+              "methodTypeId"
+            ]
+          },
+          {
+            "table": "TrapType",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "trapTypeID"
+            ],
+            "referencedColumns": [
+              "trapTypeId"
+            ]
+          },
+          {
+            "table": "EnvType",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "envTypeID"
+            ],
+            "referencedColumns": [
+              "envTypeId"
+            ]
+          },
+          {
+            "table": "VegetType",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "vegetTypeID"
+            ],
+            "referencedColumns": [
+              "vegetTypeId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Project",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`projectId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `projectName` TEXT NOT NULL, `deviceID` TEXT NOT NULL, `projectDateTimeCreated` INTEGER NOT NULL, `projectDateTimeUpdated` INTEGER, `numLocal` INTEGER NOT NULL, `numMice` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "projectId",
+            "columnName": "projectId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "projectName",
+            "columnName": "projectName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "projectDateTimeCreated",
+            "columnName": "projectDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "projectDateTimeUpdated",
+            "columnName": "projectDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numLocal",
+            "columnName": "numLocal",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numMice",
+            "columnName": "numMice",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "projectId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Protocol",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`protocolId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `protocolName` TEXT NOT NULL, `protDateTimeCreated` INTEGER NOT NULL, `protDateTimeUpdated` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "protocolId",
+            "columnName": "protocolId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "protocolName",
+            "columnName": "protocolName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "protDateTimeCreated",
+            "columnName": "protDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "protDateTimeUpdated",
+            "columnName": "protDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "protocolId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Session",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `session` INTEGER NOT NULL, `deviceID` TEXT NOT NULL, `projectID` INTEGER, `numOcc` INTEGER NOT NULL, `sessionDateTimeCreated` INTEGER NOT NULL, `sessionDateTimeUpdated` INTEGER, FOREIGN KEY(`projectID`) REFERENCES `Project`(`projectId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "session",
+            "columnName": "session",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "projectID",
+            "columnName": "projectID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "numOcc",
+            "columnName": "numOcc",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionDateTimeCreated",
+            "columnName": "sessionDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionDateTimeUpdated",
+            "columnName": "sessionDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "sessionId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Session_projectID",
+            "unique": false,
+            "columnNames": [
+              "projectID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Session_projectID` ON `${TABLE_NAME}` (`projectID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Project",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "projectID"
+            ],
+            "referencedColumns": [
+              "projectId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Specie",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`specieId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `speciesCode` TEXT NOT NULL, `fullName` TEXT NOT NULL, `synonym` TEXT, `authority` TEXT, `description` TEXT, `isSmallMammal` INTEGER NOT NULL, `upperFingers` INTEGER, `minWeight` REAL, `maxWeight` REAL, `bodyLength` REAL, `tailLength` REAL, `feetLengthMin` REAL, `feetLengthMax` REAL, `note` TEXT, `specieDateTimeCreated` INTEGER NOT NULL, `specieDateTimeUpdated` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "specieId",
+            "columnName": "specieId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speciesCode",
+            "columnName": "speciesCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "fullName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "synonym",
+            "columnName": "synonym",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "authority",
+            "columnName": "authority",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isSmallMammal",
+            "columnName": "isSmallMammal",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "upperFingers",
+            "columnName": "upperFingers",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "minWeight",
+            "columnName": "minWeight",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "maxWeight",
+            "columnName": "maxWeight",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "bodyLength",
+            "columnName": "bodyLength",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tailLength",
+            "columnName": "tailLength",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "feetLengthMin",
+            "columnName": "feetLengthMin",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "feetLengthMax",
+            "columnName": "feetLengthMax",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "specieDateTimeCreated",
+            "columnName": "specieDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "specieDateTimeUpdated",
+            "columnName": "specieDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "specieId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "TrapType",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`trapTypeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `trapTypeName` TEXT NOT NULL, `trapTypeDateTimeCreated` INTEGER NOT NULL, `trapTypeDateTimeUpdated` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "trapTypeId",
+            "columnName": "trapTypeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trapTypeName",
+            "columnName": "trapTypeName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trapTypeDateTimeCreated",
+            "columnName": "trapTypeDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trapTypeDateTimeUpdated",
+            "columnName": "trapTypeDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "trapTypeId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "VegetType",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`vegetTypeId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `vegetTypeName` TEXT NOT NULL, `vegTypeDateTimeCreated` INTEGER NOT NULL, `vegTypeDateTimeUpdated` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "vegetTypeId",
+            "columnName": "vegetTypeId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vegetTypeName",
+            "columnName": "vegetTypeName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vegTypeDateTimeCreated",
+            "columnName": "vegTypeDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "vegTypeDateTimeUpdated",
+            "columnName": "vegTypeDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "vegetTypeId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "Mouse",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`mouseId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `code` INTEGER, `deviceID` TEXT NOT NULL, `primeMouseID` INTEGER, `speciesID` INTEGER NOT NULL, `protocolID` INTEGER, `occasionID` INTEGER NOT NULL, `localityID` INTEGER NOT NULL, `trapID` INTEGER, `mouseDateTimeCreated` INTEGER NOT NULL, `mouseDateTimeUpdated` INTEGER, `sex` TEXT, `age` TEXT, `gravidity` INTEGER, `lactating` INTEGER, `sexActive` INTEGER, `weight` REAL, `recapture` INTEGER, `captureID` TEXT, `body` REAL, `tail` REAL, `feet` REAL, `ear` REAL, `testesLength` REAL, `testesWidth` REAL, `embryoRight` INTEGER, `embryoLeft` INTEGER, `embryoDiameter` REAL, `MC` INTEGER, `MCright` INTEGER, `MCleft` INTEGER, `note` TEXT, FOREIGN KEY(`speciesID`) REFERENCES `Specie`(`specieId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`protocolID`) REFERENCES `Protocol`(`protocolId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`occasionID`) REFERENCES `Occasion`(`occasionId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`localityID`) REFERENCES `Locality`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "mouseId",
+            "columnName": "mouseId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "code",
+            "columnName": "code",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "primeMouseID",
+            "columnName": "primeMouseID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "speciesID",
+            "columnName": "speciesID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "protocolID",
+            "columnName": "protocolID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "occasionID",
+            "columnName": "occasionID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityID",
+            "columnName": "localityID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "trapID",
+            "columnName": "trapID",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mouseDateTimeCreated",
+            "columnName": "mouseDateTimeCreated",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mouseDateTimeUpdated",
+            "columnName": "mouseDateTimeUpdated",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sex",
+            "columnName": "sex",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "age",
+            "columnName": "age",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "gravidity",
+            "columnName": "gravidity",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lactating",
+            "columnName": "lactating",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sexActive",
+            "columnName": "sexActive",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "weight",
+            "columnName": "weight",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "recapture",
+            "columnName": "recapture",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "captureID",
+            "columnName": "captureID",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "body",
+            "columnName": "body",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "tail",
+            "columnName": "tail",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "feet",
+            "columnName": "feet",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "ear",
+            "columnName": "ear",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "testesLength",
+            "columnName": "testesLength",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "testesWidth",
+            "columnName": "testesWidth",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "embryoRight",
+            "columnName": "embryoRight",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "embryoLeft",
+            "columnName": "embryoLeft",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "embryoDiameter",
+            "columnName": "embryoDiameter",
+            "affinity": "REAL",
+            "notNull": false
+          },
+          {
+            "fieldPath": "MC",
+            "columnName": "MC",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "MCright",
+            "columnName": "MCright",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "MCleft",
+            "columnName": "MCleft",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "mouseId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Mouse_speciesID",
+            "unique": false,
+            "columnNames": [
+              "speciesID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Mouse_speciesID` ON `${TABLE_NAME}` (`speciesID`)"
+          },
+          {
+            "name": "index_Mouse_protocolID",
+            "unique": false,
+            "columnNames": [
+              "protocolID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Mouse_protocolID` ON `${TABLE_NAME}` (`protocolID`)"
+          },
+          {
+            "name": "index_Mouse_occasionID",
+            "unique": false,
+            "columnNames": [
+              "occasionID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Mouse_occasionID` ON `${TABLE_NAME}` (`occasionID`)"
+          },
+          {
+            "name": "index_Mouse_localityID",
+            "unique": false,
+            "columnNames": [
+              "localityID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Mouse_localityID` ON `${TABLE_NAME}` (`localityID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Specie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "speciesID"
+            ],
+            "referencedColumns": [
+              "specieId"
+            ]
+          },
+          {
+            "table": "Protocol",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "protocolID"
+            ],
+            "referencedColumns": [
+              "protocolId"
+            ]
+          },
+          {
+            "table": "Occasion",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "occasionID"
+            ],
+            "referencedColumns": [
+              "occasionId"
+            ]
+          },
+          {
+            "table": "Locality",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "localityID"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ProjectLocalityCrossRef",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`projectId` INTEGER NOT NULL, `localityId` INTEGER NOT NULL, PRIMARY KEY(`projectId`, `localityId`), FOREIGN KEY(`projectId`) REFERENCES `Project`(`projectId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`localityId`) REFERENCES `Locality`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "projectId",
+            "columnName": "projectId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "localityId",
+            "columnName": "localityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "projectId",
+            "localityId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_ProjectLocalityCrossRef_projectId",
+            "unique": false,
+            "columnNames": [
+              "projectId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ProjectLocalityCrossRef_projectId` ON `${TABLE_NAME}` (`projectId`)"
+          },
+          {
+            "name": "index_ProjectLocalityCrossRef_localityId",
+            "unique": false,
+            "columnNames": [
+              "localityId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ProjectLocalityCrossRef_localityId` ON `${TABLE_NAME}` (`localityId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Project",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "projectId"
+            ],
+            "referencedColumns": [
+              "projectId"
+            ]
+          },
+          {
+            "table": "Locality",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "localityId"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "User",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `userName` TEXT NOT NULL, `password` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "userId",
+            "columnName": "userId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "userName",
+            "columnName": "userName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "password",
+            "columnName": "password",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "userId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "LocalitySessionCrossRef",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`localityId` INTEGER NOT NULL, `sessionId` INTEGER NOT NULL, PRIMARY KEY(`localityId`, `sessionId`), FOREIGN KEY(`localityId`) REFERENCES `Locality`(`localityId`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`sessionId`) REFERENCES `Session`(`sessionId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "localityId",
+            "columnName": "localityId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "localityId",
+            "sessionId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_LocalitySessionCrossRef_localityId",
+            "unique": false,
+            "columnNames": [
+              "localityId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LocalitySessionCrossRef_localityId` ON `${TABLE_NAME}` (`localityId`)"
+          },
+          {
+            "name": "index_LocalitySessionCrossRef_sessionId",
+            "unique": false,
+            "columnNames": [
+              "sessionId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_LocalitySessionCrossRef_sessionId` ON `${TABLE_NAME}` (`sessionId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Locality",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "localityId"
+            ],
+            "referencedColumns": [
+              "localityId"
+            ]
+          },
+          {
+            "table": "Session",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "sessionId"
+            ],
+            "referencedColumns": [
+              "sessionId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "MouseImage",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`mouseImgId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `imgName` TEXT NOT NULL, `path` TEXT NOT NULL, `note` TEXT, `mouseID` INTEGER NOT NULL, `deviceID` TEXT NOT NULL, FOREIGN KEY(`mouseID`) REFERENCES `Mouse`(`mouseId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "mouseImgId",
+            "columnName": "mouseImgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imgName",
+            "columnName": "imgName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mouseID",
+            "columnName": "mouseID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "mouseImgId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_MouseImage_mouseID",
+            "unique": false,
+            "columnNames": [
+              "mouseID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_MouseImage_mouseID` ON `${TABLE_NAME}` (`mouseID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Mouse",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "mouseID"
+            ],
+            "referencedColumns": [
+              "mouseId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "OccasionImage",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`occasionImgId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `imgName` TEXT NOT NULL, `path` TEXT NOT NULL, `note` TEXT, `occasionID` INTEGER NOT NULL, `deviceID` TEXT NOT NULL, FOREIGN KEY(`occasionID`) REFERENCES `Occasion`(`occasionId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "occasionImgId",
+            "columnName": "occasionImgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imgName",
+            "columnName": "imgName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "occasionID",
+            "columnName": "occasionID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "occasionImgId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_OccasionImage_occasionID",
+            "unique": false,
+            "columnNames": [
+              "occasionID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_OccasionImage_occasionID` ON `${TABLE_NAME}` (`occasionID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Occasion",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "occasionID"
+            ],
+            "referencedColumns": [
+              "occasionId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "SpecieImage",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`specieImgId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `imgName` TEXT NOT NULL, `path` TEXT NOT NULL, `note` TEXT, `specieID` INTEGER NOT NULL, `deviceID` TEXT NOT NULL, FOREIGN KEY(`specieID`) REFERENCES `Specie`(`specieId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "specieImgId",
+            "columnName": "specieImgId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "imgName",
+            "columnName": "imgName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "path",
+            "columnName": "path",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "specieID",
+            "columnName": "specieID",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deviceID",
+            "columnName": "deviceID",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "specieImgId"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_SpecieImage_specieID",
+            "unique": false,
+            "columnNames": [
+              "specieID"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SpecieImage_specieID` ON `${TABLE_NAME}` (`specieID`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Specie",
+            "onDelete": "CASCADE",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "specieID"
+            ],
+            "referencedColumns": [
+              "specieId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "SynchronizeDate",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`lastSyncId` INTEGER NOT NULL, `lastSyncDate` INTEGER, PRIMARY KEY(`lastSyncId`))",
+        "fields": [
+          {
+            "fieldPath": "lastSyncId",
+            "columnName": "lastSyncId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastSyncDate",
+            "columnName": "lastSyncDate",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "lastSyncId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '27cc02ed6059938e7f9db6860f01066a')"
+    ]
+  }
+}

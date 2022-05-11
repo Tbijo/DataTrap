@@ -16,7 +16,9 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddOccasionBinding
 import com.example.datatrap.models.*
 import com.example.datatrap.viewmodels.*
+import com.example.datatrap.viewmodels.datastore.UserPrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import java.util.*
 
 @AndroidEntryPoint
@@ -33,6 +35,7 @@ class AddOccasionFragment : Fragment() {
     private val vegTypeViewModel: VegetTypeViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val volleyViewModel: VolleyViewModel by viewModels()
+    private val userPrefViewModel: UserPrefViewModel by viewModels()
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -59,9 +62,11 @@ class AddOccasionFragment : Fragment() {
         setListeners()
 
         // nastavit leg na meno usera
-        userViewModel.getActiveUser().observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.etLeg.setText(it.userName)
+        userPrefViewModel.readUserIdPref.observe(viewLifecycleOwner) {
+            userViewModel.getActiveUser(it).observe(viewLifecycleOwner) { user ->
+                if (user != null) {
+                    binding.etLeg.setText(user.userName)
+                }
             }
         }
 
@@ -229,7 +234,7 @@ class AddOccasionFragment : Fragment() {
         val methodType: Long = methodTypeID
         val trapType: Long = trapTypeID
         val leg: String = binding.etLeg.text.toString()
-        val numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
+        val numTraps: Int = Integer.parseInt(binding.etNumTraps.text.toString().ifBlank { "0" })
 
         if (checkInput(occasionNum, method, methodType, trapType, leg, numTraps)) {
             val envType: Long? = envTypeID

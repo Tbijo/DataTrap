@@ -273,7 +273,7 @@ class UpdateOccasionFragment : Fragment() {
     private fun updateOccasion() {
         val occasionNum: Int = currentOccasion.occasion
         val leg: String = binding.etLeg.text.toString()
-        val numTraps = Integer.parseInt(binding.etNumTraps.text.toString())
+        val numTraps = Integer.parseInt(binding.etNumTraps.text.toString().ifBlank { "0" })
 
         if (checkInput(occasionNum, methodID, methodTypeID, trapTypeID, leg, numTraps)) {
 

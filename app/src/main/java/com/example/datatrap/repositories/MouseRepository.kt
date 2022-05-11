@@ -34,16 +34,16 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForRecapture(code: Int, currentTime: Long, twoYears: Long): LiveData<List<MouseRecapList>> {
-        return mouseDao.getMiceForRecapture(code, currentTime, twoYears)
+    fun getMiceForRecapture(code: Int, specieID: Long, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean,lactating: Boolean, dateFrom: Long, dateTo: Long): LiveData<List<MouseRecapList>> {
+        return mouseDao.getMiceForRecapture(code, specieID, sex, age, gravidity, sexActive,lactating, dateFrom, dateTo)
     }
 
     fun getMiceForLog(primeMouseID: Long, deviceID: String): LiveData<List<MouseLog>> {
         return mouseDao.getMiceForLog(primeMouseID, deviceID)
     }
 
-    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Int>> {
-        return mouseDao.getActiveCodeOfLocality(localityId, currentTime, twoYears)
+    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long): LiveData<List<Int>> {
+        return mouseDao.getActiveCodeOfLocality(localityId, currentTime)
     }
 
     fun countMiceForLocality(localityId: Long): LiveData<Int> {
@@ -52,5 +52,13 @@ class MouseRepository(private val mouseDao: MouseDao) {
 
     fun getMiceForEmail(): LiveData<List<Mouse>> {
         return mouseDao.getMiceForEmail()
+    }
+
+    suspend fun insertMultiMouse(mice: List<Mouse>) {
+        mouseDao.insertMultiMouse(mice)
+    }
+
+    fun getTrapsIdInOccasion(occasionId: Long): LiveData<List<Int>> {
+        return mouseDao.getTrapsIdInOccasion(occasionId)
     }
 }

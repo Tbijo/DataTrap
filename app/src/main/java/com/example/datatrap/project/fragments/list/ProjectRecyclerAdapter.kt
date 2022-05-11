@@ -2,7 +2,6 @@ package com.example.datatrap.project.fragments.list
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.ProjectRowBinding
 import com.example.datatrap.models.Project
@@ -12,10 +11,21 @@ class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyVie
 
     private var projectList = emptyList<Project>()
 
-    class MyViewHolder(val binding: ProjectRowBinding) : RecyclerView.ViewHolder(binding.root)
+    class MyViewHolder(val binding: ProjectRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.projectRow.setOnClickListener {
+                listener.useClickListener(adapterPosition)
+            }
+
+            binding.projectRow.setOnLongClickListener {
+                listener.useLongClickListener(adapterPosition)
+                true
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        return MyViewHolder(ProjectRowBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return MyViewHolder(ProjectRowBinding.inflate(LayoutInflater.from(parent.context), parent, false), mListener)
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
@@ -24,19 +34,6 @@ class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyVie
         holder.binding.tvNumLocality.text = currenItem.numLocal.toString()
         holder.binding.tvNumMice.text = currenItem.numMice.toString()
         holder.binding.tvProjectDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.projectDateTimeCreated)
-
-        holder.binding.projectRow.setOnClickListener {
-            // tu sa prejde na locality s projektom
-            val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToListPrjLocalityFragment(currenItem)
-            holder.binding.root.findNavController().navigate(action)
-        }
-
-        holder.binding.projectRow.setOnLongClickListener {
-            // tu sa prejde na upravu vybraneho projektu
-            val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToUpdateProjectFragment(currenItem)
-            holder.binding.root.findNavController().navigate(action)
-            true
-        }
     }
 
     override fun getItemCount(): Int {
@@ -46,5 +43,16 @@ class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyVie
     fun setData(projects: List<Project>){
         this.projectList = projects
         notifyDataSetChanged()
+    }
+
+    interface MyClickListener {
+        fun useClickListener(position: Int)
+        fun useLongClickListener(position: Int)
+    }
+
+    private lateinit var mListener: MyClickListener
+
+    fun setOnItemClickListener(listener: MyClickListener){
+        mListener = listener
     }
 }

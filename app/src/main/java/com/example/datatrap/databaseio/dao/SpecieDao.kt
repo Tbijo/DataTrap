@@ -29,4 +29,7 @@ interface SpecieDao {
 
     @Query("SELECT specieId, speciesCode, fullName FROM Specie WHERE speciesCode LIKE :specieCode")
     fun searchSpecies(specieCode: String): LiveData<List<SpecList>>
+
+    @Query("SELECT specieId, speciesCode, fullName FROM Specie WHERE speciesCode IN (:spCode)")
+    fun getNonSpecie(spCode: List<String>): LiveData<List<SpecList>>
 }

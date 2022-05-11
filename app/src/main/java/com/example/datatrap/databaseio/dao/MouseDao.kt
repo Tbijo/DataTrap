@@ -7,6 +7,7 @@ import com.example.datatrap.models.tuples.MouseLog
 import com.example.datatrap.models.tuples.MouseOccList
 import com.example.datatrap.models.tuples.MouseRecapList
 import com.example.datatrap.models.tuples.MouseView
+import com.example.datatrap.utils.Constants.MILLISECONDS_IN_2_YEAR
 
 @Dao
 interface MouseDao {
@@ -35,13 +36,14 @@ interface MouseDao {
     @Query("SELECT Mouse.mouseId AS mouseId, Mouse.primeMouseID AS primeMouseID, Mouse.code AS mouseCode, Specie.speciesCode AS specieCode, Mouse.mouseDateTimeCreated AS dateTime, Mouse.sex AS sex FROM Mouse INNER JOIN Specie ON Specie.specieId = Mouse.speciesID WHERE Mouse.occasionID = :idOccasion")
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<MouseOccList>>
 
-    // zobrazit chytene mys podla ich Kodu na znovu chytenie a nesmu byt starsie ako dva roky
-    @Query("SELECT Mouse.mouseId AS mouseId, Mouse.primeMouseID AS primeMouseID, Mouse.code AS code, Mouse.age AS age, Mouse.weight AS weight, Mouse.sex AS sex, Mouse.gravidity AS gravidity, Mouse.lactating AS lactating, Mouse.sexActive AS sexActive, Locality.localityName AS localityName, Specie.speciesCode AS specieCode, Mouse.mouseDateTimeCreated AS dateTime FROM Mouse INNER JOIN Locality ON Locality.localityId = Mouse.localityID INNER JOIN Specie ON Specie.specieId = Mouse.speciesID WHERE Mouse.Code = :code AND (:currentTime - mouseDateTimeCreated) < :twoYears ORDER BY Mouse.mouseDateTimeCreated DESC LIMIT 300")
-    fun getMiceForRecapture(code: Int, currentTime: Long, twoYears: Long): LiveData<List<MouseRecapList>>
+    // zobrazit chytene mys podla ich Kodu na znovu chytenie a nesmu byt starsie ako dva roky //currentTime: Long
+    //@Query("SELECT Mouse.mouseId AS mouseId, Mouse.primeMouseID AS primeMouseID, Mouse.code AS code, Mouse.age AS age, Mouse.weight AS weight, Mouse.sex AS sex, Mouse.gravidity AS gravidity, Mouse.lactating AS lactating, Mouse.sexActive AS sexActive, Locality.localityName AS localityName, Specie.speciesCode AS specieCode, Mouse.mouseDateTimeCreated AS dateTime FROM Mouse INNER JOIN Locality ON Locality.localityId = Mouse.localityID INNER JOIN Specie ON Specie.specieId = Mouse.speciesID WHERE Mouse.Code = :code AND (:currentTime - mouseDateTimeCreated) < $MILLISECONDS_IN_2_YEAR ORDER BY Mouse.mouseDateTimeCreated DESC LIMIT 300")
+    @Query("SELECT Mouse.mouseId AS mouseId, Mouse.primeMouseID AS primeMouseID, Mouse.code AS code, Mouse.age AS age, Mouse.weight AS weight, Mouse.sex AS sex, Mouse.gravidity AS gravidity, Mouse.lactating AS lactating, Mouse.sexActive AS sexActive, Locality.localityName AS localityName, Specie.speciesCode AS specieCode, Mouse.mouseDateTimeCreated AS dateTime FROM Mouse INNER JOIN Locality ON Locality.localityId = Mouse.localityID INNER JOIN Specie ON Specie.specieId = Mouse.speciesID WHERE Mouse.code = :code AND (Mouse.speciesID = :specieID OR :specieID IS NULL) AND (Mouse.sex = :sex OR :sex IS NULL) AND (Mouse.age = :age OR :age IS NULL) AND Mouse.gravidity = :gravidity AND Mouse.lactating = :lactating AND Mouse.sexActive = :sexActive AND Mouse.mouseDateTimeCreated BETWEEN :dateFrom AND :dateTo ORDER BY Mouse.mouseDateTimeCreated DESC")
+    fun getMiceForRecapture(code: Int, specieID: Long, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean,lactating: Boolean, dateFrom: Long, dateTo: Long): LiveData<List<MouseRecapList>>
 
     // zoznam kodov ktore nie su starsie ako dva roky = reprezentuju zivych potkanov
-    @Query("SELECT code FROM Mouse WHERE localityID = :localityId AND Code IS NOT NULL AND (:currentTime - mouseDateTimeCreated) < :twoYears")
-    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Int>>
+    @Query("SELECT code FROM Mouse WHERE localityID = :localityId AND Code IS NOT NULL AND (:currentTime - mouseDateTimeCreated) < $MILLISECONDS_IN_2_YEAR")
+    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long): LiveData<List<Int>>
 
     // pocet mysi v lokalite
     @Query("SELECT COUNT(Code) FROM Mouse WHERE localityID = :localityId AND Code IS NOT NULL AND Recapture = 0")
@@ -50,4 +52,12 @@ interface MouseDao {
     // mysi do csv email
     @Query("SELECT * FROM Mouse")
     fun getMiceForEmail(): LiveData<List<Mouse>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertMultiMouse(mice: List<Mouse>)
+
+    // cisla pasci pouzitych na occasion
+    @Query("SELECT trapID FROM Mouse WHERE occasionID = :occasionId")
+    fun getTrapsIdInOccasion(occasionId: Long): LiveData<List<Int>>
+
 }

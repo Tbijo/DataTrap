@@ -27,8 +27,7 @@ class AddSpecieFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View? {
         _binding = FragmentAddSpecieBinding.inflate(inflater, container, false)
 
         binding.rgUpperFingers.setOnCheckedChangeListener { _, radioButtonId ->
@@ -68,7 +67,7 @@ class AddSpecieFragment : Fragment() {
         }
 
         val action =
-            AddSpecieFragmentDirections.actionAddSpecieFragmentToGetPictureFragment(specieId)
+            AddSpecieFragmentDirections.actionAddSpecieFragmentToGetPictureSpecieFragment(specieId)
         findNavController().navigate(action)
     }
 

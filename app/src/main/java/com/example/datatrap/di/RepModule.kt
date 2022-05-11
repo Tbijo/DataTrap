@@ -6,9 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
-import dagger.hilt.android.components.FragmentComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
-import javax.inject.Singleton
 
 @Module
 @InstallIn(ActivityRetainedComponent::class) // zivotnost len v ramci fragmentov kde ich treba
@@ -90,4 +88,5 @@ object RepModule {
     @ActivityRetainedScoped
     @Provides
     fun provideSynchronizeRep(db: TrapDatabase) = SynchronizeDateRepository(db.synchronizeDao())
+
 }

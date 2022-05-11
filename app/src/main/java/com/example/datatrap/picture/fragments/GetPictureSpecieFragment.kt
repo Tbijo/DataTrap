@@ -2,18 +2,24 @@ package com.example.datatrap.picture.fragments
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -22,16 +28,15 @@ import com.example.datatrap.databinding.FragmentGetPictureSpecieBinding
 import com.example.datatrap.models.SpecieImage
 import com.example.datatrap.viewmodels.SpecieImageViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
 import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+class GetPictureSpecieFragment : Fragment() {
 
     private var _binding: FragmentGetPictureSpecieBinding? = null
     private val binding get() = _binding!!
+
     private val args by navArgs<GetPictureSpecieFragmentArgs>()
     private val specieImageViewModel: SpecieImageViewModel by viewModels()
 
@@ -40,10 +45,11 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
     private var specieImage: SpecieImage? = null
     private lateinit var deviceID: String
 
+    private lateinit var requestMultiplePermissions: ActivityResultLauncher<Array<String>>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        savedInstanceState: Bundle?): View? {
         _binding = FragmentGetPictureSpecieBinding.inflate(inflater, container, false)
 
         deviceID =
@@ -52,11 +58,20 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
         setImageIfExists()
 
         binding.btnGetPicture.setOnClickListener {
-            if (hasStoragePermission()) {
+            if (hasPermissions(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                )
+            ) {
                 // zohnat novu fotku
                 getPicture()
             } else {
-                requestStoragePermission()
+                requestPermissions(
+                    arrayOf(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    )
+                )
             }
         }
 
@@ -69,6 +84,13 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
                 saveImage()
             }
         }
+
+        requestMultiplePermissions =
+            registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
+                perms.entries.forEach {
+                    Log.d("PERMISSIONS RESULT", "${it.key} = ${it.value}")
+                }
+            }
 
         return binding.root
     }
@@ -145,42 +167,58 @@ class GetPictureSpecieFragment : Fragment(), EasyPermissions.PermissionCallbacks
             }
         }
 
-    ////////////////////
+    ////////////////////PERMISSIONS//////////////////////////////////////////////
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    private fun hasPermissions(vararg permissions: String): Boolean {
+        permissions.forEach {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    it
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
+            }
+        }
+        return true
     }
 
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        Toast.makeText(context, "Permission Granted.", Toast.LENGTH_SHORT).show()
-    }
+    private fun requestPermissions(permissions: Array<String>) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                permissions[0]
+            )
+        ) {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("Application needs this permission to work.")
+                .setPositiveButton("OK") { _, _ ->
+                    requestAppSettings()
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    Toast.makeText(
+                        requireContext(),
+                        "Application can not proceed.",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                }
+                .create().show()
+            Log.d("PERMISSIONS", "DOUBLE DENIAL")
 
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            AppSettingsDialog.Builder(requireActivity()).build().show()
         } else {
-            requestStoragePermission()
+            Log.d("PERMISSIONS", "GETTING PERMISSIONS")
+            requestMultiplePermissions.launch(
+                permissions
+            )
         }
     }
 
-    private fun hasStoragePermission() =
-        EasyPermissions.hasPermissions(
-            requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
+    private fun requestAppSettings() {
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", requireContext().packageName, null)
         )
-
-    private fun requestStoragePermission() {
-        EasyPermissions.requestPermissions(
-            this,
-            "This app can not work without Storage Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
-            1,
-            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
 }

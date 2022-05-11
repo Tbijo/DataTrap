@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListUsersBinding
 import com.example.datatrap.models.User
 import com.example.datatrap.viewmodels.UserViewModel
+import com.example.datatrap.viewmodels.datastore.UserPrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,8 +21,11 @@ class ListUsersFragment : Fragment() {
 
     private var _binding: FragmentListUsersBinding? = null
     private val binding get() = _binding!!
+
     private lateinit var adapter: UserRecyclerView
+
     private val userViewModel: UserViewModel by viewModels()
+    private val userPrefViewModel: UserPrefViewModel by viewModels()
 
     private lateinit var userList: List<User>
 
@@ -48,13 +52,10 @@ class ListUsersFragment : Fragment() {
         adapter.setOnItemClickListener(object : UserRecyclerView.MyClickListener{
             override fun useClickListener(position: Int) {
                 // nastavit vybraneho pouzivatela ako aktivneho
-                // a predchadzajuceho neaktivneho
                 // nepovolit manipulaciu s rootom
                 if (userList[position].userName != "root" && userList[position].password != "toor"){
-                    userViewModel.inactiveAllUsers()
                     val user: User = userList[position]
-                    user.isActive = 1
-                    userViewModel.updateUser(user)
+                    userPrefViewModel.saveUserIdPref(user.userId)
                     Toast.makeText(requireContext(), "Selected user is now active.", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(requireContext(), "Unable to access root.", Toast.LENGTH_LONG).show()

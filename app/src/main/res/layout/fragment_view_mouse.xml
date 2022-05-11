@@ -605,9 +605,10 @@
         android:id="@+id/iv_mouse"
         android:layout_width="190dp"
         android:layout_height="180dp"
+        android:src="@drawable/empty"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@drawable/empty" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

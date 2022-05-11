@@ -34,32 +34,17 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    fun getActiveUser(): LiveData<User> {
-        return userRepository.getActiveUser()
-    }
-
-    fun inactiveAllUsers() {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.inactiveAllUsers()
-        }
+    fun getActiveUser(userId: Long): LiveData<User> {
+        return userRepository.getActiveUser(userId)
     }
 
     fun checkUser(userName: String, password: String) {
+        // ak volam nieco cez suspend a ukladam to do premennej MutableLiveData
+        // cez .value nesmie sa pouzit Dispatchers.IO chyba: Can not use .value on Background Thread
         viewModelScope.launch {
             val value = userRepository.checkUser(userName, password)
             userId.value = value
         }
     }
 
-    fun setActiveUser(team: Int, userId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.setActiveUser(team, userId)
-        }
-    }
-
-    fun inactivateUser() {
-        viewModelScope.launch(Dispatchers.IO) {
-            userRepository.inactivateUser()
-        }
-    }
 }

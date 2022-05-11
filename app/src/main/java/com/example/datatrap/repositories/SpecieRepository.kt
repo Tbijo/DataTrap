@@ -34,4 +34,8 @@ class SpecieRepository(private val specieDao: SpecieDao) {
         return specieDao.searchSpecies(specieCode)
     }
 
+    fun getNonSpecie(spCode: List<String>): LiveData<List<SpecList>> {
+        return specieDao.getNonSpecie(spCode)
+    }
+
 }

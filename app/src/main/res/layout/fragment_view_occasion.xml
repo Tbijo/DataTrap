@@ -8,13 +8,14 @@
 
     <ImageView
         android:id="@+id/iv_occ_image"
+        android:src="@drawable/empty"
         android:layout_width="190dp"
         android:layout_height="180dp"
         android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@drawable/empty" />
 
     <TextView
         android:id="@+id/textView174"
@@ -262,16 +263,6 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_weather" />
 
     <TextView
-        android:id="@+id/textView198"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Note"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_leg" />
-
-    <TextView
         android:id="@+id/tv_occ_datetime"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -354,6 +345,155 @@
         android:layout_height="wrap_content"
         android:text="note note note"
         android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView198" />
+
+    <TextView
+        android:id="@+id/textView198"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Note"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_predator_num" />
+
+    <TextView
+        android:id="@+id/textView208"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Number of Other"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView207"
+        app:layout_constraintTop_toBottomOf="@+id/tv_close_num" />
+
+    <TextView
+        android:id="@+id/textView207"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Number of PVP"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView208"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView206"
+        app:layout_constraintTop_toBottomOf="@+id/tv_error_num" />
+
+    <TextView
+        android:id="@+id/textView204"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Number of Close"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView202"
+        app:layout_constraintTop_toBottomOf="@+id/tv_got_caught" />
+
+    <TextView
+        android:id="@+id/textView206"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Number of Predator"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView207"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_specie_num" />
+
+    <TextView
+        android:id="@+id/textView199"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Number of Species"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView202"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_leg" />
+
+    <TextView
+        android:id="@+id/textView202"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Number of Errors"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/textView204"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/textView199"
+        app:layout_constraintTop_toBottomOf="@+id/tv_leg" />
+
+    <TextView
+        android:id="@+id/tv_other_num"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="66"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_pvp_num"
+        app:layout_constraintTop_toBottomOf="@+id/textView208" />
+
+    <TextView
+        android:id="@+id/tv_close_num"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="33"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_error_num"
+        app:layout_constraintTop_toBottomOf="@+id/textView204" />
+
+    <TextView
+        android:id="@+id/tv_specie_num"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="11"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_error_num"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView199" />
+
+    <TextView
+        android:id="@+id/tv_predator_num"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="44"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_pvp_num"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView206" />
+
+    <TextView
+        android:id="@+id/tv_pvp_num"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="55"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_other_num"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_predator_num"
+        app:layout_constraintTop_toBottomOf="@+id/textView207" />
+
+    <TextView
+        android:id="@+id/tv_error_num"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="22"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/tv_close_num"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/tv_specie_num"
+        app:layout_constraintTop_toBottomOf="@+id/textView202" />
 </androidx.constraintlayout.widget.ConstraintLayout>

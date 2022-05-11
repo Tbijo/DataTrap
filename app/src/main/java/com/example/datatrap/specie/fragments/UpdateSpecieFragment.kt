@@ -76,7 +76,7 @@ class UpdateSpecieFragment : Fragment() {
     }
 
     private fun goToCamera() {
-        val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureFragment(
+        val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureSpecieFragment(
             args.specList.specieId
         )
         findNavController().navigate(action)

@@ -219,6 +219,9 @@
         <action
             android:id="@+id/action_listOccMouseFragment_to_viewOccasionFragment"
             app:destination="@id/viewOccasionFragment" />
+        <action
+            android:id="@+id/action_listOccMouseFragment_to_addMultiMouseFragment"
+            app:destination="@id/addMultiMouseFragment" />
     </fragment>
     <fragment
         android:id="@+id/updateMouseFragment"
@@ -307,5 +310,14 @@
         <argument
             android:name="occasionId"
             app:argType="long" />
+    </fragment>
+    <fragment
+        android:id="@+id/addMultiMouseFragment"
+        android:name="com.example.datatrap.mouse.fragments.multi.AddMultiMouseFragment"
+        android:label="Add Multiple Mice"
+        tools:layout="@layout/fragment_add_multi_mouse" >
+        <argument
+            android:name="occlist"
+            app:argType="com.example.datatrap.models.tuples.OccList" />
     </fragment>
 </navigation>

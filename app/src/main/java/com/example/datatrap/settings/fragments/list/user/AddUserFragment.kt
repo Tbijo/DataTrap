@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddUserBinding
 import com.example.datatrap.models.User
-import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -18,22 +17,13 @@ class AddUserFragment : Fragment() {
 
     private var _binding: FragmentAddUserBinding? = null
     private val binding get() = _binding!!
-    private val userViewModel: UserViewModel by viewModels()
 
-    private var team: Int = 0
+    private val userViewModel: UserViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentAddUserBinding.inflate(inflater, container, false)
-
-        binding.rgTeamAdd.setOnCheckedChangeListener { _, radioButtonId ->
-            when(radioButtonId){
-                binding.rbEven.id -> team = EnumTeam.EVEN_TEAM.numTeam
-                binding.rbOdd.id -> team = EnumTeam.ODD_TEAM.numTeam
-                binding.rbSing.id -> team = EnumTeam.SINGLE.numTeam
-            }
-        }
 
         setHasOptionsMenu(true)
         return binding.root
@@ -60,7 +50,7 @@ class AddUserFragment : Fragment() {
         val password = binding.etPasswordAdd.text.toString()
 
         if (checkInput(userName, password)){
-            val user: User = User(0, userName, password, team, 0)
+            val user: User = User(0, userName, password)
             userViewModel.insertUser(user)
 
             Toast.makeText(requireContext(), "New user added.", Toast.LENGTH_SHORT).show()

@@ -16,7 +16,7 @@ import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
     Specie::class, TrapType::class, VegetType::class, Mouse::class,
     ProjectLocalityCrossRef::class, User::class, LocalitySessionCrossRef::class,
     MouseImage::class, OccasionImage::class, SpecieImage::class, SynchronizeDate::class
-                     ], version = 1, exportSchema = false)
+                     ], version = 2, exportSchema = false)
 @TypeConverters(DateLongConverters::class)
 abstract class TrapDatabase: RoomDatabase() {
 

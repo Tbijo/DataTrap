@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.R
@@ -18,8 +19,12 @@ import com.example.datatrap.mouse.fragments.generator.CodeGenerator
 import com.example.datatrap.myenums.EnumCaptureID
 import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
+import com.example.datatrap.myenums.EnumSpecie
 import com.example.datatrap.viewmodels.*
+import com.example.datatrap.viewmodels.datastore.UserPrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
@@ -31,11 +36,12 @@ class AddNewMouseFragment : Fragment() {
     private val mouseViewModel: MouseViewModel by viewModels()
     private val specieViewModel: SpecieViewModel by viewModels()
     private val protocolViewModel: ProtocolViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels()
+    private val userPrefViewModel: UserPrefViewModel by viewModels()
 
     private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
     private lateinit var activeCodeList: List<Int>
+    private lateinit var trapsList: List<Int>
 
     private var oldCode: Int = 0
     private var code: Int? = null
@@ -45,17 +51,9 @@ class AddNewMouseFragment : Fragment() {
     private var speciesID: Long = 0
     private var specie: SpecSelectList? = null
     private var protocolID: Long? = null
-    private var currentUser: User? = null
+    private var team: Int = -1
 
     private var mouseId: Long = 0
-
-    private val MILLIS_IN_SECOND = 1000L
-    private val SECONDS_IN_MINUTE = 60
-    private val MINUTES_IN_HOUR = 60
-    private val HOURS_IN_DAY = 24
-    private val DAYS_IN_YEAR = 365
-    private val MILLISECONDS_IN_2_YEAR: Long =
-        2 * MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -70,22 +68,26 @@ class AddNewMouseFragment : Fragment() {
         }
 
         binding.btnGenCode.setOnClickListener {
-            generateCode()
+            lifecycleScope.launchWhenCreated {
+                generateCode()
+            }
         }
 
         setListeners()
 
-        mouseViewModel.getActiveCodeOfLocality(
-            args.occList.localityID,
-            Calendar.getInstance().time.time,
-            MILLISECONDS_IN_2_YEAR
+        mouseViewModel.getActiveCodeOfLocality(args.occList.localityID, Calendar.getInstance().time.time
         ).observe(viewLifecycleOwner) { codeList ->
             activeCodeList = codeList
         }
 
-        // get user for
-        userViewModel.getActiveUser().observe(viewLifecycleOwner) {
-            currentUser = it
+        // get selected Team
+        userPrefViewModel.readUserTeamPref.observe(viewLifecycleOwner) {
+            team = it
+        }
+
+        // get traps
+        mouseViewModel.getTrapsIdInOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
+            trapsList = it
         }
 
         setHasOptionsMenu(true)
@@ -203,7 +205,7 @@ class AddNewMouseFragment : Fragment() {
     }
 
     private fun generateCode() {
-        if (specie == null || specie!!.speciesCode == "Other" || specie!!.speciesCode == "PVP" || specie!!.speciesCode == "TRE" || specie!!.speciesCode == "C" || specie!!.speciesCode == "P") {
+        if (specie == null || specie!!.speciesCode == EnumSpecie.Other.name || specie!!.speciesCode == EnumSpecie.PVP.name || specie!!.speciesCode == EnumSpecie.TRE.name || specie!!.speciesCode == EnumSpecie.C.name || specie!!.speciesCode == EnumSpecie.P.name) {
             Toast.makeText(requireContext(), "Choose a valiable specie code.", Toast.LENGTH_LONG)
                 .show()
             code = null
@@ -219,15 +221,14 @@ class AddNewMouseFragment : Fragment() {
             return
         }
 
-        if (currentUser != null) {
-            val codeGen =
-                CodeGenerator(oldCode, specie?.upperFingers!!, currentUser?.team, activeCodeList)
-            code = codeGen.generateCode()
-            if (code == 0) {
-                Toast.makeText(requireContext(), "No code is available.", Toast.LENGTH_LONG).show()
-            }
-            binding.etCodeMouseAdd.setText(code.toString())
+        val codeGen =
+            CodeGenerator(oldCode, specie?.upperFingers!!, team, activeCodeList)
+        code = codeGen.generateCode()
+        if (code == 0) {
+            Toast.makeText(requireContext(), "No code is available.", Toast.LENGTH_LONG).show()
         }
+        binding.etCodeMouseAdd.setText(code.toString())
+
     }
 
     private fun hideNonMaleFields() {
@@ -303,7 +304,7 @@ class AddNewMouseFragment : Fragment() {
                 return
             }
 
-            val sexActive: Boolean? = binding.cbSexActive.isChecked
+            val sexActive: Boolean = binding.cbSexActive.isChecked
             val weight: Float? = giveOutPutFloat(binding.etWeight.text.toString())
             val trapID: Int? = giveOutPutInt(binding.autoCompTvTrapId.text.toString())
 
@@ -315,8 +316,8 @@ class AddNewMouseFragment : Fragment() {
             val testesLength: Float? = giveOutPutFloat(binding.etTestesLength.text.toString())
             val testesWidth: Float? = giveOutPutFloat(binding.etTestesWidth.text.toString())
 
-            val gravitidy = if (sex == EnumSex.MALE.myName) null else binding.cbGravit.isChecked
-            val lactating = if (sex == EnumSex.MALE.myName) null else binding.cbLactating.isChecked
+            val gravitidy = binding.cbGravit.isChecked
+            val lactating = binding.cbLactating.isChecked
             // počet embryí v oboch rohoch maternice a ich priemer
             val embryoRight =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
@@ -324,7 +325,7 @@ class AddNewMouseFragment : Fragment() {
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
             val embryoDiameter =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            val MC = if (sex == EnumSex.MALE.myName) null else binding.cbMc.isChecked
+            val MC = binding.cbMc.isChecked
             // počet placentálnych polypov
             val MCright =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
@@ -377,7 +378,11 @@ class AddNewMouseFragment : Fragment() {
             // ulozit mys
             if (mouse.weight != null && specie!!.minWeight != null && specie!!.maxWeight != null) {
                 checkWeightAndSave(mouse)
-            } else {
+            }
+            else if (mouse.trapID != null && mouse.trapID in trapsList) {
+                checkTrapAvailability(mouse)
+            }
+            else {
                 executeTask(mouse)
             }
 
@@ -391,11 +396,26 @@ class AddNewMouseFragment : Fragment() {
         if (mouse.weight!! > specie?.maxWeight!! || mouse.weight!! < specie?.minWeight!!) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes") { _, _ ->
-                executeTask(mouse)
+                checkTrapAvailability(mouse)
             }
                 .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
+                .create().show()
+        } else {
+            checkTrapAvailability(mouse)
+        }
+    }
+
+    private fun checkTrapAvailability(mouse: Mouse) {
+        if (mouse.trapID != null && mouse.trapID in trapsList) {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setPositiveButton("Yes") { _, _ ->
+                executeTask(mouse)
+            }
+                .setNegativeButton("No") { _, _ -> }
+                .setTitle("Warning: Trap In Use")
+                .setMessage("Selected trap is in use, save anyway?")
                 .create().show()
         } else {
             executeTask(mouse)

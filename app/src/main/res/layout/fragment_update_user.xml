@@ -30,40 +30,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView98" />
 
-    <RadioGroup
-        android:id="@+id/rg_team_update"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView99">
-
-        <RadioButton
-            android:id="@+id/rb_even"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Even Team" />
-
-        <RadioButton
-            android:id="@+id/rb_odd"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Odd Team" />
-
-        <RadioButton
-            android:id="@+id/rb_sing"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Single" />
-
-    </RadioGroup>
-
     <TextView
         android:id="@+id/textView97"
         android:layout_width="0dp"
@@ -84,13 +50,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_user_name_update" />
 
-    <TextView
-        android:id="@+id/textView99"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Select a Team"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_password_update" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -16,6 +16,7 @@ import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
 import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
 import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
+import com.example.datatrap.viewmodels.datastore.PathPrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,16 +24,22 @@ class ListPrjLocalityFragment : Fragment() {
 
     private var _binding: FragmentListPrjLocalityBinding? = null
     private val binding get() = _binding!!
+
     private val prjLocalityViewModel: ProjectLocalityViewModel by viewModels()
+    private val pathPrefViewModel: PathPrefViewModel by viewModels()
+
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListPrjLocalityFragmentArgs>()
     private lateinit var localityList: List<LocList>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+        savedInstanceState: Bundle?
+    ): View? {
 
         _binding = FragmentListPrjLocalityBinding.inflate(inflater, container, false)
+
+        binding.tvPathPrjName.text = args.project.projectName
 
         adapter = PrjLocalityRecyclerAdapter()
         val recyclerView = binding.prjLocalityRecyclerview
@@ -45,40 +52,44 @@ class ListPrjLocalityFragment : Fragment() {
         )
         recyclerView.addItemDecoration(dividerItemDecoration)
 
-        prjLocalityViewModel.getLocalitiesForProject(args.project.projectId).observe(viewLifecycleOwner) {
-            val locList = mutableListOf<LocList>()
-            it.first().localities.forEach { locality ->
-                val loc = LocList(
-                    locality.localityId,
-                    locality.localityName,
-                    locality.localityDateTimeCreated,
-                    locality.xA,
-                    locality.yA,
-                    locality.numSessions
-                )
-                locList.add(loc)
+        prjLocalityViewModel.getLocalitiesForProject(args.project.projectId)
+            .observe(viewLifecycleOwner) {
+                val locList = mutableListOf<LocList>()
+                it.first().localities.forEach { locality ->
+                    val loc = LocList(
+                        locality.localityId,
+                        locality.localityName,
+                        locality.localityDateTimeCreated,
+                        locality.xA,
+                        locality.yA,
+                        locality.numSessions
+                    )
+                    locList.add(loc)
+                }
+                adapter.setData(locList)
+                localityList = locList
             }
-            adapter.setData(locList)
-            localityList = locList
-        }
 
-        adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener{
+        adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener {
 
             override fun useClickListener(position: Int) {
+                // nastavit vybranu lokalitu
+                pathPrefViewModel.saveLocNamePref(localityList[position].localityName)
                 // presun do sessionov s projektom a lokalitou
                 goToSession(position)
             }
 
             override fun useLongClickListener(position: Int) {
                 val builder = AlertDialog.Builder(requireContext())
-                builder.setPositiveButton("Yes") {_, _ ->
+                builder.setPositiveButton("Yes") { _, _ ->
 
                     // vymazat kombinaciu projektu a vybranej lokality
                     deleteCombination(position)
 
-                    Toast.makeText(requireContext(),"Association deleted.", Toast.LENGTH_LONG).show()
+                    Toast.makeText(requireContext(), "Association deleted.", Toast.LENGTH_LONG)
+                        .show()
                 }
-                    .setNegativeButton("No") {_, _ -> }
+                    .setNegativeButton("No") { _, _ -> }
                     .setTitle("Delete Association?")
                     .setMessage("Are you sure you want to delete this association?")
                     .create().show()
@@ -87,7 +98,10 @@ class ListPrjLocalityFragment : Fragment() {
 
         binding.addLocalityFloatButton.setOnClickListener {
             // prechod do vsetkych lokalit na pracu s lokalitami a vytvorenie kombinacie project a locality
-            val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListAllLocalityFragment(args.project)
+            val action =
+                ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListAllLocalityFragment(
+                    args.project
+                )
             findNavController().navigate(action)
         }
 
@@ -99,13 +113,18 @@ class ListPrjLocalityFragment : Fragment() {
         _binding = null
     }
 
-    private fun goToSession(position: Int){
-        val action = ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(args.project, localityList[position])
+    private fun goToSession(position: Int) {
+        val action =
+            ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(
+                args.project,
+                localityList[position]
+            )
         findNavController().navigate(action)
     }
 
-    private fun deleteCombination(position: Int){
-        val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, localityList[position].localityId)
+    private fun deleteCombination(position: Int) {
+        val projectLocalityCrossRef =
+            ProjectLocalityCrossRef(args.project.projectId, localityList[position].localityId)
         prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
     }
 

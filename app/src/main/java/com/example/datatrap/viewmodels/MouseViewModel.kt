@@ -61,16 +61,16 @@ class MouseViewModel @Inject constructor(
         return mouseRepository.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForRecapture(code: Int, currentTime: Long, twoYears: Long): LiveData<List<MouseRecapList>> {
-        return mouseRepository.getMiceForRecapture(code, currentTime, twoYears)
+    fun getMiceForRecapture(code: Int, specieID: Long, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean, lactating: Boolean, dateFrom: Long, dateTo: Long): LiveData<List<MouseRecapList>> {
+        return mouseRepository.getMiceForRecapture(code, specieID, sex, age, gravidity, sexActive, lactating, dateFrom, dateTo)
     }
 
     fun getMiceForLog(primeMouseID: Long, deviceID: String): LiveData<List<MouseLog>> {
         return mouseRepository.getMiceForLog(primeMouseID, deviceID)
     }
 
-    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long, twoYears: Long): LiveData<List<Int>> {
-        return mouseRepository.getActiveCodeOfLocality(localityId, currentTime, twoYears)
+    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long): LiveData<List<Int>> {
+        return mouseRepository.getActiveCodeOfLocality(localityId, currentTime)
     }
 
     fun countMiceForLocality(localityId: Long): LiveData<Int> {
@@ -79,5 +79,15 @@ class MouseViewModel @Inject constructor(
 
     fun getMiceForEmail(): LiveData<List<Mouse>> {
         return mouseRepository.getMiceForEmail()
+    }
+
+    fun insertMultiMouse(mice: List<Mouse>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mouseRepository.insertMultiMouse(mice)
+        }
+    }
+
+    fun getTrapsIdInOccasion(occasionId: Long): LiveData<List<Int>> {
+        return mouseRepository.getTrapsIdInOccasion(occasionId)
     }
 }

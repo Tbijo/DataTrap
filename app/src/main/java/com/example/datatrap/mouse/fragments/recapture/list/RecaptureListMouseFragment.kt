@@ -2,10 +2,9 @@ package com.example.datatrap.mouse.fragments.recapture.list
 
 import android.os.Bundle
 import android.view.*
+import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import android.widget.Toast
-import androidx.appcompat.widget.SearchView
-import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -13,28 +12,27 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentRecaptureListMouseBinding
+import com.example.datatrap.models.other.SearchMouse
 import com.example.datatrap.models.tuples.MouseRecapList
+import com.example.datatrap.mouse.fragments.recapture.SearchRecaptureFragment
 import com.example.datatrap.viewmodels.MouseViewModel
+import com.example.datatrap.viewmodels.SpecieViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
 
 @AndroidEntryPoint
-class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
+class RecaptureListMouseFragment : Fragment(), SearchRecaptureFragment.DialogListener {
 
     private var _binding: FragmentRecaptureListMouseBinding? = null
     private val binding get() = _binding!!
-    private val args by navArgs<RecaptureListMouseFragmentArgs>()
-    private val mouseViewModel: MouseViewModel by viewModels()
-    private lateinit var adapter: RecaptureMouseRecyclerAdapter
-    private var mouseList: List<MouseRecapList> = emptyList()
 
-    private val MILLIS_IN_SECOND = 1000L
-    private val SECONDS_IN_MINUTE = 60
-    private val MINUTES_IN_HOUR = 60
-    private val HOURS_IN_DAY = 24
-    private val DAYS_IN_YEAR = 365
-    private val MILLISECONDS_IN_2_YEAR: Long =
-        2 * MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR
+    private val args by navArgs<RecaptureListMouseFragmentArgs>()
+    private lateinit var adapter: RecaptureMouseRecyclerAdapter
+
+    private val mouseViewModel: MouseViewModel by viewModels()
+    private val specieViewModel: SpecieViewModel by viewModels()
+
+    private var mouseList: List<MouseRecapList> = emptyList()
+    private val specieMap: MutableMap<String, Long> = mutableMapOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,6 +59,19 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
             }
         })
 
+        specieViewModel.getSpeciesForSelect().observe(viewLifecycleOwner) {
+            it.forEach { specie ->
+                specieMap[specie.speciesCode] = specie.specieId
+            }
+        }
+
+        binding.searchMouseFloatBtn.setOnClickListener {
+            // zobrazit formular na vyhliadanie
+            val searchDialogFragment = SearchRecaptureFragment(specieMap)
+            //parentFragmentManager
+            searchDialogFragment.show(childFragmentManager, "search")
+        }
+
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -74,24 +85,17 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         inflater.inflate(R.menu.mouse_list_menu, menu)
         menu.findItem(R.id.menu_recapture).isVisible = false
         menu.findItem(R.id.menu_occ_info).isVisible = false
-        val searchItem = menu.findItem(R.id.menu_search)
-        val searchView = searchItem?.actionView as? SearchView
-        searchView?.setOnQueryTextListener(this)
+        menu.findItem(R.id.menu_search).isVisible = false
     }
 
-    override fun onQueryTextSubmit(query: String?): Boolean {
-        return true
+    private fun goToRecaptureMouse(position: Int) {
+        val mouse = mouseList[position]
+        val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occList)
+        findNavController().navigate(action)
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        if (!newText.isNullOrBlank() && newText.isDigitsOnly()) {
-            searchMice(Integer.parseInt(newText))
-        }
-        return true
-    }
-
-    private fun searchMice(code: Int) {
-        mouseViewModel.getMiceForRecapture(code, Calendar.getInstance().time.time, MILLISECONDS_IN_2_YEAR).observe(viewLifecycleOwner) { mice ->
+    override fun onDialogPositiveClick(searchMouse: SearchMouse) {
+        mouseViewModel.getMiceForRecapture(searchMouse.code, searchMouse.speciesID, searchMouse.sex, searchMouse.age, searchMouse.gravidity, searchMouse.sexActive, searchMouse.lactating, searchMouse.dateFrom, searchMouse.dateTo).observe(viewLifecycleOwner) { mice ->
             mice.let {
                 adapter.setData(it)
                 mouseList = it
@@ -99,10 +103,8 @@ class RecaptureListMouseFragment : Fragment(), SearchView.OnQueryTextListener {
         }
     }
 
-    private fun goToRecaptureMouse(position: Int) {
-        val mouse = mouseList[position]
-        val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occList)
-        findNavController().navigate(action)
+    override fun onDialogNegativeClick() {
+        Toast.makeText(requireContext(), "Search Canceled", Toast.LENGTH_LONG).show()
     }
 
 }

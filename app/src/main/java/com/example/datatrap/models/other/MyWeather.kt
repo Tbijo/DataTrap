@@ -1,4 +1,4 @@
-package com.example.datatrap.models
+package com.example.datatrap.models.other
 
 data class MyWeather(
     var temp: Int,

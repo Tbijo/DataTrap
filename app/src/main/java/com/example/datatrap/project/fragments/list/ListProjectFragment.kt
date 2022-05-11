@@ -16,9 +16,9 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListProjectBinding
 import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.ProjectViewModel
-import com.example.datatrap.viewmodels.UserViewModel
 import java.util.*
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.example.datatrap.viewmodels.datastore.PathPrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,9 +26,13 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentListProjectBinding? = null
     private val binding get() = _binding!!
-    private val projectViewModel: ProjectViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels()
+
     private lateinit var adapter: ProjectRecyclerAdapter
+
+    private val projectViewModel: ProjectViewModel by viewModels()
+    private val pathPrefViewModel: PathPrefViewModel by viewModels()
+
+    private lateinit var projectList: List<Project>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,8 +51,29 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
         binding.projectRecyclerview.addItemDecoration(dividerItemDecoration)
 
         projectViewModel.projectList.observe(viewLifecycleOwner) { projects ->
+            projectList = projects
             adapter.setData(projects)
         }
+
+        adapter.setOnItemClickListener(object : ProjectRecyclerAdapter.MyClickListener {
+
+            override fun useClickListener(position: Int) {
+                val project = projectList[position]
+                // nastavit meno Projektu na zobrazenie
+                pathPrefViewModel.savePrjNamePref(project.projectName)
+                // tu sa prejde na locality s projektom
+                val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToListPrjLocalityFragment(project)
+                findNavController().navigate(action)
+            }
+
+            override fun useLongClickListener(position: Int) {
+                // tu sa prejde na upravu vybraneho projektu
+                val project = projectList[position]
+                val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToUpdateProjectFragment(project)
+                findNavController().navigate(action)
+            }
+
+        })
 
         binding.addProjectFloatButton.setOnClickListener {
             showAddDialog("New Project", "Project Name", "Add new project?")
@@ -78,7 +103,6 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
     }
 
     private fun logOut() {
-        userViewModel.inactivateUser()
         val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToMainActivity()
         findNavController().navigate(action)
     }

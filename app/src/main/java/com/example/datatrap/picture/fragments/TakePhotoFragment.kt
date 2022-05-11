@@ -2,7 +2,10 @@ package com.example.datatrap.picture.fragments
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -14,7 +17,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
@@ -27,15 +33,13 @@ import com.example.datatrap.models.OccasionImage
 import com.example.datatrap.viewmodels.MouseImageViewModel
 import com.example.datatrap.viewmodels.OccasionImageViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.AppSettingsDialog
-import pub.devrel.easypermissions.EasyPermissions
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
 @AndroidEntryPoint
-class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
+class TakePhotoFragment : Fragment() {
 
     private var _binding: FragmentTakePhotoBinding? = null
     private val binding get() = _binding!!
@@ -51,24 +55,27 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
     private var imageName: String? = null
     private lateinit var deviceID: String
 
+    private lateinit var requestMultiplePermissions: ActivityResultLauncher<Array<String>>
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentTakePhotoBinding.inflate(inflater, container, false)
 
-        deviceID = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
+        deviceID =
+            Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
         setImageIfExists()
 
         binding.btnTakePicture.setOnClickListener {
-            if (hasStoragePermission()) {
+            if (hasPermissions(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 when (args.fragmentName) {
                     occasion -> takeImage(occasion)
                     mouse -> takeImage(mouse)
                 }
             } else {
-                requestStoragePermission()
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE))
             }
         }
 
@@ -81,6 +88,12 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 Toast.makeText(requireContext(), "No image was found.", Toast.LENGTH_LONG).show()
             } else {
                 saveAndAddImage()
+            }
+        }
+
+        requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
+            perms.entries.forEach {
+                Log.d("PERMISSIONS RESULT", "${it.key} = ${it.value}")
             }
         }
 
@@ -109,17 +122,18 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             }
 
             occasion -> {
-                occasionImageViewModel.getImageForOccasion(args.parentId).observe(viewLifecycleOwner) {
-                    // ci mame fotku
-                    if (it != null) {
-                        occasionImage = it
-                        binding.tvTakePicture.text = getString(R.string.pictureAdded)
-                        binding.ivTakePicture.setImageURI(it.path.toUri())
-                        binding.etPicNote.setText(it.note)
-                    } else {
-                        binding.tvTakePicture.text = getString(R.string.noPicture)
+                occasionImageViewModel.getImageForOccasion(args.parentId)
+                    .observe(viewLifecycleOwner) {
+                        // ci mame fotku
+                        if (it != null) {
+                            occasionImage = it
+                            binding.tvTakePicture.text = getString(R.string.pictureAdded)
+                            binding.ivTakePicture.setImageURI(it.path.toUri())
+                            binding.etPicNote.setText(it.note)
+                        } else {
+                            binding.tvTakePicture.text = getString(R.string.noPicture)
+                        }
                     }
-                }
             }
         }
     }
@@ -180,7 +194,8 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                 val myFile = File(imagePathUri.toString())
                 if (myFile.exists()) {
                     myFile.delete()
-                    Toast.makeText(requireContext(), "Empty file deleted.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Empty file deleted.", Toast.LENGTH_SHORT)
+                        .show()
                 }
                 binding.tvTakePicture.text = getString(R.string.noPicture)
                 imagePathUri = null
@@ -193,14 +208,14 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             }
         }
 
-    private fun galleryAddImage(imageUri: Uri, title: String) {
-        val bitmap =
-            MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+    private fun galleryAddImage(imageUri: Uri) {
+        val bitmap = BitmapFactory.decodeFile(imageUri.toString())
+
         MediaStore.Images.Media.insertImage(
             requireContext().contentResolver,
             bitmap,
-            title,
-            "Image of $title"
+            imageName,
+            "Image of $imageName"
         )
         Toast.makeText(requireContext(), "Image Added to Gallery", Toast.LENGTH_SHORT).show()
     }
@@ -211,18 +226,25 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             mouse -> {
                 // vytvara sa nova fotka pre mys, stara nebola
                 if (mouseImage == null) {
-                    mouseImage = MouseImage(0, imageName!!, imagePathUri.toString(), note, args.parentId, deviceID)
+                    mouseImage = MouseImage(
+                        0,
+                        imageName!!,
+                        imagePathUri.toString(),
+                        note,
+                        args.parentId,
+                        deviceID
+                    )
                     mouseImageViewModel.insertImage(mouseImage!!)
-                    galleryAddImage(imagePathUri!!, imageName!!)
+                    galleryAddImage(imagePathUri!!)
 
-                // existuje stara fotka
+                    // existuje stara fotka
                 } else {
                     // ostava stara fotka
                     if (imageName == null) {
                         mouseImage!!.note = note
                         mouseImageViewModel.insertImage(mouseImage!!)
 
-                    // nahradza sa stara fotka novou fotkou
+                        // nahradza sa stara fotka novou fotkou
                     } else {
 
                         // vymazat zaznam fotky z databazy
@@ -231,10 +253,17 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
                         // pre istotu
                         mouseImage = null
                         // pridat zaznam novej fotky do databazy subor uz existuje
-                        mouseImage = MouseImage(0, imageName!!, imagePathUri.toString(), note, args.parentId, deviceID)
+                        mouseImage = MouseImage(
+                            0,
+                            imageName!!,
+                            imagePathUri.toString(),
+                            note,
+                            args.parentId,
+                            deviceID
+                        )
                         mouseImageViewModel.insertImage(mouseImage!!)
                         // pridat novu fotku do galerie
-                        galleryAddImage(imagePathUri!!, imageName!!)
+                        galleryAddImage(imagePathUri!!)
                     }
                 }
             }
@@ -242,30 +271,47 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
             occasion -> {
                 // vytvara sa nova fotka pre akciu, stara nebola
                 if (occasionImage == null) {
-                    occasionImage = OccasionImage(0, imageName!!, imagePathUri.toString(), note, args.parentId, deviceID)
+                    occasionImage = OccasionImage(
+                        0,
+                        imageName!!,
+                        imagePathUri.toString(),
+                        note,
+                        args.parentId,
+                        deviceID
+                    )
                     occasionImageViewModel.insertImage(occasionImage!!)
-                    galleryAddImage(imagePathUri!!, imageName!!)
+                    galleryAddImage(imagePathUri!!)
 
-                // existuje stara fotka
+                    // existuje stara fotka
                 } else {
                     // ostava stara fotka
                     if (imageName == null) {
                         occasionImage!!.note = note
                         occasionImageViewModel.insertImage(occasionImage!!)
 
-                    // nahradza sa stara fotka novou fotkou
+                        // nahradza sa stara fotka novou fotkou
                     } else {
 
                         // vymazat zaznam fotky z databazy
                         // vymazat fyzicky subor fotky
-                        occasionImageViewModel.deleteImage(occasionImage!!.occasionImgId, occasionImage!!.path)
+                        occasionImageViewModel.deleteImage(
+                            occasionImage!!.occasionImgId,
+                            occasionImage!!.path
+                        )
                         // pre istotu
                         occasionImage = null
                         // pridat zaznam novej fotky do databazy subor uz existuje
-                        occasionImage = OccasionImage(0, imageName!!, imagePathUri.toString(), note, args.parentId, deviceID)
+                        occasionImage = OccasionImage(
+                            0,
+                            imageName!!,
+                            imagePathUri.toString(),
+                            note,
+                            args.parentId,
+                            deviceID
+                        )
                         occasionImageViewModel.insertImage(occasionImage!!)
                         // pridat novu fotku do galerie
-                        galleryAddImage(imagePathUri!!, imageName!!)
+                        galleryAddImage(imagePathUri!!)
                     }
                 }
             }
@@ -275,41 +321,57 @@ class TakePhotoFragment : Fragment(), EasyPermissions.PermissionCallbacks {
 
     }
 
-    ///////
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    ////////////////////////////////////PERMISSIONS///////////////////////////////////////////
+
+    private fun hasPermissions(vararg permissions: String): Boolean {
+        permissions.forEach {
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    it
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return false
+            }
+        }
+        return true
     }
 
-    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        Toast.makeText(context, "Permission Granted.", Toast.LENGTH_SHORT).show()
-    }
+    private fun requestPermissions(permissions: Array<String>) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                permissions[0]
+            )
+        ) {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("Application needs this permission to work.")
+                .setPositiveButton("OK") { _, _ ->
+                    requestAppSettings()
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    Toast.makeText(
+                        requireContext(),
+                        "Application can not proceed.",
+                        Toast.LENGTH_LONG
+                    )
+                        .show()
+                }
+                .create().show()
+            Log.d("PERMISSIONS", "DOUBLE DENIAL")
 
-    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
-        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
-            AppSettingsDialog.Builder(requireActivity()).build().show()
         } else {
-            requestStoragePermission()
+            Log.d("PERMISSIONS", "GETTING PERMISSIONS")
+            requestMultiplePermissions.launch(
+                permissions
+            )
         }
     }
 
-    private fun hasStoragePermission() =
-        EasyPermissions.hasPermissions(
-            requireContext(),
-            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE    // sem pojdu permissiony ktore chceme skontrolovat ci su povolene
+    private fun requestAppSettings(){
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", requireContext().packageName, null)
         )
-
-    private fun requestStoragePermission() {
-        EasyPermissions.requestPermissions(
-            this,
-            "This app can not work without Storage Permission.", // tuto bude odkaz pre pouzivatela ak neda povolenie po
-            1,
-            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE    // co chceme povolit
-        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
-
 }

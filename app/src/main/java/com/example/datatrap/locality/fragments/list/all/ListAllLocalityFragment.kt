@@ -1,10 +1,21 @@
 package com.example.datatrap.locality.fragments.list.all
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -24,10 +35,14 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
 
     private var _binding: FragmentListAllLocalityBinding? = null
     private val binding get() = _binding!!
+
     private val localityViewModel: LocalityViewModel by viewModels()
     private val prjLocalityViewModel: ProjectLocalityViewModel by viewModels()
+
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListAllLocalityFragmentArgs>()
+    private lateinit var requestMultiplePermissions: ActivityResultLauncher<Array<String>>
+
     private lateinit var localityList: List<LocList>
 
     override fun onCreateView(
@@ -77,6 +92,12 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
             findNavController().navigate(action)
         }
 
+        requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
+            perms.entries.forEach {
+                Log.d("PERMISSIONS RESULT", "${it.key} = ${it.value}")
+            }
+        }
+
         setHasOptionsMenu(true)
         return binding.root
     }
@@ -117,11 +138,16 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
         prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
     }
 
-    private fun goToMap(){
-        val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToLocalityMapFragment(
-            localityList.toTypedArray()
-        )
-        findNavController().navigate(action)
+    private fun goToMap() {
+        if (hasPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToLocalityMapFragment(
+                localityList.toTypedArray()
+            )
+            findNavController().navigate(action)
+        }
+        else {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+        }
     }
 
     private fun searchLocalities(query: String?) {
@@ -131,6 +157,52 @@ class ListAllLocalityFragment : Fragment(), SearchView.OnQueryTextListener {
                 adapter.setData(it)
             }
         }
+    }
+
+    ///////////////////////////////PERMISSIONS////////////////////////////////////////
+
+    private fun hasPermissions(vararg permissions: String): Boolean {
+        permissions.forEach {
+            if (ContextCompat.checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun requestPermissions(permissions: Array<String>) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(
+                requireActivity(),
+                permissions[0]
+            )
+        ) {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setMessage("Application needs this permission to work.")
+                .setPositiveButton("OK") { _, _ ->
+                    requestAppSettings()
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    Toast.makeText(requireContext(), "Application can not proceed.", Toast.LENGTH_LONG)
+                        .show()
+                }
+                .create().show()
+            Log.d("PERMISSIONS", "DOUBLE DENIAL")
+
+        } else {
+            Log.d("PERMISSIONS", "GETTING PERMISSIONS")
+            requestMultiplePermissions.launch(
+                permissions
+            )
+        }
+    }
+
+    private fun requestAppSettings(){
+        val intent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", requireContext().packageName, null)
+        )
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
     }
 
 }

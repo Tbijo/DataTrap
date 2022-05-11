@@ -59,4 +59,8 @@ class SpecieViewModel @Inject constructor(
     fun searchSpecies(specieCode: String): LiveData<List<SpecList>> {
         return specieRepository.searchSpecies(specieCode)
     }
+
+    fun getNonSpecie(spCode: List<String>): LiveData<List<SpecList>> {
+        return specieRepository.getNonSpecie(spCode)
+    }
 }

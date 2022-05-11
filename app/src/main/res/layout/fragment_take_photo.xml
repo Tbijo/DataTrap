@@ -30,13 +30,14 @@
 
     <ImageView
         android:id="@+id/iv_take_picture"
+        android:src="@drawable/empty"
         android:layout_width="388dp"
         android:layout_height="377dp"
         android:layout_marginTop="76dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        tools:src="@drawable/empty" />
 
     <Button
         android:id="@+id/btn_add_picture"

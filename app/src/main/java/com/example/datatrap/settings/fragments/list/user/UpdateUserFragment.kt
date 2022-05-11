@@ -23,24 +23,12 @@ class UpdateUserFragment : Fragment() {
     private val userViewModel: UserViewModel by viewModels()
     private val args by navArgs<UpdateUserFragmentArgs>()
 
-    private var team: Int = 0
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentUpdateUserBinding.inflate(inflater, container, false)
 
-        team = args.user.team
-
         initUserValuseToView()
-
-        binding.rgTeamUpdate.setOnCheckedChangeListener { _, radioButtonId ->
-            when(radioButtonId){
-                binding.rbEven.id -> team =  EnumTeam.EVEN_TEAM.numTeam
-                binding.rbOdd.id -> team =  EnumTeam.ODD_TEAM.numTeam
-                binding.rbSing.id -> team =  EnumTeam.SINGLE.numTeam
-            }
-        }
 
         setHasOptionsMenu(true)
         return binding.root
@@ -87,7 +75,6 @@ class UpdateUserFragment : Fragment() {
             val user: User = args.user.copy()
             user.userName = userName
             user.password = password
-            user.team = team
 
             userViewModel.updateUser(user)
 
@@ -106,12 +93,6 @@ class UpdateUserFragment : Fragment() {
     private fun initUserValuseToView() {
         binding.etUserNameUpdate.setText(args.user.userName)
         binding.etPasswordUpdate.setText(args.user.password)
-
-        when(args.user.team){
-            EnumTeam.EVEN_TEAM.numTeam -> binding.rbEven.isChecked = true
-            EnumTeam.ODD_TEAM.numTeam -> binding.rbOdd.isChecked = true
-            EnumTeam.SINGLE.numTeam -> binding.rbSing.isChecked = true
-        }
     }
 
 }

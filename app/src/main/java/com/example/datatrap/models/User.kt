@@ -14,9 +14,5 @@ data class User(
 
     var userName: String,
 
-    var password: String,
-
-    var team: Int,
-
-    var isActive: Int
+    var password: String
 ): Parcelable

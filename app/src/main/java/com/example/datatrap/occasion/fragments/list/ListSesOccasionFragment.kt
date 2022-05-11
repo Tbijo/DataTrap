@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListSesOccasionBinding
 import com.example.datatrap.models.tuples.OccList
 import com.example.datatrap.viewmodels.OccasionViewModel
+import com.example.datatrap.viewmodels.datastore.PathPrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -20,7 +21,10 @@ class ListSesOccasionFragment : Fragment() {
 
     private var _binding: FragmentListSesOccasionBinding? = null
     private val binding get() = _binding!!
+
     private val occasionViewModel: OccasionViewModel by viewModels()
+    private val pathPrefViewModel: PathPrefViewModel by viewModels()
+
     private lateinit var adapter: OccasionRecyclerAdapter
     private val args by navArgs<ListSesOccasionFragmentArgs>()
 
@@ -31,6 +35,12 @@ class ListSesOccasionFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListSesOccasionBinding.inflate(inflater, container, false)
+
+        pathPrefViewModel.readPrjNamePref.observe(viewLifecycleOwner) {
+            binding.tvOccPathPrjName.text = it
+        }
+        binding.tvSesPathLocName.text = args.locList.localityName
+        binding.tvSesNum.text = args.session.session.toString()
 
         adapter = OccasionRecyclerAdapter()
         val recyclerView = binding.sesOccasionRecyclerview

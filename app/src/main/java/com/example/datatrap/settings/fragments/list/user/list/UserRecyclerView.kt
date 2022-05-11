@@ -6,11 +6,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.UserRowBinding
 import com.example.datatrap.models.User
 
-class UserRecyclerView : RecyclerView.Adapter<UserRecyclerView.MyViewHolder>()  {
+class UserRecyclerView : RecyclerView.Adapter<UserRecyclerView.MyViewHolder>() {
 
     private var userList = emptyList<User>()
 
-    class MyViewHolder(val binding: UserRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root){
+    class MyViewHolder(val binding: UserRowBinding, listener: MyClickListener) : RecyclerView.ViewHolder(binding.root) {
         init {
             binding.userRow.setOnClickListener {
                 listener.useClickListener(adapterPosition)
@@ -30,7 +30,6 @@ class UserRecyclerView : RecyclerView.Adapter<UserRecyclerView.MyViewHolder>()  
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val currenItem = userList[position]
         holder.binding.tvUserName.text = currenItem.userName
-        holder.binding.tvActive.text = if (currenItem.isActive == 1) "Active" else "Inactive"
     }
 
     override fun getItemCount(): Int {

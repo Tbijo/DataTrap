@@ -9,10 +9,15 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.databinding.FragmentViewOccasionBinding
+import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.tuples.OccasionView
+import com.example.datatrap.models.tuples.SpecList
+import com.example.datatrap.myenums.EnumSpecie
 import com.example.datatrap.picture.fragments.ViewImageFragment
+import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.OccasionImageViewModel
 import com.example.datatrap.viewmodels.OccasionViewModel
+import com.example.datatrap.viewmodels.SpecieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 
@@ -21,8 +26,11 @@ class ViewOccasionFragment : Fragment() {
 
     private var _binding: FragmentViewOccasionBinding? = null
     private val binding get() = _binding!!
+
     private val occasionViewModel: OccasionViewModel by viewModels()
     private val occasionImageViewModel: OccasionImageViewModel by viewModels()
+    private val mouseViewModel: MouseViewModel by viewModels()
+
     private val args by navArgs<ViewOccasionFragmentArgs>()
 
     private var path: String? = null
@@ -32,6 +40,34 @@ class ViewOccasionFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
 
         _binding = FragmentViewOccasionBinding.inflate(inflater, container, false)
+
+        mouseViewModel.getMiceForOccasion(args.occasionId).observe(viewLifecycleOwner) { miceList ->
+            val specieCodeStr = EnumSpecie.values().map {
+                it.name
+            }
+            var numError = 0
+            var numClose = 0
+            var numPredator = 0
+            var numPVP = 0
+            var numOther = 0
+            val setSpecie = mutableSetOf<String>()
+            miceList.forEach {
+                when(it.specieCode) {
+                    EnumSpecie.TRE.name -> numError++
+                    EnumSpecie.C.name -> numClose++
+                    EnumSpecie.P.name -> numPredator++
+                    EnumSpecie.PVP.name -> numPVP++
+                    EnumSpecie.Other.name -> numOther++
+                }
+                if (it.specieCode !in specieCodeStr) setSpecie.add(it.specieCode)
+            }
+            binding.tvErrorNum.text = numError.toString()
+            binding.tvCloseNum.text = numClose.toString()
+            binding.tvPredatorNum.text = numPredator.toString()
+            binding.tvPvpNum.text = numPVP.toString()
+            binding.tvOtherNum.text = numOther.toString()
+            binding.tvSpecieNum.text = setSpecie.size.toString()
+        }
 
         occasionViewModel.getOccasionView(args.occasionId).observe(viewLifecycleOwner) {
             if (it != null) {
