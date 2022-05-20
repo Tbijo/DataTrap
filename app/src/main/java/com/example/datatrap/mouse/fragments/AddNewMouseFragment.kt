@@ -21,10 +21,8 @@ import com.example.datatrap.myenums.EnumMouseAge
 import com.example.datatrap.myenums.EnumSex
 import com.example.datatrap.myenums.EnumSpecie
 import com.example.datatrap.viewmodels.*
-import com.example.datatrap.viewmodels.datastore.UserPrefViewModel
+import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import java.util.*
 
 @AndroidEntryPoint
@@ -36,7 +34,7 @@ class AddNewMouseFragment : Fragment() {
     private val mouseViewModel: MouseViewModel by viewModels()
     private val specieViewModel: SpecieViewModel by viewModels()
     private val protocolViewModel: ProtocolViewModel by viewModels()
-    private val userPrefViewModel: UserPrefViewModel by viewModels()
+    private val prefViewModel: PrefViewModel by viewModels()
 
     private lateinit var listSpecie: List<SpecSelectList>
     private lateinit var listProtocol: List<Protocol>
@@ -81,7 +79,7 @@ class AddNewMouseFragment : Fragment() {
         }
 
         // get selected Team
-        userPrefViewModel.readUserTeamPref.observe(viewLifecycleOwner) {
+        prefViewModel.readUserTeamPref.observe(viewLifecycleOwner) {
             team = it
         }
 

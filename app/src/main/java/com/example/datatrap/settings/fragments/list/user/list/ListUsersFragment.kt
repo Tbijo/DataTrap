@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.datatrap.databinding.FragmentListUsersBinding
 import com.example.datatrap.models.User
 import com.example.datatrap.viewmodels.UserViewModel
-import com.example.datatrap.viewmodels.datastore.UserPrefViewModel
+import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,7 +25,7 @@ class ListUsersFragment : Fragment() {
     private lateinit var adapter: UserRecyclerView
 
     private val userViewModel: UserViewModel by viewModels()
-    private val userPrefViewModel: UserPrefViewModel by viewModels()
+    private val prefViewModel: PrefViewModel by viewModels()
 
     private lateinit var userList: List<User>
 
@@ -55,7 +55,7 @@ class ListUsersFragment : Fragment() {
                 // nepovolit manipulaciu s rootom
                 if (userList[position].userName != "root" && userList[position].password != "toor"){
                     val user: User = userList[position]
-                    userPrefViewModel.saveUserIdPref(user.userId)
+                    prefViewModel.saveUserIdPref(user.userId)
                     Toast.makeText(requireContext(), "Selected user is now active.", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(requireContext(), "Unable to access root.", Toast.LENGTH_LONG).show()

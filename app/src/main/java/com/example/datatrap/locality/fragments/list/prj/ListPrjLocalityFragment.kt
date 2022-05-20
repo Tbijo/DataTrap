@@ -16,7 +16,7 @@ import com.example.datatrap.databinding.FragmentListPrjLocalityBinding
 import com.example.datatrap.models.projectlocality.ProjectLocalityCrossRef
 import com.example.datatrap.models.tuples.LocList
 import com.example.datatrap.viewmodels.ProjectLocalityViewModel
-import com.example.datatrap.viewmodels.datastore.PathPrefViewModel
+import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,7 +26,7 @@ class ListPrjLocalityFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val prjLocalityViewModel: ProjectLocalityViewModel by viewModels()
-    private val pathPrefViewModel: PathPrefViewModel by viewModels()
+    private val prefViewModel: PrefViewModel by viewModels()
 
     private lateinit var adapter: PrjLocalityRecyclerAdapter
     private val args by navArgs<ListPrjLocalityFragmentArgs>()
@@ -74,7 +74,7 @@ class ListPrjLocalityFragment : Fragment() {
 
             override fun useClickListener(position: Int) {
                 // nastavit vybranu lokalitu
-                pathPrefViewModel.saveLocNamePref(localityList[position].localityName)
+                prefViewModel.saveLocNamePref(localityList[position].localityName)
                 // presun do sessionov s projektom a lokalitou
                 goToSession(position)
             }

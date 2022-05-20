@@ -18,7 +18,7 @@ import com.example.datatrap.models.Session
 import com.example.datatrap.models.localitysession.LocalitySessionCrossRef
 import com.example.datatrap.viewmodels.LocalitySessionViewModel
 import com.example.datatrap.viewmodels.SessionViewModel
-import com.example.datatrap.viewmodels.datastore.PathPrefViewModel
+import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -30,7 +30,7 @@ class ListPrjSessionFragment : Fragment() {
 
     private val sessionViewModel: SessionViewModel by viewModels()
     private val localitySessionViewModel: LocalitySessionViewModel by viewModels()
-    private val pathPrefViewModel: PathPrefViewModel by viewModels()
+    private val prefViewModel: PrefViewModel by viewModels()
 
     private lateinit var adapter: PrjSessionRecyclerAdapter
     private val args by navArgs<ListPrjSessionFragmentArgs>()
@@ -69,7 +69,7 @@ class ListPrjSessionFragment : Fragment() {
                 val session: Session = sessionList[position]
 
                 // nastavit vybranu session
-                pathPrefViewModel.saveSesNumPref(session.session)
+                prefViewModel.saveSesNumPref(session.session)
 
                 val kombLocSess =
                     LocalitySessionCrossRef(args.locList.localityId, session.sessionId)

@@ -18,7 +18,7 @@ import com.example.datatrap.models.Project
 import com.example.datatrap.viewmodels.ProjectViewModel
 import java.util.*
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.example.datatrap.viewmodels.datastore.PathPrefViewModel
+import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -30,7 +30,7 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
     private lateinit var adapter: ProjectRecyclerAdapter
 
     private val projectViewModel: ProjectViewModel by viewModels()
-    private val pathPrefViewModel: PathPrefViewModel by viewModels()
+    private val prefViewModel: PrefViewModel by viewModels()
 
     private lateinit var projectList: List<Project>
 
@@ -60,7 +60,7 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
             override fun useClickListener(position: Int) {
                 val project = projectList[position]
                 // nastavit meno Projektu na zobrazenie
-                pathPrefViewModel.savePrjNamePref(project.projectName)
+                prefViewModel.savePrjNamePref(project.projectName)
                 // tu sa prejde na locality s projektom
                 val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToListPrjLocalityFragment(project)
                 findNavController().navigate(action)

@@ -1,29 +1,22 @@
 package com.example.datatrap.di
 
 import android.content.Context
-import com.example.datatrap.repositories.datastore.PathPrefRepository
-import com.example.datatrap.repositories.datastore.UserPrefRepository
+import com.example.datatrap.repositories.datastore.PrefRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.android.scopes.ActivityRetainedScoped
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityRetainedComponent::class)
+@InstallIn(SingletonComponent::class)
 object DataStoreModule {
 
-    @ActivityRetainedScoped
-    @Provides
-    fun provideUserPrefRep(
-        @ApplicationContext context: Context
-    ) = UserPrefRepository(context)
-
-    @ActivityRetainedScoped
+    @Singleton
     @Provides
     fun providePathPrefRep(
         @ApplicationContext context: Context
-    ) = PathPrefRepository(context)
+    ) = PrefRepository(context)
 
 }

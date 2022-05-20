@@ -12,7 +12,7 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentListOccMouseBinding
 import com.example.datatrap.models.tuples.MouseOccList
 import com.example.datatrap.viewmodels.MouseViewModel
-import com.example.datatrap.viewmodels.datastore.PathPrefViewModel
+import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -22,7 +22,7 @@ class ListOccMouseFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val mouseViewModel: MouseViewModel by viewModels()
-    private val pathPrefViewModel: PathPrefViewModel by viewModels()
+    private val prefViewModel: PrefViewModel by viewModels()
 
     private lateinit var adapter: MouseRecyclerAdapter
     private val args by navArgs<ListOccMouseFragmentArgs>()
@@ -34,13 +34,13 @@ class ListOccMouseFragment : Fragment() {
         savedInstanceState: Bundle?): View? {
         _binding = FragmentListOccMouseBinding.inflate(inflater, container, false)
 
-        pathPrefViewModel.readPrjNamePref.observe(viewLifecycleOwner) {
+        prefViewModel.readPrjNamePref.observe(viewLifecycleOwner) {
             binding.tvMoPathPrjName.text = it
         }
-        pathPrefViewModel.readLocNamePref.observe(viewLifecycleOwner) {
+        prefViewModel.readLocNamePref.observe(viewLifecycleOwner) {
             binding.tvMoPathLocName.text = it
         }
-        pathPrefViewModel.readSesNumPref.observe(viewLifecycleOwner) {
+        prefViewModel.readSesNumPref.observe(viewLifecycleOwner) {
             binding.tvMoPathSesNum.text = it.toString()
         }
         binding.tvPathOccNum.text = args.occList.occasion.toString()

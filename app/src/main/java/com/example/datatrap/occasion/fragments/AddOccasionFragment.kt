@@ -16,9 +16,8 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentAddOccasionBinding
 import com.example.datatrap.models.*
 import com.example.datatrap.viewmodels.*
-import com.example.datatrap.viewmodels.datastore.UserPrefViewModel
+import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import java.util.*
 
 @AndroidEntryPoint
@@ -35,7 +34,7 @@ class AddOccasionFragment : Fragment() {
     private val vegTypeViewModel: VegetTypeViewModel by viewModels()
     private val userViewModel: UserViewModel by viewModels()
     private val volleyViewModel: VolleyViewModel by viewModels()
-    private val userPrefViewModel: UserPrefViewModel by viewModels()
+    private val prefViewModel: PrefViewModel by viewModels()
 
     private lateinit var envTypeList: List<EnvType>
     private lateinit var methodList: List<Method>
@@ -62,7 +61,7 @@ class AddOccasionFragment : Fragment() {
         setListeners()
 
         // nastavit leg na meno usera
-        userPrefViewModel.readUserIdPref.observe(viewLifecycleOwner) {
+        prefViewModel.readUserIdPref.observe(viewLifecycleOwner) {
             userViewModel.getActiveUser(it).observe(viewLifecycleOwner) { user ->
                 if (user != null) {
                     binding.etLeg.setText(user.userName)

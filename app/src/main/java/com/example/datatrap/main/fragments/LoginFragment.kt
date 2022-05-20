@@ -12,7 +12,7 @@ import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentLoginBinding
 import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.UserViewModel
-import com.example.datatrap.viewmodels.datastore.UserPrefViewModel
+import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -21,7 +21,7 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentLoginBinding? = null
     private val binding get() = _binding!!
     private val userViewModel: UserViewModel by viewModels()
-    private val userPrefViewModel: UserPrefViewModel by viewModels()
+    private val prefViewModel: PrefViewModel by viewModels()
     private var team: Int? = null
 
     override fun onCreateView(
@@ -44,8 +44,8 @@ class LoginFragment : Fragment() {
 
         userViewModel.userId.observe(viewLifecycleOwner) {
             if (it != null) {
-                userPrefViewModel.saveUserIdPref(it)
-                userPrefViewModel.saveUserTeamPref(team!!)
+                prefViewModel.saveUserIdPref(it)
+                prefViewModel.saveUserTeamPref(team!!)
                 Toast.makeText(requireContext(), "Log in successful.", Toast.LENGTH_SHORT).show()
                 val action = LoginFragmentDirections.actionLoginFragmentToProjectActivity()
                 findNavController().navigate(action)
