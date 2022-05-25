@@ -14,7 +14,7 @@ class UserViewModel @Inject constructor(
 ) : ViewModel() {
 
     val userList: LiveData<List<User>> = userRepository.userList
-    var userId = MutableLiveData<Long>()
+    var userId = MutableLiveData<Long?>()
 
     fun insertUser(user: User) {
         viewModelScope.launch(Dispatchers.IO) {

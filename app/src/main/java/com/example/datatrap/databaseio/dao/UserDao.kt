@@ -23,6 +23,6 @@ interface UserDao {
     fun getActiveUser(userId: Long): LiveData<User>
 
     @Query("SELECT userId FROM User WHERE userName = :userName AND password = :password")
-    suspend fun checkUser(userName: String, password: String): Long
+    suspend fun checkUser(userName: String, password: String): Long?
 
 }

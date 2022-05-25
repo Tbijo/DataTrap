@@ -61,8 +61,8 @@ class MouseViewModel @Inject constructor(
         return mouseRepository.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForRecapture(code: Int, specieID: Long, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean, lactating: Boolean, dateFrom: Long, dateTo: Long): LiveData<List<MouseRecapList>> {
-        return mouseRepository.getMiceForRecapture(code, specieID, sex, age, gravidity, sexActive, lactating, dateFrom, dateTo)
+    fun getMiceForRecapture(code: Int?, specieID: Long?, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean, lactating: Boolean, dateFrom: Long?, dateTo: Long?, currentTime: Long): LiveData<List<MouseRecapList>> {
+        return mouseRepository.getMiceForRecapture(code, specieID, sex, age, gravidity, sexActive, lactating, dateFrom, dateTo, currentTime)
     }
 
     fun getMiceForLog(primeMouseID: Long, deviceID: String): LiveData<List<MouseLog>> {

@@ -24,7 +24,7 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getActiveUser(userId)
     }
 
-    suspend fun checkUser(userName: String, password: String): Long {
+    suspend fun checkUser(userName: String, password: String): Long? {
         return userDao.checkUser(userName, password)
     }
 

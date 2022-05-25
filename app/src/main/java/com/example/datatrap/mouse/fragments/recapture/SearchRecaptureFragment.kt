@@ -5,7 +5,6 @@ import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.datatrap.R
 import com.example.datatrap.databinding.FragmentSearchRecaptureBinding
@@ -33,8 +32,8 @@ class SearchRecaptureFragment(private val specieMap: Map<String, Long>) : Dialog
     private var sex: String? = null
     private var age: String? = null
     private var speciesID: Long? = null
-    private var dateFrom: Long? = Calendar.getInstance().time.time
-    private var dateTo: Long? = Calendar.getInstance().time.time
+    private var dateFrom: Long? = null
+    private var dateTo: Long? = null
     private var code: String? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -50,26 +49,23 @@ class SearchRecaptureFragment(private val specieMap: Map<String, Long>) : Dialog
                 val sexActive = binding.cbSexActive.isChecked
                 val lactating = binding.cbLactating.isChecked
 
-                if (checkInput(code, dateFrom, dateTo)) {
-                    val mouse = SearchMouse(
-                        Integer.parseInt(code!!),
-                        sex,
-                        age,
-                        speciesID!!,
-                        dateFrom!!,
-                        dateTo!!,
-                        gravidity,
-                        sexActive,
-                        lactating
-                    )
-                    listener.onDialogPositiveClick(mouse)
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.emptyFields),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
+                // ak jeden datum bude null tak aj druhy musi byt
+                if (dateFrom == null) dateTo = null
+                if (dateTo == null) dateFrom = null
+
+                val mouse = SearchMouse(
+                    if (!code.isNullOrBlank()) Integer.parseInt(code!!) else null,
+                    sex,
+                    age,
+                    speciesID,
+                    dateFrom,
+                    dateTo,
+                    gravidity,
+                    sexActive,
+                    lactating
+                )
+                listener.onDialogPositiveClick(mouse)
+
             }
             .setNegativeButton("Cancel") { _, _ ->
                 listener.onDialogNegativeClick()
@@ -145,10 +141,6 @@ class SearchRecaptureFragment(private val specieMap: Map<String, Long>) : Dialog
                 Log.e("DateFormat", "DateParser")
             }
         }
-    }
-
-    private fun checkInput(code: String?, dateFrom: Long?, dateTo: Long?): Boolean {
-        return code != null && dateFrom != null && dateTo != null
     }
 
 }

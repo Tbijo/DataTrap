@@ -18,6 +18,7 @@ import com.example.datatrap.mouse.fragments.recapture.SearchRecaptureFragment
 import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.SpecieViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class RecaptureListMouseFragment : Fragment(), SearchRecaptureFragment.DialogListener {
@@ -95,7 +96,10 @@ class RecaptureListMouseFragment : Fragment(), SearchRecaptureFragment.DialogLis
     }
 
     override fun onDialogPositiveClick(searchMouse: SearchMouse) {
-        mouseViewModel.getMiceForRecapture(searchMouse.code, searchMouse.speciesID, searchMouse.sex, searchMouse.age, searchMouse.gravidity, searchMouse.sexActive, searchMouse.lactating, searchMouse.dateFrom, searchMouse.dateTo).observe(viewLifecycleOwner) { mice ->
+        val currenTime = Calendar.getInstance().time.time
+        mouseViewModel.getMiceForRecapture(searchMouse.code, searchMouse.speciesID, searchMouse.sex,
+            searchMouse.age, searchMouse.gravidity, searchMouse.sexActive, searchMouse.lactating,
+            searchMouse.dateFrom, searchMouse.dateTo, currenTime).observe(viewLifecycleOwner) { mice ->
             mice.let {
                 adapter.setData(it)
                 mouseList = it
