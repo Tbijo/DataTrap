@@ -15,8 +15,6 @@ data class Locality(
 
     var localityName: String,
 
-    var deviceID: String,
-
     var localityDateTimeCreated: Date,
 
     var localityDateTimeUpdated: Date?,

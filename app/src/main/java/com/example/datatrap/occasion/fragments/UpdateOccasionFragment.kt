@@ -239,7 +239,7 @@ class UpdateOccasionFragment : Fragment() {
 
     private fun goToCamera() {
         val action = UpdateOccasionFragmentDirections.actionUpdateOccasionFragmentToTakePhotoFragment("Occasion",
-            args.occList.occasionId)
+            args.occList.occasionId, "")
         findNavController().navigate(action)
     }
 

@@ -1,10 +1,8 @@
 package com.example.datatrap.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
+import okhttp3.MultipartBody
 
 @Entity(foreignKeys = [
     ForeignKey(entity = Occasion::class, parentColumns = ["occasionId"], childColumns = ["occasionID"], onDelete = CASCADE)
@@ -23,5 +21,5 @@ data class OccasionImage(
     @ColumnInfo(index = true)
     var occasionID: Long,
 
-    var deviceID: String
+    var uniqueCode: Long
 )

@@ -10,22 +10,22 @@
         android:label="Synchronize With Server"
         tools:layout="@layout/fragment_synchronize">
         <action
-            android:id="@+id/action_aboutFragment_to_bugReportActivity"
-            app:destination="@id/emailDataActivity" />
+            android:id="@+id/action_synchronizeFragment_to_aboutActivity"
+            app:destination="@id/aboutActivity" />
         <action
-            android:id="@+id/action_aboutFragment_to_settingsActivity"
-            app:destination="@id/settingsActivity" />
-        <action
-            android:id="@+id/action_aboutFragment_to_specieActivity"
+            android:id="@+id/action_synchronizeFragment_to_specieActivity"
             app:destination="@id/specieActivity" />
         <action
-            android:id="@+id/action_aboutFragment_to_projectActivity"
+            android:id="@+id/action_synchronizeFragment_to_projectActivity"
             app:destination="@id/projectActivity" />
+        <action
+            android:id="@+id/action_synchronizeFragment_to_settingsActivity"
+            app:destination="@id/settingsActivity" />
     </fragment>
     <activity
-        android:id="@+id/emailDataActivity"
-        android:name="com.example.datatrap.emailData.EmailDataActivity"
-        android:label="Email Data" />
+        android:id="@+id/aboutActivity"
+        android:name="com.example.datatrap.about.AboutActivity"
+        android:label="About" />
     <activity
         android:id="@+id/settingsActivity"
         android:name="com.example.datatrap.settings.SettingsActivity"

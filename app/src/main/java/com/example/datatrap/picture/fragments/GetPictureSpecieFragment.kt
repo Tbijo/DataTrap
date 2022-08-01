@@ -106,7 +106,7 @@ class GetPictureSpecieFragment : Fragment() {
         // vytvara sa nova fotka, stara nebola
         if (specieImage == null) {
             specieImage =
-                SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, deviceID)
+                SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, Calendar.getInstance().time.time)
             specieImageViewModel.insertImage(specieImage!!)
 
             // stara fotka existuje
@@ -126,7 +126,7 @@ class GetPictureSpecieFragment : Fragment() {
                 specieImage = null
                 // pridat zaznam novej fotky do databazy subor uz existuje
                 specieImage =
-                    SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, deviceID)
+                    SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, Calendar.getInstance().time.time)
                 specieImageViewModel.insertImage(specieImage!!)
             }
         }

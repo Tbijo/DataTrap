@@ -1,7 +1,5 @@
 package com.example.datatrap.models.tuples
 
-import java.util.*
-
 data class OccasionView(
 
     val occasionNum: Int,
@@ -18,7 +16,7 @@ data class OccasionView(
 
     val vegetType: String?,
 
-    val dateTime: Date,
+    val occasionStart: Long,
 
     val gotCaught: Boolean?,
 

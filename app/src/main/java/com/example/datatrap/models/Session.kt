@@ -19,8 +19,6 @@ data class Session(
     var sessionId: Long,
 
     var session: Int,
-
-    var deviceID: String,
     
     // cudzi kluc
     @ColumnInfo(index = true)
@@ -30,5 +28,7 @@ data class Session(
 
     var sessionDateTimeCreated: Date,
 
-    var sessionDateTimeUpdated: Date?
+    var sessionDateTimeUpdated: Date?,
+
+    var sessionStart: Long
 ): Parcelable

@@ -21,6 +21,7 @@ class PrefRepository @Inject constructor(private val context: Context) {
         val keySesNum = intPreferencesKey("sesNum")
         val keyUserId = longPreferencesKey("userId")
         val keyTeam = intPreferencesKey("team")
+        val keySyncDate = longPreferencesKey("syncDate")
     }
 
     private val Context.storePref: DataStore<Preferences> by preferencesDataStore(name = PATH_PREF_NAME)
@@ -99,6 +100,12 @@ class PrefRepository @Inject constructor(private val context: Context) {
         }
     }
 
+    suspend fun saveLastSyncDatePref(syncDate: Long) {
+        context.storePref.edit { preference ->
+            preference[PreferencesKeys.keySyncDate] = syncDate
+        }
+    }
+
     val readUserIdPref: Flow<Long> = context.storePref.data
         .catch { exception ->
             if (exception is IOException) {
@@ -125,5 +132,19 @@ class PrefRepository @Inject constructor(private val context: Context) {
         .map { preference ->
             val team: Int = preference[PreferencesKeys.keyTeam] ?: -1
             team
+        }
+
+    val readLastSyncDatePref: Flow<Long> = context.storePref.data
+        .catch { exception ->
+            if (exception is IOException) {
+                Log.d("DataStore", exception.message.toString())
+                emit(emptyPreferences())
+            } else {
+                throw exception
+            }
+        }
+        .map { preference ->
+            val lastSyncDate: Long = preference[PreferencesKeys.keySyncDate] ?: -1L
+            lastSyncDate
         }
 }

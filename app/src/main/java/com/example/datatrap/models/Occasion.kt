@@ -26,8 +26,6 @@ data class Occasion(
 
     var occasion: Int,
 
-    var deviceID: String,
-
     // cudzi kluc
     @ColumnInfo(index = true)
     var localityID: Long,
@@ -72,6 +70,8 @@ data class Occasion(
 
     var leg: String,
 
-    var note: String?
+    var note: String?,
+
+    var occasionStart: Long
 
 ): Parcelable

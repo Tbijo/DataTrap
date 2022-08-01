@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.models.Session
+import com.example.datatrap.models.sync.SessionSync
 import com.example.datatrap.repositories.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,7 +38,4 @@ class SessionViewModel @Inject constructor(
         return sessionRepository.getSessionsForProject(projectId)
     }
 
-    fun getSessionsForEmail(): LiveData<List<Session>> {
-        return sessionRepository.getSessionsForEmail()
-    }
 }

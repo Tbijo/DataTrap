@@ -1,13 +1,11 @@
 package com.example.datatrap.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
+import okhttp3.MultipartBody
 
 @Entity(foreignKeys = [
-    ForeignKey(entity = Mouse::class, parentColumns = ["mouseId"], childColumns = ["mouseID"], onDelete = CASCADE)
+    ForeignKey(entity = Mouse::class, parentColumns = ["mouseId"], childColumns = ["mouseIiD"], onDelete = CASCADE)
 ])
 data class MouseImage(
 
@@ -21,8 +19,9 @@ data class MouseImage(
     var note: String?,
 
     @ColumnInfo(index = true)
-    var mouseID: Long,
+    var mouseIiD: Long,
 
-    var deviceID: String
+    var deviceID: String,
 
+    var uniqueCode: Long
 )

@@ -34,6 +34,8 @@ object DBmodule {
     private val CALLBACK = object : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
+            // Mouse Insert, po vytvoreni vlastnej mysi mouseIid sa musi rovnat mouseId
+            db.execSQL("CREATE TRIGGER IF NOT EXISTS OnMouseInsertUpdateMouseIid AFTER INSERT ON Mouse WHEN NEW.mouseIid = 0 BEGIN UPDATE Mouse SET mouseIid = NEW.mouseId WHERE mouseId = NEW.mouseId; END")
             // Mouse Insert, po pridani novej mysi sa updatne numMice+1 v Projecte
             db.execSQL("CREATE TRIGGER IF NOT EXISTS OnMouseInsertUpdateProject BEFORE INSERT ON Mouse WHEN NEW.primeMouseID IS NULL BEGIN UPDATE Project SET numMice = (numMice + 1), projectDateTimeUpdated = (strftime('%s','now') * 1000) WHERE projectId = (SELECT projectID FROM Session WHERE sessionId = (SELECT sessionID FROM Occasion WHERE occasionId = NEW.occasionID)); END")
             // Mouse Insert, po pridani novej mysi sa updatne numMice+1 v Occasion

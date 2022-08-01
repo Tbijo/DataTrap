@@ -54,10 +54,10 @@ class UpdateMouseFragment : Fragment() {
             currentMouse = it
             initMouseValuesToView(it)
             fillDropDown(it)
-        }
 
-        mouseImageViewModel.getImageForMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
-            mouseImage = it
+            mouseImageViewModel.getImageForMouse(currentMouse.mouseIid, args.mouseOccTuple.deviceID).observe(viewLifecycleOwner) { image ->
+                mouseImage = image
+            }
         }
 
         mouseViewModel.getTrapsIdInOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
@@ -280,7 +280,7 @@ class UpdateMouseFragment : Fragment() {
 
     private fun goToCamera() {
         val action = UpdateMouseFragmentDirections.actionUpdateMouseFragmentToTakePhotoFragment("Mouse",
-            args.mouseOccTuple.mouseId)
+            currentMouse.mouseIid, currentMouse.deviceID)
         findNavController().navigate(action)
     }
 

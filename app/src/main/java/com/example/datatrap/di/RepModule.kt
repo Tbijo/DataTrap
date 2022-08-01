@@ -85,8 +85,4 @@ object RepModule {
     @Provides
     fun provideSpecieImageRep(db: TrapDatabase) = SpecieImageRepository(db.specieImageDao())
 
-    @ActivityRetainedScoped
-    @Provides
-    fun provideSynchronizeRep(db: TrapDatabase) = SynchronizeDateRepository(db.synchronizeDao())
-
 }

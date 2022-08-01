@@ -149,11 +149,8 @@ class ListAllProjectFragment: Fragment(), SearchView.OnQueryTextListener {
 
     private fun insertProject(name: String) {
         if (name.isNotEmpty()) {
-            val deviceID: String = Settings.Secure.getString(
-                requireContext().contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
-            val project: Project = Project(0, name, deviceID, Calendar.getInstance().time, null, 0, 0)
+
+            val project: Project = Project(0, name, Calendar.getInstance().time, null, 0, 0, Calendar.getInstance().time.time)
 
             projectViewModel.insertProject(project)
 

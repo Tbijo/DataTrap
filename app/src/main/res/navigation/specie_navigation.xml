@@ -20,17 +20,17 @@
             android:id="@+id/action_listSpecieFragment_to_settingsActivity"
             app:destination="@id/settingsActivity" />
         <action
-            android:id="@+id/action_listSpecieFragment_to_bugReportActivity"
-            app:destination="@id/emailDataActivity" />
-        <action
-            android:id="@+id/action_listSpecieFragment_to_aboutActivity"
-            app:destination="@id/synchronizeActivity" />
-        <action
             android:id="@+id/action_listSpecieFragment_to_projectActivity"
             app:destination="@id/projectActivity" />
         <action
             android:id="@+id/action_listSpecieFragment_to_viewSpecieFragment"
             app:destination="@id/viewSpecieFragment" />
+        <action
+            android:id="@+id/action_listSpecieFragment_to_synchronizeActivity"
+            app:destination="@id/synchronizeActivity" />
+        <action
+            android:id="@+id/action_listSpecieFragment_to_aboutActivity"
+            app:destination="@id/aboutActivity" />
     </fragment>
     <fragment
         android:id="@+id/addSpecieFragment"
@@ -52,9 +52,9 @@
             app:destination="@id/getPictureSpecieFragment" />
     </fragment>
     <activity
-        android:id="@+id/emailDataActivity"
-        android:name="com.example.datatrap.emailData.EmailDataActivity"
-        android:label="Email Data" />
+        android:id="@+id/aboutActivity"
+        android:name="com.example.datatrap.about.AboutActivity"
+        android:label="About" />
     <activity
         android:id="@+id/synchronizeActivity"
         android:name="com.example.datatrap.sync.SynchronizeActivity"

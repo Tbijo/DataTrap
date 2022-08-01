@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.datatrap.models.OccasionImage
+import com.example.datatrap.models.sync.OccasionImageSync
 
 @Dao
 interface OccasionImageDao {
@@ -18,4 +19,7 @@ interface OccasionImageDao {
 
     @Query("SELECT * FROM OccasionImage WHERE occasionID = :occasionId")
     fun getImageForOccasion(occasionId: Long): LiveData<OccasionImage>
+
+    @Query("SELECT imgName, path, note, occasionID, uniqueCode FROM OccasionImage WHERE uniqueCode >= :unixTime")
+    suspend fun getOccasionImages(unixTime: Long): List<OccasionImageSync>
 }

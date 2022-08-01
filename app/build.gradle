@@ -94,9 +94,6 @@ dependencies {
     // voley 1.2.0
     implementation "com.android.volley:volley:1.2.1"
 
-    // database to csv
-    implementation "com.github.doyaaaaaken:kotlin-csv-jvm:1.2.0"
-
     // na dagger hilt
     implementation "com.google.dagger:hilt-android:2.42"
     kapt "com.google.dagger:hilt-compiler:2.42"
@@ -106,4 +103,11 @@ dependencies {
 
     // Preferences DataStore
     implementation "androidx.datastore:datastore-preferences:1.0.0"
+
+    // Retrofit
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    // gson
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    // scalars
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
 }

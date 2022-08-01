@@ -21,6 +21,8 @@ data class Mouse(
     @PrimaryKey(autoGenerate = true)
     var mouseId: Long,
 
+    var mouseIid: Long,
+
     var code: Int?, //pazure
 
     var deviceID: String,
@@ -89,6 +91,8 @@ data class Mouse(
 
     var MCleft: Int?,
 
-    var note: String?
+    var note: String?,
+
+    var mouseCaught: Long
 
 ): Parcelable

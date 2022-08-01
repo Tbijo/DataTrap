@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.models.MouseImage
+import com.example.datatrap.models.sync.MouseImageSync
 import com.example.datatrap.repositories.MouseImageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +37,7 @@ class MouseImageViewModel @Inject constructor(
         }
     }
 
-    fun getImageForMouse(mouseId: Long): LiveData<MouseImage> {
-        return mouseImageRepository.getImageForMouse(mouseId)
+    fun getImageForMouse(mouseIid: Long, deviceID: String): LiveData<MouseImage> {
+        return mouseImageRepository.getImageForMouse(mouseIid, deviceID)
     }
 }

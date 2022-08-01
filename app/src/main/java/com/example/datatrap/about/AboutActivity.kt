@@ -1,4 +1,4 @@
-package com.example.datatrap.emailData
+package com.example.datatrap.about
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -9,29 +9,29 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.datatrap.R
-import com.example.datatrap.databinding.ActivityEmailDataBinding
+import com.example.datatrap.databinding.ActivityAboutBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class EmailDataActivity : AppCompatActivity() {
+class AboutActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityEmailDataBinding
+    private lateinit var binding: ActivityAboutBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityEmailDataBinding.inflate(layoutInflater)
+        binding = ActivityAboutBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        navController = findNavController(R.id.emaildata_fragmentContainerView)
-        appBarConfiguration = AppBarConfiguration(navController.graph, binding.emaildataDrawerlayout)
-        binding.emaildataNavigationview.setupWithNavController(navController)
-        setupActionBarWithNavController(navController, binding.emaildataDrawerlayout)
+        navController = findNavController(R.id.about_fragmentContainerView)
+        appBarConfiguration = AppBarConfiguration(navController.graph, binding.aboutDrawerlayout)
+        binding.aboutNavigationview.setupWithNavController(navController)
+        setupActionBarWithNavController(navController, binding.aboutDrawerlayout)
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.emaildata_fragmentContainerView)
+        val navController = findNavController(R.id.about_fragmentContainerView)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
 

@@ -299,7 +299,8 @@ class RecaptureMouseFragment : Fragment() {
 
         val action = RecaptureMouseFragmentDirections.actionRecaptureMouseFragmentToTakePhotoFragment(
                 "Mouse",
-                mouseId
+            mouseId,
+            currentMouse.deviceID
             )
         findNavController().navigate(action)
     }
@@ -313,8 +314,9 @@ class RecaptureMouseFragment : Fragment() {
         if (speciesID != null) {
             val mouse: Mouse = currentMouse.copy()
             mouse.mouseId = 0
+            mouse.mouseIid = 0
             mouse.primeMouseID =
-                if (args.recapMouse.primeMouseID == null) args.recapMouse.mouseId else args.recapMouse.primeMouseID
+                if (args.recapMouse.primeMouseID == null) currentMouse.mouseIid else args.recapMouse.primeMouseID
             mouse.occasionID = args.occList.occasionId
             mouse.localityID = args.occList.localityID
             mouse.mouseDateTimeCreated = Calendar.getInstance().time
@@ -354,6 +356,8 @@ class RecaptureMouseFragment : Fragment() {
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
 
             mouse.note = binding.etMouseNote.text.toString().ifBlank { null }
+
+            mouse.mouseCaught = Calendar.getInstance().time.time
 
             // recapture
             if (mouse.weight != null && specie?.minWeight != null && specie?.maxWeight != null) {

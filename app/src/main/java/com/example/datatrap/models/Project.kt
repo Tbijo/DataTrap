@@ -15,13 +15,13 @@ data class Project(
 
     var projectName: String,
 
-    var deviceID: String,
-
     var projectDateTimeCreated: Date,
 
     var projectDateTimeUpdated: Date?,
 
     var numLocal: Int,
 
-    var numMice: Int
+    var numMice: Int,
+
+    var projectStart: Long
 ): Parcelable

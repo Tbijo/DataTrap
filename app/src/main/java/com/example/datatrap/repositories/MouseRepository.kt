@@ -1,8 +1,10 @@
 package com.example.datatrap.repositories
 
 import androidx.lifecycle.LiveData
+import androidx.room.Query
 import com.example.datatrap.databaseio.dao.MouseDao
 import com.example.datatrap.models.Mouse
+import com.example.datatrap.models.sync.MouseSync
 import com.example.datatrap.models.tuples.MouseLog
 import com.example.datatrap.models.tuples.MouseOccList
 import com.example.datatrap.models.tuples.MouseRecapList
@@ -26,8 +28,8 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.getMouse(mouseId)
     }
 
-    fun getMouseForView(idMouse: Long, deviceID: String): LiveData<MouseView> {
-        return mouseDao.getMouseForView(idMouse, deviceID)
+    fun getMouseForView(idMouse: Long): LiveData<MouseView> {
+        return mouseDao.getMouseForView(idMouse)
     }
 
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<MouseOccList>> {
@@ -50,10 +52,6 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.countMiceForLocality(localityId)
     }
 
-    fun getMiceForEmail(): LiveData<List<Mouse>> {
-        return mouseDao.getMiceForEmail()
-    }
-
     suspend fun insertMultiMouse(mice: List<Mouse>) {
         mouseDao.insertMultiMouse(mice)
     }
@@ -61,4 +59,18 @@ class MouseRepository(private val mouseDao: MouseDao) {
     fun getTrapsIdInOccasion(occasionId: Long): LiveData<List<Int>> {
         return mouseDao.getTrapsIdInOccasion(occasionId)
     }
+
+    // SYNC
+    suspend fun getMiceForSync(lastSync: Long): List<Mouse> {
+        return mouseDao.getMiceForSync(lastSync)
+    }
+
+    suspend fun inserSynctMouse(mouse: Mouse) {
+        mouseDao.inserSynctMouse(mouse)
+    }
+
+    suspend fun getSyncMouse(occasionID: Long, mouseCaught: Long): Mouse? {
+        return mouseDao.getSyncMouse(occasionID, mouseCaught)
+    }
+
 }

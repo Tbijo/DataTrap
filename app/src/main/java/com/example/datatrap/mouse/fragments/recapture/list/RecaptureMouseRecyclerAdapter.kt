@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.RecaptureRowBinding
 import com.example.datatrap.models.tuples.MouseRecapList
 import java.text.SimpleDateFormat
+import java.util.*
 
 class RecaptureMouseRecyclerAdapter : RecyclerView.Adapter<RecaptureMouseRecyclerAdapter.MyViewHolder>() {
 
@@ -57,7 +58,7 @@ class RecaptureMouseRecyclerAdapter : RecyclerView.Adapter<RecaptureMouseRecycle
 
         holder.binding.tvSpecieRecap.text = currenItem.specieCode
 
-        val dateFormated = SimpleDateFormat.getDateTimeInstance().format(currenItem.dateTime)
+        val dateFormated = SimpleDateFormat.getDateTimeInstance().format(Date(currenItem.mouseCaught))
         holder.binding.tvRecapDate.text = dateFormated
     }
 

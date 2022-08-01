@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.datatrap.models.SpecieImage
+import com.example.datatrap.models.sync.SpecieImageSync
 
 @Dao
 interface SpecieImageDao {
@@ -18,4 +19,7 @@ interface SpecieImageDao {
 
     @Query("SELECT * FROM SpecieImage WHERE specieID = :specieId")
     fun getImageForSpecie(specieId: Long): LiveData<SpecieImage>
+
+    @Query("SELECT imgName, path, note, specieID, uniqueCode FROM SpecieImage WHERE uniqueCode >= :unixTime")
+    suspend fun getSpecieImages(unixTime: Long): List<SpecieImageSync>
 }

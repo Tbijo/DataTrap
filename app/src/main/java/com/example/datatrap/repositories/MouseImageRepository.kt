@@ -3,6 +3,7 @@ package com.example.datatrap.repositories
 import androidx.lifecycle.LiveData
 import com.example.datatrap.databaseio.dao.MouseImageDao
 import com.example.datatrap.models.MouseImage
+import com.example.datatrap.models.sync.MouseImageSync
 
 class MouseImageRepository(private val mouseImageDao: MouseImageDao) {
 
@@ -14,8 +15,12 @@ class MouseImageRepository(private val mouseImageDao: MouseImageDao) {
         mouseImageDao.deleteImage(mouseImageId)
     }
 
-    fun getImageForMouse(mouseId: Long): LiveData<MouseImage> {
-        return mouseImageDao.getImageForMouse(mouseId)
+    fun getImageForMouse(mouseIid: Long, deviceID: String): LiveData<MouseImage> {
+        return mouseImageDao.getImageForMouse(mouseIid, deviceID)
+    }
+
+    suspend fun getMouseImages(unixTime: Long): List<MouseImageSync> {
+        return mouseImageDao.getMouseImages(unixTime)
     }
 
 }
