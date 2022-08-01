@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import androidx.lifecycle.*
 import com.example.datatrap.models.Mouse
+import com.example.datatrap.models.sync.MouseSync
 import com.example.datatrap.models.tuples.MouseLog
 import com.example.datatrap.models.tuples.MouseOccList
 import com.example.datatrap.models.tuples.MouseRecapList
@@ -53,8 +54,8 @@ class MouseViewModel @Inject constructor(
         return mouseRepository.getMouse(mouseId)
     }
 
-    fun getMouseForView(idMouse: Long, deviceID: String): LiveData<MouseView> {
-        return mouseRepository.getMouseForView(idMouse, deviceID)
+    fun getMouseForView(idMouse: Long): LiveData<MouseView> {
+        return mouseRepository.getMouseForView(idMouse)
     }
 
     fun getMiceForOccasion(idOccasion: Long): LiveData<List<MouseOccList>> {
@@ -75,10 +76,6 @@ class MouseViewModel @Inject constructor(
 
     fun countMiceForLocality(localityId: Long): LiveData<Int> {
         return mouseRepository.countMiceForLocality(localityId)
-    }
-
-    fun getMiceForEmail(): LiveData<List<Mouse>> {
-        return mouseRepository.getMiceForEmail()
     }
 
     fun insertMultiMouse(mice: List<Mouse>) {

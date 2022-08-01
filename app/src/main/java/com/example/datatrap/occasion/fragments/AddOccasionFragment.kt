@@ -217,7 +217,8 @@ class AddOccasionFragment : Fragment() {
 
         val action = AddOccasionFragmentDirections.actionAddOccasionFragmentToTakePhotoFragment(
             "Occasion",
-            occasionId
+            occasionId,
+            ""
         )
         findNavController().navigate(action)
     }
@@ -240,10 +241,6 @@ class AddOccasionFragment : Fragment() {
             val vegType: Long? = vegetTypeID
             val gotCaught = false
             val numMice = 0
-            val deviceID: String = Settings.Secure.getString(
-                requireContext().contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
             val temper = if (binding.etTemperature.text.toString().isBlank()) null else binding.etTemperature.text.toString().toFloat()
             val weat = binding.etWeather.text.toString().ifBlank { null }
 
@@ -253,7 +250,6 @@ class AddOccasionFragment : Fragment() {
             val occasion = Occasion(
                 0,
                 occasionNum,
-                deviceID,
                 args.locList.localityId,
                 args.session.sessionId,
                 method,
@@ -269,7 +265,8 @@ class AddOccasionFragment : Fragment() {
                 temper,
                 weat,
                 leg,
-                note
+                note,
+                Calendar.getInstance().time.time
             )
 
             occasionViewModel.insertOccasion(occasion)

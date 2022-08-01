@@ -32,7 +32,13 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
         return occasionDao.getOccasionsForSession(idSession)
     }
 
-    fun getOccasionsForEmail(): LiveData<List<Occasion>> {
-        return occasionDao.getOccasionsForEmail()
+    // SYNC
+    suspend fun getOccasionForSync(occasionId: List<Long>): List<Occasion> {
+        return occasionDao.getOccasionForSync(occasionId)
     }
+
+    suspend fun getSyncOccasion(sessionID: Long, occasionStart: Long): Occasion? {
+        return occasionDao.getSyncOccasion(sessionID, occasionStart)
+    }
+
 }

@@ -44,6 +44,8 @@ class PrefViewModel @Inject constructor(
 
     val readUserTeamPref = prefRepository.readUserTeamPref.asLiveData()
 
+    val readLastSyncDatePref = prefRepository.readLastSyncDatePref.asLiveData()
+
     fun saveUserIdPref(idActiveUser: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             prefRepository.saveUserIdPref(idActiveUser)
@@ -53,6 +55,12 @@ class PrefViewModel @Inject constructor(
     fun saveUserTeamPref(team: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             prefRepository.saveUserTeamPref(team)
+        }
+    }
+
+    fun saveLastSyncDatePref(syncDate: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            prefRepository.saveLastSyncDatePref(syncDate)
         }
     }
 }

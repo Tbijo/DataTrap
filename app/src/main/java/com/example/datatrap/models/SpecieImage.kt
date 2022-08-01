@@ -1,10 +1,8 @@
 package com.example.datatrap.models
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
+import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
-import androidx.room.PrimaryKey
+import okhttp3.MultipartBody
 
 @Entity(foreignKeys = [
     ForeignKey(entity = Specie::class, parentColumns = ["specieId"], childColumns = ["specieID"], onDelete = CASCADE)
@@ -23,5 +21,5 @@ data class SpecieImage(
     @ColumnInfo(index = true)
     var specieID: Long,
 
-    var deviceID: String
+    var uniqueCode: Long
 )

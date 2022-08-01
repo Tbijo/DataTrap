@@ -1,13 +1,13 @@
 package com.example.datatrap.models.tuples
 
-import java.util.*
-
 data class MouseView(
+    var mouseIid: Long,
+    var deviceID: String,
     val body: Float?,
     val tail: Float?,
     val feet: Float?,
     val ear: Float?,
-    val mouseDateTime: Date,
+    val mouseCaught: Long,
     val gravidity: Boolean?,
     val lactating: Boolean?,
     val sexActive: Boolean,

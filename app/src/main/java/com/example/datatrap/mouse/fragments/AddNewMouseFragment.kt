@@ -52,12 +52,18 @@ class AddNewMouseFragment : Fragment() {
     private var team: Int = -1
 
     private var mouseId: Long = 0
+    var deviceID: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAddNewMouseBinding.inflate(inflater, container, false)
+
+        deviceID = Settings.Secure.getString(
+            requireContext().contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
 
         fillDropDown()
 
@@ -283,7 +289,8 @@ class AddNewMouseFragment : Fragment() {
 
         val action = AddNewMouseFragmentDirections.actionAddNewMouseFragmentToTakePhotoFragment(
             "Mouse",
-            mouseId
+            mouseId,
+            deviceID
         )
         findNavController().navigate(action)
     }
@@ -333,12 +340,9 @@ class AddNewMouseFragment : Fragment() {
             val note: String? = if (binding.etMouseNote.text.toString()
                     .isBlank()
             ) null else binding.etMouseNote.text.toString()
-            val deviceID: String = Settings.Secure.getString(
-                requireContext().contentResolver,
-                Settings.Secure.ANDROID_ID
-            )
 
             val mouse = Mouse(
+                0,
                 0,
                 code,
                 deviceID,
@@ -370,7 +374,8 @@ class AddNewMouseFragment : Fragment() {
                 MC,
                 MCright,
                 MCleft,
-                note
+                note,
+                Calendar.getInstance().time.time
             )
 
             // ulozit mys

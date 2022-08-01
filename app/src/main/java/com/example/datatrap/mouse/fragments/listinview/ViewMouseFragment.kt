@@ -2,7 +2,6 @@ package com.example.datatrap.mouse.fragments.listinview
 
 import android.content.Context
 import android.os.Bundle
-import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +20,7 @@ import com.example.datatrap.picture.fragments.ViewImageFragment
 import com.example.datatrap.viewmodels.*
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class ViewMouseFragment : Fragment() {
@@ -41,11 +41,6 @@ class ViewMouseFragment : Fragment() {
     ): View? {
         _binding = FragmentViewMouseBinding.inflate(inflater, container, false)
 
-        val deviceID = Settings.Secure.getString(
-            requireContext().contentResolver,
-            Settings.Secure.ANDROID_ID
-        )
-
         adapter = MouseHistRecyclerAdapter()
         binding.recyclerMouse.adapter = adapter
         binding.recyclerMouse.layoutManager = LinearLayoutManager(requireContext())
@@ -56,20 +51,20 @@ class ViewMouseFragment : Fragment() {
         )
         binding.recyclerMouse.addItemDecoration(dividerItemDecoration)
 
-        mouseImageViewModel.getImageForMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.ivMouse.setImageURI(it.path.toUri())
-                path = it.path
-            }
-        }
-
-        mouseViewModel.getMouseForView(args.mouseOccTuple.mouseId, deviceID).observe(viewLifecycleOwner) { mouseView ->
+        mouseViewModel.getMouseForView(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) { mouseView ->
             initMouseValues(mouseView)
-        }
 
-        val id = if (args.mouseOccTuple.primeMouseID == null) args.mouseOccTuple.mouseId else args.mouseOccTuple.primeMouseID
-        mouseViewModel.getMiceForLog(id!!, deviceID).observe(viewLifecycleOwner) { mouseLog ->
-            fillLogs(mouseLog)
+            val id = if (args.mouseOccTuple.primeMouseID == null) mouseView.mouseIid else args.mouseOccTuple.primeMouseID
+            mouseViewModel.getMiceForLog(id!!, args.mouseOccTuple.deviceID).observe(viewLifecycleOwner) { mouseLog ->
+                fillLogs(mouseLog)
+            }
+
+            mouseImageViewModel.getImageForMouse(mouseView.mouseIid, args.mouseOccTuple.deviceID).observe(viewLifecycleOwner) {
+                if (it != null) {
+                    binding.ivMouse.setImageURI(it.path.toUri())
+                    path = it.path
+                }
+            }
         }
 
         binding.ivMouse.setOnClickListener {
@@ -104,7 +99,7 @@ class ViewMouseFragment : Fragment() {
         binding.tvBodyLength.text = mouseView.body.toString()
         binding.tvTailLength.text = mouseView.tail.toString()
         binding.tvFeetLength.text = mouseView.feet.toString()
-        binding.tvCatchTime.text = SimpleDateFormat.getDateTimeInstance().format(mouseView.mouseDateTime)
+        binding.tvCatchTime.text = SimpleDateFormat.getDateTimeInstance().format(Date(mouseView.mouseCaught))
         binding.tvEar.text = mouseView.ear.toString()
         binding.tvGravidity.text = if (mouseView.gravidity == true) "Yes" else "No"
         binding.tvLactating.text = if (mouseView.lactating == true) "Yes" else "No"
@@ -134,7 +129,7 @@ class ViewMouseFragment : Fragment() {
     private fun fillLogs(mouseLog: List<MouseLog>) {
         if (args.mouseOccTuple.sex == EnumSex.FEMALE.myName) {
             mouseLog.forEach { mouse ->
-                val dateFormated = SimpleDateFormat.getDateTimeInstance().format(mouse.mouseDateTimeCreated)
+                val dateFormated = SimpleDateFormat.getDateTimeInstance().format(Date(mouse.mouseCaught))
                 val gravidity = if (mouse.gravidity == true) "Yes" else "No"
                 val lactating = if (mouse.lactating == true) "Yes" else "No"
                 val sexActive = if (mouse.sexActive) "Yes" else "No"
@@ -143,7 +138,7 @@ class ViewMouseFragment : Fragment() {
             }
         } else {
             mouseLog.forEach { mouse ->
-                val dateFormated = SimpleDateFormat.getDateTimeInstance().format(mouse.mouseDateTimeCreated)
+                val dateFormated = SimpleDateFormat.getDateTimeInstance().format(Date(mouse.mouseCaught))
                 val sexActive = if (mouse.sexActive) "Yes" else "No"
                 val log = "Catch DateTime - $dateFormated, Locality - ${mouse.localityName}, Trap Number - ${mouse.trapID}, Weight - ${mouse.weight}, Sex. Active - $sexActive"
                 logList.add(log)

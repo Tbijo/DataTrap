@@ -9,17 +9,15 @@ import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.example.datatrap.databinding.FragmentViewOccasionBinding
-import com.example.datatrap.models.Mouse
 import com.example.datatrap.models.tuples.OccasionView
-import com.example.datatrap.models.tuples.SpecList
 import com.example.datatrap.myenums.EnumSpecie
 import com.example.datatrap.picture.fragments.ViewImageFragment
 import com.example.datatrap.viewmodels.MouseViewModel
 import com.example.datatrap.viewmodels.OccasionImageViewModel
 import com.example.datatrap.viewmodels.OccasionViewModel
-import com.example.datatrap.viewmodels.SpecieViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class ViewOccasionFragment : Fragment() {
@@ -106,7 +104,7 @@ class ViewOccasionFragment : Fragment() {
         binding.tvTrapType.text = occasion.trapType
         binding.tvEnvType.text = occasion.envType.toString()
         binding.tvVegType.text = occasion.vegetType.toString()
-        binding.tvOccDatetime.text = SimpleDateFormat.getDateTimeInstance().format(occasion.dateTime)
+        binding.tvOccDatetime.text = SimpleDateFormat.getDateTimeInstance().format(Date(occasion.occasionStart))
         binding.tvGotCaught.text = if (occasion.gotCaught == true) "Yes" else "No"
         binding.tvOccNumTraps.text = occasion.numTraps.toString()
         binding.tvOccNumMice.text = occasion.numMice.toString()

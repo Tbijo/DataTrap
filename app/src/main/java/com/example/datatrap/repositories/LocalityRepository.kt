@@ -1,8 +1,10 @@
 package com.example.datatrap.repositories
 
 import androidx.lifecycle.LiveData
+import androidx.room.Query
 import com.example.datatrap.databaseio.dao.LocalityDao
 import com.example.datatrap.models.Locality
+import com.example.datatrap.models.sync.LocalitySync
 import com.example.datatrap.models.tuples.LocList
 
 class LocalityRepository(
@@ -30,4 +32,17 @@ class LocalityRepository(
     fun searchLocalities(localityName: String): LiveData<List<LocList>> {
         return localityDao.searchLocalities(localityName)
     }
+
+    suspend fun getLocalityForSync(localityIds: List<Long>): List<Locality> {
+        return localityDao.getLocalityForSync(localityIds)
+    }
+
+    suspend fun insertSyncLocality(locality: Locality): Long {
+        return localityDao.insertSyncLocality(locality)
+    }
+
+    suspend fun getLocalityByName(localityName: String): Locality? {
+        return localityDao.getLocalityByName(localityName)
+    }
+
 }

@@ -108,6 +108,7 @@ class AddMultiMouseFragment : Fragment() {
         map.forEach {
             val mouse = Mouse(
                 0,
+                0,
                 null,
                 deviceID,
                 null,
@@ -138,7 +139,8 @@ class AddMultiMouseFragment : Fragment() {
                 null,
                 null,
                 null,
-                null
+                null,
+                Calendar.getInstance().time.time
             )
 
             multiMouse.add(mouse)

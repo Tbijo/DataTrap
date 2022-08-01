@@ -3,6 +3,7 @@ package com.example.datatrap.databaseio.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.models.Locality
+import com.example.datatrap.models.sync.LocalitySync
 import com.example.datatrap.models.tuples.LocList
 
 @Dao
@@ -25,5 +26,15 @@ interface LocalityDao {
 
     @Query("SELECT localityId, localityName, localityDateTimeCreated AS dateTime, xA, yA, numSessions FROM Locality WHERE localityName LIKE :localityName")
     fun searchLocalities(localityName: String): LiveData<List<LocList>>
+
+    // SYNC
+    @Query("SELECT * FROM Locality WHERE localityId IN (:localityIds)")
+    suspend fun getLocalityForSync(localityIds: List<Long>): List<Locality>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSyncLocality(locality: Locality): Long
+
+    @Query("SELECT * FROM locality WHERE localityName = :localityName")
+    suspend fun getLocalityByName(localityName: String): Locality?
 
 }

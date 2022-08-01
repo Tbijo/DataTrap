@@ -9,7 +9,7 @@ data class OccList(
     val occasionId: Long,
     val localityID: Long,
     val occasion: Int,
-    val dateTime: Date,
+    val occasionStart: Long,
     val numMice: Int?,
     val numTraps: Int
 ): Parcelable

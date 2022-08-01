@@ -30,4 +30,7 @@ object Constants {
     private const val DAYS_IN_YEAR = 365
     const val MILLISECONDS_IN_2_YEAR: Long =
         2 * MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR
+
+    // SERVER
+    const val BASE_URL = "http://192.168.0.27:8000/"
 }

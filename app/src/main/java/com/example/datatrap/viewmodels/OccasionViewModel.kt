@@ -2,6 +2,7 @@ package com.example.datatrap.viewmodels
 
 import androidx.lifecycle.*
 import com.example.datatrap.models.Occasion
+import com.example.datatrap.models.sync.OccasionSync
 import com.example.datatrap.models.tuples.OccList
 import com.example.datatrap.models.tuples.OccasionView
 import com.example.datatrap.repositories.OccasionRepository
@@ -59,7 +60,4 @@ class OccasionViewModel @Inject constructor(
         return occasionRepository.getOccasionsForSession(idSession)
     }
 
-    fun getOccasionsForEmail(): LiveData<List<Occasion>> {
-        return occasionRepository.getOccasionsForEmail()
-    }
 }

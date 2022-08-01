@@ -14,6 +14,7 @@ import com.example.datatrap.myenums.EnumTeam
 import com.example.datatrap.viewmodels.UserViewModel
 import com.example.datatrap.viewmodels.datastore.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.*
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -29,6 +30,10 @@ class LoginFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
+
+        prefViewModel.readLastSyncDatePref.observe(viewLifecycleOwner) {
+            if (it == -1L) prefViewModel.saveLastSyncDatePref(Calendar.getInstance().time.time)
+        }
 
         binding.btnLogin.setOnClickListener {
             logIn()

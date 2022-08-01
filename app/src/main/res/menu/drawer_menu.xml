@@ -19,9 +19,9 @@
             android:title="Settings" />
 
         <item
-            android:id="@+id/emailDataActivity"
-            android:icon="@drawable/ic_email"
-            android:title="Email Data" />
+            android:id="@+id/aboutActivity"
+            android:icon="@drawable/ic_info"
+            android:title="About" />
 
         <item
             android:id="@+id/synchronizeActivity"

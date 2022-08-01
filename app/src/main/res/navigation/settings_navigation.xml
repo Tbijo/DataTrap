@@ -11,14 +11,8 @@
         android:label="List of Attributes"
         tools:layout="@layout/fragment_list_main" >
         <action
-            android:id="@+id/action_listMainFragment_to_aboutActivity"
-            app:destination="@id/synchronizeActivity" />
-        <action
             android:id="@+id/action_listMainFragment_to_specieActivity"
             app:destination="@id/specieActivity" />
-        <action
-            android:id="@+id/action_listMainFragment_to_bugReportActivity"
-            app:destination="@id/emailDataActivity" />
         <action
             android:id="@+id/action_listMainFragment_to_listVegetTypeFragment"
             app:destination="@id/listVegetTypeFragment" />
@@ -43,15 +37,21 @@
         <action
             android:id="@+id/action_listMainFragment_to_listUsersFragment"
             app:destination="@id/listUsersFragment" />
+        <action
+            android:id="@+id/action_listMainFragment_to_aboutActivity"
+            app:destination="@id/aboutActivity" />
+        <action
+            android:id="@+id/action_listMainFragment_to_synchronizeActivity"
+            app:destination="@id/synchronizeActivity" />
     </fragment>
     <activity
         android:id="@+id/specieActivity"
         android:name="com.example.datatrap.specie.SpecieActivity"
         android:label="Species" />
     <activity
-        android:id="@+id/emailDataActivity"
-        android:name="com.example.datatrap.emailData.EmailDataActivity"
-        android:label="Email Data" />
+        android:id="@+id/aboutActivity"
+        android:name="com.example.datatrap.about.AboutActivity"
+        android:label="About" />
     <activity
         android:id="@+id/synchronizeActivity"
         android:name="com.example.datatrap.sync.SynchronizeActivity"

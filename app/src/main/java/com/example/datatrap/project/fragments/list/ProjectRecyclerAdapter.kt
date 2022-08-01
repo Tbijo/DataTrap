@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.datatrap.databinding.ProjectRowBinding
 import com.example.datatrap.models.Project
 import java.text.SimpleDateFormat
+import java.util.*
 
 class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyViewHolder>() {
 
@@ -33,7 +34,7 @@ class ProjectRecyclerAdapter : RecyclerView.Adapter<ProjectRecyclerAdapter.MyVie
         holder.binding.tvProjectName.text = currenItem.projectName
         holder.binding.tvNumLocality.text = currenItem.numLocal.toString()
         holder.binding.tvNumMice.text = currenItem.numMice.toString()
-        holder.binding.tvProjectDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.projectDateTimeCreated)
+        holder.binding.tvProjectDate.text = SimpleDateFormat.getDateTimeInstance().format(Date(currenItem.projectStart))
     }
 
     override fun getItemCount(): Int {

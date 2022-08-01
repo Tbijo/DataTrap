@@ -98,9 +98,8 @@ class AddLocalityFragment : Fragment() {
 
         if (checkInput(localityName)){
             val localityNote = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
-            val deviceID: String = Settings.Secure.getString(requireContext().contentResolver, Settings.Secure.ANDROID_ID)
 
-            val locality = Locality(0, localityName, deviceID, Calendar.getInstance().time,
+            val locality = Locality(0, localityName, Calendar.getInstance().time,
                 null, latitudeA?.toFloat(), longnitudeA?.toFloat(),
                 latitudeB?.toFloat(), longnitudeB?.toFloat(),
                 0, localityNote)

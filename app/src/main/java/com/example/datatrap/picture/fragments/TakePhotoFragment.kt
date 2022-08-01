@@ -108,7 +108,7 @@ class TakePhotoFragment : Fragment() {
     private fun setImageIfExists() {
         when (args.fragmentName) {
             mouse -> {
-                mouseImageViewModel.getImageForMouse(args.parentId).observe(viewLifecycleOwner) {
+                mouseImageViewModel.getImageForMouse(args.parentId, args.deviceID).observe(viewLifecycleOwner) {
                     // ci mame fotku
                     if (it != null) {
                         mouseImage = it
@@ -232,7 +232,8 @@ class TakePhotoFragment : Fragment() {
                         imagePathUri.toString(),
                         note,
                         args.parentId,
-                        deviceID
+                        deviceID,
+                        Calendar.getInstance().time.time
                     )
                     mouseImageViewModel.insertImage(mouseImage!!)
                     galleryAddImage(imagePathUri!!)
@@ -259,7 +260,8 @@ class TakePhotoFragment : Fragment() {
                             imagePathUri.toString(),
                             note,
                             args.parentId,
-                            deviceID
+                            deviceID,
+                            Calendar.getInstance().time.time
                         )
                         mouseImageViewModel.insertImage(mouseImage!!)
                         // pridat novu fotku do galerie
@@ -277,7 +279,7 @@ class TakePhotoFragment : Fragment() {
                         imagePathUri.toString(),
                         note,
                         args.parentId,
-                        deviceID
+                        Calendar.getInstance().time.time
                     )
                     occasionImageViewModel.insertImage(occasionImage!!)
                     galleryAddImage(imagePathUri!!)
@@ -307,7 +309,7 @@ class TakePhotoFragment : Fragment() {
                             imagePathUri.toString(),
                             note,
                             args.parentId,
-                            deviceID
+                            Calendar.getInstance().time.time
                         )
                         occasionImageViewModel.insertImage(occasionImage!!)
                         // pridat novu fotku do galerie

@@ -2,7 +2,6 @@ package com.example.datatrap.models.tuples
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.util.*
 
 @Parcelize
 data class MouseRecapList(
@@ -17,5 +16,5 @@ data class MouseRecapList(
     val sexActive: Boolean,
     val localityName: String, // Locality
     val specieCode: String, // Specie
-    val dateTime: Date
+    val mouseCaught: Long
 ): Parcelable
