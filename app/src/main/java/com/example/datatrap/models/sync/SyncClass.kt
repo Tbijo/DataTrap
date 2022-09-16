@@ -34,7 +34,6 @@ data class MouseSync(
     var mouseCaught: Long
 )
 data class OccasionSync(
-    var occasionId: Long,
     var occasion: Int,
     var localityID: Long,
     var sessionID: Long,
@@ -53,7 +52,6 @@ data class OccasionSync(
     var occasionStart: Long
 )
 data class LocalitySync(
-    var localityId: Long,
     var localityName: String,
     var xA: Float?,
     var yA: Float?,
@@ -63,14 +61,12 @@ data class LocalitySync(
     var note: String?
 )
 data class SessionSync(
-    var sessionId: Long,
     var session: Int,
     var projectID: Long,
     var numOcc: Int,
     var sessionStart: Long
 )
 data class ProjectSync(
-    var projectId: Long,
     var projectName: String,
     var numLocal: Int,
     var numMice: Int,
