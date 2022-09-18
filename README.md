@@ -8,4 +8,4 @@ Development of this project is still in progress therefore further UI, functiona
 - applying clean code architecture using SOLID principles
 - adding use cases
 - migrating UI from XML files to Jetpack Compose
-- for network communication with University server will be applied the Retrofit library
+- for network communication with university server will be applied the Retrofit library
