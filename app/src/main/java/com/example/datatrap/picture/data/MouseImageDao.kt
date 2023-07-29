@@ -1,0 +1,22 @@
+package com.example.datatrap.picture.data
+
+import androidx.lifecycle.LiveData
+import androidx.room.*
+import com.example.datatrap.picture.data.MouseImage
+import com.example.datatrap.sync.data.sync.MouseImageSync
+
+@Dao
+interface MouseImageDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertImage(mouseImage: MouseImage)
+
+    @Query("DELETE FROM MouseImage WHERE mouseImgId = :mouseImgId")
+    suspend fun deleteImage(mouseImgId: Long)
+
+    @Query("SELECT * FROM MouseImage WHERE mouseIiD = :mouseIid AND deviceID = :deviceID")
+    fun getImageForMouse(mouseIid: Long, deviceID: String): LiveData<MouseImage>
+
+    @Query("SELECT imgName, path, note, mouseIiD, deviceID, uniqueCode FROM MouseImage WHERE uniqueCode >= :unixTime")
+    suspend fun getMouseImages(unixTime: Long): List<MouseImageSync>
+}

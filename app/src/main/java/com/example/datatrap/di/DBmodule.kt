@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.datatrap.databaseio.TrapDatabase
+import com.example.datatrap.core.data.db.TrapDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

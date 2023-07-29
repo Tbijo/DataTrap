@@ -58,32 +58,32 @@
         android:label="Synchronize With Server" />
     <fragment
         android:id="@+id/listVegetTypeFragment"
-        android:name="com.example.datatrap.settings.fragments.list.vegettype.list.ListVegetTypeFragment"
+        android:name="com.example.datatrap.settings.vegettype.list.ListVegetTypeFragment"
         android:label="Vegetation Type List"
         tools:layout="@layout/fragment_list_veget_type" />
     <fragment
         android:id="@+id/listTrapTypeFragment"
-        android:name="com.example.datatrap.settings.fragments.list.traptype.list.ListTrapTypeFragment"
+        android:name="com.example.datatrap.settings.traptype.list.ListTrapTypeFragment"
         android:label="Trap Type List"
         tools:layout="@layout/fragment_list_trap_type" />
     <fragment
         android:id="@+id/listProtocolFragment"
-        android:name="com.example.datatrap.settings.fragments.list.protocol.list.ListProtocolFragment"
+        android:name="com.example.datatrap.settings.protocol.list.ListProtocolFragment"
         android:label="Protocol List"
         tools:layout="@layout/fragment_list_protocol" />
     <fragment
         android:id="@+id/listMethodTypeFragment"
-        android:name="com.example.datatrap.settings.fragments.list.methodtype.list.ListMethodTypeFragment"
+        android:name="com.example.datatrap.settings.methodtype.list.ListMethodTypeFragment"
         android:label="Method Type List"
         tools:layout="@layout/fragment_list_method_type" />
     <fragment
         android:id="@+id/listMethodFragment"
-        android:name="com.example.datatrap.settings.fragments.list.method.list.ListMethodFragment"
+        android:name="com.example.datatrap.settings.method.list.ListMethodFragment"
         android:label="Method List"
         tools:layout="@layout/fragment_list_method" />
     <fragment
         android:id="@+id/listEnvTypeFragment"
-        android:name="com.example.datatrap.settings.fragments.list.envtype.list.ListEnvTypeFragment"
+        android:name="com.example.datatrap.settings.envtype.list.ListEnvTypeFragment"
         android:label="Environment Type List"
         tools:layout="@layout/fragment_list_env_type" />
     <activity
@@ -93,7 +93,7 @@
         tools:layout="@layout/activity_project" />
     <fragment
         android:id="@+id/listUsersFragment"
-        android:name="com.example.datatrap.settings.fragments.list.user.list.ListUsersFragment"
+        android:name="com.example.datatrap.settings.user.list.ListUsersFragment"
         android:label="User List"
         tools:layout="@layout/fragment_list_users" >
         <action
@@ -105,12 +105,12 @@
     </fragment>
     <fragment
         android:id="@+id/addUserFragment"
-        android:name="com.example.datatrap.settings.fragments.list.user.AddUserFragment"
+        android:name="com.example.datatrap.settings.user.AddUserFragment"
         android:label="Add New User"
         tools:layout="@layout/fragment_add_user" />
     <fragment
         android:id="@+id/updateUserFragment"
-        android:name="com.example.datatrap.settings.fragments.list.user.UpdateUserFragment"
+        android:name="com.example.datatrap.settings.user.UpdateUserFragment"
         android:label="Update User"
         tools:layout="@layout/fragment_update_user" >
         <argument

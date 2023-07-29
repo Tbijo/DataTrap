@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import com.example.datatrap.databinding.FragmentSynchronizeBinding
-import com.example.datatrap.viewmodels.datastore.PrefViewModel
+import com.example.datatrap.core.data.pref.PrefViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

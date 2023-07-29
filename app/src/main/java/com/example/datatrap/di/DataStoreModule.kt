@@ -1,7 +1,7 @@
 package com.example.datatrap.di
 
 import android.content.Context
-import com.example.datatrap.repositories.datastore.PrefRepository
+import com.example.datatrap.core.data.pref.PrefRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

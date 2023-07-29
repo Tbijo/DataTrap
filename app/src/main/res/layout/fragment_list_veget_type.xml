@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".settings.fragments.list.vegettype.list.ListVegetTypeFragment">
+    tools:context=".settings.vegettype.list.ListVegetTypeFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/veg_type_recyclerview"

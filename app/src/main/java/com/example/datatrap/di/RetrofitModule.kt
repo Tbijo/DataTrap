@@ -1,13 +1,12 @@
 package com.example.datatrap.di
 
-import com.example.datatrap.utils.Constants.BASE_URL
-import com.example.datatrap.www.DataTrapAPI
-import com.example.datatrap.www.DataTrapRepository
+import com.example.datatrap.core.util.Constants.BASE_URL
+import com.example.datatrap.sync.data.DataTrapAPI
+import com.example.datatrap.sync.data.DataTrapRepository
 import dagger.Provides
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 
 object RetrofitModule {
 

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/listSpecieFragment"
-        android:name="com.example.datatrap.specie.fragments.list.ListSpecieFragment"
+        android:name="com.example.datatrap.specie.ListSpecieFragment"
         android:label="Specie List"
         tools:layout="@layout/fragment_list_specie" >
         <action
@@ -34,7 +34,7 @@
     </fragment>
     <fragment
         android:id="@+id/addSpecieFragment"
-        android:name="com.example.datatrap.specie.fragments.AddSpecieFragment"
+        android:name="com.example.datatrap.specie.AddSpecieFragment"
         android:label="Add New Specie" >
         <action
             android:id="@+id/action_addSpecieFragment_to_getPictureSpecieFragment"
@@ -42,7 +42,7 @@
     </fragment>
     <fragment
         android:id="@+id/updateSpecieFragment"
-        android:name="com.example.datatrap.specie.fragments.UpdateSpecieFragment"
+        android:name="com.example.datatrap.specie.UpdateSpecieFragment"
         android:label="Update Specie" >
         <argument
             android:name="specList"
@@ -70,7 +70,7 @@
         tools:layout="@layout/activity_project" />
     <fragment
         android:id="@+id/viewSpecieFragment"
-        android:name="com.example.datatrap.specie.fragments.ViewSpecieFragment"
+        android:name="com.example.datatrap.specie.ViewSpecieFragment"
         android:label="View Specie"
         tools:layout="@layout/fragment_view_specie" >
         <argument
@@ -79,7 +79,7 @@
     </fragment>
     <fragment
         android:id="@+id/getPictureSpecieFragment"
-        android:name="com.example.datatrap.picture.fragments.GetPictureSpecieFragment"
+        android:name="com.example.datatrap.picture.GetPictureSpecieFragment"
         android:label="Get Picture"
         tools:layout="@layout/fragment_get_picture_specie">
         <argument

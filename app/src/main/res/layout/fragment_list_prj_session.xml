@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".session.fragments.list.ListPrjSessionFragment">
+    tools:context=".session.ListPrjSessionFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/prj_session_recyclerview"

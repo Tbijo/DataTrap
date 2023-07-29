@@ -1,7 +1,25 @@
 package com.example.datatrap.di
 
-import com.example.datatrap.databaseio.TrapDatabase
+import com.example.datatrap.core.data.db.TrapDatabase
+import com.example.datatrap.locality.data.LocalityRepository
+import com.example.datatrap.locality.data.LocalitySessionRepository
+import com.example.datatrap.mouse.data.MouseRepository
+import com.example.datatrap.picture.data.OccasionImageRepository
+import com.example.datatrap.occasion.data.OccasionRepository
+import com.example.datatrap.picture.data.MouseImageRepository
+import com.example.datatrap.picture.data.SpecieImageRepository
+import com.example.datatrap.project.data.ProjectLocalityRepository
+import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.repositories.*
+import com.example.datatrap.session.data.SessionRepository
+import com.example.datatrap.settings.envtype.data.EnvTypeRepository
+import com.example.datatrap.settings.method.data.MethodRepository
+import com.example.datatrap.settings.methodtype.data.MethodTypeRepository
+import com.example.datatrap.settings.protocol.data.ProtocolRepository
+import com.example.datatrap.settings.traptype.data.TrapTypeRepository
+import com.example.datatrap.settings.user.data.UserRepository
+import com.example.datatrap.settings.vegettype.data.VegetTypeRepository
+import com.example.datatrap.specie.data.SpecieRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
