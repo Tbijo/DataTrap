@@ -1,0 +1,78 @@
+package com.example.datatrap.settings.envtype.presentation
+
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.FloatingActionButton
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.example.datatrap.core.presentation.components.GenericListItem
+import com.example.datatrap.core.presentation.components.MyTextField
+
+@Composable
+fun EnvTypeListScreen(
+    onEvent: (EnvTypeListScreenEvent) -> Unit
+) {
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    // TODO add env type
+                    //onEvent(ContactListEvent.OnAddNewContactClick)
+                },
+                shape = RoundedCornerShape(20.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Rounded.Add,
+                    contentDescription = "Add EnvType"
+                )
+            }
+        }
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            MyTextField(
+                value = "Env Type",
+                placeholder = "Environment Type",
+                error = null,
+                label = "Environment Type",
+                onValueChanged = {
+                    // TODO
+                }
+            )
+        }
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
+            horizontalAlignment = Alignment.Start,
+        ) {
+
+            val envTypes = listOf<String>("")
+
+            items(envTypes) {envType ->
+                GenericListItem(
+                    itemName = envType,
+                    onItemClick = {
+                        // TODO
+                    },
+                    onDeleteClick = {
+                        // TODO
+                    },
+                )
+            }
+        }
+    }
+}

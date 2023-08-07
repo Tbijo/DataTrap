@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".occasion.AddOccasionFragment">
+    tools:context=".occasion.presentation.occasion_add_edit.AddOccasionFragment">
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayout1"

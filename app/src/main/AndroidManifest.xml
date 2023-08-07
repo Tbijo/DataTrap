@@ -6,6 +6,7 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!--povolenie pre Volley-->
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -54,7 +55,8 @@
         <activity
             android:name=".specie.SpecieActivity"/>
         <activity
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

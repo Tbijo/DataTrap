@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".session.UpdateSessionFragment">
+    tools:context=".session.presentation.session_edit.UpdateSessionFragment">
 
     <EditText
         android:id="@+id/et_session"

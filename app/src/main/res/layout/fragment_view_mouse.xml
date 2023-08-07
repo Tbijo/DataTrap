@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".mouse.listinview.ViewMouseFragment">
+    tools:context=".mouse.presentation.mouse_detail.ViewMouseFragment">
 
     <TextView
         android:id="@+id/textView17"
