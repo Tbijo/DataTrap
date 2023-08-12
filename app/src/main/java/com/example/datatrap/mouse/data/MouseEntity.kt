@@ -1,59 +1,57 @@
 package com.example.datatrap.mouse.data
 
-import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
-import com.example.datatrap.locality.data.Locality
-import com.example.datatrap.settings.protocol.data.Protocol
-import com.example.datatrap.specie.data.Specie
-import com.example.datatrap.occasion.data.Occasion
-import kotlinx.parcelize.Parcelize
-import java.util.*
+import com.example.datatrap.locality.data.LocalityEntity
+import com.example.datatrap.occasion.data.OccasionEntity
+import com.example.datatrap.settings.protocol.data.ProtocolEntity
+import com.example.datatrap.specie.data.SpecieEntity
+import java.time.ZonedDateTime
+import java.util.UUID
 
-@Parcelize
 @Entity(foreignKeys = [
-    ForeignKey(entity = Specie::class, parentColumns = ["specieId"], childColumns = ["speciesID"], onDelete = CASCADE),
-    ForeignKey(entity = Protocol::class, parentColumns = ["protocolId"], childColumns = ["protocolID"], onDelete = CASCADE),
-    ForeignKey(entity = Occasion::class, parentColumns = ["occasionId"], childColumns = ["occasionID"], onDelete = CASCADE),
-    ForeignKey(entity = Locality::class, parentColumns = ["localityId"], childColumns = ["localityID"], onDelete = CASCADE)
+    ForeignKey(entity = SpecieEntity::class, parentColumns = ["specieId"], childColumns = ["speciesID"], onDelete = CASCADE),
+    ForeignKey(entity = ProtocolEntity::class, parentColumns = ["protocolId"], childColumns = ["protocolID"], onDelete = CASCADE),
+    ForeignKey(entity = OccasionEntity::class, parentColumns = ["occasionId"], childColumns = ["occasionID"], onDelete = CASCADE),
+    ForeignKey(entity = LocalityEntity::class, parentColumns = ["localityId"], childColumns = ["localityID"], onDelete = CASCADE)
 ])
-data class Mouse(
+data class MouseEntity(
 
-    @PrimaryKey(autoGenerate = true)
-    var mouseId: Long,
+    @PrimaryKey
+    var mouseId: String = UUID.randomUUID().toString(),
 
-    var mouseIid: Long,
+    var mouseIid: String,
 
     var code: Int?, //pazure
 
     var deviceID: String,
 
-    var primeMouseID: Long?,
+    var primeMouseID: String?,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var speciesID: Long,
+    var speciesID: String,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var protocolID: Long?,
+    var protocolID: String?,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var occasionID: Long,
+    var occasionID: String,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var localityID: Long,
+    var localityID: String,
 
     var trapID: Int?,
 
-    var mouseDateTimeCreated: Date,
+    var mouseDateTimeCreated: ZonedDateTime,
 
-    var mouseDateTimeUpdated: Date?,
+    var mouseDateTimeUpdated: ZonedDateTime?,
 
     var sex: String?, //list male female null
 
@@ -98,5 +96,4 @@ data class Mouse(
     var note: String?,
 
     var mouseCaught: Long
-
-): Parcelable
+)

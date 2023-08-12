@@ -7,14 +7,14 @@ import androidx.room.*
 interface MethodDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMethod(method: Method)
+    suspend fun insertMethod(methodEntity: MethodEntity)
 
     @Update
-    suspend fun updateMethod(method: Method)
+    suspend fun updateMethod(methodEntity: MethodEntity)
 
     @Delete
-    suspend fun deleteMethod(method: Method)
+    suspend fun deleteMethod(methodEntity: MethodEntity)
 
-    @Query("SELECT * FROM Method")
-    fun getMethods(): LiveData<List<Method>>
+    @Query("SELECT * FROM MethodEntity")
+    fun getMethods(): LiveData<List<MethodEntity>>
 }

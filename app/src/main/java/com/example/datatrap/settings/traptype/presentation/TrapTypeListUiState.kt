@@ -1,8 +1,8 @@
 package com.example.datatrap.settings.traptype.presentation
 
-import com.example.datatrap.settings.traptype.data.TrapType
+import com.example.datatrap.settings.traptype.data.TrapTypeEntity
 
 data class TrapTypeListUiState(
-    val trapTypeList: List<TrapType>,
+    val trapTypeEntityList: List<TrapTypeEntity>,
     val trapTypeName: String? = null,
 )

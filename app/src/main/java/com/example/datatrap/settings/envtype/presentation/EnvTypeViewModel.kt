@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
-import com.example.datatrap.settings.envtype.data.EnvType
+import com.example.datatrap.settings.envtype.data.EnvTypeEntity
 import com.example.datatrap.settings.envtype.data.EnvTypeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,32 +19,32 @@ class EnvTypeViewModel @Inject constructor (
     private val envTypeRepository: EnvTypeRepository
 ) : ViewModel() {
 
-    val envTypeList: LiveData<List<EnvType>> = envTypeRepository.envTypeList
+    val envTypeEntityList: LiveData<List<EnvTypeEntity>> = envTypeRepository.envTypeEntityList
 
-    fun insertEnvType(envType: EnvType) {
+    fun insertEnvType(envTypeEntity: EnvTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            envTypeRepository.insertEnvType(envType)
+            envTypeRepository.insertEnvType(envTypeEntity)
         }
     }
 
-    fun updateEnvType(envType: EnvType) {
+    fun updateEnvType(envTypeEntity: EnvTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            envTypeRepository.updateEnvType(envType)
+            envTypeRepository.updateEnvType(envTypeEntity)
         }
     }
 
-    fun deleteEnvType(envType: EnvType) {
+    fun deleteEnvType(envTypeEntity: EnvTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            envTypeRepository.deleteEnvType(envType)
+            envTypeRepository.deleteEnvType(envTypeEntity)
         }
     }
 
     private fun insertEnvType(name: String){
         if (name.isNotEmpty()){
 
-            val envType: EnvType = EnvType(0, name, Calendar.getInstance().time, null)
+            val envTypeEntity: EnvTypeEntity = EnvTypeEntity(0, name, Calendar.getInstance().time, null)
 
-            envTypeViewModel.insertEnvType(envType)
+            envTypeViewModel.insertEnvType(envTypeEntity)
 
             Toast.makeText(requireContext(),"New environment type added.", Toast.LENGTH_SHORT).show()
         }else{
@@ -52,14 +52,14 @@ class EnvTypeViewModel @Inject constructor (
         }
     }
 
-    private fun updateEnvType(envType: EnvType, name: String){
+    private fun updateEnvType(envTypeEntity: EnvTypeEntity, name: String){
         if (name.isNotEmpty()){
 
-            val envTypeNew: EnvType = envType
-            envTypeNew.envTypeName = name
-            envTypeNew.envTypeDateTimeUpdated = Calendar.getInstance().time
+            val envTypeEntityNew: EnvTypeEntity = envTypeEntity
+            envTypeEntityNew.envTypeName = name
+            envTypeEntityNew.envTypeDateTimeUpdated = Calendar.getInstance().time
 
-            envTypeViewModel.updateEnvType(envTypeNew)
+            envTypeViewModel.updateEnvType(envTypeEntityNew)
 
             Toast.makeText(requireContext(),"Environment type updated.", Toast.LENGTH_SHORT).show()
         }else{
@@ -67,11 +67,11 @@ class EnvTypeViewModel @Inject constructor (
         }
     }
 
-    private fun deleteEnvType(envType: EnvType, what: String, title: String) {
+    private fun deleteEnvType(envTypeEntity: EnvTypeEntity, what: String, title: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            envTypeViewModel.deleteEnvType(envType)
+            envTypeViewModel.deleteEnvType(envTypeEntity)
             Toast.makeText(requireContext(),"$what deleted.", Toast.LENGTH_LONG).show()
         }
             .setNegativeButton("No"){_, _ -> }
@@ -88,15 +88,15 @@ class EnvTypeViewModel @Inject constructor (
         adapter.setOnItemClickListener(object: EnvTypeRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
                 // update envType
-                val currEnvType: EnvType = envTypeList[position]
-                showUpdateDialog("Update Environment Type", "Update environment type?", currEnvType)
+                val currEnvTypeEntity: EnvTypeEntity = envTypeEntityList[position]
+                showUpdateDialog("Update Environment Type", "Update environment type?", currEnvTypeEntity)
             }
 
             override fun useLongClickListener(position: Int) {
                 // delete envType
-                val envType: EnvType = envTypeList[position]
+                val envTypeEntity: EnvTypeEntity = envTypeEntityList[position]
 
-                deleteEnvType(envType, "Environment type", "Environment Type")
+                deleteEnvType(envTypeEntity, "Environment type", "Environment Type")
             }
         })
     }

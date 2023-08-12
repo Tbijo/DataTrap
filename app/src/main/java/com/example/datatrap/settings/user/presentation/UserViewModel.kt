@@ -4,8 +4,7 @@ import android.app.AlertDialog
 import android.widget.Toast
 import androidx.lifecycle.*
 import com.example.datatrap.R
-import com.example.datatrap.core.data.pref.PrefViewModel
-import com.example.datatrap.settings.user.data.User
+import com.example.datatrap.settings.user.data.UserEntity
 import com.example.datatrap.settings.user.data.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,31 +16,31 @@ class UserViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    val userList: LiveData<List<User>> = userRepository.userList
+    val userEntityList: LiveData<List<UserEntity>> = userRepository.userEntityList
     var userId = MutableLiveData<Long?>()
 //    private val userViewModel: UserViewModel by viewModels()
 //    private val prefViewModel: PrefViewModel by viewModels()
-    private lateinit var userList: List<User>
+    private lateinit var userEntityList: List<UserEntity>
 
-    fun insertUser(user: User) {
+    fun insertUser(userEntity: UserEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.insertUser(user)
+            userRepository.insertUser(userEntity)
         }
     }
 
-    fun updateUser(user: User) {
+    fun updateUser(userEntity: UserEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.updateUser(user)
+            userRepository.updateUser(userEntity)
         }
     }
 
-    fun deleteUser(user: User) {
+    fun deleteUser(userEntity: UserEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.deleteUser(user)
+            userRepository.deleteUser(userEntity)
         }
     }
 
-    fun getActiveUser(userId: Long): LiveData<User> {
+    fun getActiveUser(userId: Long): LiveData<UserEntity> {
         return userRepository.getActiveUser(userId)
     }
 
@@ -57,16 +56,16 @@ class UserViewModel @Inject constructor(
     init {
         userViewModel.userList.observe(viewLifecycleOwner) {
             adapter.setData(it)
-            userList = it
+            userEntityList = it
         }
 
         adapter.setOnItemClickListener(object : UserRecyclerView.MyClickListener {
             override fun useClickListener(position: Int) {
                 // nastavit vybraneho pouzivatela ako aktivneho
                 // nepovolit manipulaciu s rootom
-                if (userList[position].userName != "root" && userList[position].password != "toor"){
-                    val user: User = userList[position]
-                    prefViewModel.saveUserIdPref(user.userId)
+                if (userEntityList[position].userName != "root" && userEntityList[position].password != "toor"){
+                    val userEntity: UserEntity = userEntityList[position]
+                    prefViewModel.saveUserIdPref(userEntity.userId)
                     Toast.makeText(requireContext(), "Selected user is now active.", Toast.LENGTH_SHORT).show()
                 }else{
                     Toast.makeText(requireContext(), "Unable to access root.", Toast.LENGTH_LONG).show()
@@ -76,9 +75,9 @@ class UserViewModel @Inject constructor(
             override fun useLongClickListener(position: Int) {
                 // update pouzivatela
                 // nepovolit manipulaciu s rootom
-                val user: User = userList[position]
-                if (user.userName != "root" && user.password != "toor"){
-                    val action = ListUsersFragmentDirections.actionListUsersFragmentToUpdateUserFragment(user)
+                val userEntity: UserEntity = userEntityList[position]
+                if (userEntity.userName != "root" && userEntity.password != "toor"){
+                    val action = ListUsersFragmentDirections.actionListUsersFragmentToUpdateUserFragment(userEntity)
                     findNavController().navigate(action)
                 }else{
                     Toast.makeText(requireContext(), "Unable to access root.", Toast.LENGTH_LONG).show()
@@ -106,8 +105,8 @@ class UserViewModel @Inject constructor(
         val password = binding.etPasswordAdd.text.toString()
 
         if (checkInput(userName, password)){
-            val user: User = User(0, userName, password)
-            userViewModel.insertUser(user)
+            val userEntity: UserEntity = UserEntity(0, userName, password)
+            userViewModel.insertUser(userEntity)
 
             Toast.makeText(requireContext(), "New user added.", Toast.LENGTH_SHORT).show()
 
@@ -143,11 +142,11 @@ class UserViewModel @Inject constructor(
         val password = binding.etPasswordUpdate.text.toString()
 
         if (checkInput(userName, password)){
-            val user: User = args.user.copy()
-            user.userName = userName
-            user.password = password
+            val userEntity: UserEntity = args.user.copy()
+            userEntity.userName = userName
+            userEntity.password = password
 
-            userViewModel.updateUser(user)
+            userViewModel.updateUser(userEntity)
 
             Toast.makeText(requireContext(), "User updated.", Toast.LENGTH_SHORT).show()
 

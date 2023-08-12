@@ -4,33 +4,33 @@ import androidx.lifecycle.LiveData
 
 class ProjectRepository(private val projectDao: ProjectDao) {
 
-    val projectList: LiveData<List<Project>> = projectDao.getProjects()
+    val projectEntityList: LiveData<List<ProjectEntity>> = projectDao.getProjects()
 
-    suspend fun insertProject(project: Project) {
-        projectDao.insertProject(project)
+    suspend fun insertProject(projectEntity: ProjectEntity) {
+        projectDao.insertProject(projectEntity)
     }
 
-    suspend fun updateProject(project: Project) {
-        projectDao.updateProject(project)
+    suspend fun updateProject(projectEntity: ProjectEntity) {
+        projectDao.updateProject(projectEntity)
     }
 
-    suspend fun deleteProject(project: Project) {
-        projectDao.deleteProject(project)
+    suspend fun deleteProject(projectEntity: ProjectEntity) {
+        projectDao.deleteProject(projectEntity)
     }
 
-    fun searchProjects(projectName: String): LiveData<List<Project>> {
+    fun searchProjects(projectName: String): LiveData<List<ProjectEntity>> {
         return projectDao.searchProjects(projectName)
     }
 
-    suspend fun getProjectForSync(projectIds: List<Long>): List<Project> {
+    suspend fun getProjectForSync(projectIds: List<Long>): List<ProjectEntity> {
         return projectDao.getProjectForSync(projectIds)
     }
 
-    suspend fun insertSyncProject(project: Project): Long {
-        return projectDao.insertSyncProject(project)
+    suspend fun insertSyncProject(projectEntity: ProjectEntity): Long {
+        return projectDao.insertSyncProject(projectEntity)
     }
 
-    suspend fun getProjectByName(projectName: String): Project? {
+    suspend fun getProjectByName(projectName: String): ProjectEntity? {
         return projectDao.getProjectByName(projectName)
     }
 }

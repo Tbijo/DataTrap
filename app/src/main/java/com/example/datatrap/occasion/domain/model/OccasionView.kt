@@ -1,4 +1,4 @@
-package com.example.datatrap.occasion.data
+package com.example.datatrap.occasion.domain.model
 
 data class OccasionView(
 

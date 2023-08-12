@@ -12,14 +12,14 @@ import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumMouseAge
 import com.example.datatrap.core.util.EnumSex
 import com.example.datatrap.core.util.EnumSpecie
-import com.example.datatrap.mouse.data.Mouse
+import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.domain.util.CodeGenerator
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
-import com.example.datatrap.camera.data.mouse_image.MouseImage
+import com.example.datatrap.camera.data.mouse_image.MouseImageEntity
 import com.example.datatrap.camera.presentation.CameraViewModel
-import com.example.datatrap.settings.protocol.data.Protocol
+import com.example.datatrap.settings.protocol.data.ProtocolEntity
 import com.example.datatrap.settings.protocol.presentation.ProtocolViewModel
-import com.example.datatrap.specie.data.SpecSelectList
+import com.example.datatrap.specie.domain.model.SpecSelectList
 import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
 import java.util.Calendar
 
@@ -29,8 +29,8 @@ class MouseViewModel: ViewModel() {
 
     private lateinit var trapList: List<Int>
 
-    private lateinit var currentMouse: Mouse
-    private var mouseImage: MouseImage? = null
+    private lateinit var currentMouseEntity: MouseEntity
+    private var mouseImageEntity: MouseImageEntity? = null
 
     private val mouseListViewModel: MouseListViewModel by viewModels()
     private val specieListViewModel: SpecieListViewModel by viewModels()
@@ -38,7 +38,7 @@ class MouseViewModel: ViewModel() {
     private val prefViewModel: PrefViewModel by viewModels()
 
     private lateinit var listSpecie: List<SpecSelectList>
-    private lateinit var listProtocol: List<Protocol>
+    private lateinit var listProtocolEntity: List<ProtocolEntity>
     private lateinit var activeCodeList: List<Int>
     private lateinit var trapsList: List<Int>
 
@@ -99,12 +99,12 @@ class MouseViewModel: ViewModel() {
 
         // Update
         mouseListViewModel.getMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
-            currentMouse = it
+            currentMouseEntity = it
             initMouseValuesToView(it)
             fillDropDown(it)
 
-            cameraViewModel.getImageForMouse(currentMouse.mouseIid, args.mouseOccTuple.deviceID).observe(viewLifecycleOwner) { image ->
-                mouseImage = image
+            cameraViewModel.getImageForMouse(currentMouseEntity.mouseIid, args.mouseOccTuple.deviceID).observe(viewLifecycleOwner) { image ->
+                mouseImageEntity = image
             }
         }
 
@@ -116,7 +116,7 @@ class MouseViewModel: ViewModel() {
 
         // recapture
         mouseListViewModel.getMouse(args.recapMouse.mouseId).observe(viewLifecycleOwner) {
-            currentMouse = it
+            currentMouseEntity = it
             initMouseValuesToView(it)
             fillDropDown(it)
         }
@@ -169,7 +169,7 @@ class MouseViewModel: ViewModel() {
         }
 
         protocolViewModel.procolList.observe(viewLifecycleOwner) {
-            listProtocol = it
+            listProtocolEntity = it
             val listProtName = mutableListOf<String>()
             listProtName.add("null")
             it.forEach { protocol ->
@@ -192,7 +192,7 @@ class MouseViewModel: ViewModel() {
 
         binding.autoCompTvProtocol.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            protocolID = listProtocol.firstOrNull {
+            protocolID = listProtocolEntity.firstOrNull {
                 it.protocolName == name
             }?.protocolId
         }
@@ -367,7 +367,7 @@ class MouseViewModel: ViewModel() {
                     .isBlank()
             ) null else binding.etMouseNote.text.toString()
 
-            val mouse = Mouse(
+            val mouseEntity = MouseEntity(
                 0,
                 0,
                 code,
@@ -405,14 +405,14 @@ class MouseViewModel: ViewModel() {
             )
 
             // ulozit mys
-            if (mouse.weight != null && specie!!.minWeight != null && specie!!.maxWeight != null) {
-                checkWeightAndSave(mouse)
+            if (mouseEntity.weight != null && specie!!.minWeight != null && specie!!.maxWeight != null) {
+                checkWeightAndSave(mouseEntity)
             }
-            else if (mouse.trapID != null && mouse.trapID in trapsList) {
-                checkTrapAvailability(mouse)
+            else if (mouseEntity.trapID != null && mouseEntity.trapID in trapsList) {
+                checkTrapAvailability(mouseEntity)
             }
             else {
-                executeTask(mouse)
+                executeTask(mouseEntity)
             }
 
         } else {
@@ -421,38 +421,38 @@ class MouseViewModel: ViewModel() {
         }
     }
 
-    private fun checkWeightAndSave(mouse: Mouse) {
-        if (mouse.weight!! > specie?.maxWeight!! || mouse.weight!! < specie?.minWeight!!) {
+    private fun checkWeightAndSave(mouseEntity: MouseEntity) {
+        if (mouseEntity.weight!! > specie?.maxWeight!! || mouseEntity.weight!! < specie?.minWeight!!) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes") { _, _ ->
-                checkTrapAvailability(mouse)
+                checkTrapAvailability(mouseEntity)
             }
                 .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
         } else {
-            checkTrapAvailability(mouse)
+            checkTrapAvailability(mouseEntity)
         }
     }
 
-    private fun checkTrapAvailability(mouse: Mouse) {
-        if (mouse.trapID != null && mouse.trapID in trapsList) {
+    private fun checkTrapAvailability(mouseEntity: MouseEntity) {
+        if (mouseEntity.trapID != null && mouseEntity.trapID in trapsList) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes") { _, _ ->
-                executeTask(mouse)
+                executeTask(mouseEntity)
             }
                 .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Trap In Use")
                 .setMessage("Selected trap is in use, save anyway?")
                 .create().show()
         } else {
-            executeTask(mouse)
+            executeTask(mouseEntity)
         }
     }
 
-    private fun executeTask(mouse: Mouse) {
-        mouseListViewModel.insertMouse(mouse)
+    private fun executeTask(mouseEntity: MouseEntity) {
+        mouseListViewModel.insertMouse(mouseEntity)
 
         Toast.makeText(requireContext(), "New mouse added.", Toast.LENGTH_SHORT).show()
 
@@ -469,7 +469,7 @@ class MouseViewModel: ViewModel() {
         return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
     }
 
-    private fun fillDropDown(mouse: Mouse) {
+    private fun fillDropDown(mouseEntity: MouseEntity) {
         specieListViewModel.getSpeciesForSelect().observe(viewLifecycleOwner) {
             listSpecie = it
             val listCode = mutableListOf<String>()
@@ -482,7 +482,7 @@ class MouseViewModel: ViewModel() {
 
             // init values
             specie = it.first { specie ->
-                specie.specieId == mouse.speciesID
+                specie.specieId == mouseEntity.speciesID
             }
             speciesID = specie?.specieId
             binding.autoCompTvSpecie.setText(specie?.speciesCode, false)
@@ -490,7 +490,7 @@ class MouseViewModel: ViewModel() {
         }
 
         protocolViewModel.procolList.observe(viewLifecycleOwner) {
-            listProtocol = it
+            listProtocolEntity = it
             val listProtName = mutableListOf<String>()
             listProtName.add("null")
             it.forEach { protocol ->
@@ -502,7 +502,7 @@ class MouseViewModel: ViewModel() {
 
             // init values
             val protocol = it.firstOrNull { protocol ->
-                protocol.protocolId == mouse.protocolID
+                protocol.protocolId == mouseEntity.protocolID
             }
             protocolID = protocol?.protocolId
             binding.autoCompTvProtocol.setText(protocol.toString(), false)
@@ -512,33 +512,33 @@ class MouseViewModel: ViewModel() {
         val dropDownArrTrapID = ArrayAdapter(requireContext(), R.layout.dropdown_names, (1..args.occList.numTraps).toList())
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
-        binding.autoCompTvTrapId.setText(mouse.trapID.toString(), false)
+        binding.autoCompTvTrapId.setText(mouseEntity.trapID.toString(), false)
     }
 
-    private fun initMouseValuesToView(mouse: Mouse) {
-        binding.cbGravit.isChecked = mouse.gravidity == true
-        binding.cbLactating.isChecked = mouse.lactating == true
-        binding.cbSexActive.isChecked = mouse.sexActive == true
-        binding.cbMc.isChecked = mouse.MC == true
+    private fun initMouseValuesToView(mouseEntity: MouseEntity) {
+        binding.cbGravit.isChecked = mouseEntity.gravidity == true
+        binding.cbLactating.isChecked = mouseEntity.lactating == true
+        binding.cbSexActive.isChecked = mouseEntity.sexActive == true
+        binding.cbMc.isChecked = mouseEntity.MC == true
 
-        binding.etMouseCodeUpdate.setText(mouse.code.toString())
-        binding.etWeight.setText(mouse.weight.toString())
-        binding.etTestesLength.setText(mouse.testesLength.toString())
-        binding.etTestesWidth.setText(mouse.testesWidth.toString())
-        binding.etMouseNote.setText(mouse.note.toString())
+        binding.etMouseCodeUpdate.setText(mouseEntity.code.toString())
+        binding.etWeight.setText(mouseEntity.weight.toString())
+        binding.etTestesLength.setText(mouseEntity.testesLength.toString())
+        binding.etTestesWidth.setText(mouseEntity.testesWidth.toString())
+        binding.etMouseNote.setText(mouseEntity.note.toString())
 
-        binding.etBody.setText(mouse.body.toString())
-        binding.etTail.setText(mouse.tail.toString())
-        binding.etFeet.setText(mouse.feet.toString())
-        binding.etEar.setText(mouse.ear.toString())
+        binding.etBody.setText(mouseEntity.body.toString())
+        binding.etTail.setText(mouseEntity.tail.toString())
+        binding.etFeet.setText(mouseEntity.feet.toString())
+        binding.etEar.setText(mouseEntity.ear.toString())
 
-        binding.etEmbryoRight.setText(mouse.embryoRight.toString())
-        binding.etEmbryoLeft.setText(mouse.embryoLeft.toString())
-        binding.etEmbryoDiameter.setText(mouse.embryoDiameter.toString())
-        binding.etMcRight.setText(mouse.MCright.toString())
-        binding.etMcLeft.setText(mouse.MCleft.toString())
+        binding.etEmbryoRight.setText(mouseEntity.embryoRight.toString())
+        binding.etEmbryoLeft.setText(mouseEntity.embryoLeft.toString())
+        binding.etEmbryoDiameter.setText(mouseEntity.embryoDiameter.toString())
+        binding.etMcRight.setText(mouseEntity.MCright.toString())
+        binding.etMcLeft.setText(mouseEntity.MCleft.toString())
 
-        when(mouse.sex) {
+        when(mouseEntity.sex) {
             EnumSex.MALE.myName -> {
                 binding.rbMale.isChecked = true
                 hideNonMaleFields()
@@ -551,14 +551,14 @@ class MouseViewModel: ViewModel() {
             }
         }
 
-        when(mouse.age) {
+        when(mouseEntity.age) {
             EnumMouseAge.ADULT.myName -> binding.rbAdult.isChecked = true
             EnumMouseAge.SUBADULT.myName -> binding.rbSubadult.isChecked = true
             EnumMouseAge.JUVENILE.myName -> binding.rbJuvenile.isChecked = true
             null -> binding.rbNullAge.isChecked = true
         }
 
-        when(mouse.captureID) {
+        when(mouseEntity.captureID) {
             EnumCaptureID.CAPTURED.myName -> binding.rbCaptured.isChecked = true
             EnumCaptureID.DIED.myName -> binding.rbDied.isChecked = true
             EnumCaptureID.ESCAPED.myName -> binding.rbEscaped.isChecked = true
@@ -578,7 +578,7 @@ class MouseViewModel: ViewModel() {
 
         binding.autoCompTvProtocol.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            protocolID = listProtocol.firstOrNull {
+            protocolID = listProtocolEntity.firstOrNull {
                 it.protocolName == name
             }?.protocolId
         }
@@ -652,7 +652,7 @@ class MouseViewModel: ViewModel() {
 
     private fun goToCamera() {
         val action = UpdateMouseFragmentDirections.actionUpdateMouseFragmentToTakePhotoFragment("Mouse",
-            currentMouse.mouseIid, currentMouse.deviceID)
+            currentMouseEntity.mouseIid, currentMouseEntity.deviceID)
         findNavController().navigate(action)
     }
 
@@ -660,7 +660,7 @@ class MouseViewModel: ViewModel() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            mouseListViewModel.deleteMouse(args.mouseOccTuple.mouseId, mouseImage?.path)
+            mouseListViewModel.deleteMouse(args.mouseOccTuple.mouseId, mouseImageEntity?.path)
 
             Toast.makeText(requireContext(),"Mouse deleted.", Toast.LENGTH_LONG).show()
 
@@ -674,47 +674,47 @@ class MouseViewModel: ViewModel() {
 
     private fun updateMouse() {
         if (speciesID != null){
-            val mouse: Mouse = currentMouse.copy()
-            mouse.speciesID = speciesID!!
-            mouse.trapID = giveOutPutInt(binding.autoCompTvTrapId.text.toString())
-            mouse.sex = sex
-            mouse.age = age
-            mouse.captureID = captureID
-            mouse.mouseDateTimeUpdated = Calendar.getInstance().time
+            val mouseEntity: MouseEntity = currentMouseEntity.copy()
+            mouseEntity.speciesID = speciesID!!
+            mouseEntity.trapID = giveOutPutInt(binding.autoCompTvTrapId.text.toString())
+            mouseEntity.sex = sex
+            mouseEntity.age = age
+            mouseEntity.captureID = captureID
+            mouseEntity.mouseDateTimeUpdated = Calendar.getInstance().time
 
-            mouse.protocolID = protocolID
-            mouse.sexActive = binding.cbSexActive.isChecked
-            mouse.weight = giveOutPutFloat(binding.etWeight.text.toString())
+            mouseEntity.protocolID = protocolID
+            mouseEntity.sexActive = binding.cbSexActive.isChecked
+            mouseEntity.weight = giveOutPutFloat(binding.etWeight.text.toString())
 
-            mouse.body = giveOutPutFloat(binding.etBody.text.toString())
-            mouse.tail = giveOutPutFloat(binding.etTail.text.toString())
-            mouse.feet = giveOutPutFloat(binding.etFeet.text.toString())
-            mouse.ear = giveOutPutFloat(binding.etEar.text.toString())
+            mouseEntity.body = giveOutPutFloat(binding.etBody.text.toString())
+            mouseEntity.tail = giveOutPutFloat(binding.etTail.text.toString())
+            mouseEntity.feet = giveOutPutFloat(binding.etFeet.text.toString())
+            mouseEntity.ear = giveOutPutFloat(binding.etEar.text.toString())
 
-            mouse.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
-            mouse.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
+            mouseEntity.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
+            mouseEntity.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
 
-            mouse.gravidity = binding.cbGravit.isChecked
-            mouse.lactating = binding.cbLactating.isChecked
+            mouseEntity.gravidity = binding.cbGravit.isChecked
+            mouseEntity.lactating = binding.cbLactating.isChecked
             //počet embryí v oboch rohoch maternice a ich priemer
-            mouse.embryoRight = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
-            mouse.embryoLeft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
-            mouse.embryoDiameter = if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            mouse.MC = binding.cbMc.isChecked
+            mouseEntity.embryoRight = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
+            mouseEntity.embryoLeft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
+            mouseEntity.embryoDiameter = if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
+            mouseEntity.MC = binding.cbMc.isChecked
             //počet placentálnych polypov
-            mouse.MCright = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
-            mouse.MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
-            mouse.note = binding.etMouseNote.text.toString().ifBlank { null }
+            mouseEntity.MCright = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
+            mouseEntity.MCleft = if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
+            mouseEntity.note = binding.etMouseNote.text.toString().ifBlank { null }
 
             // update mouse
-            if (mouse.weight != null) {
-                checkWeightAndSave(mouse)
+            if (mouseEntity.weight != null) {
+                checkWeightAndSave(mouseEntity)
             }
-            else if (mouse.trapID != null && mouse.trapID in trapList) {
-                checkTrapAvailability(mouse)
+            else if (mouseEntity.trapID != null && mouseEntity.trapID in trapList) {
+                checkTrapAvailability(mouseEntity)
             }
             else {
-                executeTask(mouse)
+                executeTask(mouseEntity)
             }
 
         } else {
@@ -722,38 +722,38 @@ class MouseViewModel: ViewModel() {
         }
     }
 
-    private fun checkWeightAndSave(mouse: Mouse) {
-        if (mouse.weight!! > specie?.maxWeight!! || mouse.weight!! < specie?.minWeight!!){
+    private fun checkWeightAndSave(mouseEntity: MouseEntity) {
+        if (mouseEntity.weight!! > specie?.maxWeight!! || mouseEntity.weight!! < specie?.minWeight!!){
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes"){_, _ ->
-                checkTrapAvailability(mouse)
+                checkTrapAvailability(mouseEntity)
             }
                 .setNegativeButton("No"){_, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
         }else{
-            checkTrapAvailability(mouse)
+            checkTrapAvailability(mouseEntity)
         }
     }
 
-    private fun checkTrapAvailability(mouse: Mouse) {
-        if (mouse.trapID != null && mouse.trapID in trapList) {
+    private fun checkTrapAvailability(mouseEntity: MouseEntity) {
+        if (mouseEntity.trapID != null && mouseEntity.trapID in trapList) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes") { _, _ ->
-                executeTask(mouse)
+                executeTask(mouseEntity)
             }
                 .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Trap In Use")
                 .setMessage("Selected trap is in use, save anyway?")
                 .create().show()
         } else {
-            executeTask(mouse)
+            executeTask(mouseEntity)
         }
     }
 
-    private fun executeTask(mouse: Mouse) {
-        mouseListViewModel.updateMouse(mouse)
+    private fun executeTask(mouseEntity: MouseEntity) {
+        mouseListViewModel.updateMouse(mouseEntity)
 
         Toast.makeText(requireContext(), "Mouse updated.", Toast.LENGTH_SHORT).show()
 
@@ -769,7 +769,7 @@ class MouseViewModel: ViewModel() {
     }
 
     // recapture
-    private fun fillDropDown(mouse: Mouse) {
+    private fun fillDropDown(mouseEntity: MouseEntity) {
         specieListViewModel.getSpeciesForSelect().observe(viewLifecycleOwner) {
             listSpecie = it
             val listCode = mutableListOf<String>()
@@ -782,7 +782,7 @@ class MouseViewModel: ViewModel() {
 
             // init values
             specie = it.first { specie ->
-                specie.specieId == mouse.speciesID
+                specie.specieId == mouseEntity.speciesID
             }
             speciesID = specie?.specieId
             binding.autoCompTvSpecie.setText(specie?.speciesCode, false)
@@ -790,7 +790,7 @@ class MouseViewModel: ViewModel() {
         }
 
         protocolViewModel.procolList.observe(viewLifecycleOwner) {
-            listProtocol = it
+            listProtocolEntity = it
             val listProtName = mutableListOf<String>()
             listProtName.add("null")
             it.forEach { protocol ->
@@ -802,7 +802,7 @@ class MouseViewModel: ViewModel() {
 
             // init values
             val protocol = it.firstOrNull { protocol ->
-                protocol.protocolId == mouse.protocolID
+                protocol.protocolId == mouseEntity.protocolID
             }
             protocolID = protocol?.protocolId
             binding.autoCompTvProtocol.setText(protocol.toString(), false)
@@ -817,32 +817,32 @@ class MouseViewModel: ViewModel() {
             )
         binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
 
-        binding.autoCompTvTrapId.setText(mouse.trapID.toString(), false)
+        binding.autoCompTvTrapId.setText(mouseEntity.trapID.toString(), false)
     }
 
-    private fun initMouseValuesToView(mouse: Mouse) {
-        binding.cbGravit.isChecked = mouse.gravidity == true
-        binding.cbLactating.isChecked = mouse.lactating == true
-        binding.cbSexActive.isChecked = mouse.sexActive == true
-        binding.cbMc.isChecked = mouse.MC == true
+    private fun initMouseValuesToView(mouseEntity: MouseEntity) {
+        binding.cbGravit.isChecked = mouseEntity.gravidity == true
+        binding.cbLactating.isChecked = mouseEntity.lactating == true
+        binding.cbSexActive.isChecked = mouseEntity.sexActive == true
+        binding.cbMc.isChecked = mouseEntity.MC == true
 
-        binding.etWeight.setText(mouse.weight.toString())
-        binding.etTestesLength.setText(mouse.testesLength.toString())
-        binding.etTestesWidth.setText(mouse.testesWidth.toString())
-        binding.etMouseNote.setText(mouse.note.toString())
+        binding.etWeight.setText(mouseEntity.weight.toString())
+        binding.etTestesLength.setText(mouseEntity.testesLength.toString())
+        binding.etTestesWidth.setText(mouseEntity.testesWidth.toString())
+        binding.etMouseNote.setText(mouseEntity.note.toString())
 
-        binding.etBody.setText(mouse.body.toString())
-        binding.etTail.setText(mouse.tail.toString())
-        binding.etFeet.setText(mouse.feet.toString())
-        binding.etEar.setText(mouse.ear.toString())
+        binding.etBody.setText(mouseEntity.body.toString())
+        binding.etTail.setText(mouseEntity.tail.toString())
+        binding.etFeet.setText(mouseEntity.feet.toString())
+        binding.etEar.setText(mouseEntity.ear.toString())
 
-        binding.etEmbryoRight.setText(mouse.embryoRight.toString())
-        binding.etEmbryoLeft.setText(mouse.embryoLeft.toString())
-        binding.etEmbryoDiameter.setText(mouse.embryoDiameter.toString())
-        binding.etMcRight.setText(mouse.MCright.toString())
-        binding.etMcLeft.setText(mouse.MCleft.toString())
+        binding.etEmbryoRight.setText(mouseEntity.embryoRight.toString())
+        binding.etEmbryoLeft.setText(mouseEntity.embryoLeft.toString())
+        binding.etEmbryoDiameter.setText(mouseEntity.embryoDiameter.toString())
+        binding.etMcRight.setText(mouseEntity.MCright.toString())
+        binding.etMcLeft.setText(mouseEntity.MCleft.toString())
 
-        when (mouse.sex) {
+        when (mouseEntity.sex) {
             EnumSex.MALE.myName -> {
                 binding.rbMale.isChecked = true
                 hideNonMaleFields()
@@ -855,14 +855,14 @@ class MouseViewModel: ViewModel() {
             }
         }
 
-        when (mouse.age) {
+        when (mouseEntity.age) {
             EnumMouseAge.ADULT.myName -> binding.rbAdult.isChecked = true
             EnumMouseAge.SUBADULT.myName -> binding.rbSubadult.isChecked = true
             EnumMouseAge.JUVENILE.myName -> binding.rbJuvenile.isChecked = true
             null -> binding.rbNullAge.isChecked = true
         }
 
-        when (mouse.captureID) {
+        when (mouseEntity.captureID) {
             EnumCaptureID.CAPTURED.myName -> binding.rbCaptured.isChecked = true
             EnumCaptureID.DIED.myName -> binding.rbDied.isChecked = true
             EnumCaptureID.ESCAPED.myName -> binding.rbEscaped.isChecked = true
@@ -882,7 +882,7 @@ class MouseViewModel: ViewModel() {
 
         binding.autoCompTvProtocol.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            protocolID = listProtocol.firstOrNull {
+            protocolID = listProtocolEntity.firstOrNull {
                 it.protocolName == name
             }?.protocolId
         }
@@ -964,7 +964,7 @@ class MouseViewModel: ViewModel() {
         val action = RecaptureMouseFragmentDirections.actionRecaptureMouseFragmentToTakePhotoFragment(
             "Mouse",
             mouseId,
-            currentMouse.deviceID
+            currentMouseEntity.deviceID
         )
         findNavController().navigate(action)
     }
@@ -976,62 +976,62 @@ class MouseViewModel: ViewModel() {
         }
 
         if (speciesID != null) {
-            val mouse: Mouse = currentMouse.copy()
-            mouse.mouseId = 0
-            mouse.mouseIid = 0
-            mouse.primeMouseID =
-                if (args.recapMouse.primeMouseID == null) currentMouse.mouseIid else args.recapMouse.primeMouseID
-            mouse.occasionID = args.occList.occasionId
-            mouse.localityID = args.occList.localityID
-            mouse.mouseDateTimeCreated = Calendar.getInstance().time
-            mouse.mouseDateTimeUpdated = null
-            mouse.recapture = true
-            mouse.speciesID = speciesID!!
-            mouse.trapID = giveOutPutInt(binding.autoCompTvTrapId.text.toString())
-            mouse.sex = sex
-            mouse.age = age
-            mouse.captureID = captureID
+            val mouseEntity: MouseEntity = currentMouseEntity.copy()
+            mouseEntity.mouseId = 0
+            mouseEntity.mouseIid = 0
+            mouseEntity.primeMouseID =
+                if (args.recapMouse.primeMouseID == null) currentMouseEntity.mouseIid else args.recapMouse.primeMouseID
+            mouseEntity.occasionID = args.occList.occasionId
+            mouseEntity.localityID = args.occList.localityID
+            mouseEntity.mouseDateTimeCreated = Calendar.getInstance().time
+            mouseEntity.mouseDateTimeUpdated = null
+            mouseEntity.recapture = true
+            mouseEntity.speciesID = speciesID!!
+            mouseEntity.trapID = giveOutPutInt(binding.autoCompTvTrapId.text.toString())
+            mouseEntity.sex = sex
+            mouseEntity.age = age
+            mouseEntity.captureID = captureID
 
-            mouse.protocolID = protocolID
-            mouse.sexActive = binding.cbSexActive.isChecked
-            mouse.weight = giveOutPutFloat(binding.etWeight.text.toString())
-            mouse.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
-            mouse.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
+            mouseEntity.protocolID = protocolID
+            mouseEntity.sexActive = binding.cbSexActive.isChecked
+            mouseEntity.weight = giveOutPutFloat(binding.etWeight.text.toString())
+            mouseEntity.testesLength = giveOutPutFloat(binding.etTestesLength.text.toString())
+            mouseEntity.testesWidth = giveOutPutFloat(binding.etTestesWidth.text.toString())
 
-            mouse.body = giveOutPutFloat(binding.etBody.text.toString())
-            mouse.tail = giveOutPutFloat(binding.etTail.text.toString())
-            mouse.feet = giveOutPutFloat(binding.etFeet.text.toString())
-            mouse.ear = giveOutPutFloat(binding.etEar.text.toString())
+            mouseEntity.body = giveOutPutFloat(binding.etBody.text.toString())
+            mouseEntity.tail = giveOutPutFloat(binding.etTail.text.toString())
+            mouseEntity.feet = giveOutPutFloat(binding.etFeet.text.toString())
+            mouseEntity.ear = giveOutPutFloat(binding.etEar.text.toString())
 
-            mouse.gravidity = binding.cbGravit.isChecked
-            mouse.lactating = binding.cbLactating.isChecked
+            mouseEntity.gravidity = binding.cbGravit.isChecked
+            mouseEntity.lactating = binding.cbLactating.isChecked
             //počet embryí v oboch rohoch maternice a ich priemer
-            mouse.embryoRight =
+            mouseEntity.embryoRight =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoRight.text.toString())
-            mouse.embryoLeft =
+            mouseEntity.embryoLeft =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etEmbryoLeft.text.toString())
-            mouse.embryoDiameter =
+            mouseEntity.embryoDiameter =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutFloat(binding.etEmbryoDiameter.text.toString())
-            mouse.MC = binding.cbMc.isChecked
+            mouseEntity.MC = binding.cbMc.isChecked
             //počet placentálnych polypov
-            mouse.MCright =
+            mouseEntity.MCright =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcRight.text.toString())
-            mouse.MCleft =
+            mouseEntity.MCleft =
                 if (sex == EnumSex.MALE.myName) null else giveOutPutInt(binding.etMcLeft.text.toString())
 
-            mouse.note = binding.etMouseNote.text.toString().ifBlank { null }
+            mouseEntity.note = binding.etMouseNote.text.toString().ifBlank { null }
 
-            mouse.mouseCaught = Calendar.getInstance().time.time
+            mouseEntity.mouseCaught = Calendar.getInstance().time.time
 
             // recapture
-            if (mouse.weight != null && specie?.minWeight != null && specie?.maxWeight != null) {
-                checkWeightAndSave(mouse)
+            if (mouseEntity.weight != null && specie?.minWeight != null && specie?.maxWeight != null) {
+                checkWeightAndSave(mouseEntity)
             }
-            else if (mouse.trapID != null && mouse.trapID in trapList) {
-                checkTrapAvailability(mouse)
+            else if (mouseEntity.trapID != null && mouseEntity.trapID in trapList) {
+                checkTrapAvailability(mouseEntity)
             }
             else {
-                executeTask(mouse)
+                executeTask(mouseEntity)
             }
 
         } else {
@@ -1040,38 +1040,38 @@ class MouseViewModel: ViewModel() {
         }
     }
 
-    private fun checkWeightAndSave(mouse: Mouse) {
-        if (mouse.weight!! > specie!!.maxWeight!! || mouse.weight!! < specie!!.minWeight!!) {
+    private fun checkWeightAndSave(mouseEntity: MouseEntity) {
+        if (mouseEntity.weight!! > specie!!.maxWeight!! || mouseEntity.weight!! < specie!!.minWeight!!) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes") { _, _ ->
-                checkTrapAvailability(mouse)
+                checkTrapAvailability(mouseEntity)
             }
                 .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Mouse Weight")
                 .setMessage("Mouse weight out of bounds, save anyway?")
                 .create().show()
         } else {
-            checkTrapAvailability(mouse)
+            checkTrapAvailability(mouseEntity)
         }
     }
 
-    private fun checkTrapAvailability(mouse: Mouse) {
-        if (mouse.trapID != null && mouse.trapID in trapList) {
+    private fun checkTrapAvailability(mouseEntity: MouseEntity) {
+        if (mouseEntity.trapID != null && mouseEntity.trapID in trapList) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes") { _, _ ->
-                executeTask(mouse)
+                executeTask(mouseEntity)
             }
                 .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Trap In Use")
                 .setMessage("Selected trap is in use, save anyway?")
                 .create().show()
         } else {
-            executeTask(mouse)
+            executeTask(mouseEntity)
         }
     }
 
-    private fun executeTask(mouse: Mouse) {
-        mouseListViewModel.insertMouse(mouse)
+    private fun executeTask(mouseEntity: MouseEntity) {
+        mouseListViewModel.insertMouse(mouseEntity)
 
         Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
 

@@ -1,28 +1,53 @@
 package com.example.datatrap.sync.utils
 
-import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
 
-sealed class ResultWrapper<out T> {
-    data class MySuccess<out T>(val value: T) : ResultWrapper<T>()
-    data class MyError(val code: Int? = null, val errorM: String) : ResultWrapper<Nothing>()
+sealed class Resource<T>(val data: T?, val throwable: Throwable? = null) {
+
+    class Success<T>(data: T): Resource<T>(data)
+
+    class Error<T>(throwable: Throwable): Resource<T>(null, throwable)
+
+    class Loading<T>(message: String? = null, data: T? = null): Resource<T>(data = data)
 }
 
-suspend fun <T> safeApiCall(apiCall: suspend () -> Response<T>): ResultWrapper<Response<T>> =
+suspend inline fun <reified T> safeApiCall(apiCall: () -> Response<T>): Resource<T> {
+
+    val response: Response<T>
+
     try {
-        ResultWrapper.MySuccess(apiCall())
-    } catch (throwable: Throwable) {
-        when (throwable) {
-            is IOException -> {
-                ResultWrapper.MyError(errorM = "No internet connection or Stream closed or bad URL.")
-            }
-            is HttpException -> {
-                val code = throwable.code()
-                ResultWrapper.MyError(code, "Unexpected Response code not starting with 2.")
-            }
-            else -> {
-                ResultWrapper.MyError(errorM = "Unsuspected Error.")
-            }
-        }
+        response = apiCall()
     }
+    catch (e: IOException) {
+        return Resource.Error(
+            HttpException(
+                HttpError.SERVICE_UNAVAILABLE,
+                e.message ?: "Unknown"
+            )
+        )
+    }
+
+    return try {
+        val result = response.body()
+
+        result?.let {
+            Resource.Success(it)
+        } ?:
+        Resource.Error(
+            HttpException(
+                HttpError.getError(response.code()),
+                "Null Error"
+            )
+        )
+
+    }
+    catch (e: Exception) {
+        Resource.Error(
+            HttpException(
+                HttpError.getError(response.code()),
+                e.message ?: "Unknown"
+            )
+        )
+    }
+}

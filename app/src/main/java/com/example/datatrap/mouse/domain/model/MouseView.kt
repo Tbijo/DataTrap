@@ -1,7 +1,7 @@
 package com.example.datatrap.mouse.domain.model
 
 data class MouseView(
-    var mouseIid: Long,
+    var mouseIid: String,
     var deviceID: String,
     val body: Float?,
     val tail: Float?,

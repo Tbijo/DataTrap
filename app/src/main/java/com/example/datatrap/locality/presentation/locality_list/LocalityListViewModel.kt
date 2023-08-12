@@ -17,10 +17,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
 import com.example.datatrap.core.data.pref.PrefViewModel
-import com.example.datatrap.locality.data.Locality
-import com.example.datatrap.locality.data.LocList
+import com.example.datatrap.locality.data.LocalityEntity
+import com.example.datatrap.locality.domain.model.LocList
 import com.example.datatrap.locality.data.LocalityRepository
-import com.example.datatrap.project.data.ProjectLocalityCrossRef
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -233,15 +232,15 @@ class LocalityListViewModel @Inject constructor (
         startActivity(intent)
     }
 
-    fun insertLocality(locality: Locality) {
+    fun insertLocality(localityEntity: LocalityEntity) {
         viewModelScope.launch(Dispatchers.IO){
-            localityRepository.insertLocality(locality)
+            localityRepository.insertLocality(localityEntity)
         }
     }
 
-    fun updateLocality(locality: Locality) {
+    fun updateLocality(localityEntity: LocalityEntity) {
         viewModelScope.launch(Dispatchers.IO){
-            localityRepository.updateLocality(locality)
+            localityRepository.updateLocality(localityEntity)
         }
     }
 
@@ -251,7 +250,7 @@ class LocalityListViewModel @Inject constructor (
         }
     }
 
-    fun getLocality(localityId: Long): LiveData<Locality> {
+    fun getLocality(localityId: Long): LiveData<LocalityEntity> {
         return localityRepository.getLocality(localityId)
     }
 

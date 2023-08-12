@@ -19,7 +19,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.R
-import com.example.datatrap.locality.data.Locality
+import com.example.datatrap.locality.data.LocalityEntity
 import com.example.datatrap.locality.presentation.locality_list.LocalityListViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
@@ -31,7 +31,7 @@ import java.util.Calendar
 class LocalityViewModel: ViewModel() {
 
     private val localityListViewModel: LocalityListViewModel by viewModels()
-    private lateinit var currentLocality: Locality
+    private lateinit var currentLocalityEntity: LocalityEntity
 
     private lateinit var requestMultiplePermissions: ActivityResultLauncher<Array<String>>
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -61,7 +61,7 @@ class LocalityViewModel: ViewModel() {
         // UPDATE
         localityListViewModel.getLocality(args.locList.localityId).observe(viewLifecycleOwner) {
             initLocalityValuesToView(it)
-            currentLocality = it
+            currentLocalityEntity = it
         }
         R.id.menu_save -> updateLocality()
         R.id.menu_delete -> deleteLocality()
@@ -77,12 +77,12 @@ class LocalityViewModel: ViewModel() {
         if (checkInput(localityName)){
             val localityNote = if (binding.etLocalityNote.text.toString().isBlank()) null else binding.etLocalityNote.text.toString()
 
-            val locality = Locality(0, localityName, Calendar.getInstance().time,
+            val localityEntity = LocalityEntity(0, localityName, Calendar.getInstance().time,
                 null, latitudeA?.toFloat(), longnitudeA?.toFloat(),
                 latitudeB?.toFloat(), longnitudeB?.toFloat(),
                 0, localityNote)
 
-            localityListViewModel.insertLocality(locality)
+            localityListViewModel.insertLocality(localityEntity)
 
             Toast.makeText(requireContext(), "New locality added.", Toast.LENGTH_SHORT).show()
 
@@ -179,15 +179,15 @@ class LocalityViewModel: ViewModel() {
         startActivity(intent)
     }
 
-    private fun initLocalityValuesToView(locality: Locality){
-        binding.etLocalityName.setText(locality.localityName)
-        binding.etLocalityNote.setText(locality.note.toString())
-        binding.etSessionNum.setText(locality.numSessions.toString())
+    private fun initLocalityValuesToView(localityEntity: LocalityEntity){
+        binding.etLocalityName.setText(localityEntity.localityName)
+        binding.etLocalityNote.setText(localityEntity.note.toString())
+        binding.etSessionNum.setText(localityEntity.numSessions.toString())
 
-        binding.etUpLatA.setText(locality.xA.toString())
-        binding.etUpLongA.setText(locality.yA.toString())
-        binding.etUpLatB.setText(locality.xB.toString())
-        binding.etUpLongB.setText(locality.yB.toString())
+        binding.etUpLatA.setText(localityEntity.xA.toString())
+        binding.etUpLongA.setText(localityEntity.yA.toString())
+        binding.etUpLatB.setText(localityEntity.xB.toString())
+        binding.etUpLongB.setText(localityEntity.yB.toString())
     }
 
     private fun deleteLocality() {
@@ -215,17 +215,17 @@ class LocalityViewModel: ViewModel() {
         val longitudeB = binding.etUpLongB.text.toString().ifBlank { null }
 
         if (checkInput(localityName)){
-            val locality: Locality = currentLocality.copy()
-            locality.localityName = localityName
-            locality.numSessions = Integer.parseInt(binding.etSessionNum.text.toString())
-            locality.xA = latitudeA?.toFloat()
-            locality.yA = longitudeA?.toFloat()
-            locality.xB = latitudeB?.toFloat()
-            locality.yB = longitudeB?.toFloat()
-            locality.localityDateTimeUpdated = Calendar.getInstance().time
-            locality.note = if (binding.etLocalityNote.text.toString().isBlank() || binding.etLocalityNote.text.toString() == "null") null else binding.etLocalityNote.text.toString()
+            val localityEntity: LocalityEntity = currentLocalityEntity.copy()
+            localityEntity.localityName = localityName
+            localityEntity.numSessions = Integer.parseInt(binding.etSessionNum.text.toString())
+            localityEntity.xA = latitudeA?.toFloat()
+            localityEntity.yA = longitudeA?.toFloat()
+            localityEntity.xB = latitudeB?.toFloat()
+            localityEntity.yB = longitudeB?.toFloat()
+            localityEntity.localityDateTimeUpdated = Calendar.getInstance().time
+            localityEntity.note = if (binding.etLocalityNote.text.toString().isBlank() || binding.etLocalityNote.text.toString() == "null") null else binding.etLocalityNote.text.toString()
 
-            localityListViewModel.updateLocality(locality)
+            localityListViewModel.updateLocality(localityEntity)
 
             Toast.makeText(requireContext(), "Locality updated.", Toast.LENGTH_SHORT).show()
 

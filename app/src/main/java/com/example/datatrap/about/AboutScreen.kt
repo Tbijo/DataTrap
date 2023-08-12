@@ -11,8 +11,15 @@ import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
-fun AboutScreen() {
-    MyScaffold(title = "About") {
+fun AboutScreen(
+    onEvent: String
+) {
+    MyScaffold(
+        title = "About",
+        onDrawerItemClick = {
+            onEvent
+        }
+    ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(it),
             verticalArrangement = Arrangement.Center,

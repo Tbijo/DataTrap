@@ -2,9 +2,9 @@ package com.example.datatrap.occasion.presentation.occasion_list
 
 import androidx.lifecycle.*
 import com.example.datatrap.core.data.pref.PrefViewModel
-import com.example.datatrap.occasion.data.Occasion
-import com.example.datatrap.occasion.data.OccList
-import com.example.datatrap.occasion.data.OccasionView
+import com.example.datatrap.occasion.data.OccasionEntity
+import com.example.datatrap.occasion.domain.model.OccList
+import com.example.datatrap.occasion.domain.model.OccasionView
 import com.example.datatrap.occasion.data.OccasionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -62,15 +62,15 @@ class OccasionListViewModel @Inject constructor(
         }
     }
 
-    fun insertOccasion(occasion: Occasion) {
+    fun insertOccasion(occasionEntity: OccasionEntity) {
         viewModelScope.launch {
-            occasionId.value = occasionRepository.insertOccasion(occasion)
+            occasionId.value = occasionRepository.insertOccasion(occasionEntity)
         }
     }
 
-    fun updateOccasion(occasion: Occasion) {
+    fun updateOccasion(occasionEntity: OccasionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            occasionRepository.updateOccasion(occasion)
+            occasionRepository.updateOccasion(occasionEntity)
         }
     }
 
@@ -91,7 +91,7 @@ class OccasionListViewModel @Inject constructor(
         }
     }
 
-    fun getOccasion(occasionId: Long): LiveData<Occasion> {
+    fun getOccasion(occasionId: Long): LiveData<OccasionEntity> {
         return occasionRepository.getOccasion(occasionId)
     }
 

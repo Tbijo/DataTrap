@@ -1,8 +1,8 @@
 package com.example.datatrap.settings.method.presentation
 
-import com.example.datatrap.settings.method.data.Method
+import com.example.datatrap.settings.method.data.MethodEntity
 
 data class MethodListUiState(
-    val methodList: List<Method>,
+    val methodEntityList: List<MethodEntity>,
     val methodName: String? = null,
 )

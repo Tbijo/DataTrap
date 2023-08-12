@@ -1,24 +1,26 @@
 package com.example.datatrap.specie.data
 
 import androidx.lifecycle.LiveData
+import com.example.datatrap.specie.domain.model.SpecList
+import com.example.datatrap.specie.domain.model.SpecSelectList
 
 class SpecieRepository(private val specieDao: SpecieDao) {
 
     val specieList: LiveData<List<SpecList>> = specieDao.getSpecies()
 
-    suspend fun insertSpecie(specie: Specie): Long {
-        return specieDao.insertSpecie(specie)
+    suspend fun insertSpecie(specieEntity: SpecieEntity): Long {
+        return specieDao.insertSpecie(specieEntity)
     }
 
-    suspend fun updateSpecie(specie: Specie) {
-        specieDao.updateSpecie(specie)
+    suspend fun updateSpecie(specieEntity: SpecieEntity) {
+        specieDao.updateSpecie(specieEntity)
     }
 
     suspend fun deleteSpecie(specieId: Long) {
         specieDao.deleteSpecie(specieId)
     }
 
-    fun getSpecie(specieId: Long): LiveData<Specie> {
+    fun getSpecie(specieId: Long): LiveData<SpecieEntity> {
         return specieDao.getSpecie(specieId)
     }
 

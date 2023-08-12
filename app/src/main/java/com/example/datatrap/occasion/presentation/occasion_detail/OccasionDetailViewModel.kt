@@ -3,7 +3,7 @@ package com.example.datatrap.occasion.presentation.occasion_detail
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.core.util.EnumSpecie
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
-import com.example.datatrap.occasion.data.OccasionView
+import com.example.datatrap.occasion.domain.model.OccasionView
 import com.example.datatrap.occasion.presentation.occasion_list.OccasionListViewModel
 import com.example.datatrap.core.presentation.components.ViewImageFragment
 import java.text.SimpleDateFormat

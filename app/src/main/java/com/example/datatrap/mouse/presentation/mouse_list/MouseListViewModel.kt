@@ -3,7 +3,7 @@ package com.example.datatrap.mouse.presentation.mouse_list
 import androidx.lifecycle.*
 import com.example.datatrap.R
 import com.example.datatrap.core.data.pref.PrefViewModel
-import com.example.datatrap.mouse.data.Mouse
+import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.domain.model.MouseLog
 import com.example.datatrap.mouse.domain.model.MouseOccList
 import com.example.datatrap.mouse.domain.model.MouseRecapList
@@ -93,15 +93,15 @@ class MouseListViewModel @Inject constructor(
         findNavController().navigate(action)
     }
 
-    fun insertMouse(mouse: Mouse) {
+    fun insertMouse(mouseEntity: MouseEntity) {
         viewModelScope.launch {
-            mouseId.value = mouseRepository.insertMouse(mouse)
+            mouseId.value = mouseRepository.insertMouse(mouseEntity)
         }
     }
 
-    fun updateMouse(mouse: Mouse) {
+    fun updateMouse(mouseEntity: MouseEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            mouseRepository.updateMouse(mouse)
+            mouseRepository.updateMouse(mouseEntity)
         }
     }
 
@@ -122,7 +122,7 @@ class MouseListViewModel @Inject constructor(
         }
     }
 
-    fun getMouse(mouseId: Long): LiveData<Mouse> {
+    fun getMouse(mouseId: Long): LiveData<MouseEntity> {
         return mouseRepository.getMouse(mouseId)
     }
 
@@ -150,7 +150,7 @@ class MouseListViewModel @Inject constructor(
         return mouseRepository.countMiceForLocality(localityId)
     }
 
-    fun insertMultiMouse(mice: List<Mouse>) {
+    fun insertMultiMouse(mice: List<MouseEntity>) {
         viewModelScope.launch(Dispatchers.IO) {
             mouseRepository.insertMultiMouse(mice)
         }

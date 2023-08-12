@@ -7,30 +7,30 @@ import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.pref.PrefViewModel
-import com.example.datatrap.locality.data.Locality
+import com.example.datatrap.locality.data.LocalityEntity
 import com.example.datatrap.locality.data.LocalityRepository
-import com.example.datatrap.mouse.data.Mouse
+import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseRepository
-import com.example.datatrap.occasion.data.Occasion
+import com.example.datatrap.occasion.data.OccasionEntity
 import com.example.datatrap.occasion.data.OccasionRepository
-import com.example.datatrap.project.data.Project
+import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.project.data.ProjectRepository
-import com.example.datatrap.session.data.Session
+import com.example.datatrap.session.data.SessionEntity
 import com.example.datatrap.session.data.SessionRepository
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import com.example.datatrap.sync.data.DataTrapRepository
-import com.example.datatrap.sync.data.sync.ImageSync
-import com.example.datatrap.sync.data.sync.LocOccLMouse
-import com.example.datatrap.sync.data.sync.LocalitySync
-import com.example.datatrap.sync.data.sync.MouseImageSync
-import com.example.datatrap.sync.data.sync.MouseSync
-import com.example.datatrap.sync.data.sync.OccasionImageSync
-import com.example.datatrap.sync.data.sync.OccasionSync
-import com.example.datatrap.sync.data.sync.ProjectSync
-import com.example.datatrap.sync.data.sync.SesLOLM
-import com.example.datatrap.sync.data.sync.SessionSync
-import com.example.datatrap.sync.data.sync.SpecieImageSync
-import com.example.datatrap.sync.data.sync.SyncClass
+import com.example.datatrap.sync.data.ImageSync
+import com.example.datatrap.sync.data.LocOccLMouse
+import com.example.datatrap.sync.data.LocalitySync
+import com.example.datatrap.sync.data.MouseImageSync
+import com.example.datatrap.sync.data.MouseSync
+import com.example.datatrap.sync.data.OccasionImageSync
+import com.example.datatrap.sync.data.OccasionSync
+import com.example.datatrap.sync.data.ProjectSync
+import com.example.datatrap.sync.data.SesLOLM
+import com.example.datatrap.sync.data.SessionSync
+import com.example.datatrap.sync.data.SpecieImageSync
+import com.example.datatrap.sync.data.SyncClass
 import com.example.datatrap.sync.utils.Mappers.setNewLocality
 import com.example.datatrap.sync.utils.Mappers.setNewMouse
 import com.example.datatrap.sync.utils.Mappers.setNewOccasion
@@ -121,21 +121,21 @@ class SyncClassViewModel @Inject constructor(
             currentOpperation.postValue("Loading Gathered Data")
 
             // NACITAT DATA O CHYTENYCH JEDINCOCH
-            val mouseList: List<Mouse> = mouseRepository.getMiceForSync(date)
-            val occasionIds = mouseList.map { it.occasionID }
+            val mouseEntityList: List<MouseEntity> = mouseRepository.getMiceForSync(date)
+            val occasionIds = mouseEntityList.map { it.occasionID }
 
-            val occasionList: List<Occasion> = occasionRepository.getOccasionForSync(occasionIds)
-            val localityIds = occasionList.map { it.localityID }
-            val sessionIds = occasionList.map { it.sessionID }
+            val occasionEntityList: List<OccasionEntity> = occasionRepository.getOccasionForSync(occasionIds)
+            val localityIds = occasionEntityList.map { it.localityID }
+            val sessionIds = occasionEntityList.map { it.sessionID }
 
-            val localityList: List<Locality> = localityRepository.getLocalityForSync(localityIds)
+            val localityEntityList: List<LocalityEntity> = localityRepository.getLocalityForSync(localityIds)
 
-            val sessionList: List<Session> = sessionRepository.getSessionForSync(sessionIds)
-            val projectIds = sessionList.map { it.projectID!! }
+            val sessionEntityList: List<SessionEntity> = sessionRepository.getSessionForSync(sessionIds)
+            val projectIds = sessionEntityList.map { it.projectID!! }
 
-            val projectList: List<Project> = projectRepository.getProjectForSync(projectIds)
+            val projectEntityList: List<ProjectEntity> = projectRepository.getProjectForSync(projectIds)
 
-            val listSyncClass: List<SyncClass> = toSyncClassList(mouseList, occasionList, localityList, sessionList, projectList)
+            val listSyncClass: List<SyncClass> = toSyncClassList(mouseEntityList, occasionEntityList, localityEntityList, sessionEntityList, projectEntityList)
 
             currentOpperation.postValue("Sending Gathered Data")
 
@@ -167,19 +167,19 @@ class SyncClassViewModel @Inject constructor(
             listSyncClass.forEach { syncClass ->
                 val projectSync: ProjectSync = syncClass.prj
                 // ci projekt je v Databaze
-                val project: Project? = projectRepository.getProjectByName(projectSync.projectName)
+                val projectEntity: ProjectEntity? = projectRepository.getProjectByName(projectSync.projectName)
 
-                val projectId: Long = if (project != null) {
+                val projectId: Long = if (projectEntity != null) {
                     // ak je mozno Update
                     // TODO Aplikacia prinesie vzdy vacsie cislo
                     // nechat tuto starost na nich pred pouzitim vzdy syncronizovat
                     // TODO ak bude mensie cislo tak nemenit hodnotu v stlpci
                     // lebo aj tak kazde pridanie bude hodnotu samo zvacsovat
-                    project.projectId
+                    projectEntity.projectId
                 } else {
                     // ak nie je tak Insert
-                    val newProject: Project = setNewProject(projectSync)
-                    projectRepository.insertSyncProject(newProject)
+                    val newProjectEntity: ProjectEntity = setNewProject(projectSync)
+                    projectRepository.insertSyncProject(newProjectEntity)
                 }
                 // v oboch pripadoch vybrat projectId a pouzit dalej v kode
 
@@ -188,26 +188,26 @@ class SyncClassViewModel @Inject constructor(
                 listSesLOLM.forEach { sesLOLM ->
                     val sessionSync: SessionSync = sesLOLM.ses
                     // ci session existuje
-                    val session: Session? = sessionRepository.getSession(projectId, sessionSync.sessionStart)
+                    val sessionEntity: SessionEntity? = sessionRepository.getSession(projectId, sessionSync.sessionStart)
 
                     // vo vsetkych pripadoch vybrat sessionId a pouzit dalej
                     val sessionId: Long
 
-                    if (session != null) {
+                    if (sessionEntity != null) {
                         // ak ano mozno Update
-                        sessionId = session.sessionId
+                        sessionId = sessionEntity.sessionId
                     } else {
                         // ak nie tak Najst Najblizsiu
-                        val nearSession: Session? = sessionRepository.getNearSession(projectId, sessionSync.sessionStart)
+                        val nearSessionEntity: SessionEntity? = sessionRepository.getNearSession(projectId, sessionSync.sessionStart)
 
-                        sessionId = if (nearSession != null) {
+                        sessionId = if (nearSessionEntity != null) {
                             // ak je tak mozno update
-                            nearSession.sessionId
+                            nearSessionEntity.sessionId
                         } else {
                             // ak nie je tak Insert
                             // TODO pridat cislovanie sessionov v Projekte separatna funkcia
-                            val newSession: Session = setNewSession(sessionSync)
-                            sessionRepository.insertSyncSession(newSession)
+                            val newSessionEntity: SessionEntity = setNewSession(sessionSync)
+                            sessionRepository.insertSyncSession(newSessionEntity)
                         }
                     }
 
@@ -216,46 +216,46 @@ class SyncClassViewModel @Inject constructor(
                     listLOLM.forEach { locOccLMouse ->
                         val localitySync: LocalitySync = locOccLMouse.loc
                         // ci existuje
-                        val locality: Locality? = localityRepository.getLocalityByName(localitySync.localityName)
+                        val localityEntity: LocalityEntity? = localityRepository.getLocalityByName(localitySync.localityName)
 
                         // zohnat localityId
 
-                        val localityId: Long = if (locality != null) {
+                        val localityId: Long = if (localityEntity != null) {
                             // ak ano mozno Update
-                            locality.localityId
+                            localityEntity.localityId
                         } else {
                             // ak nie insert
-                            val newLocality: Locality = setNewLocality(localitySync)
-                            localityRepository.insertSyncLocality(newLocality)
+                            val newLocalityEntity: LocalityEntity = setNewLocality(localitySync)
+                            localityRepository.insertSyncLocality(newLocalityEntity)
                         }
 
                         val occasionSync: OccasionSync = locOccLMouse.occ
                         // ci existuje
-                        val occasion: Occasion? = occasionRepository.getSyncOccasion(sessionId, occasionSync.occasionStart)
+                        val occasionEntity: OccasionEntity? = occasionRepository.getSyncOccasion(sessionId, occasionSync.occasionStart)
 
                         // zohant occasionId
 
-                        val occasionId: Long = if (occasion != null) {
+                        val occasionId: Long = if (occasionEntity != null) {
                             // ak ano mozno Update
-                            occasion.occasionId
+                            occasionEntity.occasionId
                         } else {
                             // ak nie Insert
-                            val newOccasion: Occasion = setNewOccasion(occasionSync, sessionId, localityId)
-                            occasionRepository.insertOccasion(newOccasion)
+                            val newOccasionEntity: OccasionEntity = setNewOccasion(occasionSync, sessionId, localityId)
+                            occasionRepository.insertOccasion(newOccasionEntity)
                         }
 
                         val listMouse: List<MouseSync> = locOccLMouse.listMouse
 
                         listMouse.forEach { mouseSync ->
                             // ci existuje
-                            val mouse: Mouse? = mouseRepository.getSyncMouse(occasionId, mouseSync.mouseCaught)
+                            val mouseEntity: MouseEntity? = mouseRepository.getSyncMouse(occasionId, mouseSync.mouseCaught)
 
-                            if (mouse != null) {
+                            if (mouseEntity != null) {
                                 // ak ano mozno update
                             } else {
                                 // ak nie Insert
-                                val newMouse: Mouse = setNewMouse(mouseSync, localityId, occasionId)
-                                mouseRepository.inserSynctMouse(newMouse)
+                                val newMouseEntity: MouseEntity = setNewMouse(mouseSync, localityId, occasionId)
+                                mouseRepository.inserSynctMouse(newMouseEntity)
                             }
                         }
                     }

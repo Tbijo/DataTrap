@@ -1,23 +1,21 @@
 package com.example.datatrap.locality.data
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
-import java.util.*
+import java.time.ZonedDateTime
+import java.util.UUID
 
-@Parcelize
 @Entity
-data class Locality(
+data class LocalityEntity(
 
-    @PrimaryKey(autoGenerate = true)
-    var localityId: Long,
+    @PrimaryKey
+    var localityId: String = UUID.randomUUID().toString(),
 
     var localityName: String,
 
-    var localityDateTimeCreated: Date,
+    var localityDateTimeCreated: ZonedDateTime,
 
-    var localityDateTimeUpdated: Date?,
+    var localityDateTimeUpdated: ZonedDateTime?,
 
     var xA: Float?, // latitudeA
 
@@ -30,4 +28,4 @@ data class Locality(
     var numSessions: Int,
 
     var note: String?
-): Parcelable
+)

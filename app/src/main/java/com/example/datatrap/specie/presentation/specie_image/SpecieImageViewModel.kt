@@ -18,7 +18,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
-import com.example.datatrap.specie.data.specie_image.SpecieImage
+import com.example.datatrap.specie.data.specie_image.SpecieImageEntity
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -36,7 +36,7 @@ class SpecieImageViewModel @Inject constructor(
     private val specieImageViewModel: SpecieImageViewModel by viewModels()
     private var imageName: String? = null
     private var imageUri: Uri? = null
-    private var specieImage: SpecieImage? = null
+    private var specieImageEntity: SpecieImageEntity? = null
     private lateinit var deviceID: String
 
     private lateinit var requestMultiplePermissions: ActivityResultLauncher<Array<String>>
@@ -68,7 +68,7 @@ class SpecieImageViewModel @Inject constructor(
         binding.btnAddPicture.setOnClickListener {
             // ak je vsetko v poriadku treba
             // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze aj fyzicky
-            if (imageName == null && specieImage == null) {
+            if (imageName == null && specieImageEntity == null) {
                 Toast.makeText(requireContext(), "No image was found.", Toast.LENGTH_LONG).show()
             } else {
                 saveImage()
@@ -87,30 +87,30 @@ class SpecieImageViewModel @Inject constructor(
         val note = binding.etPicNote.text.toString()
 
         // vytvara sa nova fotka, stara nebola
-        if (specieImage == null) {
-            specieImage =
-                SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, Calendar.getInstance().time.time)
-            specieImageViewModel.insertImage(specieImage!!)
+        if (specieImageEntity == null) {
+            specieImageEntity =
+                SpecieImageEntity(0, imageName!!, imageUri.toString(), note, args.parentId, Calendar.getInstance().time.time)
+            specieImageViewModel.insertImage(specieImageEntity!!)
 
             // stara fotka existuje
         } else {
 
             // ostava stara fotka
             if (imageName == null) {
-                specieImage!!.note = note
-                specieImageViewModel.insertImage(specieImage!!)
+                specieImageEntity!!.note = note
+                specieImageViewModel.insertImage(specieImageEntity!!)
 
                 // nahradi sa stara fotka novou fotkou
             } else {
 
                 // vymazat zaznam starej fotky v databaze
-                specieImageViewModel.deleteImage(specieImage!!.specieImgId, specieImage!!.path)
+                specieImageViewModel.deleteImage(specieImageEntity!!.specieImgId, specieImageEntity!!.path)
                 // pre istotu
-                specieImage = null
+                specieImageEntity = null
                 // pridat zaznam novej fotky do databazy subor uz existuje
-                specieImage =
-                    SpecieImage(0, imageName!!, imageUri.toString(), note, args.parentId, Calendar.getInstance().time.time)
-                specieImageViewModel.insertImage(specieImage!!)
+                specieImageEntity =
+                    SpecieImageEntity(0, imageName!!, imageUri.toString(), note, args.parentId, Calendar.getInstance().time.time)
+                specieImageViewModel.insertImage(specieImageEntity!!)
             }
         }
 
@@ -121,7 +121,7 @@ class SpecieImageViewModel @Inject constructor(
         specieImageViewModel.getImageForSpecie(args.parentId).observe(viewLifecycleOwner) {
             // ak mame fotku tak hu nacitame
             if (it != null) {
-                specieImage = it
+                specieImageEntity = it
                 binding.ivGetPicture.setImageURI(it.path.toUri())
                 binding.tvGetPicture.text = getString(R.string.pictureAdded)
                 binding.etPicNote.setText(it.note)
@@ -204,9 +204,9 @@ class SpecieImageViewModel @Inject constructor(
         startActivity(intent)
     }
 
-    fun insertImage(specieImage: SpecieImage) {
+    fun insertImage(specieImageEntity: SpecieImageEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            specieImageRepository.insertImage(specieImage)
+            specieImageRepository.insertImage(specieImageEntity)
         }
     }
 
@@ -225,7 +225,7 @@ class SpecieImageViewModel @Inject constructor(
         }
     }
 
-    fun getImageForSpecie(specieId: Long): LiveData<SpecieImage> {
+    fun getImageForSpecie(specieId: Long): LiveData<SpecieImageEntity> {
         return specieImageRepository.getImageForSpecie(specieId)
     }
 }

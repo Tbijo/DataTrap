@@ -16,12 +16,18 @@ import androidx.compose.ui.unit.dp
 import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
-fun SyncScreen() {
-
+fun SyncScreen(
+    onEvent: String
+) {
     val numOfMice = 12
     val loading = false
 
-    MyScaffold(title = "Synchronize") {
+    MyScaffold(
+        title = "Synchronize",
+        onDrawerItemClick = {
+            onEvent
+        }
+    ) {
         Column(
             modifier = Modifier.padding(it),
             verticalArrangement = Arrangement.Center,

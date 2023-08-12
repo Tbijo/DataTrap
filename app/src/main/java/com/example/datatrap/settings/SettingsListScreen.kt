@@ -7,8 +7,15 @@ import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
-fun SettingsListScreen() {
-    MyScaffold(title = "Settings") {
+fun SettingsListScreen(
+    onEvent: String
+) {
+    MyScaffold(
+        title = "Settings",
+        onDrawerItemClick = {
+            onEvent
+        }
+    ) {
         Column(modifier = Modifier.padding(it)) {
 
             var settingsList = listOf("Environment Type", "Method", "Method Type", "Protocol", "Trap Type", "Vegetation Type", "User")

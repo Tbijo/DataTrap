@@ -1,18 +1,16 @@
 package com.example.datatrap.settings.user.data
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
+import java.util.UUID
 
-@Parcelize
 @Entity
-data class User(
+data class UserEntity(
 
-    @PrimaryKey(autoGenerate = true)
-    var userId: Long,
+    @PrimaryKey
+    var userId: String = UUID.randomUUID().toString(),
 
     var userName: String,
 
     var password: String
-): Parcelable
+)

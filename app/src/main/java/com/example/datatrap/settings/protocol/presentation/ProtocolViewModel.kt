@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
-import com.example.datatrap.settings.protocol.data.Protocol
+import com.example.datatrap.settings.protocol.data.ProtocolEntity
 import com.example.datatrap.settings.protocol.data.ProtocolRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,32 +19,32 @@ class ProtocolViewModel @Inject constructor(
     private val protocolRepository: ProtocolRepository
 ): ViewModel() {
 
-    val procolList: LiveData<List<Protocol>> = protocolRepository.protocolList
-    private lateinit var protocolList: List<Protocol>
+    val procolList: LiveData<List<ProtocolEntity>> = protocolRepository.protocolEntityList
+    private lateinit var protocolEntityList: List<ProtocolEntity>
 
 
-    fun insertProtocol(protocol: Protocol) {
+    fun insertProtocol(protocolEntity: ProtocolEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            protocolRepository.insertProtocol(protocol)
+            protocolRepository.insertProtocol(protocolEntity)
         }
     }
 
-    fun updateProtocol(protocol: Protocol) {
+    fun updateProtocol(protocolEntity: ProtocolEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            protocolRepository.updateProtocol(protocol)
+            protocolRepository.updateProtocol(protocolEntity)
         }
     }
 
-    fun deleteProtocol(protocol: Protocol) {
+    fun deleteProtocol(protocolEntity: ProtocolEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            protocolRepository.deleteProtocol(protocol)
+            protocolRepository.deleteProtocol(protocolEntity)
         }
     }
 
     init {
         protocolViewModel.procolList.observe(viewLifecycleOwner) { protocols ->
             adapter.setData(protocols)
-            protocolList = protocols
+            protocolEntityList = protocols
         }
 
         binding.addProtocolFloatButton.setOnClickListener {
@@ -54,15 +54,15 @@ class ProtocolViewModel @Inject constructor(
         adapter.setOnItemClickListener(object: ProtocolRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
                 // update protocol
-                val currProtocol: Protocol = protocolList[position]
-                showUpdateDialog("Update Protocol", "Update protocol?", currProtocol)
+                val currProtocolEntity: ProtocolEntity = protocolEntityList[position]
+                showUpdateDialog("Update Protocol", "Update protocol?", currProtocolEntity)
             }
 
             override fun useLongClickListener(position: Int) {
                 // delete protocol
-                val protocol: Protocol = protocolList[position]
+                val protocolEntity: ProtocolEntity = protocolEntityList[position]
 
-                deleteEnvType(protocol, "Protocol", "Protocol")
+                deleteEnvType(protocolEntity, "Protocol", "Protocol")
             }
         })
     }
@@ -70,9 +70,9 @@ class ProtocolViewModel @Inject constructor(
     private fun insertProtocol(name: String){
         if (name.isNotEmpty()){
 
-            val protocol: Protocol = Protocol(0, name, Calendar.getInstance().time, null)
+            val protocolEntity: ProtocolEntity = ProtocolEntity(0, name, Calendar.getInstance().time, null)
 
-            protocolViewModel.insertProtocol(protocol)
+            protocolViewModel.insertProtocol(protocolEntity)
 
             Toast.makeText(requireContext(),"New protocol added.", Toast.LENGTH_SHORT).show()
         }else{
@@ -80,14 +80,14 @@ class ProtocolViewModel @Inject constructor(
         }
     }
 
-    private fun updateProtocol(prot: Protocol, name: String){
+    private fun updateProtocol(prot: ProtocolEntity, name: String){
         if (name.isNotEmpty()){
 
-            val protocolNew: Protocol = prot
-            protocolNew.protocolName = name
-            protocolNew.protDateTimeUpdated = Calendar.getInstance().time
+            val protocolEntityNew: ProtocolEntity = prot
+            protocolEntityNew.protocolName = name
+            protocolEntityNew.protDateTimeUpdated = Calendar.getInstance().time
 
-            protocolViewModel.updateProtocol(protocolNew)
+            protocolViewModel.updateProtocol(protocolEntityNew)
 
             Toast.makeText(requireContext(),"Protocol updated.", Toast.LENGTH_SHORT).show()
         }else{
@@ -95,11 +95,11 @@ class ProtocolViewModel @Inject constructor(
         }
     }
 
-    private fun deleteEnvType(protocol: Protocol, what: String, title: String) {
+    private fun deleteEnvType(protocolEntity: ProtocolEntity, what: String, title: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            protocolViewModel.deleteProtocol(protocol)
+            protocolViewModel.deleteProtocol(protocolEntity)
             Toast.makeText(requireContext(),"$what deleted.", Toast.LENGTH_LONG).show()
         }
             .setNegativeButton("No"){_, _ -> }

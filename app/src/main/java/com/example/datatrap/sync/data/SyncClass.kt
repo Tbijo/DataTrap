@@ -1,4 +1,4 @@
-package com.example.datatrap.sync.data.sync
+package com.example.datatrap.sync.data
 
 data class MouseSync(
     var mouseIid: Long,

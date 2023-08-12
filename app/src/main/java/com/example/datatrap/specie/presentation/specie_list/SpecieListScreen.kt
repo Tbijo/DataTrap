@@ -10,12 +10,16 @@ import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.specie.presentation.specie_list.components.SpecieListItem
 
 @Composable
-fun SpecieListScreen() {
-
+fun SpecieListScreen(
+    onEvent: String,
+) {
     val species = listOf("AAG")
 
     MyScaffold(
-        title = "Species"
+        title = "Species",
+        onDrawerItemClick = {
+            onEvent
+        }
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize().padding(it)

@@ -7,14 +7,14 @@ import androidx.room.*
 interface EnvTypeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertEnvType(envType: EnvType)
+    suspend fun insertEnvType(envTypeEntity: EnvTypeEntity)
 
     @Update
-    suspend fun updateEnvType(envType: EnvType)
+    suspend fun updateEnvType(envTypeEntity: EnvTypeEntity)
 
     @Delete
-    suspend fun deleteEnvType(envType: EnvType)
+    suspend fun deleteEnvType(envTypeEntity: EnvTypeEntity)
 
-    @Query("SELECT * FROM EnvType")
-    fun getEnvTypes(): LiveData<List<EnvType>>
+    @Query("SELECT * FROM EnvTypeEntity")
+    fun getEnvTypes(): LiveData<List<EnvTypeEntity>>
 }

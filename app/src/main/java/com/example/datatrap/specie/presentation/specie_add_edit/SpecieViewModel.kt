@@ -4,8 +4,8 @@ import android.app.AlertDialog
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.R
-import com.example.datatrap.specie.data.specie_image.SpecieImage
-import com.example.datatrap.specie.data.Specie
+import com.example.datatrap.specie.data.specie_image.SpecieImageEntity
+import com.example.datatrap.specie.data.SpecieEntity
 import java.util.Calendar
 
 class SpecieViewModel: ViewModel() {
@@ -14,8 +14,8 @@ class SpecieViewModel: ViewModel() {
     private var specieId: Long = 0
     // private val specieImageViewModel: SpecieImageViewModel by viewModels()
     private var upperFingers: Int? = null
-    private lateinit var currentSpecie: Specie
-    private var specieImage: SpecieImage? = null
+    private lateinit var currentSpecieEntity: SpecieEntity
+    private var specieImageEntity: SpecieImageEntity? = null
 
     init {
         binding.rgUpperFingers.setOnCheckedChangeListener { _, radioButtonId ->
@@ -41,12 +41,12 @@ class SpecieViewModel: ViewModel() {
         }
 
         specieListViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
-            currentSpecie = it
+            currentSpecieEntity = it
             initSpecieValuesToView(it)
         }
 
         specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
-            specieImage = it
+            specieImageEntity = it
         }
         when(item.itemId){
             R.id.menu_save -> updateSpecie()
@@ -96,7 +96,7 @@ class SpecieViewModel: ViewModel() {
 
             val note = binding.etNote.text.toString().ifBlank { null }
 
-            val specie = Specie(
+            val specieEntity = SpecieEntity(
                 0,
                 speciesCode,
                 fullName,
@@ -116,7 +116,7 @@ class SpecieViewModel: ViewModel() {
                 null
             )
 
-            specieListViewModel.insertSpecie(specie)
+            specieListViewModel.insertSpecie(specieEntity)
 
             Toast.makeText(requireContext(), "Specie Added.", Toast.LENGTH_SHORT).show()
 
@@ -144,35 +144,35 @@ class SpecieViewModel: ViewModel() {
         findNavController().navigate(action)
     }
 
-    private fun initSpecieValuesToView(specie: Specie) {
-        binding.etSpeciesCode.setText(specie.speciesCode)
-        binding.etFullName.setText(specie.fullName)
-        binding.etAuthority.setText(specie.authority.toString())
-        binding.etDescription.setText(specie.description.toString())
-        binding.etSynonym.setText(specie.synonym.toString())
+    private fun initSpecieValuesToView(specieEntity: SpecieEntity) {
+        binding.etSpeciesCode.setText(specieEntity.speciesCode)
+        binding.etFullName.setText(specieEntity.fullName)
+        binding.etAuthority.setText(specieEntity.authority.toString())
+        binding.etDescription.setText(specieEntity.description.toString())
+        binding.etSynonym.setText(specieEntity.synonym.toString())
 
-        when(specie.upperFingers){
+        when(specieEntity.upperFingers){
             4 -> binding.rb4.isChecked = true
             5 -> binding.rb5.isChecked = true
         }
 
-        binding.etMaxWeight.setText(specie.maxWeight.toString())
-        binding.etMinWeight.setText(specie.maxWeight.toString())
+        binding.etMaxWeight.setText(specieEntity.maxWeight.toString())
+        binding.etMinWeight.setText(specieEntity.maxWeight.toString())
 
-        binding.etUpBodyLen.setText(specie.bodyLength.toString())
-        binding.etUpTailLen.setText(specie.tailLength.toString())
-        binding.etUpMinFeet.setText(specie.feetLengthMin.toString())
-        binding.etUpFeetMax.setText(specie.feetLengthMax.toString())
+        binding.etUpBodyLen.setText(specieEntity.bodyLength.toString())
+        binding.etUpTailLen.setText(specieEntity.tailLength.toString())
+        binding.etUpMinFeet.setText(specieEntity.feetLengthMin.toString())
+        binding.etUpFeetMax.setText(specieEntity.feetLengthMax.toString())
 
-        binding.cbIsSmallMammal.isChecked = specie.isSmallMammal
-        binding.etNote.setText(specie.note.toString())
+        binding.cbIsSmallMammal.isChecked = specieEntity.isSmallMammal
+        binding.etNote.setText(specieEntity.note.toString())
     }
 
     private fun deleteSpecie() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            specieListViewModel.deleteSpecie(args.specList.specieId, specieImage?.path)
+            specieListViewModel.deleteSpecie(args.specList.specieId, specieImageEntity?.path)
 
             Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
 
@@ -190,26 +190,26 @@ class SpecieViewModel: ViewModel() {
 
         if (checkInput(speciesCode, fullName)){
 
-            val specie: Specie = currentSpecie.copy()
-            specie.speciesCode = speciesCode
-            specie.fullName = fullName
-            specie.authority = if (isTextNull(binding.etAuthority.text.toString())) null else binding.etAuthority.text.toString()
-            specie.synonym = if (isTextNull(binding.etSynonym.text.toString())) null else binding.etSynonym.text.toString()
-            specie.description = if (isTextNull(binding.etDescription.text.toString())) null else binding.etDescription.text.toString()
-            specie.isSmallMammal = binding.cbIsSmallMammal.isChecked
-            specie.upperFingers = upperFingers
-            specie.minWeight = giveOutPutFloat(binding.etMinWeight.text.toString())
-            specie.maxWeight = giveOutPutFloat(binding.etMaxWeight.text.toString())
+            val specieEntity: SpecieEntity = currentSpecieEntity.copy()
+            specieEntity.speciesCode = speciesCode
+            specieEntity.fullName = fullName
+            specieEntity.authority = if (isTextNull(binding.etAuthority.text.toString())) null else binding.etAuthority.text.toString()
+            specieEntity.synonym = if (isTextNull(binding.etSynonym.text.toString())) null else binding.etSynonym.text.toString()
+            specieEntity.description = if (isTextNull(binding.etDescription.text.toString())) null else binding.etDescription.text.toString()
+            specieEntity.isSmallMammal = binding.cbIsSmallMammal.isChecked
+            specieEntity.upperFingers = upperFingers
+            specieEntity.minWeight = giveOutPutFloat(binding.etMinWeight.text.toString())
+            specieEntity.maxWeight = giveOutPutFloat(binding.etMaxWeight.text.toString())
 
-            specie.bodyLength = giveOutPutFloat(binding.etUpBodyLen.text.toString())
-            specie.tailLength = giveOutPutFloat(binding.etUpTailLen.text.toString())
-            specie.feetLengthMin = giveOutPutFloat(binding.etUpMinFeet.text.toString())
-            specie.feetLengthMax = giveOutPutFloat(binding.etUpFeetMax.text.toString())
+            specieEntity.bodyLength = giveOutPutFloat(binding.etUpBodyLen.text.toString())
+            specieEntity.tailLength = giveOutPutFloat(binding.etUpTailLen.text.toString())
+            specieEntity.feetLengthMin = giveOutPutFloat(binding.etUpMinFeet.text.toString())
+            specieEntity.feetLengthMax = giveOutPutFloat(binding.etUpFeetMax.text.toString())
 
-            specie.note = if (isTextNull(binding.etNote.text.toString())) null else binding.etNote.text.toString()
-            specie.specieDateTimeUpdated = Calendar.getInstance().time
+            specieEntity.note = if (isTextNull(binding.etNote.text.toString())) null else binding.etNote.text.toString()
+            specieEntity.specieDateTimeUpdated = Calendar.getInstance().time
 
-            specieListViewModel.updateSpecie(specie)
+            specieListViewModel.updateSpecie(specieEntity)
 
             Toast.makeText(requireContext(), "Specie Updated.", Toast.LENGTH_SHORT).show()
 

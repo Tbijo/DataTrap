@@ -8,19 +8,19 @@ import com.example.datatrap.mouse.domain.model.MouseView
 
 class MouseRepository(private val mouseDao: MouseDao) {
 
-    suspend fun insertMouse(mouse: Mouse): Long {
-        return mouseDao.insertMouse(mouse)
+    suspend fun insertMouse(mouseEntity: MouseEntity): Long {
+        return mouseDao.insertMouse(mouseEntity)
     }
 
-    suspend fun updateMouse(mouse: Mouse) {
-        mouseDao.updateMouse(mouse)
+    suspend fun updateMouse(mouseEntity: MouseEntity) {
+        mouseDao.updateMouse(mouseEntity)
     }
 
     suspend fun deleteMouse(mouseId: Long) {
         mouseDao.deleteMouse(mouseId)
     }
 
-    fun getMouse(mouseId: Long): LiveData<Mouse> {
+    fun getMouse(mouseId: Long): LiveData<MouseEntity> {
         return mouseDao.getMouse(mouseId)
     }
 
@@ -48,7 +48,7 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.countMiceForLocality(localityId)
     }
 
-    suspend fun insertMultiMouse(mice: List<Mouse>) {
+    suspend fun insertMultiMouse(mice: List<MouseEntity>) {
         mouseDao.insertMultiMouse(mice)
     }
 
@@ -57,15 +57,15 @@ class MouseRepository(private val mouseDao: MouseDao) {
     }
 
     // SYNC
-    suspend fun getMiceForSync(lastSync: Long): List<Mouse> {
+    suspend fun getMiceForSync(lastSync: Long): List<MouseEntity> {
         return mouseDao.getMiceForSync(lastSync)
     }
 
-    suspend fun inserSynctMouse(mouse: Mouse) {
-        mouseDao.inserSynctMouse(mouse)
+    suspend fun inserSynctMouse(mouseEntity: MouseEntity) {
+        mouseDao.inserSynctMouse(mouseEntity)
     }
 
-    suspend fun getSyncMouse(occasionID: Long, mouseCaught: Long): Mouse? {
+    suspend fun getSyncMouse(occasionID: Long, mouseCaught: Long): MouseEntity? {
         return mouseDao.getSyncMouse(occasionID, mouseCaught)
     }
 

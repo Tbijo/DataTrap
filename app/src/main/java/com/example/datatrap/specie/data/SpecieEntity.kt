@@ -1,17 +1,15 @@
 package com.example.datatrap.specie.data
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.parcelize.Parcelize
-import java.util.*
+import java.time.ZonedDateTime
+import java.util.UUID
 
-@Parcelize
 @Entity
-data class Specie(
+data class SpecieEntity(
 
-    @PrimaryKey(autoGenerate = true)
-    var specieId: Long,
+    @PrimaryKey
+    var specieId: String = UUID.randomUUID().toString(),
 
     var speciesCode: String,
 
@@ -23,7 +21,7 @@ data class Specie(
 
     var description: String?,
 
-    var isSmallMammal: Boolean, //boolean
+    var isSmallMammal: Boolean,
 
     var upperFingers: Int?,
 
@@ -41,7 +39,7 @@ data class Specie(
 
     var note: String?,
 
-    var specieDateTimeCreated: Date,
+    var specieDateTimeCreated: ZonedDateTime,
 
-    var specieDateTimeUpdated: Date?
-): Parcelable
+    var specieDateTimeUpdated: ZonedDateTime?
+)

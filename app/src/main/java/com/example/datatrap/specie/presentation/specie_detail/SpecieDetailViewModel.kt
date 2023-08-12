@@ -4,7 +4,7 @@ import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.core.presentation.components.ViewImageFragment
 import com.example.datatrap.specie.presentation.specie_image.SpecieImageViewModel
-import com.example.datatrap.specie.data.Specie
+import com.example.datatrap.specie.data.SpecieEntity
 import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
 
 class SpecieDetailViewModel: ViewModel() {
@@ -34,20 +34,20 @@ class SpecieDetailViewModel: ViewModel() {
         }
     }
 
-    private fun initSpecieValuesToView(specie: Specie) {
-        binding.tvSpecieCodeView.text = specie.speciesCode
-        binding.tvFullName.text = specie.fullName
-        binding.tvAuthority.text = specie.authority.toString()
-        binding.tvDescription.text = specie.description.toString()
-        binding.tvMaxWeight.text = specie.maxWeight.toString()
-        binding.tvMinWeight.text = specie.minWeight.toString()
-        binding.tvNumberUpperFinger.text = specie.upperFingers.toString()
-        binding.tvSynonymum.text = specie.synonym.toString()
+    private fun initSpecieValuesToView(specieEntity: SpecieEntity) {
+        binding.tvSpecieCodeView.text = specieEntity.speciesCode
+        binding.tvFullName.text = specieEntity.fullName
+        binding.tvAuthority.text = specieEntity.authority.toString()
+        binding.tvDescription.text = specieEntity.description.toString()
+        binding.tvMaxWeight.text = specieEntity.maxWeight.toString()
+        binding.tvMinWeight.text = specieEntity.minWeight.toString()
+        binding.tvNumberUpperFinger.text = specieEntity.upperFingers.toString()
+        binding.tvSynonymum.text = specieEntity.synonym.toString()
 
-        binding.tvBody.text = specie.bodyLength.toString()
-        binding.tvTail.text = specie.tailLength.toString()
-        binding.tvMinFeet.text = specie.feetLengthMin.toString()
-        binding.tvMaxFeet.text = specie.feetLengthMax.toString()
-        binding.tvSpecieNote.text = specie.note.toString()
+        binding.tvBody.text = specieEntity.bodyLength.toString()
+        binding.tvTail.text = specieEntity.tailLength.toString()
+        binding.tvMinFeet.text = specieEntity.feetLengthMin.toString()
+        binding.tvMaxFeet.text = specieEntity.feetLengthMax.toString()
+        binding.tvSpecieNote.text = specieEntity.note.toString()
     }
 }

@@ -2,33 +2,37 @@ package com.example.datatrap.occasion.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.datatrap.occasion.domain.model.OccList
+import com.example.datatrap.occasion.domain.model.OccasionView
 
 @Dao
 interface OccasionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOccasion(occasion: Occasion): Long
+    suspend fun insertOccasion(occasionEntity: OccasionEntity): Long
 
     @Update
-    suspend fun updateOccasion(occasion: Occasion)
+    suspend fun updateOccasion(occasionEntity: OccasionEntity)
 
-    @Query("DELETE FROM Occasion WHERE occasionId = :occasionId")
+    @Query("DELETE FROM OccasionEntity WHERE occasionId = :occasionId")
     suspend fun deleteOccasion(occasionId: Long)
 
-    @Query("SELECT * FROM Occasion WHERE occasionId = :occasionId")
-    fun getOccasion(occasionId: Long): LiveData<Occasion>
+    @Query("SELECT * FROM OccasionEntity WHERE occasionId = :occasionId")
+    fun getOccasion(occasionId: Long): LiveData<OccasionEntity>
 
-    @Query("SELECT Occasion.occasion AS occasionNum, Occasion.occasionStart AS occasionStart, Occasion.gotCaught AS gotCaught, Occasion.numTraps AS numTraps, Occasion.numMice AS numMice, Occasion.temperature AS temperature, Occasion.weather AS weather, Occasion.leg AS leg, Occasion.note AS note, Locality.localityName AS locality, Method.methodName AS method, MethodType.methodTypeName AS methodType, TrapType.trapTypeName AS trapType, EnvType.envTypeName AS envType, VegetType.vegetTypeName AS vegetType FROM Occasion INNER JOIN Locality ON Locality.localityId = Occasion.localityID INNER JOIN Method ON Method.methodId = Occasion.methodID INNER JOIN MethodType ON MethodType.methodTypeId = Occasion.methodTypeID INNER JOIN TrapType ON TrapType.trapTypeId = Occasion.trapTypeID LEFT JOIN EnvType ON EnvType.envTypeId = Occasion.envTypeID LEFT JOIN VegetType ON VegetType.vegetTypeId = Occasion.vegetTypeID WHERE Occasion.occasionId = :occasionId")
+    @Query(
+        "SELECT OccasionEntity.occasion AS occasionNum, OccasionEntity.occasionStart AS occasionStart, OccasionEntity.gotCaught AS gotCaught, OccasionEntity.numTraps AS numTraps, OccasionEntity.numMice AS numMice, OccasionEntity.temperature AS temperature, OccasionEntity.weather AS weather, OccasionEntity.leg AS leg, OccasionEntity.note AS note, LocalityEntity.localityName AS locality, MethodEntity.methodName AS method, MethodTypeEntity.methodTypeName AS methodType, TrapTypeEntity.trapTypeName AS trapType, EnvTypeEntity.envTypeName AS envType, VegetTypeEntity.vegetTypeName AS vegetType FROM OccasionEntity INNER JOIN LocalityEntity ON LocalityEntity.localityId = OccasionEntity.localityID INNER JOIN MethodEntity ON MethodEntity.methodId = OccasionEntity.methodID INNER JOIN MethodTypeEntity ON MethodTypeEntity.methodTypeId = OccasionEntity.methodTypeID INNER JOIN TrapTypeEntity ON TrapTypeEntity.trapTypeId = OccasionEntity.trapTypeID LEFT JOIN EnvTypeEntity ON EnvTypeEntity.envTypeId = OccasionEntity.envTypeID LEFT JOIN VegetTypeEntity ON VegetTypeEntity.vegetTypeId = OccasionEntity.vegetTypeID WHERE OccasionEntity.occasionId = :occasionId"
+    )
     fun getOccasionView(occasionId: Long): LiveData<OccasionView>
 
-    @Query("SELECT occasionId, localityID, occasion, occasionStart, numMice, numTraps FROM Occasion WHERE sessionID = :idSession")
+    @Query("SELECT occasionId, localityID, occasion, occasionStart, numMice, numTraps FROM OccasionEntity WHERE sessionID = :idSession")
     fun getOccasionsForSession(idSession: Long): LiveData<List<OccList>>
 
     // SYNC
-    @Query("SELECT * FROM Occasion WHERE occasionId IN (:occasionIds)")
-    suspend fun getOccasionForSync(occasionIds: List<Long>): List<Occasion>
+    @Query("SELECT * FROM OccasionEntity WHERE occasionId IN (:occasionIds)")
+    suspend fun getOccasionForSync(occasionIds: List<Long>): List<OccasionEntity>
 
     @Query("SELECT * FROM occasion WHERE sessionID = :sessionID AND occasionStart = :occasionStart")
-    suspend fun getSyncOccasion(sessionID: Long, occasionStart: Long): Occasion?
+    suspend fun getSyncOccasion(sessionID: Long, occasionStart: Long): OccasionEntity?
 
 }

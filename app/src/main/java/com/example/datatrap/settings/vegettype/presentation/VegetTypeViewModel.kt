@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
-import com.example.datatrap.settings.vegettype.data.VegetType
+import com.example.datatrap.settings.vegettype.data.VegetTypeEntity
 import com.example.datatrap.settings.vegettype.data.VegetTypeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,25 +19,25 @@ class VegetTypeViewModel @Inject constructor(
     private val vegetTypeRepository: VegetTypeRepository
 ): ViewModel() {
 
-    val vegetTypeList: LiveData<List<VegetType>> = vegetTypeRepository.vegetTypeList
-    private lateinit var vegTypeList: List<VegetType>
+    val vegetTypeEntityList: LiveData<List<VegetTypeEntity>> = vegetTypeRepository.vegetTypeEntityList
+    private lateinit var vegTypeList: List<VegetTypeEntity>
 
 
-    fun insertVegetType(vegetType: VegetType) {
+    fun insertVegetType(vegetTypeEntity: VegetTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            vegetTypeRepository.insertVegetType(vegetType)
+            vegetTypeRepository.insertVegetType(vegetTypeEntity)
         }
     }
 
-    fun updateVegetType(vegetType: VegetType) {
+    fun updateVegetType(vegetTypeEntity: VegetTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            vegetTypeRepository.updateVegetType(vegetType)
+            vegetTypeRepository.updateVegetType(vegetTypeEntity)
         }
     }
 
-    fun deleteVegetType(vegetType: VegetType) {
+    fun deleteVegetType(vegetTypeEntity: VegetTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            vegetTypeRepository.deleteVegetType(vegetType)
+            vegetTypeRepository.deleteVegetType(vegetTypeEntity)
         }
     }
 
@@ -54,13 +54,13 @@ class VegetTypeViewModel @Inject constructor(
         adapter.setOnItemClickListener(object: VegTypeRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
                 // update veg Type
-                val currVegetType: VegetType = vegTypeList[position]
-                showUpdateDialog("Update Vegetation Type", "Update vegetation type?", currVegetType)
+                val currVegetTypeEntity: VegetTypeEntity = vegTypeList[position]
+                showUpdateDialog("Update Vegetation Type", "Update vegetation type?", currVegetTypeEntity)
             }
 
             override fun useLongClickListener(position: Int) {
                 // delete veg Type
-                val vegType: VegetType = vegTypeList[position]
+                val vegType: VegetTypeEntity = vegTypeList[position]
                 deleteEnvType(vegType, "Vegetation type", "Vegetation Type")
             }
         })
@@ -69,7 +69,7 @@ class VegetTypeViewModel @Inject constructor(
     private fun insertVegType(name: String){
         if (name.isNotEmpty()){
 
-            val vegType: VegetType = VegetType(0, name, Calendar.getInstance().time, null)
+            val vegType: VegetTypeEntity = VegetTypeEntity(0, name, Calendar.getInstance().time, null)
 
             vegTypeViewModel.insertVegetType(vegType)
 
@@ -78,10 +78,10 @@ class VegetTypeViewModel @Inject constructor(
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
     }
-    private fun updateVegType(vegType: VegetType, name: String){
+    private fun updateVegType(vegType: VegetTypeEntity, name: String){
         if (name.isNotEmpty()){
 
-            val vegTypeNew: VegetType = vegType
+            val vegTypeNew: VegetTypeEntity = vegType
             vegTypeNew.vegetTypeName = name
             vegTypeNew.vegTypeDateTimeUpdated = Calendar.getInstance().time
 
@@ -93,7 +93,7 @@ class VegetTypeViewModel @Inject constructor(
         }
     }
 
-    private fun deleteEnvType(vegType: VegetType, what: String, title: String) {
+    private fun deleteEnvType(vegType: VegetTypeEntity, what: String, title: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 

@@ -4,18 +4,18 @@ import androidx.lifecycle.LiveData
 
 class ProtocolRepository(private val protocolDao: ProtocolDao) {
 
-    val protocolList: LiveData<List<Protocol>> = protocolDao.getProtocols()
+    val protocolEntityList: LiveData<List<ProtocolEntity>> = protocolDao.getProtocols()
 
-    suspend fun insertProtocol(protocol: Protocol) {
-        protocolDao.insertProtocol(protocol)
+    suspend fun insertProtocol(protocolEntity: ProtocolEntity) {
+        protocolDao.insertProtocol(protocolEntity)
     }
 
-    suspend fun updateProtocol(protocol: Protocol) {
-        protocolDao.updateProtocol(protocol)
+    suspend fun updateProtocol(protocolEntity: ProtocolEntity) {
+        protocolDao.updateProtocol(protocolEntity)
     }
 
-    suspend fun deleteProtocol(protocol: Protocol) {
-        protocolDao.deleteProtocol(protocol)
+    suspend fun deleteProtocol(protocolEntity: ProtocolEntity) {
+        protocolDao.deleteProtocol(protocolEntity)
     }
 
 }

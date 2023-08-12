@@ -1,9 +1,9 @@
 package com.example.datatrap.specie.presentation.specie_list
 
 import androidx.lifecycle.*
-import com.example.datatrap.specie.data.Specie
-import com.example.datatrap.specie.data.SpecList
-import com.example.datatrap.specie.data.SpecSelectList
+import com.example.datatrap.specie.data.SpecieEntity
+import com.example.datatrap.specie.domain.model.SpecList
+import com.example.datatrap.specie.domain.model.SpecSelectList
 import com.example.datatrap.specie.data.SpecieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,15 +19,15 @@ class SpecieListViewModel @Inject constructor(
     val specieList: LiveData<List<SpecList>> = specieRepository.specieList
     val specieId: MutableLiveData<Long> = MutableLiveData<Long>()
 
-    fun insertSpecie(specie: Specie) {
+    fun insertSpecie(specieEntity: SpecieEntity) {
         viewModelScope.launch {
-            specieId.value = specieRepository.insertSpecie(specie)
+            specieId.value = specieRepository.insertSpecie(specieEntity)
         }
     }
 
-    fun updateSpecie(specie: Specie) {
+    fun updateSpecie(specieEntity: SpecieEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            specieRepository.updateSpecie(specie)
+            specieRepository.updateSpecie(specieEntity)
         }
     }
 
@@ -48,7 +48,7 @@ class SpecieListViewModel @Inject constructor(
         }
     }
 
-    fun getSpecie(specieId: Long): LiveData<Specie> {
+    fun getSpecie(specieId: Long): LiveData<SpecieEntity> {
         return specieRepository.getSpecie(specieId)
     }
 

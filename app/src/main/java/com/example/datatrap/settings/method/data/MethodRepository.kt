@@ -6,17 +6,17 @@ class MethodRepository(
     private val methodDao: MethodDao
 ) {
 
-    val methodList: LiveData<List<Method>> = methodDao.getMethods()
+    val methodEntityList: LiveData<List<MethodEntity>> = methodDao.getMethods()
 
-    suspend fun insertMethod(method: Method) {
-        methodDao.insertMethod(method)
+    suspend fun insertMethod(methodEntity: MethodEntity) {
+        methodDao.insertMethod(methodEntity)
     }
 
-    suspend fun updateMethod(method: Method) {
-        methodDao.updateMethod(method)
+    suspend fun updateMethod(methodEntity: MethodEntity) {
+        methodDao.updateMethod(methodEntity)
     }
 
-    suspend fun deleteMethod(method: Method) {
-        methodDao.deleteMethod(method)
+    suspend fun deleteMethod(methodEntity: MethodEntity) {
+        methodDao.deleteMethod(methodEntity)
     }
 }

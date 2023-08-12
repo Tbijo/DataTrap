@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
 import com.example.datatrap.core.data.pref.PrefViewModel
-import com.example.datatrap.project.data.Project
+import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.project.data.ProjectRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,20 +24,20 @@ class ProjectListViewModel @Inject constructor(
     private val projectListViewModel: ProjectListViewModel by viewModels()
     private val prefViewModel: PrefViewModel by viewModels()
 
-    private lateinit var projectList: List<Project>
+    private lateinit var projectEntityList: List<ProjectEntity>
 
     init {
         holder.binding.tvProjectDate.text = SimpleDateFormat.getDateTimeInstance().format(Date(currenItem.projectStart))
 
-        projectListViewModel.projectList.observe(viewLifecycleOwner) { projects ->
-            projectList = projects
+        projectListViewModel.projectEntityList.observe(viewLifecycleOwner) { projects ->
+            projectEntityList = projects
             adapter.setData(projects)
         }
 
         adapter.setOnItemClickListener(object : ProjectRecyclerAdapter.MyClickListener {
 
             override fun useClickListener(position: Int) {
-                val project = projectList[position]
+                val project = projectEntityList[position]
                 // nastavit meno Projektu na zobrazenie
                 prefViewModel.savePrjNamePref(project.projectName)
                 // tu sa prejde na locality s projektom
@@ -47,7 +47,7 @@ class ProjectListViewModel @Inject constructor(
 
             override fun useLongClickListener(position: Int) {
                 // tu sa prejde na upravu vybraneho projektu
-                val project = projectList[position]
+                val project = projectEntityList[position]
                 val action = ListAllProjectFragmentDirections.actionListAllProjectFragmentToUpdateProjectFragment(project)
                 findNavController().navigate(action)
             }
@@ -79,9 +79,9 @@ class ProjectListViewModel @Inject constructor(
     private fun insertProject(name: String) {
         if (name.isNotEmpty()) {
 
-            val project: Project = Project(0, name, Calendar.getInstance().time, null, 0, 0, Calendar.getInstance().time.time)
+            val projectEntity: ProjectEntity = ProjectEntity(0, name, Calendar.getInstance().time, null, 0, 0, Calendar.getInstance().time.time)
 
-            projectListViewModel.insertProject(project)
+            projectListViewModel.insertProject(projectEntity)
 
             Toast.makeText(requireContext(), "New project added.", Toast.LENGTH_SHORT).show()
         } else {
@@ -97,27 +97,27 @@ class ProjectListViewModel @Inject constructor(
         return true
     }
 
-    val projectList: LiveData<List<Project>> = projectRepository.projectList
+    val projectEntityList: LiveData<List<ProjectEntity>> = projectRepository.projectEntityList
 
-    fun insertProject(project: Project) {
+    fun insertProject(projectEntity: ProjectEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            projectRepository.insertProject(project)
+            projectRepository.insertProject(projectEntity)
         }
     }
 
-    fun updateProject(project: Project) {
+    fun updateProject(projectEntity: ProjectEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            projectRepository.updateProject(project)
+            projectRepository.updateProject(projectEntity)
         }
     }
 
-    fun deleteProject(project: Project) {
+    fun deleteProject(projectEntity: ProjectEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            projectRepository.deleteProject(project)
+            projectRepository.deleteProject(projectEntity)
         }
     }
 
-    fun searchProjects(projectName: String): LiveData<List<Project>> {
+    fun searchProjects(projectName: String): LiveData<List<ProjectEntity>> {
         return projectRepository.searchProjects(projectName)
     }
 }

@@ -4,17 +4,17 @@ import androidx.lifecycle.LiveData
 
 class TrapTypeRepository(private val trapTypeDao: TrapTypeDao) {
 
-    val trapTypeList: LiveData<List<TrapType>> = trapTypeDao.getTrapTypes()
+    val trapTypeEntityList: LiveData<List<TrapTypeEntity>> = trapTypeDao.getTrapTypes()
 
-    suspend fun insertTrapType(trapType: TrapType) {
-        trapTypeDao.insertTrapType(trapType)
+    suspend fun insertTrapType(trapTypeEntity: TrapTypeEntity) {
+        trapTypeDao.insertTrapType(trapTypeEntity)
     }
 
-    suspend fun updateTrapType(trapType: TrapType) {
-        trapTypeDao.updateTrapType(trapType)
+    suspend fun updateTrapType(trapTypeEntity: TrapTypeEntity) {
+        trapTypeDao.updateTrapType(trapTypeEntity)
     }
 
-    suspend fun deleteTrapType(trapType: TrapType) {
-        trapTypeDao.deleteTrapType(trapType)
+    suspend fun deleteTrapType(trapTypeEntity: TrapTypeEntity) {
+        trapTypeDao.deleteTrapType(trapTypeEntity)
     }
 }

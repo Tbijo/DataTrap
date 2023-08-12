@@ -7,14 +7,14 @@ import androidx.room.*
 interface ProtocolDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertProtocol(protocol: Protocol)
+    suspend fun insertProtocol(protocolEntity: ProtocolEntity)
 
     @Update
-    suspend fun updateProtocol(protocol: Protocol)
+    suspend fun updateProtocol(protocolEntity: ProtocolEntity)
 
     @Delete
-    suspend fun deleteProtocol(protocol: Protocol)
+    suspend fun deleteProtocol(protocolEntity: ProtocolEntity)
 
-    @Query("SELECT * FROM Protocol")
-    fun getProtocols(): LiveData<List<Protocol>>
+    @Query("SELECT * FROM ProtocolEntity")
+    fun getProtocols(): LiveData<List<ProtocolEntity>>
 }

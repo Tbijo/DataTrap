@@ -4,7 +4,7 @@ import android.app.AlertDialog
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.R
-import com.example.datatrap.project.data.Project
+import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.project.presentation.project_list.ProjectListViewModel
 import java.util.Calendar
 
@@ -33,13 +33,13 @@ class ProjectViewModel: ViewModel() {
         val numMice = binding.etNumMouse.text.toString()
 
         if (checkInput(projectName, numLocal, numMice)){
-            val project: Project = args.project.copy()
-            project.projectName = projectName
-            project.projectDateTimeUpdated = Calendar.getInstance().time
-            project.numLocal = Integer.parseInt(numLocal)
-            project.numMice = Integer.parseInt(numMice)
+            val projectEntity: ProjectEntity = args.project.copy()
+            projectEntity.projectName = projectName
+            projectEntity.projectDateTimeUpdated = Calendar.getInstance().time
+            projectEntity.numLocal = Integer.parseInt(numLocal)
+            projectEntity.numMice = Integer.parseInt(numMice)
 
-            projectListViewModel.updateProject(project)
+            projectListViewModel.updateProject(projectEntity)
 
             Toast.makeText(requireContext(), "Project updated.", Toast.LENGTH_SHORT).show()
 

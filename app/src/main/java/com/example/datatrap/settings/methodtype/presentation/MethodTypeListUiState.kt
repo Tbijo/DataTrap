@@ -1,8 +1,8 @@
 package com.example.datatrap.settings.methodtype.presentation
 
-import com.example.datatrap.settings.methodtype.data.MethodType
+import com.example.datatrap.settings.methodtype.data.MethodTypeEntity
 
 data class MethodTypeListUiState(
-    val methodTypeList: List<MethodType>,
+    val methodTypeEntityList: List<MethodTypeEntity>,
     val methodTypeName: String? = null,
 )

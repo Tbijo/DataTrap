@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.data.pref.PrefViewModel
-import com.example.datatrap.session.data.Session
+import com.example.datatrap.session.data.SessionEntity
 import com.example.datatrap.session.data.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -24,7 +24,7 @@ class SessionListViewModel @Inject constructor(
     private val localitySessionViewModel: LocalitySessionViewModel by viewModels()
     private val prefViewModel: PrefViewModel by viewModels()
 
-    private lateinit var sessionList: List<Session>
+    private lateinit var sessionEntityList: List<SessionEntity>
 
     init {
         holder.binding.tvSessionDate.text = SimpleDateFormat.getDateTimeInstance().format(Date(currenItem.sessionStart))
@@ -35,35 +35,35 @@ class SessionListViewModel @Inject constructor(
         sessionListViewModel.getSessionsForProject(args.project.projectId)
             .observe(viewLifecycleOwner) { sessions ->
                 adapter.setData(sessions)
-                sessionList = sessions
+                sessionEntityList = sessions
             }
 
         adapter.setOnItemClickListener(object : PrjSessionRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
                 // vytvorit spojenie medzi vybranou locality a session
-                val session: Session = sessionList[position]
+                val sessionEntity: SessionEntity = sessionEntityList[position]
 
                 // nastavit vybranu session
-                prefViewModel.saveSesNumPref(session.session)
+                prefViewModel.saveSesNumPref(sessionEntity.session)
 
                 val kombLocSess =
-                    LocalitySessionCrossRef(args.locList.localityId, session.sessionId)
+                    LocalitySessionCrossRef(args.locList.localityId, sessionEntity.sessionId)
                 localitySessionViewModel.insertLocalitySessionCrossRef(kombLocSess)
 
                 // ideme do occasion
                 val action =
                     ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToListSesOccasionFragment(
-                        session, args.locList
+                        sessionEntity, args.locList
                     )
                 findNavController().navigate(action)
             }
 
             override fun useLongClickListener(position: Int) {
                 // uprava vybranej session
-                val session: Session = sessionList[position]
+                val sessionEntity: SessionEntity = sessionEntityList[position]
                 val action =
                     ListPrjSessionFragmentDirections.actionListPrjSessionFragmentToUpdateSessionFragment(
-                        session, args.locList
+                        sessionEntity, args.locList
                     )
                 findNavController().navigate(action)
             }
@@ -76,10 +76,10 @@ class SessionListViewModel @Inject constructor(
     }
 
     private fun insertSession() {
-        val session: Session =
-            Session(
+        val sessionEntity: SessionEntity =
+            SessionEntity(
                 0,
-                (sessionList.size + 1),
+                (sessionEntityList.size + 1),
                 args.project.projectId,
                 0,
                 Calendar.getInstance().time,
@@ -88,31 +88,31 @@ class SessionListViewModel @Inject constructor(
             )
 
         // ulozit session
-        sessionListViewModel.insertSession(session)
+        sessionListViewModel.insertSession(sessionEntity)
 
         Toast.makeText(requireContext(), "New session added.", Toast.LENGTH_SHORT).show()
 
     }
 
-    fun insertSession(session: Session) {
+    fun insertSession(sessionEntity: SessionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            sessionRepository.insertSession(session)
+            sessionRepository.insertSession(sessionEntity)
         }
     }
 
-    fun updateSession(session: Session) {
+    fun updateSession(sessionEntity: SessionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            sessionRepository.updateSession(session)
+            sessionRepository.updateSession(sessionEntity)
         }
     }
 
-    fun deleteSession(session: Session) {
+    fun deleteSession(sessionEntity: SessionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            sessionRepository.deleteSession(session)
+            sessionRepository.deleteSession(sessionEntity)
         }
     }
 
-    fun getSessionsForProject(projectId: Long): LiveData<List<Session>> {
+    fun getSessionsForProject(projectId: Long): LiveData<List<SessionEntity>> {
         return sessionRepository.getSessionsForProject(projectId)
     }
 

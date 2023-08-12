@@ -7,14 +7,14 @@ import androidx.room.*
 interface VegetTypeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertVegetType(vegetType: VegetType)
+    suspend fun insertVegetType(vegetTypeEntity: VegetTypeEntity)
 
     @Update
-    suspend fun updateVegetType(vegetType: VegetType)
+    suspend fun updateVegetType(vegetTypeEntity: VegetTypeEntity)
 
     @Delete
-    suspend fun deleteVegetType(vegetType: VegetType)
+    suspend fun deleteVegetType(vegetTypeEntity: VegetTypeEntity)
 
-    @Query("SELECT * FROM VegetType")
-    fun getVegetTypes(): LiveData<List<VegetType>>
+    @Query("SELECT * FROM VegetTypeEntity")
+    fun getVegetTypes(): LiveData<List<VegetTypeEntity>>
 }

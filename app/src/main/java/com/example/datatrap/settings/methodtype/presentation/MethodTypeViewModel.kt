@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
-import com.example.datatrap.settings.methodtype.data.MethodType
+import com.example.datatrap.settings.methodtype.data.MethodTypeEntity
 import com.example.datatrap.settings.methodtype.data.MethodTypeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,25 +19,25 @@ class MethodTypeViewModel @Inject constructor(
     private val methodTypeRepository: MethodTypeRepository
 ) : ViewModel() {
 
-    val methodTypeList: LiveData<List<MethodType>> = methodTypeRepository.methodTypeList
-    private lateinit var methodTypeList: List<MethodType>
+    val methodTypeEntityList: LiveData<List<MethodTypeEntity>> = methodTypeRepository.methodTypeEntityList
+    private lateinit var methodTypeEntityList: List<MethodTypeEntity>
 
 
-    fun insertMethodType(methodType: MethodType) {
+    fun insertMethodType(methodTypeEntity: MethodTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            methodTypeRepository.insertMethodType(methodType)
+            methodTypeRepository.insertMethodType(methodTypeEntity)
         }
     }
 
-    fun updateMethodType(methodType: MethodType) {
+    fun updateMethodType(methodTypeEntity: MethodTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            methodTypeRepository.updateMethodType(methodType)
+            methodTypeRepository.updateMethodType(methodTypeEntity)
         }
     }
 
-    fun deleteMethodType(methodType: MethodType) {
+    fun deleteMethodType(methodTypeEntity: MethodTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            methodTypeRepository.deleteMethodType(methodType)
+            methodTypeRepository.deleteMethodType(methodTypeEntity)
         }
     }
 
@@ -50,14 +50,14 @@ class MethodTypeViewModel @Inject constructor(
         adapter.setOnItemClickListener(object: MetTypeRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
                 // update method type
-                val currMetType: MethodType = methodTypeList[position]
+                val currMetType: MethodTypeEntity = methodTypeEntityList[position]
                 showUpdateDialog("Update Method Type", "Update method type?", currMetType)
             }
 
             override fun useLongClickListener(position: Int) {
                 // delete method type
-                val methodType: MethodType = methodTypeList[position]
-                deleteEnvType(methodType, "Method type", "Method Type")
+                val methodTypeEntity: MethodTypeEntity = methodTypeEntityList[position]
+                deleteEnvType(methodTypeEntity, "Method type", "Method Type")
             }
         })
     }
@@ -65,23 +65,23 @@ class MethodTypeViewModel @Inject constructor(
     private fun insertMethodType(name: String){
         if (name.isNotEmpty()){
 
-            val methodType: MethodType = MethodType(0, name, Calendar.getInstance().time, null)
+            val methodTypeEntity: MethodTypeEntity = MethodTypeEntity(0, name, Calendar.getInstance().time, null)
 
-            methodTypeViewModel.insertMethodType(methodType)
+            methodTypeViewModel.insertMethodType(methodTypeEntity)
 
             Toast.makeText(requireContext(),"New method type added.", Toast.LENGTH_SHORT).show()
         }else{
             Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
         }
     }
-    private fun updateMethodType(methodType: MethodType, name: String){
+    private fun updateMethodType(methodTypeEntity: MethodTypeEntity, name: String){
         if (name.isNotEmpty()){
 
-            val methodTypeNew: MethodType = methodType
-            methodTypeNew.methodTypeName = name
-            methodTypeNew.methTypeDateTimeUpdated = Calendar.getInstance().time
+            val methodTypeEntityNew: MethodTypeEntity = methodTypeEntity
+            methodTypeEntityNew.methodTypeName = name
+            methodTypeEntityNew.methTypeDateTimeUpdated = Calendar.getInstance().time
 
-            methodTypeViewModel.updateMethodType(methodTypeNew)
+            methodTypeViewModel.updateMethodType(methodTypeEntityNew)
 
             Toast.makeText(requireContext(),"Method type updated.", Toast.LENGTH_SHORT).show()
         }else{
@@ -89,11 +89,11 @@ class MethodTypeViewModel @Inject constructor(
         }
     }
 
-    private fun deleteEnvType(methodType: MethodType, what: String, title: String) {
+    private fun deleteEnvType(methodTypeEntity: MethodTypeEntity, what: String, title: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            methodTypeViewModel.deleteMethodType(methodType)
+            methodTypeViewModel.deleteMethodType(methodTypeEntity)
             Toast.makeText(requireContext(),"$what deleted.", Toast.LENGTH_LONG).show()
         }
             .setNegativeButton("No"){_, _ -> }

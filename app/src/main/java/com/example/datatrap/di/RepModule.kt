@@ -6,7 +6,6 @@ import com.example.datatrap.core.data.db.TrapDatabase
 import com.example.datatrap.locality.data.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.occasion.data.OccasionRepository
-import com.example.datatrap.project.data.ProjectLocalityRepository
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionRepository
 import com.example.datatrap.settings.envtype.data.EnvTypeRepository
@@ -76,10 +75,6 @@ object RepModule {
     @ActivityRetainedScoped
     @Provides
     fun provideVegetTypeRep(db: TrapDatabase) = VegetTypeRepository(db.vegetTypeDao())
-
-    @ActivityRetainedScoped
-    @Provides
-    fun provideProjectLocalityRep(db: TrapDatabase) = ProjectLocalityRepository(db.projectLocalityDao())
 
     @ActivityRetainedScoped
     @Provides

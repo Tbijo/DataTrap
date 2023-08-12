@@ -1,7 +1,8 @@
-package com.example.datatrap.specie.data
+package com.example.datatrap.specie.domain.model
 
 data class SpecSelectList(
-    var specieId: Long,
+
+    var specieId: String,
 
     var speciesCode: String,
 

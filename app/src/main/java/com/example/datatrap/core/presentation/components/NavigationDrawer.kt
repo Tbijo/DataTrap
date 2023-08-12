@@ -38,12 +38,16 @@ import com.example.datatrap.R
 import kotlinx.coroutines.launch
 
 data class DrawerItem(
-    val id: String,
+    val id: DrawerScreens,
     val title: String,
     val contentDescription: String,
     val iconVector: ImageVector?,
     val iconPainter: Int? = null,
 )
+
+enum class DrawerScreens {
+    PROJECTS, SPECIES, SETTINGS, ABOUT, SYNCHRONIZE
+}
 
 @Composable
 fun AppBar(
@@ -124,6 +128,7 @@ fun DrawerBody(
 @Composable
 fun MyScaffold(
     title: String,
+    onDrawerItemClick: (DrawerScreens) -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
@@ -149,47 +154,39 @@ fun MyScaffold(
             DrawerBody(
                 items = listOf(
                     DrawerItem(
-                        id = "projects",
+                        id = DrawerScreens.PROJECTS,
                         title = "Projects",
                         contentDescription = "Go to projects screen",
                         iconVector = Icons.Default.List
                     ),
                     DrawerItem(
-                        id = "species",
+                        id = DrawerScreens.SPECIES,
                         title = "Species",
                         contentDescription = "Go to species screen",
                         iconVector = null,
                         iconPainter = R.drawable.ic_mouse,
                     ),
                     DrawerItem(
-                        id = "settings",
+                        id = DrawerScreens.SETTINGS,
                         title = "Settings",
                         contentDescription = "Go to settings screen",
                         iconVector = Icons.Default.Settings
                     ),
                     DrawerItem(
-                        id = "about",
+                        id = DrawerScreens.ABOUT,
                         title = "About",
                         contentDescription = "Go to about screen",
                         iconVector = Icons.Default.Info
                     ),
                     DrawerItem(
-                        id = "synchronize",
+                        id = DrawerScreens.SYNCHRONIZE,
                         title = "Synchronize",
                         contentDescription = "Go to synchronize screen",
                         iconVector = Icons.Filled.Share // TODO cloud
                     ),
                 ),
                 onItemClick = {
-                    when(it.id) {
-                        "projects" -> println(it.contentDescription)
-                        "species" -> println("Clicked on ${it.title}")
-                        "settings" -> println("Clicked on ${it.title}")
-                        "about" -> println("Clicked on ${it.title}")
-                        "synchronize" -> println("Clicked on ${it.title}")
-                        else -> println("error")
-                    }
-
+                    onDrawerItemClick(it.id)
                 }
             )
         },

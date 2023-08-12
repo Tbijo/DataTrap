@@ -1,7 +1,5 @@
 package com.example.datatrap.sync.data
 
-import com.example.datatrap.models.sync.ImageSync
-import com.example.datatrap.models.sync.SyncClass
 import com.example.datatrap.sync.utils.ResultWrapper
 import com.example.datatrap.sync.utils.safeApiCall
 import okhttp3.MediaType

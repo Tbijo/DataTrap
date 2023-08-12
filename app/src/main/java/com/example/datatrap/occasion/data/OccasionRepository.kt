@@ -1,22 +1,24 @@
 package com.example.datatrap.occasion.data
 
 import androidx.lifecycle.LiveData
+import com.example.datatrap.occasion.domain.model.OccList
+import com.example.datatrap.occasion.domain.model.OccasionView
 
 class OccasionRepository(private val occasionDao: OccasionDao) {
 
-    suspend fun insertOccasion(occasion: Occasion): Long {
-        return occasionDao.insertOccasion(occasion)
+    suspend fun insertOccasion(occasionEntity: OccasionEntity): Long {
+        return occasionDao.insertOccasion(occasionEntity)
     }
 
-    suspend fun updateOccasion(occasion: Occasion) {
-        occasionDao.updateOccasion(occasion)
+    suspend fun updateOccasion(occasionEntity: OccasionEntity) {
+        occasionDao.updateOccasion(occasionEntity)
     }
 
     suspend fun deleteOccasion(occasionId: Long) {
         occasionDao.deleteOccasion(occasionId)
     }
 
-    fun getOccasion(occasionId: Long): LiveData<Occasion> {
+    fun getOccasion(occasionId: Long): LiveData<OccasionEntity> {
         return occasionDao.getOccasion(occasionId)
     }
 
@@ -29,11 +31,11 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
     }
 
     // SYNC
-    suspend fun getOccasionForSync(occasionId: List<Long>): List<Occasion> {
+    suspend fun getOccasionForSync(occasionId: List<Long>): List<OccasionEntity> {
         return occasionDao.getOccasionForSync(occasionId)
     }
 
-    suspend fun getSyncOccasion(sessionID: Long, occasionStart: Long): Occasion? {
+    suspend fun getSyncOccasion(sessionID: Long, occasionStart: Long): OccasionEntity? {
         return occasionDao.getSyncOccasion(sessionID, occasionStart)
     }
 

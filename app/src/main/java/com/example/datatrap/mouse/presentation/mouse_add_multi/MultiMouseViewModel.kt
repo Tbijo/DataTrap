@@ -6,10 +6,10 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.R
 import com.example.datatrap.core.util.EnumSpecie
-import com.example.datatrap.mouse.data.Mouse
+import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.domain.model.MultiMouse
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
-import com.example.datatrap.specie.data.SpecList
+import com.example.datatrap.specie.domain.model.SpecList
 import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
 import java.util.Calendar
 
@@ -65,10 +65,10 @@ class MultiMouseViewModel: ViewModel() {
             Settings.Secure.ANDROID_ID
         )
 
-        val multiMouse: MutableList<Mouse> = mutableListOf()
+        val multiMouseEntity: MutableList<MouseEntity> = mutableListOf()
 
         map.forEach {
-            val mouse = Mouse(
+            val mouseEntity = MouseEntity(
                 0,
                 0,
                 null,
@@ -105,10 +105,10 @@ class MultiMouseViewModel: ViewModel() {
                 Calendar.getInstance().time.time
             )
 
-            multiMouse.add(mouse)
+            multiMouseEntity.add(mouseEntity)
         }
 
-        mouseListViewModel.insertMultiMouse(multiMouse)
+        mouseListViewModel.insertMultiMouse(multiMouseEntity)
 
         Toast.makeText(requireContext(), "Multiple mice added.", Toast.LENGTH_SHORT).show()
 

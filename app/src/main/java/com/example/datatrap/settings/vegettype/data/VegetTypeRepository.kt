@@ -4,17 +4,17 @@ import androidx.lifecycle.LiveData
 
 class VegetTypeRepository(private val vegetTypeDao: VegetTypeDao) {
 
-    val vegetTypeList: LiveData<List<VegetType>> = vegetTypeDao.getVegetTypes()
+    val vegetTypeEntityList: LiveData<List<VegetTypeEntity>> = vegetTypeDao.getVegetTypes()
 
-    suspend fun insertVegetType(vegetType: VegetType) {
-        vegetTypeDao.insertVegetType(vegetType)
+    suspend fun insertVegetType(vegetTypeEntity: VegetTypeEntity) {
+        vegetTypeDao.insertVegetType(vegetTypeEntity)
     }
 
-    suspend fun updateVegetType(vegetType: VegetType) {
-        vegetTypeDao.updateVegetType(vegetType)
+    suspend fun updateVegetType(vegetTypeEntity: VegetTypeEntity) {
+        vegetTypeDao.updateVegetType(vegetTypeEntity)
     }
 
-    suspend fun deleteVegetType(vegetType: VegetType) {
-        vegetTypeDao.deleteVegetType(vegetType)
+    suspend fun deleteVegetType(vegetTypeEntity: VegetTypeEntity) {
+        vegetTypeDao.deleteVegetType(vegetTypeEntity)
     }
 }

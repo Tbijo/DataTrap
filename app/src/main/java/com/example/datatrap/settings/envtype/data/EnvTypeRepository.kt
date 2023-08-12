@@ -6,17 +6,17 @@ class EnvTypeRepository(
     private val envTypeDao: EnvTypeDao
 ) {
 
-    val envTypeList: LiveData<List<EnvType>> = envTypeDao.getEnvTypes()
+    val envTypeEntityList: LiveData<List<EnvTypeEntity>> = envTypeDao.getEnvTypes()
 
-    suspend fun insertEnvType(envType: EnvType) {
-        envTypeDao.insertEnvType(envType)
+    suspend fun insertEnvType(envTypeEntity: EnvTypeEntity) {
+        envTypeDao.insertEnvType(envTypeEntity)
     }
 
-    suspend fun updateEnvType(envType: EnvType) {
-        envTypeDao.updateEnvType(envType)
+    suspend fun updateEnvType(envTypeEntity: EnvTypeEntity) {
+        envTypeDao.updateEnvType(envTypeEntity)
     }
 
-    suspend fun deleteEnvType(envType: EnvType) {
-        envTypeDao.deleteEnvType(envType)
+    suspend fun deleteEnvType(envTypeEntity: EnvTypeEntity) {
+        envTypeDao.deleteEnvType(envTypeEntity)
     }
 }

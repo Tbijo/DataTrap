@@ -7,14 +7,14 @@ import androidx.room.*
 interface TrapTypeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrapType(trapType: TrapType)
+    suspend fun insertTrapType(trapTypeEntity: TrapTypeEntity)
 
     @Update
-    suspend fun updateTrapType(trapType: TrapType)
+    suspend fun updateTrapType(trapTypeEntity: TrapTypeEntity)
 
     @Delete
-    suspend fun deleteTrapType(trapType: TrapType)
+    suspend fun deleteTrapType(trapTypeEntity: TrapTypeEntity)
 
-    @Query("SELECT * FROM TrapType")
-    fun getTrapTypes(): LiveData<List<TrapType>>
+    @Query("SELECT * FROM TrapTypeEntity")
+    fun getTrapTypes(): LiveData<List<TrapTypeEntity>>
 }

@@ -1,8 +1,8 @@
 package com.example.datatrap.settings.user.presentation
 
-import com.example.datatrap.settings.user.data.User
+import com.example.datatrap.settings.user.data.UserEntity
 
 data class UserUiState(
-    val userList: List<User>,
-    val selectedUser: User? = null,
+    val userEntityList: List<UserEntity>,
+    val selectedUserEntity: UserEntity? = null,
 )

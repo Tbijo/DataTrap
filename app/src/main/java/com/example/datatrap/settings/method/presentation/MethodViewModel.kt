@@ -6,7 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
-import com.example.datatrap.settings.method.data.Method
+import com.example.datatrap.settings.method.data.MethodEntity
 import com.example.datatrap.settings.method.data.MethodRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,25 +19,25 @@ class MethodViewModel @Inject constructor(
     private val methodRepository: MethodRepository
 ): ViewModel() {
 
-    private lateinit var methodList: List<Method>
+    private lateinit var methodEntityList: List<MethodEntity>
 
-    val methodList: LiveData<List<Method>> = methodRepository.methodList
+    val methodEntityList: LiveData<List<MethodEntity>> = methodRepository.methodEntityList
 
-    fun insertMethod(method: Method){
+    fun insertMethod(methodEntity: MethodEntity){
         viewModelScope.launch(Dispatchers.IO) {
-            methodRepository.insertMethod(method)
+            methodRepository.insertMethod(methodEntity)
         }
     }
 
-    fun updateMethod(method: Method){
+    fun updateMethod(methodEntity: MethodEntity){
         viewModelScope.launch(Dispatchers.IO) {
-            methodRepository.updateMethod(method)
+            methodRepository.updateMethod(methodEntity)
         }
     }
 
-    fun deleteMethod(method: Method){
+    fun deleteMethod(methodEntity: MethodEntity){
         viewModelScope.launch(Dispatchers.IO) {
-            methodRepository.deleteMethod(method)
+            methodRepository.deleteMethod(methodEntity)
         }
     }
 
@@ -48,12 +48,12 @@ class MethodViewModel @Inject constructor(
 
         adapter.setOnItemClickListener(object : MethodRecyclerAdapter.MyClickListener {
             override fun useClickListener(position: Int) {
-                val currMethod = methodList[position]
+                val currMethod = methodEntityList[position]
                 showUpdateDialog("Update Method", "Update method?", currMethod)
             }
 
             override fun useLongClickListener(position: Int) {
-                val method = methodList[position]
+                val method = methodEntityList[position]
                 deleteMethod(method, "method", "Method")
             }
 
@@ -63,9 +63,9 @@ class MethodViewModel @Inject constructor(
     private fun insertMethod(name: String){
         if (name.isNotEmpty()){
 
-            val method: Method = Method(0, name, Calendar.getInstance().time, null)
+            val methodEntity: MethodEntity = MethodEntity(0, name, Calendar.getInstance().time, null)
 
-            methodViewModel.insertMethod(method)
+            methodViewModel.insertMethod(methodEntity)
 
             Toast.makeText(requireContext(),"New method added.", Toast.LENGTH_SHORT).show()
         }else{
@@ -73,14 +73,14 @@ class MethodViewModel @Inject constructor(
         }
     }
 
-    private fun updateMethod(method: Method, name: String){
+    private fun updateMethod(methodEntity: MethodEntity, name: String){
         if (name.isNotEmpty()){
 
-            val methodNew: Method = method
-            methodNew.methodName = name
-            methodNew.methodDateTimeUpdated = Calendar.getInstance().time
+            val methodEntityNew: MethodEntity = methodEntity
+            methodEntityNew.methodName = name
+            methodEntityNew.methodDateTimeUpdated = Calendar.getInstance().time
 
-            methodViewModel.updateMethod(methodNew)
+            methodViewModel.updateMethod(methodEntityNew)
 
             Toast.makeText(requireContext(),"Method updated.", Toast.LENGTH_SHORT).show()
         }else{
@@ -88,11 +88,11 @@ class MethodViewModel @Inject constructor(
         }
     }
 
-    private fun deleteMethod(method: Method, what: String, title: String) {
+    private fun deleteMethod(methodEntity: MethodEntity, what: String, title: String) {
         val builder = AlertDialog.Builder(requireContext())
         builder.setPositiveButton("Yes"){_, _ ->
 
-            methodViewModel.deleteMethod(method)
+            methodViewModel.deleteMethod(methodEntity)
             Toast.makeText(requireContext(),"$what deleted.", Toast.LENGTH_LONG).show()
         }
             .setNegativeButton("No"){_, _ -> }

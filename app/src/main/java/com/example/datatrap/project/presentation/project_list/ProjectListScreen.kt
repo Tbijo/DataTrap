@@ -11,9 +11,14 @@ import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.project.presentation.project_list.components.ProjectListItem
 
 @Composable
-fun ProjectListScreen() {
+fun ProjectListScreen(
+    onEvent: String
+) {
     MyScaffold(
         title = "Projects",
+        onDrawerItemClick = {
+            onEvent
+        },
         floatingActionButton = {
             FloatingActionButton(onClick = { /*TODO*/ }) {
                 Icons.Default.Add

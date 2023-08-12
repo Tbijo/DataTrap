@@ -1,12 +1,8 @@
 package com.example.datatrap.mouse.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
 data class MouseRecapList(
-    val mouseId: Long,
-    val primeMouseID: Long?,
+    val mouseId: String,
+    val primeMouseID: String?,
     val code: Int?,
     val age: String?,
     val weight: Float?,
@@ -17,4 +13,4 @@ data class MouseRecapList(
     val localityName: String, // Locality
     val specieCode: String, // Specie
     val mouseCaught: Long
-): Parcelable
+)

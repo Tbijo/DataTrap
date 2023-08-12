@@ -1,7 +1,5 @@
 package com.example.datatrap.sync.utils
 
-import com.example.datatrap.models.*
-import com.example.datatrap.models.sync.*
 import java.util.*
 
 object Mappers {

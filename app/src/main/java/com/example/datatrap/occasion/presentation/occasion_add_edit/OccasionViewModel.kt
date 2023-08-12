@@ -16,19 +16,19 @@ import com.example.datatrap.R
 import com.example.datatrap.core.data.pref.PrefViewModel
 import com.example.datatrap.core.util.Constants
 import com.example.datatrap.mouse.domain.model.MyWeather
-import com.example.datatrap.occasion.data.Occasion
+import com.example.datatrap.occasion.data.OccasionEntity
 import com.example.datatrap.occasion.presentation.occasion_list.OccasionListViewModel
-import com.example.datatrap.camera.data.occasion_image.OccasionImage
-import com.example.datatrap.settings.envtype.data.EnvType
+import com.example.datatrap.camera.data.occasion_image.OccasionImageEntity
+import com.example.datatrap.settings.envtype.data.EnvTypeEntity
 import com.example.datatrap.settings.envtype.presentation.EnvTypeViewModel
-import com.example.datatrap.settings.method.data.Method
+import com.example.datatrap.settings.method.data.MethodEntity
 import com.example.datatrap.settings.method.presentation.MethodViewModel
-import com.example.datatrap.settings.methodtype.data.MethodType
+import com.example.datatrap.settings.methodtype.data.MethodTypeEntity
 import com.example.datatrap.settings.methodtype.presentation.MethodTypeViewModel
-import com.example.datatrap.settings.traptype.data.TrapType
+import com.example.datatrap.settings.traptype.data.TrapTypeEntity
 import com.example.datatrap.settings.traptype.presentation.TrapTypeViewModel
 import com.example.datatrap.settings.user.presentation.UserViewModel
-import com.example.datatrap.settings.vegettype.data.VegetType
+import com.example.datatrap.settings.vegettype.data.VegetTypeEntity
 import com.example.datatrap.settings.vegettype.presentation.VegetTypeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -53,14 +53,14 @@ class OccasionViewModel @Inject constructor(
     private val userViewModel: UserViewModel by viewModels()
     private val prefViewModel: PrefViewModel by viewModels()
 
-    private lateinit var envTypeList: List<EnvType>
-    private lateinit var methodList: List<Method>
-    private lateinit var metTypeList: List<MethodType>
-    private lateinit var vegTypeList: List<VegetType>
-    private lateinit var trapTypeList: List<TrapType>
+    private lateinit var envTypeEntityList: List<EnvTypeEntity>
+    private lateinit var methodEntityList: List<MethodEntity>
+    private lateinit var metTypeList: List<MethodTypeEntity>
+    private lateinit var vegTypeList: List<VegetTypeEntity>
+    private lateinit var trapTypeEntityList: List<TrapTypeEntity>
 
-    private lateinit var currentOccasion: Occasion
-    private var occasionImage: OccasionImage? = null
+    private lateinit var currentOccasionEntity: OccasionEntity
+    private var occasionImageEntity: OccasionImageEntity? = null
     private var methodID: Long = 0
     private var methodTypeID: Long = 0
     private var trapTypeID: Long = 0
@@ -97,11 +97,11 @@ class OccasionViewModel @Inject constructor(
 
         // UPDATE
         occasionImageViewModel.getImageForOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
-            occasionImage = it
+            occasionImageEntity = it
         }
 
         occasionListViewModel.getOccasion(args.occList.occasionId).observe(viewLifecycleOwner) {
-            currentOccasion = it
+            currentOccasionEntity = it
             fillDropDown(it)
             initOccasionValuesToView(it)
         }
@@ -130,14 +130,14 @@ class OccasionViewModel @Inject constructor(
     private fun setListeners() {
         binding.autoCompTvEnvType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            envTypeID = envTypeList.firstOrNull {
+            envTypeID = envTypeEntityList.firstOrNull {
                 it.envTypeName == name
             }?.envTypeId
         }
 
         binding.autoCompTvMethod.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            methodID = methodList.first {
+            methodID = methodEntityList.first {
                 it.methodName == name
             }.methodId
         }
@@ -151,7 +151,7 @@ class OccasionViewModel @Inject constructor(
 
         binding.autoCompTvTrapType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            trapTypeID = trapTypeList.first {
+            trapTypeID = trapTypeEntityList.first {
                 it.trapTypeName == name
             }.trapTypeId
         }
@@ -165,8 +165,8 @@ class OccasionViewModel @Inject constructor(
     }
 
     private fun fillDropDown() {
-        envTypeViewModel.envTypeList.observe(viewLifecycleOwner) {
-            envTypeList = it
+        envTypeViewModel.envTypeEntityList.observe(viewLifecycleOwner) {
+            envTypeEntityList = it
             val nameList = mutableListOf<String>()
             nameList.add("null")
             it.forEach { env ->
@@ -178,8 +178,8 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvEnvType.setAdapter(dropDownArrAdapEnvType)
         }
 
-        methodViewModel.methodList.observe(viewLifecycleOwner) {
-            methodList = it
+        methodViewModel.methodEntityList.observe(viewLifecycleOwner) {
+            methodEntityList = it
             val nameList = mutableListOf<String>()
             it.forEach { method ->
                 nameList.add(method.methodName)
@@ -190,7 +190,7 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvMethod.setAdapter(dropDownArrAdapMethod)
         }
 
-        metTypeViewModel.methodTypeList.observe(viewLifecycleOwner) {
+        metTypeViewModel.methodTypeEntityList.observe(viewLifecycleOwner) {
             metTypeList = it
             val nameList = mutableListOf<String>()
             it.forEach { metType ->
@@ -202,8 +202,8 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvMethodType.setAdapter(dropDownArrAdapMethodType)
         }
 
-        trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner) {
-            trapTypeList = it
+        trapTypeViewModel.trapTypeEntityList.observe(viewLifecycleOwner) {
+            trapTypeEntityList = it
             val nameList = mutableListOf<String>()
             it.forEach { trapType ->
                 nameList.add(trapType.trapTypeName)
@@ -214,7 +214,7 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvTrapType.setAdapter(dropDownArrAdapTrapType)
         }
 
-        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner) {
+        vegTypeViewModel.vegetTypeEntityList.observe(viewLifecycleOwner) {
             vegTypeList = it
             val nameList = mutableListOf<String>()
             nameList.add("null")
@@ -268,7 +268,7 @@ class OccasionViewModel @Inject constructor(
             val note: String? = binding.etOccasionNote.text.toString().ifBlank { null }
 
             // ulozit occasion
-            val occasion = Occasion(
+            val occasionEntity = OccasionEntity(
                 0,
                 occasionNum,
                 args.locList.localityId,
@@ -290,7 +290,7 @@ class OccasionViewModel @Inject constructor(
                 Calendar.getInstance().time.time
             )
 
-            occasionListViewModel.insertOccasion(occasion)
+            occasionListViewModel.insertOccasion(occasionEntity)
 
             Toast.makeText(requireContext(), "New occasion added.", Toast.LENGTH_SHORT).show()
 
@@ -350,14 +350,14 @@ class OccasionViewModel @Inject constructor(
     private fun setListeners() {
         binding.autoCompTvEnvType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            envTypeID = envTypeList.firstOrNull {
+            envTypeID = envTypeEntityList.firstOrNull {
                 it.envTypeName == name
             }?.envTypeId
         }
 
         binding.autoCompTvMethod.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            methodID = methodList.first {
+            methodID = methodEntityList.first {
                 it.methodName == name
             }.methodId
         }
@@ -371,7 +371,7 @@ class OccasionViewModel @Inject constructor(
 
         binding.autoCompTvTrapType.setOnItemClickListener { parent, _, position, _ ->
             val name: String = parent.getItemAtPosition(position) as String
-            trapTypeID = trapTypeList.first {
+            trapTypeID = trapTypeEntityList.first {
                 it.trapTypeName == name
             }.trapTypeId
         }
@@ -384,9 +384,9 @@ class OccasionViewModel @Inject constructor(
         }
     }
 
-    private fun fillDropDown(occasion: Occasion) {
-        envTypeViewModel.envTypeList.observe(viewLifecycleOwner) {
-            envTypeList = it
+    private fun fillDropDown(occasionEntity: OccasionEntity) {
+        envTypeViewModel.envTypeEntityList.observe(viewLifecycleOwner) {
+            envTypeEntityList = it
             val nameList = mutableListOf<String>()
             nameList.add("null")
             it.forEach { env ->
@@ -398,14 +398,14 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvEnvType.setAdapter(dropDownArrAdapEnvType)
             //set values
             val current = it.firstOrNull { envType ->
-                envType.envTypeId == occasion.envTypeID
+                envType.envTypeId == occasionEntity.envTypeID
             }
             envTypeID = current?.envTypeId
             binding.autoCompTvEnvType.setText(current?.envTypeName.toString(), false)
         }
 
-        methodViewModel.methodList.observe(viewLifecycleOwner) {
-            methodList = it
+        methodViewModel.methodEntityList.observe(viewLifecycleOwner) {
+            methodEntityList = it
             val nameList = mutableListOf<String>()
             it.forEach { method ->
                 nameList.add(method.methodName)
@@ -416,13 +416,13 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvMethod.setAdapter(dropDownArrAdapMethod)
             // set values
             val current = it.first { method ->
-                method.methodId == occasion.methodID
+                method.methodId == occasionEntity.methodID
             }
             methodID = current.methodId
             binding.autoCompTvMethod.setText(current.methodName, false)
         }
 
-        metTypeViewModel.methodTypeList.observe(viewLifecycleOwner) {
+        metTypeViewModel.methodTypeEntityList.observe(viewLifecycleOwner) {
             metTypeList = it
             val nameList = mutableListOf<String>()
             it.forEach { metType ->
@@ -434,14 +434,14 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvMethodType.setAdapter(dropDownArrAdapMethodType)
             // set Values
             val current = it.first { methodType ->
-                methodType.methodTypeId == occasion.methodTypeID
+                methodType.methodTypeId == occasionEntity.methodTypeID
             }
             methodTypeID = current.methodTypeId
             binding.autoCompTvMethodType.setText(current.methodTypeName, false)
         }
 
-        trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner) {
-            trapTypeList = it
+        trapTypeViewModel.trapTypeEntityList.observe(viewLifecycleOwner) {
+            trapTypeEntityList = it
             val nameList = mutableListOf<String>()
             it.forEach { trapType ->
                 nameList.add(trapType.trapTypeName)
@@ -452,13 +452,13 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvTrapType.setAdapter(dropDownArrAdapTrapType)
             // set values
             val current = it.first { trapType ->
-                trapType.trapTypeId == occasion.trapTypeID
+                trapType.trapTypeId == occasionEntity.trapTypeID
             }
             trapTypeID = current.trapTypeId
             binding.autoCompTvTrapType.setText(current.trapTypeName, false)
         }
 
-        vegTypeViewModel.vegetTypeList.observe(viewLifecycleOwner) {
+        vegTypeViewModel.vegetTypeEntityList.observe(viewLifecycleOwner) {
             vegTypeList = it
             val nameList = mutableListOf<String>()
             nameList.add("null")
@@ -471,7 +471,7 @@ class OccasionViewModel @Inject constructor(
             binding.autoCompTvVegType.setAdapter(dropDownArrAdapVegType)
             // set values
             val current = it.firstOrNull { vegType ->
-                vegType.vegetTypeId == occasion.vegetTypeID
+                vegType.vegetTypeId == occasionEntity.vegetTypeID
             }
             vegetTypeID = current?.vegetTypeId
             binding.autoCompTvVegType.setText(current?.vegetTypeName.toString(), false)
@@ -485,14 +485,14 @@ class OccasionViewModel @Inject constructor(
         findNavController().navigate(action)
     }
 
-    private fun initOccasionValuesToView(occasion: Occasion) {
-        binding.etNumTraps.setText(occasion.numTraps.toString())
-        binding.etTemperature.setText(occasion.temperature.toString())
-        binding.etWeather.setText(occasion.weather.toString())
-        binding.cbGotCaught.isChecked = occasion.gotCaught == true
+    private fun initOccasionValuesToView(occasionEntity: OccasionEntity) {
+        binding.etNumTraps.setText(occasionEntity.numTraps.toString())
+        binding.etTemperature.setText(occasionEntity.temperature.toString())
+        binding.etWeather.setText(occasionEntity.weather.toString())
+        binding.cbGotCaught.isChecked = occasionEntity.gotCaught == true
 
-        binding.etLeg.setText(occasion.leg)
-        binding.etOccasionNote.setText(occasion.note.toString())
+        binding.etLeg.setText(occasionEntity.leg)
+        binding.etOccasionNote.setText(occasionEntity.note.toString())
     }
 
     private fun deleteOccasion() {
@@ -500,7 +500,7 @@ class OccasionViewModel @Inject constructor(
         builder.setPositiveButton("Yes"){_, _ ->
 
             // vymazat occasion
-            occasionListViewModel.deleteOccasion(args.occList.occasionId, occasionImage?.path)
+            occasionListViewModel.deleteOccasion(args.occList.occasionId, occasionImageEntity?.path)
 
             Toast.makeText(requireContext(),"Occasion deleted.", Toast.LENGTH_LONG).show()
 
@@ -513,28 +513,28 @@ class OccasionViewModel @Inject constructor(
     }
 
     private fun updateOccasion() {
-        val occasionNum: Int = currentOccasion.occasion
+        val occasionNum: Int = currentOccasionEntity.occasion
         val leg: String = binding.etLeg.text.toString()
         val numTraps = Integer.parseInt(binding.etNumTraps.text.toString().ifBlank { "0" })
 
         if (checkInput(occasionNum, methodID, methodTypeID, trapTypeID, leg, numTraps)) {
 
-            val occasion: Occasion = currentOccasion.copy()
-            occasion.methodID = methodID
-            occasion.methodTypeID = methodTypeID
-            occasion.trapTypeID = trapTypeID
-            occasion.leg = leg
-            occasion.occasionDateTimeUpdated = Calendar.getInstance().time
+            val occasionEntity: OccasionEntity = currentOccasionEntity.copy()
+            occasionEntity.methodID = methodID
+            occasionEntity.methodTypeID = methodTypeID
+            occasionEntity.trapTypeID = trapTypeID
+            occasionEntity.leg = leg
+            occasionEntity.occasionDateTimeUpdated = Calendar.getInstance().time
 
-            occasion.envTypeID = envTypeID
-            occasion.vegetTypeID = vegetTypeID
-            occasion.gotCaught = binding.cbGotCaught.isChecked
-            occasion.numTraps = numTraps
-            occasion.temperature = giveOutPutFloat(binding.etTemperature.text.toString())
-            occasion.weather = binding.etWeather.text.toString().ifBlank { null }
-            occasion.note = binding.etOccasionNote.text.toString().ifBlank { null }
+            occasionEntity.envTypeID = envTypeID
+            occasionEntity.vegetTypeID = vegetTypeID
+            occasionEntity.gotCaught = binding.cbGotCaught.isChecked
+            occasionEntity.numTraps = numTraps
+            occasionEntity.temperature = giveOutPutFloat(binding.etTemperature.text.toString())
+            occasionEntity.weather = binding.etWeather.text.toString().ifBlank { null }
+            occasionEntity.note = binding.etOccasionNote.text.toString().ifBlank { null }
 
-            occasionListViewModel.updateOccasion(occasion)
+            occasionListViewModel.updateOccasion(occasionEntity)
 
             Toast.makeText(requireContext(), "Occasion updated.", Toast.LENGTH_SHORT).show()
 
@@ -568,7 +568,7 @@ class OccasionViewModel @Inject constructor(
                 Toast.makeText(requireContext(), "No coordinates in this locality.", Toast.LENGTH_LONG).show()
                 return
             }
-            val unixtime = currentOccasion.occasionDateTimeCreated.time
+            val unixtime = currentOccasionEntity.occasionDateTimeCreated.time
 
             volleyViewModel.getHistoricalWeatherByCoordinates(locality.xA!!, locality.yA!!, unixtime)
         }else{

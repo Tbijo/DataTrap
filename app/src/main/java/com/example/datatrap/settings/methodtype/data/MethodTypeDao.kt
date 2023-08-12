@@ -7,14 +7,14 @@ import androidx.room.*
 interface MethodTypeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMethodType(methodType: MethodType)
+    suspend fun insertMethodType(methodTypeEntity: MethodTypeEntity)
 
     @Update
-    suspend fun updateMethodType(methodType: MethodType)
+    suspend fun updateMethodType(methodTypeEntity: MethodTypeEntity)
 
     @Delete
-    suspend fun deleteMethodType(methodType: MethodType)
+    suspend fun deleteMethodType(methodTypeEntity: MethodTypeEntity)
 
-    @Query("SELECT * FROM MethodType")
-    fun getMethodTypes(): LiveData<List<MethodType>>
+    @Query("SELECT * FROM MethodTypeEntity")
+    fun getMethodTypes(): LiveData<List<MethodTypeEntity>>
 }

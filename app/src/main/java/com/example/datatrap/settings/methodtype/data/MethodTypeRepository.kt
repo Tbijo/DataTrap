@@ -4,17 +4,17 @@ import androidx.lifecycle.LiveData
 
 class MethodTypeRepository(private val methodTypeDao: MethodTypeDao) {
 
-    val methodTypeList: LiveData<List<MethodType>> = methodTypeDao.getMethodTypes()
+    val methodTypeEntityList: LiveData<List<MethodTypeEntity>> = methodTypeDao.getMethodTypes()
 
-    suspend fun insertMethodType(methodType: MethodType) {
-        methodTypeDao.insertMethodType(methodType)
+    suspend fun insertMethodType(methodTypeEntity: MethodTypeEntity) {
+        methodTypeDao.insertMethodType(methodTypeEntity)
     }
 
-    suspend fun updateMethodType(methodType: MethodType) {
-        methodTypeDao.updateMethodType(methodType)
+    suspend fun updateMethodType(methodTypeEntity: MethodTypeEntity) {
+        methodTypeDao.updateMethodType(methodTypeEntity)
     }
 
-    suspend fun deleteMethodType(methodType: MethodType) {
-        methodTypeDao.deleteMethodType(methodType)
+    suspend fun deleteMethodType(methodTypeEntity: MethodTypeEntity) {
+        methodTypeDao.deleteMethodType(methodTypeEntity)
     }
 }

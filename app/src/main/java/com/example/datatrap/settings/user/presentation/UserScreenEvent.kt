@@ -1,12 +1,12 @@
 package com.example.datatrap.settings.user.presentation
 
-import com.example.datatrap.settings.user.data.User
+import com.example.datatrap.settings.user.data.UserEntity
 
 sealed interface UserScreenEvent {
-    data class OnInsertClick(val user: User): UserScreenEvent
-    data class OnItemClick(val user: User): UserScreenEvent
-    data class OnDeleteClick(val user: User): UserScreenEvent
+    data class OnInsertClick(val userEntity: UserEntity): UserScreenEvent
+    data class OnItemClick(val userEntity: UserEntity): UserScreenEvent
+    data class OnDeleteClick(val userEntity: UserEntity): UserScreenEvent
 
     // In bottom sheet
-    data class OnSaveUser(val user: User): UserScreenEvent
+    data class OnSaveUser(val userEntity: UserEntity): UserScreenEvent
 }

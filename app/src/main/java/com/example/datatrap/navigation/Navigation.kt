@@ -1,4 +1,4 @@
-package com.example.datatrap
+package com.example.datatrap.navigation
 
 import androidx.compose.runtime.Composable
 

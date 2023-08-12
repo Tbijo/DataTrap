@@ -21,9 +21,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
-import com.example.datatrap.camera.data.mouse_image.MouseImage
+import com.example.datatrap.camera.data.mouse_image.MouseImageEntity
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
-import com.example.datatrap.camera.data.occasion_image.OccasionImage
+import com.example.datatrap.camera.data.occasion_image.OccasionImageEntity
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -44,8 +44,8 @@ class CameraViewModel @Inject constructor(
     private val mouse = "Mouse"
     private val cameraViewModel: CameraViewModel by viewModels()
     private val occasionImageViewModel: OccasionImageViewModel by viewModels()
-    private var mouseImage: MouseImage? = null
-    private var occasionImage: OccasionImage? = null
+    private var mouseImageEntity: MouseImageEntity? = null
+    private var occasionImageEntity: OccasionImageEntity? = null
 
     private var imagePathUri: Uri? = null
     private var imageName: String? = null
@@ -75,7 +75,7 @@ class CameraViewModel @Inject constructor(
             // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze aj subor
             // pridat novu fotku do galerie
 
-            if (imageName == null && mouseImage == null && occasionImage == null) {
+            if (imageName == null && mouseImageEntity == null && occasionImageEntity == null) {
                 Toast.makeText(requireContext(), "No image was found.", Toast.LENGTH_LONG).show()
             } else {
                 saveAndAddImage()
@@ -89,9 +89,9 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-    fun insertImage(mouseImage: MouseImage) {
+    fun insertImage(mouseImageEntity: MouseImageEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            mouseImageRepository.insertImage(mouseImage)
+            mouseImageRepository.insertImage(mouseImageEntity)
         }
     }
 
@@ -109,13 +109,13 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-    fun getImageForMouse(mouseIid: Long, deviceID: String): LiveData<MouseImage> {
+    fun getImageForMouse(mouseIid: Long, deviceID: String): LiveData<MouseImageEntity> {
         return mouseImageRepository.getImageForMouse(mouseIid, deviceID)
     }
 
-    fun insertImage(occasionImage: OccasionImage) {
+    fun insertImage(occasionImageEntity: OccasionImageEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            occasionImageRepository.insertImage(occasionImage)
+            occasionImageRepository.insertImage(occasionImageEntity)
         }
     }
 
@@ -133,7 +133,7 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-    fun getImageForOccasion(occasionId: Long): LiveData<OccasionImage> {
+    fun getImageForOccasion(occasionId: Long): LiveData<OccasionImageEntity> {
         return occasionImageRepository.getImageForOccasion(occasionId)
     }
 
@@ -144,7 +144,7 @@ class CameraViewModel @Inject constructor(
                 cameraViewModel.getImageForMouse(args.parentId, args.deviceID).observe(viewLifecycleOwner) {
                     // ci mame fotku
                     if (it != null) {
-                        mouseImage = it
+                        mouseImageEntity = it
                         binding.tvTakePicture.text = getString(R.string.pictureAdded)
                         binding.ivTakePicture.setImageURI(it.path.toUri())
                         binding.etPicNote.setText(it.note)
@@ -159,7 +159,7 @@ class CameraViewModel @Inject constructor(
                     .observe(viewLifecycleOwner) {
                         // ci mame fotku
                         if (it != null) {
-                            occasionImage = it
+                            occasionImageEntity = it
                             binding.tvTakePicture.text = getString(R.string.pictureAdded)
                             binding.ivTakePicture.setImageURI(it.path.toUri())
                             binding.etPicNote.setText(it.note)
@@ -258,8 +258,8 @@ class CameraViewModel @Inject constructor(
         when (args.fragmentName) {
             mouse -> {
                 // vytvara sa nova fotka pre mys, stara nebola
-                if (mouseImage == null) {
-                    mouseImage = MouseImage(
+                if (mouseImageEntity == null) {
+                    mouseImageEntity = MouseImageEntity(
                         0,
                         imageName!!,
                         imagePathUri.toString(),
@@ -268,26 +268,26 @@ class CameraViewModel @Inject constructor(
                         deviceID,
                         Calendar.getInstance().time.time
                     )
-                    cameraViewModel.insertImage(mouseImage!!)
+                    cameraViewModel.insertImage(mouseImageEntity!!)
                     galleryAddImage(imagePathUri!!)
 
                     // existuje stara fotka
                 } else {
                     // ostava stara fotka
                     if (imageName == null) {
-                        mouseImage!!.note = note
-                        cameraViewModel.insertImage(mouseImage!!)
+                        mouseImageEntity!!.note = note
+                        cameraViewModel.insertImage(mouseImageEntity!!)
 
                         // nahradza sa stara fotka novou fotkou
                     } else {
 
                         // vymazat zaznam fotky z databazy
                         // vymazat fyzicky subor fotky
-                        cameraViewModel.deleteImage(mouseImage!!.mouseImgId, mouseImage!!.path)
+                        cameraViewModel.deleteImage(mouseImageEntity!!.mouseImgId, mouseImageEntity!!.path)
                         // pre istotu
-                        mouseImage = null
+                        mouseImageEntity = null
                         // pridat zaznam novej fotky do databazy subor uz existuje
-                        mouseImage = MouseImage(
+                        mouseImageEntity = MouseImageEntity(
                             0,
                             imageName!!,
                             imagePathUri.toString(),
@@ -296,7 +296,7 @@ class CameraViewModel @Inject constructor(
                             deviceID,
                             Calendar.getInstance().time.time
                         )
-                        cameraViewModel.insertImage(mouseImage!!)
+                        cameraViewModel.insertImage(mouseImageEntity!!)
                         // pridat novu fotku do galerie
                         galleryAddImage(imagePathUri!!)
                     }
@@ -305,8 +305,8 @@ class CameraViewModel @Inject constructor(
 
             occasion -> {
                 // vytvara sa nova fotka pre akciu, stara nebola
-                if (occasionImage == null) {
-                    occasionImage = OccasionImage(
+                if (occasionImageEntity == null) {
+                    occasionImageEntity = OccasionImageEntity(
                         0,
                         imageName!!,
                         imagePathUri.toString(),
@@ -314,15 +314,15 @@ class CameraViewModel @Inject constructor(
                         args.parentId,
                         Calendar.getInstance().time.time
                     )
-                    occasionImageViewModel.insertImage(occasionImage!!)
+                    occasionImageViewModel.insertImage(occasionImageEntity!!)
                     galleryAddImage(imagePathUri!!)
 
                     // existuje stara fotka
                 } else {
                     // ostava stara fotka
                     if (imageName == null) {
-                        occasionImage!!.note = note
-                        occasionImageViewModel.insertImage(occasionImage!!)
+                        occasionImageEntity!!.note = note
+                        occasionImageViewModel.insertImage(occasionImageEntity!!)
 
                         // nahradza sa stara fotka novou fotkou
                     } else {
@@ -330,13 +330,13 @@ class CameraViewModel @Inject constructor(
                         // vymazat zaznam fotky z databazy
                         // vymazat fyzicky subor fotky
                         occasionImageViewModel.deleteImage(
-                            occasionImage!!.occasionImgId,
-                            occasionImage!!.path
+                            occasionImageEntity!!.occasionImgId,
+                            occasionImageEntity!!.path
                         )
                         // pre istotu
-                        occasionImage = null
+                        occasionImageEntity = null
                         // pridat zaznam novej fotky do databazy subor uz existuje
-                        occasionImage = OccasionImage(
+                        occasionImageEntity = OccasionImageEntity(
                             0,
                             imageName!!,
                             imagePathUri.toString(),
@@ -344,7 +344,7 @@ class CameraViewModel @Inject constructor(
                             args.parentId,
                             Calendar.getInstance().time.time
                         )
-                        occasionImageViewModel.insertImage(occasionImage!!)
+                        occasionImageViewModel.insertImage(occasionImageEntity!!)
                         // pridat novu fotku do galerie
                         galleryAddImage(imagePathUri!!)
                     }

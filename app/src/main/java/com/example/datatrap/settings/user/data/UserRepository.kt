@@ -4,21 +4,21 @@ import androidx.lifecycle.LiveData
 
 class UserRepository(private val userDao: UserDao) {
 
-    val userList: LiveData<List<User>> = userDao.getUsers()
+    val userEntityList: LiveData<List<UserEntity>> = userDao.getUsers()
 
-    suspend fun insertUser(user: User) {
-        userDao.insertUser(user)
+    suspend fun insertUser(userEntity: UserEntity) {
+        userDao.insertUser(userEntity)
     }
 
-    suspend fun updateUser(user: User) {
-        userDao.updateUser(user)
+    suspend fun updateUser(userEntity: UserEntity) {
+        userDao.updateUser(userEntity)
     }
 
-    suspend fun deleteUser(user: User) {
-        userDao.deleteUser(user)
+    suspend fun deleteUser(userEntity: UserEntity) {
+        userDao.deleteUser(userEntity)
     }
 
-    fun getActiveUser(userId: Long): LiveData<User> {
+    fun getActiveUser(userId: Long): LiveData<UserEntity> {
         return userDao.getActiveUser(userId)
     }
 

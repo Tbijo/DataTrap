@@ -1,19 +1,19 @@
 package com.example.datatrap.camera.data.mouse_image
 
 import androidx.lifecycle.LiveData
-import com.example.datatrap.sync.data.sync.MouseImageSync
+import com.example.datatrap.sync.data.MouseImageSync
 
 class MouseImageRepository(private val mouseImageDao: MouseImageDao) {
 
-    suspend fun insertImage(mouseImage: MouseImage) {
-        mouseImageDao.insertImage(mouseImage)
+    suspend fun insertImage(mouseImageEntity: MouseImageEntity) {
+        mouseImageDao.insertImage(mouseImageEntity)
     }
 
     suspend fun deleteImage(mouseImageId: Long) {
         mouseImageDao.deleteImage(mouseImageId)
     }
 
-    fun getImageForMouse(mouseIid: Long, deviceID: String): LiveData<MouseImage> {
+    fun getImageForMouse(mouseIid: Long, deviceID: String): LiveData<MouseImageEntity> {
         return mouseImageDao.getImageForMouse(mouseIid, deviceID)
     }
 

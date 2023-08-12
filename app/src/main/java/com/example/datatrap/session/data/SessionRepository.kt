@@ -4,36 +4,36 @@ import androidx.lifecycle.LiveData
 
 class SessionRepository(private val sessionDao: SessionDao) {
 
-    suspend fun insertSession(session: Session) {
-        sessionDao.insertSession(session)
+    suspend fun insertSession(sessionEntity: SessionEntity) {
+        sessionDao.insertSession(sessionEntity)
     }
 
-    suspend fun updateSession(session: Session) {
-        sessionDao.updateSession(session)
+    suspend fun updateSession(sessionEntity: SessionEntity) {
+        sessionDao.updateSession(sessionEntity)
     }
 
-    suspend fun deleteSession(session: Session) {
-        sessionDao.deleteSession(session)
+    suspend fun deleteSession(sessionEntity: SessionEntity) {
+        sessionDao.deleteSession(sessionEntity)
     }
 
-    fun getSessionsForProject(projectId: Long): LiveData<List<Session>> {
+    fun getSessionsForProject(projectId: Long): LiveData<List<SessionEntity>> {
         return sessionDao.getSessionsForProject(projectId)
     }
 
-    suspend fun getSessionForSync(sessionIds: List<Long>): List<Session> {
+    suspend fun getSessionForSync(sessionIds: List<Long>): List<SessionEntity> {
         return sessionDao.getSessionForSync(sessionIds)
     }
 
-    suspend fun insertSyncSession(session: Session): Long {
-        return sessionDao.insertSyncSession(session)
+    suspend fun insertSyncSession(sessionEntity: SessionEntity): Long {
+        return sessionDao.insertSyncSession(sessionEntity)
     }
 
-    suspend fun getSession(projectID: Long, sessionStart: Long): Session? {
+    suspend fun getSession(projectID: Long, sessionStart: Long): SessionEntity? {
         return sessionDao.getSession(projectID, sessionStart)
     }
 
     // 604800 dlzka tyzdna v sekundach treba v milisekundach 604 800 000
-    suspend fun getNearSession(projectID: Long, sessionStart: Long): Session? {
+    suspend fun getNearSession(projectID: Long, sessionStart: Long): SessionEntity? {
         return sessionDao.getNearSession(projectID, sessionStart)
     }
 
