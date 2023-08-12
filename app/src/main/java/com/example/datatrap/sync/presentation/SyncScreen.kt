@@ -8,12 +8,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun SyncScreen() {
@@ -21,7 +21,7 @@ fun SyncScreen() {
     val numOfMice = 12
     val loading = false
 
-    Scaffold {
+    MyScaffold(title = "Synchronize") {
         Column(
             modifier = Modifier.padding(it),
             verticalArrangement = Arrangement.Center,
