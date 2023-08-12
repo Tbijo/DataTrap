@@ -1,6 +1,10 @@
 package com.example.datatrap.mouse.data
 
 import androidx.lifecycle.LiveData
+import com.example.datatrap.mouse.domain.model.MouseLog
+import com.example.datatrap.mouse.domain.model.MouseOccList
+import com.example.datatrap.mouse.domain.model.MouseRecapList
+import com.example.datatrap.mouse.domain.model.MouseView
 
 class MouseRepository(private val mouseDao: MouseDao) {
 

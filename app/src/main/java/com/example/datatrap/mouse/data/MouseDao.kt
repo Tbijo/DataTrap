@@ -3,6 +3,10 @@ package com.example.datatrap.mouse.data
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.datatrap.core.util.Constants.MILLISECONDS_IN_2_YEAR
+import com.example.datatrap.mouse.domain.model.MouseLog
+import com.example.datatrap.mouse.domain.model.MouseOccList
+import com.example.datatrap.mouse.domain.model.MouseRecapList
+import com.example.datatrap.mouse.domain.model.MouseView
 
 @Dao
 interface MouseDao {

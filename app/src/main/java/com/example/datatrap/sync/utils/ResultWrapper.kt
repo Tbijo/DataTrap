@@ -1,4 +1,4 @@
-package com.example.datatrap.www.utils
+package com.example.datatrap.sync.utils
 
 import retrofit2.HttpException
 import retrofit2.Response

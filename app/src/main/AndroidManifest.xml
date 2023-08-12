@@ -16,7 +16,7 @@
         android:name="android.hardware.camera.any"
         android:required="true" />
 
-    <!--Aby sme mohli ukladat cele fotky do mobilu-->
+    <!--Aby sme mohli ukladat fotky do mobilu-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -31,9 +31,6 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.DataTrap">
 
-        <activity
-            android:name=".project.ProjectActivity"
-            android:exported="true" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -46,14 +43,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".sync.SynchronizeActivity"/>
-        <activity
-            android:name=".about.AboutActivity"/>
-        <activity
-            android:name=".settings.SettingsActivity"/>
-        <activity
-            android:name=".specie.SpecieActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -71,7 +60,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths"></meta-data>
+                android:resource="@xml/file_paths" />
         </provider>
 
     </application>

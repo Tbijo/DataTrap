@@ -4,7 +4,7 @@ import android.app.AlertDialog
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.R
-import com.example.datatrap.picture.data.SpecieImage
+import com.example.datatrap.specie.data.specie_image.SpecieImage
 import com.example.datatrap.specie.data.Specie
 import java.util.Calendar
 

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,7 +23,8 @@ fun SpecieDetailScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it),
+                .padding(it)
+                .verticalScroll(rememberScrollState()),
         ) {
             Image(painter = painterResource(id = R.drawable.empty), contentDescription = "Specie Image")
 
@@ -41,12 +44,32 @@ fun SpecieDetailScreen() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            LabeledText(label = "Description", text = "Description... more and more")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
             Row {
-                LabeledText(label = "Authority", text = "Author")
-                LabeledText(label = "Synonymum", text = "Mouse Name")
+                LabeledText(label = "Min. Weight (g)", text = "5")
+                LabeledText(label = "Max. Weight (g)", text = "60")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                LabeledText(label = "Body Length (mm)", text = "1")
+                LabeledText(label = "Tail Length (mm)", text = "12")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                LabeledText(label = "Min. Feet Length (mm)", text = "10")
+                LabeledText(label = "Max. Feet Length (mm)", text = "11")
+            }
+
+            LabeledText(label = "Number of fingers on upper limb", text = "4")
+
+            LabeledText(label = "Note", text = "Note... note note note note.")
         }
     }
 }

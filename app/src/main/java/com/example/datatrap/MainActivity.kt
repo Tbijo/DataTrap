@@ -11,7 +11,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.example.datatrap.core.presentation.theme.DataTrapTheme
+import com.example.datatrap.core.theme.DataTrapTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

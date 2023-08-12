@@ -4,19 +4,43 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.models.*
-import com.example.datatrap.models.sync.*
-import com.example.datatrap.repositories.*
+import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
+import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
+import com.example.datatrap.core.data.pref.PrefViewModel
+import com.example.datatrap.locality.data.Locality
+import com.example.datatrap.locality.data.LocalityRepository
+import com.example.datatrap.mouse.data.Mouse
+import com.example.datatrap.mouse.data.MouseRepository
+import com.example.datatrap.occasion.data.Occasion
+import com.example.datatrap.occasion.data.OccasionRepository
+import com.example.datatrap.project.data.Project
+import com.example.datatrap.project.data.ProjectRepository
+import com.example.datatrap.session.data.Session
+import com.example.datatrap.session.data.SessionRepository
+import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import com.example.datatrap.sync.data.DataTrapRepository
-import com.example.datatrap.www.utils.ResultWrapper
-import com.example.datatrap.www.utils.ToFunctions.setNewLocality
-import com.example.datatrap.www.utils.ToFunctions.setNewMouse
-import com.example.datatrap.www.utils.ToFunctions.setNewOccasion
-import com.example.datatrap.www.utils.ToFunctions.setNewProject
-import com.example.datatrap.www.utils.ToFunctions.setNewSession
-import com.example.datatrap.www.utils.ToFunctions.toSyncClassList
+import com.example.datatrap.sync.data.sync.ImageSync
+import com.example.datatrap.sync.data.sync.LocOccLMouse
+import com.example.datatrap.sync.data.sync.LocalitySync
+import com.example.datatrap.sync.data.sync.MouseImageSync
+import com.example.datatrap.sync.data.sync.MouseSync
+import com.example.datatrap.sync.data.sync.OccasionImageSync
+import com.example.datatrap.sync.data.sync.OccasionSync
+import com.example.datatrap.sync.data.sync.ProjectSync
+import com.example.datatrap.sync.data.sync.SesLOLM
+import com.example.datatrap.sync.data.sync.SessionSync
+import com.example.datatrap.sync.data.sync.SpecieImageSync
+import com.example.datatrap.sync.data.sync.SyncClass
+import com.example.datatrap.sync.utils.Mappers.setNewLocality
+import com.example.datatrap.sync.utils.Mappers.setNewMouse
+import com.example.datatrap.sync.utils.Mappers.setNewOccasion
+import com.example.datatrap.sync.utils.Mappers.setNewProject
+import com.example.datatrap.sync.utils.Mappers.setNewSession
+import com.example.datatrap.sync.utils.Mappers.toSyncClassList
+import com.example.datatrap.sync.utils.ResultWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -41,6 +65,30 @@ class SyncClassViewModel @Inject constructor(
 
     private val doneSyncCall = MutableLiveData<Boolean>()
     val doneSyncCallLive: LiveData<Boolean> by this::doneSyncCall
+
+    private val prefViewModel: PrefViewModel by viewModels()
+    private var lastSyncDate: Long? = null
+
+    init {
+        startSync("Loading Data")
+
+        prefViewModel.readLastSyncDatePref.observe(viewLifecycleOwner) { date ->
+            lastSyncDate = date
+        }
+    }
+
+    private fun startSync(work: String) {
+        // start
+        binding.tvLoadMessage.text = work
+        binding.tvLoadMessage.isVisible = true
+        binding.loadingBar.isVisible = true
+    }
+
+    private fun endSync() {
+        // end
+        binding.tvLoadMessage.isVisible = false
+        binding.loadingBar.isVisible = false
+    }
 
     fun retrieveData(date: Long) {
         viewModelScope.launch(Dispatchers.IO) {

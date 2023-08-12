@@ -2,7 +2,6 @@ package com.example.datatrap.session.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
-import com.example.datatrap.locality.data.LocalitySessionCrossRef
 
 @Dao
 interface LocalitySessionDao {
