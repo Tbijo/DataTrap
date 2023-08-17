@@ -1,6 +1,6 @@
 package com.example.datatrap.session.data
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class SessionRepository(private val sessionDao: SessionDao) {
 
@@ -8,15 +8,11 @@ class SessionRepository(private val sessionDao: SessionDao) {
         sessionDao.insertSession(sessionEntity)
     }
 
-    suspend fun updateSession(sessionEntity: SessionEntity) {
-        sessionDao.updateSession(sessionEntity)
-    }
-
     suspend fun deleteSession(sessionEntity: SessionEntity) {
         sessionDao.deleteSession(sessionEntity)
     }
 
-    fun getSessionsForProject(projectId: Long): LiveData<List<SessionEntity>> {
+    fun getSessionsForProject(projectId: Long): Flow<List<SessionEntity>> {
         return sessionDao.getSessionsForProject(projectId)
     }
 

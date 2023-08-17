@@ -1,19 +1,15 @@
 package com.example.datatrap.settings.envtype.data
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class EnvTypeRepository(
     private val envTypeDao: EnvTypeDao
 ) {
 
-    val envTypeEntityList: LiveData<List<EnvTypeEntity>> = envTypeDao.getEnvTypes()
+    val envTypeEntityList: Flow<List<EnvTypeEntity>> = envTypeDao.getEnvTypes()
 
     suspend fun insertEnvType(envTypeEntity: EnvTypeEntity) {
         envTypeDao.insertEnvType(envTypeEntity)
-    }
-
-    suspend fun updateEnvType(envTypeEntity: EnvTypeEntity) {
-        envTypeDao.updateEnvType(envTypeEntity)
     }
 
     suspend fun deleteEnvType(envTypeEntity: EnvTypeEntity) {

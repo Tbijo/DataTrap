@@ -1,8 +1,8 @@
 package com.example.datatrap.occasion.data
 
-import androidx.lifecycle.LiveData
 import com.example.datatrap.occasion.domain.model.OccList
 import com.example.datatrap.occasion.domain.model.OccasionView
+import kotlinx.coroutines.flow.Flow
 
 class OccasionRepository(private val occasionDao: OccasionDao) {
 
@@ -10,23 +10,19 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
         return occasionDao.insertOccasion(occasionEntity)
     }
 
-    suspend fun updateOccasion(occasionEntity: OccasionEntity) {
-        occasionDao.updateOccasion(occasionEntity)
-    }
-
     suspend fun deleteOccasion(occasionId: Long) {
         occasionDao.deleteOccasion(occasionId)
     }
 
-    fun getOccasion(occasionId: Long): LiveData<OccasionEntity> {
+    fun getOccasion(occasionId: Long): Flow<OccasionEntity> {
         return occasionDao.getOccasion(occasionId)
     }
 
-    fun getOccasionView(occasionId: Long): LiveData<OccasionView> {
+    fun getOccasionView(occasionId: Long): Flow<OccasionView> {
         return occasionDao.getOccasionView(occasionId)
     }
 
-    fun getOccasionsForSession(idSession: Long): LiveData<List<OccList>> {
+    fun getOccasionsForSession(idSession: Long): Flow<List<OccList>> {
         return occasionDao.getOccasionsForSession(idSession)
     }
 

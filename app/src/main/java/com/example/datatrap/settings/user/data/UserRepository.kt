@@ -1,24 +1,20 @@
 package com.example.datatrap.settings.user.data
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val userDao: UserDao) {
 
-    val userEntityList: LiveData<List<UserEntity>> = userDao.getUsers()
+    val userEntityList: Flow<List<UserEntity>> = userDao.getUsers()
 
     suspend fun insertUser(userEntity: UserEntity) {
         userDao.insertUser(userEntity)
-    }
-
-    suspend fun updateUser(userEntity: UserEntity) {
-        userDao.updateUser(userEntity)
     }
 
     suspend fun deleteUser(userEntity: UserEntity) {
         userDao.deleteUser(userEntity)
     }
 
-    fun getActiveUser(userId: Long): LiveData<UserEntity> {
+    fun getActiveUser(userId: Long): Flow<UserEntity> {
         return userDao.getActiveUser(userId)
     }
 

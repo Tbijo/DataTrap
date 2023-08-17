@@ -16,7 +16,9 @@ import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
 
 @Composable
-fun MouseScreen() {
+fun MouseScreen(
+    onEvent: () -> Unit,
+) {
     Scaffold {
         Column(
             modifier = Modifier

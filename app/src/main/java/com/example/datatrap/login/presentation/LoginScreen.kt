@@ -6,16 +6,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.RadioButton
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.components.MyTextField
@@ -23,8 +17,9 @@ import com.example.datatrap.core.presentation.components.ToggleButton
 import com.example.datatrap.core.util.EnumTeam
 
 @Composable
-fun LoginScreen() {
-
+fun LoginScreen(
+    onEvent: () -> Unit,
+) {
     Scaffold {
         Column(
             modifier = Modifier

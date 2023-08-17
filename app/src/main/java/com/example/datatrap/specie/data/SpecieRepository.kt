@@ -1,38 +1,34 @@
 package com.example.datatrap.specie.data
 
-import androidx.lifecycle.LiveData
 import com.example.datatrap.specie.domain.model.SpecList
 import com.example.datatrap.specie.domain.model.SpecSelectList
+import kotlinx.coroutines.flow.Flow
 
 class SpecieRepository(private val specieDao: SpecieDao) {
 
-    val specieList: LiveData<List<SpecList>> = specieDao.getSpecies()
+    val specieList: Flow<List<SpecList>> = specieDao.getSpecies()
 
     suspend fun insertSpecie(specieEntity: SpecieEntity): Long {
         return specieDao.insertSpecie(specieEntity)
-    }
-
-    suspend fun updateSpecie(specieEntity: SpecieEntity) {
-        specieDao.updateSpecie(specieEntity)
     }
 
     suspend fun deleteSpecie(specieId: Long) {
         specieDao.deleteSpecie(specieId)
     }
 
-    fun getSpecie(specieId: Long): LiveData<SpecieEntity> {
+    fun getSpecie(specieId: Long): Flow<SpecieEntity> {
         return specieDao.getSpecie(specieId)
     }
 
-    fun getSpeciesForSelect(): LiveData<List<SpecSelectList>> {
+    fun getSpeciesForSelect(): Flow<List<SpecSelectList>> {
         return specieDao.getSpeciesForSelect()
     }
 
-    fun searchSpecies(specieCode: String): LiveData<List<SpecList>> {
+    fun searchSpecies(specieCode: String): Flow<List<SpecList>> {
         return specieDao.searchSpecies(specieCode)
     }
 
-    fun getNonSpecie(spCode: List<String>): LiveData<List<SpecList>> {
+    fun getNonSpecie(spCode: List<String>): Flow<List<SpecList>> {
         return specieDao.getNonSpecie(spCode)
     }
 

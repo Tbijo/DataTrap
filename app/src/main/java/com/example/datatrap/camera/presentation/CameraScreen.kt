@@ -17,7 +17,9 @@ import com.example.datatrap.R
 import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
-fun CameraScreen() {
+fun CameraScreen(
+    onEvent: () -> Unit,
+) {
     Scaffold {
         Column(modifier = Modifier.padding(it)) {
 

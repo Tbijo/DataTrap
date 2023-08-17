@@ -17,8 +17,9 @@ import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
 
 @Composable
-fun SpecieScreen() {
-
+fun SpecieScreen(
+    onEvent: () -> Unit,
+) {
     val scrollState = rememberScrollState()
 
     Scaffold {

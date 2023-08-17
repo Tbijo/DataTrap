@@ -11,7 +11,7 @@ import com.example.datatrap.specie.presentation.specie_list.components.SpecieLis
 
 @Composable
 fun SpecieListScreen(
-    onEvent: String,
+    onEvent: () -> Unit,
 ) {
     val species = listOf("AAG")
 

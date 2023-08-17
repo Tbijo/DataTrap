@@ -1,7 +1,7 @@
 package com.example.datatrap.specie.data.specie_image
 
-import androidx.lifecycle.LiveData
 import com.example.datatrap.sync.data.SpecieImageSync
+import kotlinx.coroutines.flow.Flow
 
 class SpecieImageRepository(private val specieImageDao: SpecieImageDao) {
 
@@ -13,7 +13,7 @@ class SpecieImageRepository(private val specieImageDao: SpecieImageDao) {
         specieImageDao.deleteImage(specieImgId)
     }
 
-    fun getImageForSpecie(specieId: Long): LiveData<SpecieImageEntity> {
+    fun getImageForSpecie(specieId: Long): Flow<SpecieImageEntity> {
         return specieImageDao.getImageForSpecie(specieId)
     }
 

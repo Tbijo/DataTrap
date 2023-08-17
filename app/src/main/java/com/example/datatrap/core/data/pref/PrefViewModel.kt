@@ -1,7 +1,6 @@
 package com.example.datatrap.core.data.pref
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -13,11 +12,11 @@ class PrefViewModel @Inject constructor(
     private val prefRepository: PrefRepository
 ) : ViewModel() {
 
-    val readPrjNamePref = prefRepository.readPrjNamePref.asLiveData()
+    val readPrjNamePref = prefRepository.readPrjNamePref
 
-    val readLocNamePref = prefRepository.readLocNamePref.asLiveData()
+    val readLocNamePref = prefRepository.readLocNamePref
 
-    val readSesNumPref = prefRepository.readSesNumPref.asLiveData()
+    val readSesNumPref = prefRepository.readSesNumPref
 
     fun savePrjNamePref(prjName: String) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -39,11 +38,11 @@ class PrefViewModel @Inject constructor(
 
     ////////////////////////////////USER////////////////////////////////////
 
-    val readUserIdPref = prefRepository.readUserIdPref.asLiveData()
+    val readUserIdPref = prefRepository.readUserIdPref
 
-    val readUserTeamPref = prefRepository.readUserTeamPref.asLiveData()
+    val readUserTeamPref = prefRepository.readUserTeamPref
 
-    val readLastSyncDatePref = prefRepository.readLastSyncDatePref.asLiveData()
+    val readLastSyncDatePref = prefRepository.readLastSyncDatePref
 
     fun saveUserIdPref(idActiveUser: Long) {
         viewModelScope.launch(Dispatchers.IO) {

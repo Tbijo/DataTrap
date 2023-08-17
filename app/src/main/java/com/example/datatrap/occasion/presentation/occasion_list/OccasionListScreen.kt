@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import com.example.datatrap.occasion.presentation.occasion_list.components.OccasionListItem
 
 @Composable
-fun OccasionListScreen() {
+fun OccasionListScreen(
+    onEvent: () -> Unit,
+) {
     val projectName = "ProjName"
     val localityName = "ProjName"
     val sessionNum = "ProjName"

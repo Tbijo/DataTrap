@@ -1,6 +1,5 @@
 package com.example.datatrap.sync.utils
 
-import retrofit2.Response
 import java.io.IOException
 
 sealed class Resource<T>(val data: T?, val throwable: Throwable? = null) {
@@ -12,9 +11,9 @@ sealed class Resource<T>(val data: T?, val throwable: Throwable? = null) {
     class Loading<T>(message: String? = null, data: T? = null): Resource<T>(data = data)
 }
 
-suspend inline fun <reified T> safeApiCall(apiCall: () -> Response<T>): Resource<T> {
+suspend inline fun <reified T> safeApiCall(apiCall: () -> T): Resource<T> {
 
-    val response: Response<T>
+    val response: T
 
     try {
         response = apiCall()
@@ -29,14 +28,14 @@ suspend inline fun <reified T> safeApiCall(apiCall: () -> Response<T>): Resource
     }
 
     return try {
-        val result = response.body()
+        val result = response
 
         result?.let {
             Resource.Success(it)
         } ?:
         Resource.Error(
             HttpException(
-                HttpError.getError(response.code()),
+                HttpError.getError(response),
                 "Null Error"
             )
         )
@@ -45,7 +44,7 @@ suspend inline fun <reified T> safeApiCall(apiCall: () -> Response<T>): Resource
     catch (e: Exception) {
         Resource.Error(
             HttpException(
-                HttpError.getError(response.code()),
+                HttpError.getError(response),
                 e.message ?: "Unknown"
             )
         )

@@ -8,7 +8,7 @@ import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun SettingsListScreen(
-    onEvent: String
+    onEvent: () -> Unit,
 ) {
     MyScaffold(
         title = "Settings",

@@ -13,7 +13,9 @@ import androidx.compose.ui.Modifier
 import com.example.datatrap.locality.presentation.locality_list.components.LocalityListItem
 
 @Composable
-fun LocalityListScreen() {
+fun LocalityListScreen(
+    onEvent: () -> Unit,
+) {
 
     val projectName = "ProjectTest"
 

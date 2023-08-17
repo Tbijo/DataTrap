@@ -1,17 +1,13 @@
 package com.example.datatrap.settings.protocol.data
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class ProtocolRepository(private val protocolDao: ProtocolDao) {
 
-    val protocolEntityList: LiveData<List<ProtocolEntity>> = protocolDao.getProtocols()
+    val protocolEntityList: Flow<List<ProtocolEntity>> = protocolDao.getProtocols()
 
     suspend fun insertProtocol(protocolEntity: ProtocolEntity) {
         protocolDao.insertProtocol(protocolEntity)
-    }
-
-    suspend fun updateProtocol(protocolEntity: ProtocolEntity) {
-        protocolDao.updateProtocol(protocolEntity)
     }
 
     suspend fun deleteProtocol(protocolEntity: ProtocolEntity) {

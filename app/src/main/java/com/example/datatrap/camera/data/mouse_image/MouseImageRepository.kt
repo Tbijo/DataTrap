@@ -1,7 +1,7 @@
 package com.example.datatrap.camera.data.mouse_image
 
-import androidx.lifecycle.LiveData
 import com.example.datatrap.sync.data.MouseImageSync
+import kotlinx.coroutines.flow.Flow
 
 class MouseImageRepository(private val mouseImageDao: MouseImageDao) {
 
@@ -13,7 +13,7 @@ class MouseImageRepository(private val mouseImageDao: MouseImageDao) {
         mouseImageDao.deleteImage(mouseImageId)
     }
 
-    fun getImageForMouse(mouseIid: Long, deviceID: String): LiveData<MouseImageEntity> {
+    fun getImageForMouse(mouseIid: Long, deviceID: String): Flow<MouseImageEntity> {
         return mouseImageDao.getImageForMouse(mouseIid, deviceID)
     }
 

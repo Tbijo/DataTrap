@@ -1,7 +1,7 @@
 package com.example.datatrap.settings.methodtype.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MethodTypeDao {
@@ -9,12 +9,9 @@ interface MethodTypeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMethodType(methodTypeEntity: MethodTypeEntity)
 
-    @Update
-    suspend fun updateMethodType(methodTypeEntity: MethodTypeEntity)
-
     @Delete
     suspend fun deleteMethodType(methodTypeEntity: MethodTypeEntity)
 
     @Query("SELECT * FROM MethodTypeEntity")
-    fun getMethodTypes(): LiveData<List<MethodTypeEntity>>
+    fun getMethodTypes(): Flow<List<MethodTypeEntity>>
 }

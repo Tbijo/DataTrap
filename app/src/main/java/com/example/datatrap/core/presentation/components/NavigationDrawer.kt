@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,26 +49,6 @@ data class DrawerItem(
 
 enum class DrawerScreens {
     PROJECTS, SPECIES, SETTINGS, ABOUT, SYNCHRONIZE
-}
-
-@Composable
-fun AppBar(
-    title: String,
-    onNavigationIconClick: () -> Unit,
-) {
-    TopAppBar(
-        title = {
-            Text(text = title)
-        },
-        navigationIcon = {
-            IconButton(onClick = onNavigationIconClick) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Toggle drawer"
-                )
-            }
-        }
-    )
 }
 
 @Composable
@@ -128,24 +110,44 @@ fun DrawerBody(
 @Composable
 fun MyScaffold(
     title: String,
+    errorState: String? = null,
     onDrawerItemClick: (DrawerScreens) -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable (PaddingValues) -> Unit,
 ) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
 
+    LaunchedEffect(key1 = errorState) {
+        errorState?.let {
+            scaffoldState.snackbarHostState.showSnackbar(
+                message = it
+            )
+        }
+    }
+
     Scaffold(
         scaffoldState = scaffoldState,
         floatingActionButton = floatingActionButton,
         topBar = {
-            AppBar(
-                title = title,
-                onNavigationIconClick = {
-                    scope.launch {
-                        scaffoldState.drawerState.open()
+            TopAppBar(
+                title = {
+                    Text(text = title)
+                },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            scaffoldState.drawerState.open()
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Toggle drawer"
+                        )
                     }
-                }
+                },
+                actions = actions
             )
         },
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen,

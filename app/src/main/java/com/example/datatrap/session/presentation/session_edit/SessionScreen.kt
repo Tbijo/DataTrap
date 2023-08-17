@@ -11,11 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.datatrap.core.presentation.components.LabeledText
 import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
-fun SessionScreen() {
+fun SessionScreen(
+    onEvent: () -> Unit,
+) {
     Scaffold {
         Column(modifier = Modifier.padding(it)) {
 

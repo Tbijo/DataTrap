@@ -1,7 +1,7 @@
 package com.example.datatrap.settings.envtype.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EnvTypeDao {
@@ -9,12 +9,9 @@ interface EnvTypeDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertEnvType(envTypeEntity: EnvTypeEntity)
 
-    @Update
-    suspend fun updateEnvType(envTypeEntity: EnvTypeEntity)
-
     @Delete
     suspend fun deleteEnvType(envTypeEntity: EnvTypeEntity)
 
     @Query("SELECT * FROM EnvTypeEntity")
-    fun getEnvTypes(): LiveData<List<EnvTypeEntity>>
+    fun getEnvTypes(): Flow<List<EnvTypeEntity>>
 }

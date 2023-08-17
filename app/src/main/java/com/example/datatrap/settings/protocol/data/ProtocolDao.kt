@@ -1,7 +1,7 @@
 package com.example.datatrap.settings.protocol.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProtocolDao {
@@ -9,12 +9,9 @@ interface ProtocolDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProtocol(protocolEntity: ProtocolEntity)
 
-    @Update
-    suspend fun updateProtocol(protocolEntity: ProtocolEntity)
-
     @Delete
     suspend fun deleteProtocol(protocolEntity: ProtocolEntity)
 
     @Query("SELECT * FROM ProtocolEntity")
-    fun getProtocols(): LiveData<List<ProtocolEntity>>
+    fun getProtocols(): Flow<List<ProtocolEntity>>
 }

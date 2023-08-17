@@ -1,7 +1,7 @@
 package com.example.datatrap.camera.data.occasion_image
 
-import androidx.lifecycle.LiveData
 import com.example.datatrap.sync.data.OccasionImageSync
+import kotlinx.coroutines.flow.Flow
 
 class OccasionImageRepository(private val occasionImageDao: OccasionImageDao) {
 
@@ -13,7 +13,7 @@ class OccasionImageRepository(private val occasionImageDao: OccasionImageDao) {
         occasionImageDao.deleteImage(occasionImgId)
     }
 
-    fun getImageForOccasion(occasionId: Long): LiveData<OccasionImageEntity> {
+    fun getImageForOccasion(occasionId: Long): Flow<OccasionImageEntity> {
         return occasionImageDao.getImageForOccasion(occasionId)
     }
 

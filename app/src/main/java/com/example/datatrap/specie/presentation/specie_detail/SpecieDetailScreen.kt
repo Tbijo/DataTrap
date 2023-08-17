@@ -18,7 +18,9 @@ import com.example.datatrap.R
 import com.example.datatrap.core.presentation.components.LabeledText
 
 @Composable
-fun SpecieDetailScreen() {
+fun SpecieDetailScreen(
+    onEvent: () -> Unit,
+) {
     Scaffold {
         Column(
             modifier = Modifier

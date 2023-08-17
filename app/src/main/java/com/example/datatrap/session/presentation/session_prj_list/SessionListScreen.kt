@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import com.example.datatrap.session.presentation.session_prj_list.components.SessionListItem
 
 @Composable
-fun SessionListScreen() {
+fun SessionListScreen(
+    onEvent: () -> Unit,
+) {
 
     val projectName = ""
     val localityName = ""

@@ -1,7 +1,7 @@
 package com.example.datatrap.project.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ProjectDao {
@@ -9,25 +9,25 @@ interface ProjectDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProject(projectEntity: ProjectEntity)
 
-    @Update
-    suspend fun updateProject(projectEntity: ProjectEntity)
-
     @Delete
     suspend fun deleteProject(projectEntity: ProjectEntity)
 
     @Query("SELECT * FROM ProjectEntity")
-    fun getProjects(): LiveData<List<ProjectEntity>>
+    fun getProjects(): Flow<List<ProjectEntity>>
+
+    @Query("SELECT * FROM ProjectEntity WHERE projectId = :projectId")
+    fun getProjectById(projectId: String): Flow<ProjectEntity>
 
     @Query("SELECT * FROM ProjectEntity WHERE ProjectName LIKE :nameProject")
-    fun searchProjects(nameProject: String): LiveData<List<ProjectEntity>>
+    fun searchProjects(nameProject: String): Flow<List<ProjectEntity>>
 
-    @Query("SELECT * FROM project WHERE projectId IN (:projectIds)")
+    @Query("SELECT * FROM ProjectEntity WHERE projectId IN (:projectIds)")
     suspend fun getProjectForSync(projectIds: List<Long>): List<ProjectEntity>
 
     // Sync
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSyncProject(projectEntity: ProjectEntity): Long
 
-    @Query("SELECT * FROM project WHERE projectName = :projectName")
+    @Query("SELECT * FROM ProjectEntity WHERE projectName = :projectName")
     suspend fun getProjectByName(projectName: String): ProjectEntity?
 }

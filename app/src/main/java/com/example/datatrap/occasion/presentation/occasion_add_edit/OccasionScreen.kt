@@ -12,7 +12,9 @@ import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
 
 @Composable
-fun OccasionScreen() {
+fun OccasionScreen(
+    onEvent: () -> Unit,
+) {
     Scaffold {
         Column(
             modifier = Modifier.padding(it)

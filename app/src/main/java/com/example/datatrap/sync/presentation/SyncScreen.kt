@@ -17,7 +17,7 @@ import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun SyncScreen(
-    onEvent: String
+    onEvent: () -> Unit,
 ) {
     val numOfMice = 12
     val loading = false

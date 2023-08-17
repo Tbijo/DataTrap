@@ -1,24 +1,26 @@
 package com.example.datatrap.project.data
 
-import androidx.lifecycle.LiveData
+import kotlinx.coroutines.flow.Flow
 
 class ProjectRepository(private val projectDao: ProjectDao) {
 
-    val projectEntityList: LiveData<List<ProjectEntity>> = projectDao.getProjects()
+    fun projectEntityList(): Flow<List<ProjectEntity>> {
+        return projectDao.getProjects()
+    }
 
     suspend fun insertProject(projectEntity: ProjectEntity) {
         projectDao.insertProject(projectEntity)
-    }
-
-    suspend fun updateProject(projectEntity: ProjectEntity) {
-        projectDao.updateProject(projectEntity)
     }
 
     suspend fun deleteProject(projectEntity: ProjectEntity) {
         projectDao.deleteProject(projectEntity)
     }
 
-    fun searchProjects(projectName: String): LiveData<List<ProjectEntity>> {
+    fun getProjectById(projectId: String): Flow<ProjectEntity> {
+        return projectDao.getProjectById(projectId)
+    }
+
+    fun searchProjects(projectName: String): Flow<List<ProjectEntity>> {
         return projectDao.searchProjects(projectName)
     }
 

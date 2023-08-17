@@ -12,7 +12,7 @@ import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun AboutScreen(
-    onEvent: String
+    onEvent: () -> Unit,
 ) {
     MyScaffold(
         title = "About",

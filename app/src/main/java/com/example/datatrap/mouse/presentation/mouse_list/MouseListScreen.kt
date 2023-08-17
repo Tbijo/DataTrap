@@ -15,7 +15,9 @@ import androidx.compose.ui.Modifier
 import com.example.datatrap.mouse.presentation.mouse_list.components.MouseListItem
 
 @Composable
-fun MouseListScreen() {
+fun MouseListScreen(
+    onEvent: () -> Unit,
+) {
     val project = "Patinnce"
     val locality = "Patince"
     val sessionNum = "12"
