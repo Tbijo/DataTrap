@@ -13,13 +13,11 @@ data class ProjectEntity(
 
     var projectName: String,
 
-    var projectDateTimeCreated: ZonedDateTime,
-
-    var projectDateTimeUpdated: ZonedDateTime?,
-
     var numLocal: Int,
 
     var numMice: Int,
 
-    var projectStart: Long
+    var projectDateTimeCreated: ZonedDateTime,
+
+    var projectDateTimeUpdated: ZonedDateTime?,
 )

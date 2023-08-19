@@ -1,34 +1,36 @@
 package com.example.datatrap.project.presentation.project_edit
 
-import android.app.AlertDialog
-import android.widget.Toast
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.R
+import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.project.navigation.ProjectScreens
-import com.example.datatrap.project.presentation.project_list.ProjectListUiState
-import com.example.datatrap.project.presentation.project_list.ProjectListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class ProjectViewModel @Inject constructor(
     private val projectRepository: ProjectRepository,
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(ProjectUiState())
     val state = _state.asStateFlow()
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
+    private var currentProject: ProjectEntity? = null
 
     init {
         _state.update { it.copy(
@@ -37,6 +39,7 @@ class ProjectViewModel @Inject constructor(
         savedStateHandle.get<String>(ProjectScreens.ProjectScreen.projectIdKey)?.let { id ->
             viewModelScope.launch {
                 projectRepository.getProjectById(id).collect { project ->
+                    currentProject = project
                     _state.update { it.copy(
                         isLoading = false,
                         selectedProject = project,
@@ -49,37 +52,57 @@ class ProjectViewModel @Inject constructor(
 
     fun onEvent(event: ProjectScreenEvent) {
         when(event) {
-            is ProjectScreenEvent.OnInsertClick -> updateProject()
-        }
-
-    }
-
-    private fun checkInput(projectName: String, numLocal: String, numMouse: String): Boolean {
-        return projectName.isNotEmpty() && numLocal.isNotEmpty() && numMouse.isNotEmpty()
-    }
-    private fun updateProject() {
-        val projectName = binding.etProjectName.text.toString()
-        val numLocal = binding.etNumLocality.text.toString()
-        val numMice = binding.etNumMouse.text.toString()
-
-        if (checkInput(projectName, numLocal, numMice)){
-            val projectEntity: ProjectEntity = args.project.copy()
-            projectEntity.projectName = projectName
-            projectEntity.projectDateTimeUpdated = Calendar.getInstance().time
-            projectEntity.numLocal = Integer.parseInt(numLocal)
-            projectEntity.numMice = Integer.parseInt(numMice)
-
-            viewModelScope.launch(Dispatchers.IO) {
-                val projectEntity: ProjectEntity = ProjectEntity(name, Calendar.getInstance().time, null, 0, 0, Calendar.getInstance().time.time)
-                projectRepository.insertProject(projectEntity)
+            is ProjectScreenEvent.OnInsertClick -> insertProject()
+            is ProjectScreenEvent.OnNumberLocalChange -> {
+                _state.update { it.copy(
+                    numLocal = event.text,
+                    numLocalError = null,
+                ) }
             }
-
-            Toast.makeText(requireContext(), "Project updated.", Toast.LENGTH_SHORT).show()
-
-            findNavController().navigateUp()
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
+            is ProjectScreenEvent.OnNumberMiceChange -> {
+                _state.update { it.copy(
+                    numMice = event.text,
+                    numMiceError = null,
+                ) }
+            }
+            is ProjectScreenEvent.OnProjectNameChange -> {
+                _state.update { it.copy(
+                    projectName = event.text,
+                    projectNameError = null,
+                ) }
+            }
         }
+
+    }
+
+    private fun insertProject() {
+
+        val projectEntity: ProjectEntity = ProjectEntity(
+            projectName = state.value.projectName.run {
+                this.ifEmpty {
+                    _state.update { it.copy(
+                        projectNameError = "Project must have a name."
+                    ) }
+                    return
+                }
+            },
+            numLocal = state.value.numLocal.run {
+                val value = this.ifEmpty { "0" }
+                Integer.parseInt(value)
+            },
+            numMice = state.value.numMice.run {
+                val value = this.ifEmpty { "0" }
+                Integer.parseInt(value)
+            },
+            projectDateTimeCreated = currentProject?.projectDateTimeCreated ?: ZonedDateTime.now(),
+            projectDateTimeUpdated = if(currentProject == null) null else ZonedDateTime.now(),
+        )
+
+        viewModelScope.launch(Dispatchers.IO) {
+            projectRepository.insertProject(projectEntity)
+            _eventFlow.emit(UiEvent.Navigate)
+        }
+
     }
 
 }

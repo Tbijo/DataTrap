@@ -38,6 +38,9 @@ android {
     }
 
     compileOptions {
+        // also for the min sdk
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -113,5 +116,10 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     // scalars
     implementation("com.squareup.retrofit2:converter-scalars:2.1.0")
+
+    // kotlin datetime picker
+    implementation ("io.github.vanpra.compose-material-dialogs:datetime:0.8.1-rc")
+    // needed because min sdk is lower than 26 - to use java LocalDateTime
+    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:1.1.6")
 
 }

@@ -1,5 +1,6 @@
 package com.example.datatrap.project.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -8,11 +9,20 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.example.datatrap.about.navigation.AboutScreens
 import com.example.datatrap.core.presentation.components.DrawerScreens
+import com.example.datatrap.core.presentation.util.UiEvent
+import com.example.datatrap.locality.navigation.LocalityScreens
+import com.example.datatrap.login.navigation.LoginScreens
 import com.example.datatrap.project.presentation.project_edit.ProjectScreen
+import com.example.datatrap.project.presentation.project_edit.ProjectViewModel
 import com.example.datatrap.project.presentation.project_list.ProjectListScreen
 import com.example.datatrap.project.presentation.project_list.ProjectListScreenEvent
 import com.example.datatrap.project.presentation.project_list.ProjectListViewModel
+import com.example.datatrap.settings.navigation.SettingsScreens
+import com.example.datatrap.specie.navigation.SpecieScreens
+import com.example.datatrap.sync.navigation.SyncScreens
+import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
     composable(
@@ -25,9 +35,8 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
             onEvent = { event ->
                 when(event) {
                     is ProjectListScreenEvent.OnItemClick -> {
-                        // prefViewModel.savePrjNamePref(project.projectName)
                         event.projectEntity
-                        navController.navigate(route = Screen.LocalityListScreen.route)
+                        navController.navigate(route = LocalityScreens.LocalityListScreen.route)
                     }
                     is ProjectListScreenEvent.OnUpdateButtonClick -> {
                         navController.navigate(
@@ -39,16 +48,16 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
                     is ProjectListScreenEvent.OnDrawerItemClick -> {
                         when(event.drawerScreen) {
                             DrawerScreens.SPECIES -> {
-                                navController.navigate(route = Screen.SpecieListScreen.route)
+                                navController.navigate(route = SpecieScreens.SpecieListScreen.route)
                             }
                             DrawerScreens.SETTINGS -> {
-                                navController.navigate(route = Screen.SettingsListScreen.route)
+                                navController.navigate(route = SettingsScreens.SettingsListScreen.route)
                             }
                             DrawerScreens.ABOUT -> {
-                                navController.navigate(route = Screen.AboutScreen.route)
+                                navController.navigate(route = AboutScreens.AboutScreen.route)
                             }
                             DrawerScreens.SYNCHRONIZE -> {
-                                navController.navigate(route = Screen.SynchronizeScreen.route)
+                                navController.navigate(route = SyncScreens.SynchronizeScreen.route)
                             }
                             else -> Unit
                         }
@@ -57,7 +66,7 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
                         navController.navigate(route = ProjectScreens.ProjectScreen.route)
                     }
                     ProjectListScreenEvent.OnLogoutButtonClick -> {
-                        navController.navigate(route = Screen.LoginScreen.route)
+                        navController.navigate(route = LoginScreens.LoginScreen.route)
                     }
                     else -> viewModel.onEvent(event)
                 }
@@ -75,8 +84,23 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
             },
         ),
     ) {
+        val viewModel: ProjectViewModel = viewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        LaunchedEffect(key1 = Unit) {
+            viewModel.eventFlow.collectLatest { event ->
+                when(event) {
+                    UiEvent.Navigate -> {
+                        navController.navigateUp()
+                    }
+                    else -> Unit
+                }
+            }
+        }
+
         ProjectScreen(
-            onEvent = {}
+            onEvent = viewModel::onEvent,
+            state = state,
         )
     }
 }
