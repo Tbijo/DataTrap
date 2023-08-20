@@ -1,17 +1,19 @@
 package com.example.datatrap.settings.traptype.presentation
 
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.R
 import com.example.datatrap.settings.traptype.data.TrapTypeEntity
 import com.example.datatrap.settings.traptype.data.TrapTypeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.Calendar
+import java.time.ZonedDateTime
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,99 +21,77 @@ class TrapTypeViewModel @Inject constructor(
     private val trapTypeRepository: TrapTypeRepository
 ): ViewModel() {
 
-    val trapTypeEntityList: LiveData<List<TrapTypeEntity>> = trapTypeRepository.trapTypeEntityList
-    private lateinit var trapTypeEntityList: List<TrapTypeEntity>
+    private val _state = MutableStateFlow(TrapTypeListUiState())
+    val state = _state.asStateFlow()
 
+    init {
+        _state.update { it.copy(
+            isLoading = true,
+        ) }
 
-    fun insertTrapType(trapTypeEntity: TrapTypeEntity) {
+        trapTypeRepository.getTrapTypeEntityList().onEach { trapTypeList ->
+            _state.update { it.copy(
+                isLoading = false,
+                trapTypeEntityList = trapTypeList,
+            ) }
+        }.launchIn(viewModelScope)
+    }
+
+    fun onEvent(event: TrapTypeListScreenEvent) {
+        when(event) {
+            is TrapTypeListScreenEvent.OnDeleteClick -> deleteTrapType(event.trapTypeEntity)
+            is TrapTypeListScreenEvent.OnInsertClick -> {
+                insertTrapType(state.value.textNameValue)
+                _state.update { it.copy(
+                    trapTypeEntity = null,
+                    textNameValue = "",
+                ) }
+            }
+            is TrapTypeListScreenEvent.OnItemClick -> {
+                _state.update { it.copy(
+                    trapTypeEntity = event.trapTypeEntity,
+                ) }
+            }
+            is TrapTypeListScreenEvent.OnNameTextChanged -> {
+                _state.update { it.copy(
+                    textNameError = null,
+                    textNameValue = event.text
+                ) }
+            }
+        }
+    }
+
+    private fun insertTrapType(name: String) {
+        if (name.isNotEmpty()) {
+            _state.update { it.copy(
+                textNameError = "Empty field.",
+            ) }
+            return
+        }
+
+        val trapTypeEntity: TrapTypeEntity = if (state.value.trapTypeEntity == null) {
+            TrapTypeEntity(
+                trapTypeName = name,
+                trapTypeDateTimeCreated = ZonedDateTime.now(),
+                trapTypeDateTimeUpdated = null,
+            )
+        } else {
+            TrapTypeEntity(
+                trapTypeId = state.value.trapTypeEntity?.trapTypeId ?: UUID.randomUUID().toString(),
+                trapTypeName = name,
+                trapTypeDateTimeCreated = state.value.trapTypeEntity?.trapTypeDateTimeCreated ?: ZonedDateTime.now(),
+                trapTypeDateTimeUpdated = ZonedDateTime.now(),
+            )
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             trapTypeRepository.insertTrapType(trapTypeEntity)
         }
     }
 
-    fun updateTrapType(trapTypeEntity: TrapTypeEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            trapTypeRepository.updateTrapType(trapTypeEntity)
-        }
-    }
-
-    fun deleteTrapType(trapTypeEntity: TrapTypeEntity) {
+    private fun deleteTrapType(trapTypeEntity: TrapTypeEntity) {
         viewModelScope.launch(Dispatchers.IO) {
             trapTypeRepository.deleteTrapType(trapTypeEntity)
-        }
-    }
-
-    init {
-        trapTypeViewModel.trapTypeList.observe(viewLifecycleOwner) { trapTypes ->
-            adapter.setData(trapTypes)
-            trapTypeEntityList = trapTypes
-        }
-
-        binding.addTraptypeFloatButton.setOnClickListener {
-            showAddDialog("New Trap Type", "Add new trap type?")
-        }
-
-        adapter.setOnItemClickListener(object: TrapTypeRecyclerAdapter.MyClickListener {
-            override fun useClickListener(position: Int) {
-                // update trap Type
-                val currTrapTypeEntity: TrapTypeEntity = trapTypeEntityList[position]
-                showUpdateDialog("Update Trap Type", "Update trap type?", currTrapTypeEntity)
-            }
-
-            override fun useLongClickListener(position: Int) {
-                // delete trap Type
-                val trapTypeEntity: TrapTypeEntity = trapTypeEntityList[position]
-
-                deleteEnvType(trapTypeEntity, "Trap type", "Trap Type")
-            }
-        })
-    }
-
-    private fun insertTrapType(name: String){
-        if (name.isNotEmpty()){
-
-            val trapTypeEntity: TrapTypeEntity = TrapTypeEntity(0, name, Calendar.getInstance().time, null)
-
-            trapTypeViewModel.insertTrapType(trapTypeEntity)
-
-            Toast.makeText(requireContext(),"New trap type added.", Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
-        }
-    }
-    private fun updateTrapType(trapTypeEntity: TrapTypeEntity, name: String){
-        if (name.isNotEmpty()){
-
-            val trapTypeEntityNew: TrapTypeEntity = trapTypeEntity
-            trapTypeEntityNew.trapTypeName = name
-            trapTypeEntityNew.trapTypeDateTimeUpdated = Calendar.getInstance().time
-
-            trapTypeViewModel.updateTrapType(trapTypeEntityNew)
-
-            Toast.makeText(requireContext(),"Trap type updated.", Toast.LENGTH_SHORT).show()
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun deleteEnvType(trapTypeEntity: TrapTypeEntity, what: String, title: String) {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Yes"){_, _ ->
-
-            trapTypeViewModel.deleteTrapType(trapTypeEntity)
-            Toast.makeText(requireContext(),"$what deleted.", Toast.LENGTH_LONG).show()
-        }
-            .setNegativeButton("No"){_, _ -> }
-            .setTitle("Delete $title")
-            .setMessage("Are you sure you want to delete this $what ?")
-            .create().show()
-    }
-
-    fun onEvent(event: TrapTypeListScreenEvent) {
-        when(event) {
-            is TrapTypeListScreenEvent.OnDeleteClick -> TODO()
-            is TrapTypeListScreenEvent.OnInsertClick -> TODO()
-            is TrapTypeListScreenEvent.OnItemClick -> TODO()
         }
     }
 }

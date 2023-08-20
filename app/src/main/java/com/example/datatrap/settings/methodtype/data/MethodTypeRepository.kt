@@ -4,7 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 class MethodTypeRepository(private val methodTypeDao: MethodTypeDao) {
 
-    val methodTypeEntityList: Flow<List<MethodTypeEntity>> = methodTypeDao.getMethodTypes()
+    fun methodTypeEntityList(): Flow<List<MethodTypeEntity>> {
+        return methodTypeDao.getMethodTypes()
+    }
 
     suspend fun insertMethodType(methodTypeEntity: MethodTypeEntity) {
         methodTypeDao.insertMethodType(methodTypeEntity)

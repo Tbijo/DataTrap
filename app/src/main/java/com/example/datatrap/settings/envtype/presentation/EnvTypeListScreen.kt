@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
@@ -22,14 +21,16 @@ import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
 fun EnvTypeListScreen(
-    onEvent: (EnvTypeListScreenEvent) -> Unit
+    onEvent: (EnvTypeListScreenEvent) -> Unit,
+    state: EnvTypeListUiState,
 ) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // TODO add env type
-                    //onEvent(ContactListEvent.OnAddNewContactClick)
+                    onEvent(
+                        EnvTypeListScreenEvent.OnInsertClick
+                    )
                 },
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -44,12 +45,14 @@ fun EnvTypeListScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             MyTextField(
-                value = "Env Type",
+                value = state.textNameValue,
                 placeholder = "Environment Type",
-                error = null,
+                error = state.textNameError,
                 label = "Environment Type",
-                onValueChanged = {
-                    // TODO
+                onValueChanged = { text ->
+                    onEvent(
+                        EnvTypeListScreenEvent.OnNameTextChanged(text)
+                    )
                 }
             )
         }
@@ -60,16 +63,18 @@ fun EnvTypeListScreen(
             horizontalAlignment = Alignment.Start,
         ) {
 
-            val envTypes = listOf<String>("")
-
-            items(envTypes) {envType ->
+            items(state.envTypeEntityList) {envType ->
                 GenericListItem(
-                    itemName = envType,
+                    itemName = envType.envTypeName,
                     onItemClick = {
-                        // TODO
+                        onEvent(
+                            EnvTypeListScreenEvent.OnItemClick(envType)
+                        )
                     },
                     onDeleteClick = {
-                        // TODO
+                        onEvent(
+                            EnvTypeListScreenEvent.OnDeleteClick(envType)
+                        )
                     },
                 )
             }

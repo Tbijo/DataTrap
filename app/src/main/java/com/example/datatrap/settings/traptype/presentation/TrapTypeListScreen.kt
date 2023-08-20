@@ -21,14 +21,16 @@ import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
 fun TrapTypeListScreen(
-    onEvent: (TrapTypeListScreenEvent) -> Unit
+    onEvent: (TrapTypeListScreenEvent) -> Unit,
+    state: TrapTypeListUiState,
 ) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // TODO add trap type
-                    //onEvent(ContactListEvent.OnAddNewContactClick)
+                    onEvent(
+                        TrapTypeListScreenEvent.OnInsertClick
+                    )
                 },
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -43,12 +45,14 @@ fun TrapTypeListScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             MyTextField(
-                value = "trapTypeA",
+                value = state.textNameValue,
                 placeholder = "Trap Type",
-                error = null,
+                error = state.textNameError,
                 label = "Trap Type",
-                onValueChanged = {
-                    // TODO
+                onValueChanged = { text ->
+                    onEvent(
+                        TrapTypeListScreenEvent.OnNameTextChanged(text)
+                    )
                 }
             )
         }
@@ -59,16 +63,18 @@ fun TrapTypeListScreen(
             horizontalAlignment = Alignment.Start,
         ) {
 
-            val trapTypes = listOf("")
-
-            items(trapTypes) { trapType ->
+            items(state.trapTypeEntityList) { trapType ->
                 GenericListItem(
-                    itemName = trapType,
+                    itemName = trapType.trapTypeName,
                     onItemClick = {
-                        // TODO
+                        onEvent(
+                            TrapTypeListScreenEvent.OnItemClick(trapType)
+                        )
                     },
                     onDeleteClick = {
-                        // TODO
+                        onEvent(
+                            TrapTypeListScreenEvent.OnDeleteClick(trapType)
+                        )
                     },
                 )
             }

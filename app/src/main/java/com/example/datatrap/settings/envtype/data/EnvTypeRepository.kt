@@ -6,7 +6,9 @@ class EnvTypeRepository(
     private val envTypeDao: EnvTypeDao
 ) {
 
-    val envTypeEntityList: Flow<List<EnvTypeEntity>> = envTypeDao.getEnvTypes()
+    fun getEnvTypeEntityList(): Flow<List<EnvTypeEntity>> {
+        return envTypeDao.getEnvTypes()
+    }
 
     suspend fun insertEnvType(envTypeEntity: EnvTypeEntity) {
         envTypeDao.insertEnvType(envTypeEntity)

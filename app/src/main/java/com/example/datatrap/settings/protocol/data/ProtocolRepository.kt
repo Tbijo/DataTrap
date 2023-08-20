@@ -4,7 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 class ProtocolRepository(private val protocolDao: ProtocolDao) {
 
-    val protocolEntityList: Flow<List<ProtocolEntity>> = protocolDao.getProtocols()
+    fun getProtocolEntityList(): Flow<List<ProtocolEntity>> {
+        return protocolDao.getProtocols()
+    }
 
     suspend fun insertProtocol(protocolEntity: ProtocolEntity) {
         protocolDao.insertProtocol(protocolEntity)

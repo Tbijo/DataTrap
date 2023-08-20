@@ -1,4 +1,4 @@
-  package com.example.datatrap.settings.vegettype.presentation
+package com.example.datatrap.settings.vegettype.presentation
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,14 +21,16 @@ import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
 fun VegetTypeListScreen(
-    onEvent: (VegetTypeListScreenEvent) -> Unit
+    onEvent: (VegetTypeListScreenEvent) -> Unit,
+    state: VegetTypeListUiState,
 ) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // TODO add veget type
-                    //onEvent(ContactListEvent.OnAddNewContactClick)
+                    onEvent(
+                        VegetTypeListScreenEvent.OnInsertClick
+                    )
                 },
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -43,12 +45,14 @@ fun VegetTypeListScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             MyTextField(
-                value = "vegetTypeA",
+                value = state.textNameValue,
                 placeholder = "Vegetation Type",
-                error = null,
+                error = state.textNameError,
                 label = "Vegetation Type",
-                onValueChanged = {
-                    // TODO
+                onValueChanged = { text ->
+                    onEvent(
+                        VegetTypeListScreenEvent.OnNameTextChanged(text)
+                    )
                 }
             )
         }
@@ -59,16 +63,16 @@ fun VegetTypeListScreen(
             horizontalAlignment = Alignment.Start,
         ) {
 
-            val vegetTypes = listOf("")
-
-            items(vegetTypes) { vegetType ->
+            items(state.vegetTypeEntityList) { vegetType ->
                 GenericListItem(
-                    itemName = vegetType,
+                    itemName = vegetType.vegetTypeName,
                     onItemClick = {
-                        // TODO
+                        onEvent(
+                            VegetTypeListScreenEvent.OnItemClick(vegetType)
+                        )
                     },
                     onDeleteClick = {
-                        // TODO
+                        VegetTypeListScreenEvent.OnDeleteClick(vegetType)
                     },
                 )
             }

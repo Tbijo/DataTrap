@@ -21,14 +21,16 @@ import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
 fun ProtocolListScreen(
-    onEvent: (ProtocolListScreenEvent) -> Unit
+    onEvent: (ProtocolListScreenEvent) -> Unit,
+    state: ProtocolListUiState,
 ) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // TODO add protocol
-                    //onEvent(ContactListEvent.OnAddNewContactClick)
+                    onEvent(
+                        ProtocolListScreenEvent.OnInsertClick
+                    )
                 },
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -43,12 +45,14 @@ fun ProtocolListScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             MyTextField(
-                value = "protocolA",
+                value = state.textNameValue,
                 placeholder = "Protocol",
-                error = null,
+                error = state.textNameError,
                 label = "Protocol",
-                onValueChanged = {
-                    // TODO
+                onValueChanged = { text ->
+                    onEvent(
+                        ProtocolListScreenEvent.OnNameTextChanged(text)
+                    )
                 }
             )
         }
@@ -59,16 +63,18 @@ fun ProtocolListScreen(
             horizontalAlignment = Alignment.Start,
         ) {
 
-            val protocols = listOf("")
-
-            items(protocols) { protocol ->
+            items(state.protocolEntityList) { protocol ->
                 GenericListItem(
-                    itemName = protocol,
+                    itemName = protocol.protocolName,
                     onItemClick = {
-                        // TODO
+                        onEvent(
+                            ProtocolListScreenEvent.OnItemClick(protocol)
+                        )
                     },
                     onDeleteClick = {
-                        // TODO
+                        onEvent(
+                            ProtocolListScreenEvent.OnDeleteClick(protocol)
+                        )
                     },
                 )
             }

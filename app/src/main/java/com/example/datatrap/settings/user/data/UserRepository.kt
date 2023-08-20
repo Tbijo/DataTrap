@@ -4,7 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val userDao: UserDao) {
 
-    val userEntityList: Flow<List<UserEntity>> = userDao.getUsers()
+    fun getUserEntityList(): Flow<List<UserEntity>> {
+        return userDao.getUsers()
+    }
 
     suspend fun insertUser(userEntity: UserEntity) {
         userDao.insertUser(userEntity)
@@ -18,7 +20,7 @@ class UserRepository(private val userDao: UserDao) {
         return userDao.getActiveUser(userId)
     }
 
-    suspend fun checkUser(userName: String, password: String): Long? {
+    fun checkUser(userName: String, password: String): Flow<Long?> {
         return userDao.checkUser(userName, password)
     }
 

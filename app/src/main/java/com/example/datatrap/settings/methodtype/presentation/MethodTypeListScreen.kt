@@ -21,14 +21,16 @@ import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
 fun MethodTypeListScreen(
-    onEvent: (MethodTypeListScreenEvent) -> Unit
+    onEvent: (MethodTypeListScreenEvent) -> Unit,
+    state: MethodTypeListUiState,
 ) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // TODO add method type
-                    //onEvent(ContactListEvent.OnAddNewContactClick)
+                    onEvent(
+                        MethodTypeListScreenEvent.OnInsertClick
+                    )
                 },
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -43,12 +45,14 @@ fun MethodTypeListScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             MyTextField(
-                value = "methodTypeA",
+                value = state.textNameValue,
                 placeholder = "Method Type",
-                error = null,
+                error = state.textNameError,
                 label = "Method Type",
-                onValueChanged = {
-                    // TODO
+                onValueChanged = { text ->
+                    onEvent(
+                        MethodTypeListScreenEvent.OnNameTextChanged(text)
+                    )
                 }
             )
         }
@@ -59,16 +63,18 @@ fun MethodTypeListScreen(
             horizontalAlignment = Alignment.Start,
         ) {
 
-            val methodTypes = listOf("")
-
-            items(methodTypes) { methodType ->
+            items(state.methodTypeEntityList) { methodType ->
                 GenericListItem(
-                    itemName = methodType,
+                    itemName = methodType.methodTypeName,
                     onItemClick = {
-                        // TODO
+                        onEvent(
+                            MethodTypeListScreenEvent.OnItemClick(methodType)
+                        )
                     },
                     onDeleteClick = {
-                        // TODO
+                        onEvent(
+                            MethodTypeListScreenEvent.OnDeleteClick(methodType)
+                        )
                     },
                 )
             }

@@ -4,7 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 class TrapTypeRepository(private val trapTypeDao: TrapTypeDao) {
 
-    val trapTypeEntityList: Flow<List<TrapTypeEntity>> = trapTypeDao.getTrapTypes()
+    fun getTrapTypeEntityList(): Flow<List<TrapTypeEntity>> {
+        return trapTypeDao.getTrapTypes()
+    }
 
     suspend fun insertTrapType(trapTypeEntity: TrapTypeEntity) {
         trapTypeDao.insertTrapType(trapTypeEntity)

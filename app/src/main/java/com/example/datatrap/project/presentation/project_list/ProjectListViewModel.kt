@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,12 +22,11 @@ class ProjectListViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
+        _state.update { it.copy(
+            isLoading = true
+        ) }
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update { it.copy(
-                isLoading = true
-            ) }
-
-            projectRepository.projectEntityList().collect { projectList ->
+            projectRepository.projectEntityList().onEach { projectList ->
                 _state.update { it.copy(
                     isLoading = false,
                     projectList = projectList,

@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
@@ -22,14 +21,16 @@ import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
 fun MethodListScreen(
-    onEvent: (MethodListScreenEvent) -> Unit
+    onEvent: (MethodListScreenEvent) -> Unit,
+    state: MethodListUiState,
 ) {
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    // TODO add method
-                    //onEvent(ContactListEvent.OnAddNewContactClick)
+                    onEvent(
+                        MethodListScreenEvent.OnInsertClick
+                    )
                 },
                 shape = RoundedCornerShape(20.dp)
             ) {
@@ -44,12 +45,14 @@ fun MethodListScreen(
             modifier = Modifier.fillMaxWidth(),
         ) {
             MyTextField(
-                value = "methodA",
+                value = state.textNameValue,
                 placeholder = "Method",
-                error = null,
+                error = state.textNameError,
                 label = "Method",
-                onValueChanged = {
-                    // TODO
+                onValueChanged = { text ->
+                    onEvent(
+                        MethodListScreenEvent.OnNameTextChanged(text)
+                    )
                 }
             )
         }
@@ -60,16 +63,18 @@ fun MethodListScreen(
             horizontalAlignment = Alignment.Start,
         ) {
 
-            val methods = listOf("")
-
-            items(methods) {method ->
+            items(state.methodEntityList) {method ->
                 GenericListItem(
-                    itemName = method,
+                    itemName = method.methodName,
                     onItemClick = {
-                        // TODO
+                        onEvent(
+                            MethodListScreenEvent.OnItemClick(method)
+                        )
                     },
                     onDeleteClick = {
-                        // TODO
+                        onEvent(
+                            MethodListScreenEvent.OnDeleteClick(method)
+                        )
                     },
                 )
             }

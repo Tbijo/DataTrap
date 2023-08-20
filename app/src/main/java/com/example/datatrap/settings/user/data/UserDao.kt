@@ -19,6 +19,6 @@ interface UserDao {
     fun getActiveUser(userId: Long): Flow<UserEntity>
 
     @Query("SELECT userId FROM UserEntity WHERE userName = :userName AND password = :password")
-    suspend fun checkUser(userName: String, password: String): Long?
+    fun checkUser(userName: String, password: String): Flow<Long?>
 
 }
