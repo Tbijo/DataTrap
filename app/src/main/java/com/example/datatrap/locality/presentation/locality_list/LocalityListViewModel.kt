@@ -16,7 +16,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
-import com.example.datatrap.core.data.pref.PrefViewModel
 import com.example.datatrap.locality.data.LocalityEntity
 import com.example.datatrap.locality.domain.model.LocList
 import com.example.datatrap.locality.data.LocalityRepository
@@ -137,32 +136,11 @@ class LocalityListViewModel @Inject constructor (
         }
     }
 
-    private fun goToSession(position: Int) {
-        val action =
-            ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListPrjSessionFragment(
-                args.project,
-                localityList[position]
-            )
-        findNavController().navigate(action)
-    }
-
-    private fun deleteCombination(position: Int) {
-        val projectLocalityCrossRef =
-            ProjectLocalityCrossRef(args.project.projectId, localityList[position].localityId)
-        prjLocalityViewModel.deleteProjectLocality(projectLocalityCrossRef)
-    }
-
     fun onQueryTextChange(newText: String?): Boolean {
         if (newText != null) {
             searchLocalities(newText)
         }
         return true
-    }
-
-    private fun insertCombination(position: Int) {
-        val projectLocalityCrossRef = ProjectLocalityCrossRef(args.project.projectId, localityList[position].localityId)
-        // vytvorit kombinaciu
-        prjLocalityViewModel.insertProjectLocality(projectLocalityCrossRef)
     }
 
     private fun goToMap() {
@@ -232,26 +210,10 @@ class LocalityListViewModel @Inject constructor (
         startActivity(intent)
     }
 
-    fun insertLocality(localityEntity: LocalityEntity) {
-        viewModelScope.launch(Dispatchers.IO){
-            localityRepository.insertLocality(localityEntity)
-        }
-    }
-
-    fun updateLocality(localityEntity: LocalityEntity) {
-        viewModelScope.launch(Dispatchers.IO){
-            localityRepository.updateLocality(localityEntity)
-        }
-    }
-
     fun deleteLocality(localityId: Long) {
         viewModelScope.launch(Dispatchers.IO){
             localityRepository.deleteLocality(localityId)
         }
-    }
-
-    fun getLocality(localityId: Long): LiveData<LocalityEntity> {
-        return localityRepository.getLocality(localityId)
     }
 
     fun searchLocalities(localityName: String): LiveData<List<LocList>> {

@@ -101,7 +101,7 @@ class ProjectViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             projectRepository.insertProject(projectEntity)
-            _eventFlow.emit(UiEvent.Navigate)
+            _eventFlow.emit(UiEvent.NavigateBack)
         }
 
     }

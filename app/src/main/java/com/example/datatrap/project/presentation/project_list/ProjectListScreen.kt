@@ -95,6 +95,11 @@ private fun ScreenContent(
                             ProjectListScreenEvent.OnItemClick(project)
                         )
                     },
+                    onUpdateClick = {
+                        onEvent(
+                            ProjectListScreenEvent.OnUpdateButtonClick(project)
+                        )
+                    },
                     onDeleteClick = {
                         onEvent(
                             ProjectListScreenEvent.OnDeleteClick(project)

@@ -6,5 +6,5 @@ sealed interface UiEvent {
     data class ShowSnackbar(val message: String): UiEvent
 
     // navigate back
-    object Navigate: UiEvent
+    object NavigateBack: UiEvent
 }

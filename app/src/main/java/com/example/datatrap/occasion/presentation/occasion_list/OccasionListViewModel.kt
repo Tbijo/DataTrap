@@ -1,7 +1,6 @@
 package com.example.datatrap.occasion.presentation.occasion_list
 
 import androidx.lifecycle.*
-import com.example.datatrap.core.data.pref.PrefViewModel
 import com.example.datatrap.occasion.data.OccasionEntity
 import com.example.datatrap.occasion.domain.model.OccList
 import com.example.datatrap.occasion.domain.model.OccasionView

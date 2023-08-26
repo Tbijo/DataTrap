@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
-import com.example.datatrap.core.data.pref.PrefViewModel
 import com.example.datatrap.locality.data.LocalityEntity
 import com.example.datatrap.locality.data.LocalityRepository
 import com.example.datatrap.mouse.data.MouseEntity

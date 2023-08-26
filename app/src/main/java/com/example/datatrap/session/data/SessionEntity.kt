@@ -19,7 +19,7 @@ data class SessionEntity(
 
     var session: Int,
     
-    // cudzi kluc
+    // foreign key
     @ColumnInfo(index = true)
     var projectID: String,
 
@@ -28,6 +28,4 @@ data class SessionEntity(
     var sessionDateTimeCreated: ZonedDateTime,
 
     var sessionDateTimeUpdated: ZonedDateTime?,
-
-    var sessionStart: Long
 )

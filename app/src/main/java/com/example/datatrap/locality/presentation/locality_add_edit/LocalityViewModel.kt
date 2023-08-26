@@ -17,7 +17,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
 import com.example.datatrap.locality.data.LocalityEntity
 import com.example.datatrap.locality.presentation.locality_list.LocalityListViewModel
@@ -26,6 +28,8 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Task
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class LocalityViewModel: ViewModel() {
@@ -94,6 +98,22 @@ class LocalityViewModel: ViewModel() {
 
     private fun checkInput(localityName: String): Boolean {
         return localityName.isNotEmpty()
+    }
+
+    fun insertLocality(localityEntity: LocalityEntity) {
+        viewModelScope.launch(Dispatchers.IO){
+            localityRepository.insertLocality(localityEntity)
+        }
+    }
+
+    fun updateLocality(localityEntity: LocalityEntity) {
+        viewModelScope.launch(Dispatchers.IO){
+            localityRepository.updateLocality(localityEntity)
+        }
+    }
+
+    fun getLocality(localityId: Long): LiveData<LocalityEntity> {
+        return localityRepository.getLocality(localityId)
     }
 
     ///////////////////////////////////GPS/////////////////////////////////////////////

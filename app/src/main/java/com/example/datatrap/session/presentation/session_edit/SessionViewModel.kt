@@ -1,92 +1,106 @@
 package com.example.datatrap.session.presentation.session_edit
 
-import android.app.AlertDialog
-import android.widget.Toast
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.datatrap.R
-import com.example.datatrap.session.presentation.session_prj_list.SessionListViewModel
-import java.util.Calendar
+import androidx.lifecycle.viewModelScope
+import com.example.datatrap.core.presentation.util.UiEvent
+import com.example.datatrap.session.data.SessionEntity
+import com.example.datatrap.session.data.SessionRepository
+import com.example.datatrap.session.navigation.SessionScreens
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
+import javax.inject.Inject
 
-class SessionViewModel: ViewModel() {
+@HiltViewModel
+class SessionViewModel @Inject constructor(
+    private val sessionRepository: SessionRepository,
+    savedStateHandle: SavedStateHandle,
+): ViewModel() {
 
-    private val sessionListViewModel: SessionListViewModel by viewModels()
-    private val localitySessionViewModel: LocalitySessionViewModel by viewModels()
+    private val _state = MutableStateFlow(SessionUiState())
+    val state = _state.asStateFlow()
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     init {
-        initSessionValuesToView()
+        _state.update { it.copy(
+            isLoading = true
+        ) }
 
-        binding.btnDelAssoc.isEnabled = false
-        binding.btnDelAssoc.setOnClickListener {
-            deleteAssociationWithLocality()
-        }
+        savedStateHandle.getStateFlow<String?>(
+            key = SessionScreens.SessionScreen.sessionIdKey,
+            initialValue = null,
+        ).onEach { sessionId ->
+            sessionId?.let { sesId ->
+                sessionRepository.getSession(sesId).collectLatest { session ->
+                    _state.update { it.copy(
+                        isLoading = false,
+                        session = session,
+                        sessionNum = session.session.toString(),
+                        numOcc = session.numOcc.toString(),
+                    ) }
+                }
+            }
+        }.launchIn(viewModelScope)
 
-        localitySessionViewModel.existsLocalSessCrossRef(args.locList.localityId, args.session.sessionId).observe(viewLifecycleOwner) {
-            binding.btnDelAssoc.isEnabled = it
-        }
+    }
 
-        when(item.itemId){
-            R.id.menu_save -> updateSession()
-            R.id.menu_delete -> deleteSession()
+    fun onEvent(event: SessionScreenEvent) {
+        when(event) {
+            SessionScreenEvent.OnInsertClick -> insertSession()
+
+            is SessionScreenEvent.OnNumberOccasionChange -> {
+                _state.update { it.copy(
+                    numOcc = event.text,
+                    numOccError = null,
+                ) }
+            }
+
+            is SessionScreenEvent.OnSessionNumberChange -> {
+                _state.update { it.copy(
+                    sessionNum = event.text,
+                    sessionNumError = null,
+                ) }
+            }
         }
     }
 
-    private fun initSessionValuesToView(){
-        binding.etSession.setText(args.session.session.toString())
-        binding.etNumOcc.setText(args.session.numOcc.toString())
-    }
+    private fun insertSession() {
+        if (state.value.sessionNum.isNotEmpty() && state.value.numOcc.isNotEmpty()) return
 
-    private fun deleteAssociationWithLocality() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Yes"){_, _ ->
-            // vymazat session
-            val localSessCrossRef = LocalitySessionCrossRef(args.locList.localityId, args.session.sessionId)
-            localitySessionViewModel.deleteLocalitySessionCrossRef(localSessCrossRef)
+        val sessionEntity = SessionEntity(
+            sessionId = state.value.session?.sessionId ?: "",
+            session = Integer.parseInt(state.value.sessionNum.ifEmpty {
+                _state.update { it.copy(
+                    sessionNumError = "Session must have a number.",
+                ) }
+                return
+            }),
+            numOcc = Integer.parseInt(state.value.numOcc.ifEmpty {
+                _state.update { it.copy(
+                    numOccError = "Occasion must have at least 0.",
+                ) }
+                return
+            }),
+            projectID = state.value.session?.projectID ?: "",
+            sessionDateTimeCreated = state.value.session?.sessionDateTimeCreated ?: ZonedDateTime.now(),
+            sessionDateTimeUpdated = ZonedDateTime.now(),
+        )
 
-            Toast.makeText(requireContext(),"Association deleted.", Toast.LENGTH_LONG).show()
+        viewModelScope.launch {
+            sessionRepository.insertSession(sessionEntity)
+            // navigate back
+            _eventFlow.emit(UiEvent.NavigateBack)
         }
-            .setNegativeButton("No"){_, _ -> }
-            .setTitle("Delete Association?")
-            .setMessage("Are you sure you want to delete this association?")
-            .create().show()
-    }
-
-    private fun deleteSession() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Yes"){_, _ ->
-            // vymazat session
-            sessionListViewModel.deleteSession(args.session)
-
-            Toast.makeText(requireContext(),"Session deleted.", Toast.LENGTH_LONG).show()
-
-            findNavController().navigateUp()
-        }
-            .setNegativeButton("No"){_, _ -> }
-            .setTitle("Delete Session?")
-            .setMessage("Are you sure you want to delete this session?")
-            .create().show()
-    }
-
-    private fun updateSession() {
-        val sessionNum = binding.etSession.text.toString()
-        val numOcc = binding.etNumOcc.text.toString()
-        if (checkInput(sessionNum, numOcc)){
-
-            val session = args.session.copy()
-            session.session = Integer.parseInt(sessionNum)
-            session.numOcc = Integer.parseInt(numOcc)
-            session.sessionDateTimeUpdated = Calendar.getInstance().time
-
-            sessionListViewModel.updateSession(session)
-
-            Toast.makeText(requireContext(), "Session Updated.", Toast.LENGTH_SHORT).show()
-
-            findNavController().navigateUp()
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun checkInput(session: String, numOcc: String): Boolean {
-        return session.isNotEmpty() && numOcc.isNotEmpty()
     }
 }

@@ -12,11 +12,11 @@ class SessionRepository(private val sessionDao: SessionDao) {
         sessionDao.deleteSession(sessionEntity)
     }
 
-    fun getSessionsForProject(projectId: Long): Flow<List<SessionEntity>> {
+    fun getSessionsForProject(projectId: String): Flow<List<SessionEntity>> {
         return sessionDao.getSessionsForProject(projectId)
     }
 
-    suspend fun getSessionForSync(sessionIds: List<Long>): List<SessionEntity> {
+    suspend fun getSessionForSync(sessionIds: List<String>): List<SessionEntity> {
         return sessionDao.getSessionForSync(sessionIds)
     }
 
@@ -24,13 +24,13 @@ class SessionRepository(private val sessionDao: SessionDao) {
         return sessionDao.insertSyncSession(sessionEntity)
     }
 
-    suspend fun getSession(projectID: Long, sessionStart: Long): SessionEntity? {
-        return sessionDao.getSession(projectID, sessionStart)
+    fun getSession(sessionId: String): Flow<SessionEntity> {
+        return sessionDao.getSession(sessionId)
     }
 
-    // 604800 dlzka tyzdna v sekundach treba v milisekundach 604 800 000
-    suspend fun getNearSession(projectID: Long, sessionStart: Long): SessionEntity? {
-        return sessionDao.getNearSession(projectID, sessionStart)
-    }
+    // 604 800 dlzka tyzdna v sekundach treba v milisekundach 604 800 000
+//    suspend fun getNearSession(projectID: Long, sessionStart: Long): SessionEntity? {
+//        return sessionDao.getNearSession(projectID, sessionStart)
+//    }
 
 }

@@ -90,7 +90,7 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
         LaunchedEffect(key1 = Unit) {
             viewModel.eventFlow.collectLatest { event ->
                 when(event) {
-                    UiEvent.Navigate -> {
+                    UiEvent.NavigateBack -> {
                         navController.navigateUp()
                     }
                     else -> Unit

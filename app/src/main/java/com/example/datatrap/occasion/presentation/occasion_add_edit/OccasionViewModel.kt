@@ -13,7 +13,6 @@ import com.android.volley.Request
 import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.example.datatrap.R
-import com.example.datatrap.core.data.pref.PrefViewModel
 import com.example.datatrap.core.util.Constants
 import com.example.datatrap.mouse.domain.model.MyWeather
 import com.example.datatrap.occasion.data.OccasionEntity

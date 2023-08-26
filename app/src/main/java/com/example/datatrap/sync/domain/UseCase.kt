@@ -1,4 +1,4 @@
-package com.example.datatrap.core
+package com.example.datatrap.sync.domain
 
 import com.example.datatrap.sync.utils.Resource
 import kotlinx.coroutines.flow.Flow

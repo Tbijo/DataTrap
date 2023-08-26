@@ -7,16 +7,16 @@ sealed class LocalityScreens(val route: String) {
         const val projectIdKey = "projectIdKey"
 
         fun passParams(projectIdVal: String): String {
-            return "project_screen/$projectIdVal"
+            return "locality_list_screen/$projectIdVal"
         }
     }
 
-    object LocalityScreen: LocalityScreens("locality_screen/{projectIdKey}") {
+    object LocalityScreen: LocalityScreens("locality_screen/{localityIdKey}") {
 
-        const val projectIdKey = "projectIdKey"
+        const val localityIdKey = "localityIdKey"
 
-        fun passParams(projectIdVal: String): String {
-            return "project_screen/$projectIdVal"
+        fun passParams(localityIdVal: String): String {
+            return "locality_screen/$localityIdVal"
         }
     }
 

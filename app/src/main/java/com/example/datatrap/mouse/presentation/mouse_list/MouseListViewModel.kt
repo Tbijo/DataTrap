@@ -2,7 +2,6 @@ package com.example.datatrap.mouse.presentation.mouse_list
 
 import androidx.lifecycle.*
 import com.example.datatrap.R
-import com.example.datatrap.core.data.pref.PrefViewModel
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.domain.model.MouseLog
 import com.example.datatrap.mouse.domain.model.MouseOccList

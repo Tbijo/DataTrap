@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import com.example.datatrap.R
-import com.example.datatrap.core.data.pref.PrefViewModel
 import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumMouseAge
 import com.example.datatrap.core.util.EnumSex
