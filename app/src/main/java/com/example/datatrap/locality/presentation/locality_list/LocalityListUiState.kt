@@ -8,4 +8,8 @@ data class LocalityListUiState(
     val error: String = "",
 
     val projectName: String = "",
+
+    val searchTextFieldValue: String = "",
+    val searchTextFieldHint: String = "Enter locality name...",
+    val isSearchTextFieldHintVisible: Boolean = true,
 )

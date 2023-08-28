@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -31,7 +32,7 @@ class ProjectListViewModel @Inject constructor(
                     isLoading = false,
                     projectList = projectList,
                 ) }
-            }
+            }.launchIn(viewModelScope)
         }
     }
 
@@ -52,14 +53,16 @@ class ProjectListViewModel @Inject constructor(
     private fun searchProjects(query: String) {
         viewModelScope.launch(Dispatchers.Main) {
             _state.update { it.copy(
+                isLoading = true,
                 searchTextFieldValue = query,
             ) }
         }
 
         viewModelScope.launch(Dispatchers.IO) {
             val searchQuery = "%$query%"
-            projectRepository.searchProjects(searchQuery).collect { projectList ->
+            projectRepository.searchProjects(searchQuery).onEach { projectList ->
                 _state.update { it.copy(
+                    isLoading = false,
                     projectList = projectList,
                 ) }
             }

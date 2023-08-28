@@ -1,5 +1,6 @@
 package com.example.datatrap.locality.presentation.locality_list.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,10 +19,13 @@ import com.example.datatrap.locality.data.LocalityEntity
 @Composable
 fun LocalityListItem(
     localityEntity: LocalityEntity,
+    onItemClick: () -> Unit,
     onUpdateClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
-    Row(modifier = Modifier.fillMaxWidth()) {
+    Row(modifier = Modifier.fillMaxWidth().clickable {
+        onItemClick()
+    }) {
         Column {
             Text(text = localityEntity.localityName, fontSize = 20.sp)
             Text(text = "${localityEntity.localityDateTimeCreated}", fontSize = 18.sp)

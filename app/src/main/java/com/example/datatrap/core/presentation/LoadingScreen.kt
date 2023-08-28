@@ -11,7 +11,7 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun LoadingScreen(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
 ) {
     Box(
         modifier = Modifier.fillMaxSize().padding(paddingValues),

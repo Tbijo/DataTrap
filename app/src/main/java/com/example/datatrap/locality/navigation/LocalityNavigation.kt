@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.locality.presentation.locality_add_edit.LocalityScreen
+import com.example.datatrap.locality.presentation.locality_add_edit.LocalityViewModel
 import com.example.datatrap.locality.presentation.locality_list.LocalityListScreen
 import com.example.datatrap.locality.presentation.locality_list.LocalityListScreenEvent
 import com.example.datatrap.locality.presentation.locality_list.LocalityListViewModel
@@ -47,6 +48,8 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
     composable(
         route = LocalityScreens.LocalityScreen.route
     ) {
+        val viewModel: LocalityViewModel = viewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
             viewModel.eventFlow.collectLatest { event ->
@@ -60,7 +63,8 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
         }
 
         LocalityScreen(
-            onEvent = {}
+            onEvent = {},
+            state = state,
         )
     }
 

@@ -16,8 +16,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 class LocalityMapFragment : Fragment() {
 
-    private val args by navArgs<LocalityMapFragmentArgs>()
-
     @SuppressLint("MissingPermission")
     private val callback = OnMapReadyCallback { googleMap ->
 

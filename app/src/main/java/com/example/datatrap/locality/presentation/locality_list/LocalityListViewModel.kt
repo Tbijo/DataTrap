@@ -1,28 +1,18 @@
 package com.example.datatrap.locality.presentation.locality_list
 
-import android.Manifest
-import android.app.AlertDialog
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.provider.Settings
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.R
 import com.example.datatrap.locality.data.LocalityEntity
-import com.example.datatrap.locality.domain.model.LocList
 import com.example.datatrap.locality.data.LocalityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import javax.inject.Inject
 
 @HiltViewModel
@@ -30,193 +20,83 @@ class LocalityListViewModel @Inject constructor (
     private val localityRepository: LocalityRepository
 ): ViewModel() {
 
-    val localityList: LiveData<List<LocList>> = localityRepository.localityList
-    private lateinit var requestMultiplePermissions: ActivityResultLauncher<Array<String>>
-    private lateinit var localityList: List<LocList>
-    private val localityListViewModel: LocalityListViewModel by viewModels()
-    private val prefViewModel: PrefViewModel by viewModels()
+    private val _state = MutableStateFlow(LocalityListUiState())
+    val state = _state.asStateFlow()
 
     init {
-        holder.binding.tvName.text = currenItem.localityName
-        holder.binding.tvDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.dateTime)
-        holder.binding.tvNumSes.text = currenItem.numSessions.toString()
+        _state.update { it.copy(
+            isLoading = true
+        ) }
 
-        localityListViewModel.localityList.observe(viewLifecycleOwner) { localities ->
-            adapter.setData(localities)
-            localityList = localities
-        }
+        localityRepository.getLocalities().onEach { locList ->
+            _state.update { it.copy(
+                isLoading = false,
+                localityList = locList,
+            ) }
+        }.launchIn(viewModelScope)
+    }
 
-        adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener {
-            override fun useClickListener(position: Int) {
-                // tu sa vytvori kombinacia project a locality a pojde sa spat do PrjLocality
-                insertCombination(position)
-
-                Toast.makeText(requireContext(), "Association created.", Toast.LENGTH_SHORT).show()
-
-                findNavController().navigateUp()
+    fun onEvent(event: LocalityListScreenEvent) {
+        when(event) {
+            is LocalityListScreenEvent.OnDeleteClick -> deleteLocality(event.localityEntity)
+            is LocalityListScreenEvent.OnSearchTextChange -> searchProjects(event.text)
+            is LocalityListScreenEvent.ChangeTitleFocus -> {
+                _state.update { it.copy(
+                    isSearchTextFieldHintVisible = !event.focusState.isFocused
+                            && state.value.searchTextFieldValue.isBlank(),
+                ) }
             }
-
-            override fun useLongClickListener(position: Int) {
-                // tu sa pojde upravit alebo vymazat lokalita
-                val locality: LocList = localityList[position]
-                val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToUpdateLocalityFragment(locality)
-                findNavController().navigate(action)
-            }
-
-        })
-
-        binding.addLocalityFloatButton.setOnClickListener {
-            // tu sa pojde vytvorit nova lokalita
-            val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToAddLocalityFragment()
-            findNavController().navigate(action)
-        }
-
-        requestMultiplePermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { perms ->
-            perms.entries.forEach {
-                Log.d("PERMISSIONS RESULT", "${it.key} = ${it.value}")
-            }
-        }
-
-        R.id.menu_map -> goToMap()
-
-        // Other one
-        binding.tvPathPrjName.text = args.project.projectName
-
-        prjLocalityViewModel.getLocalitiesForProject(args.project.projectId)
-            .observe(viewLifecycleOwner) {
-                val locList = mutableListOf<LocList>()
-                it.first().localities.forEach { locality ->
-                    val loc = LocList(
-                        locality.localityId,
-                        locality.localityName,
-                        locality.localityDateTimeCreated,
-                        locality.xA,
-                        locality.yA,
-                        locality.numSessions
-                    )
-                    locList.add(loc)
-                }
-                adapter.setData(locList)
-                localityList = locList
-            }
-
-        adapter.setOnItemClickListener(object : PrjLocalityRecyclerAdapter.MyClickListener {
-
-            override fun useClickListener(position: Int) {
-                // nastavit vybranu lokalitu
-                prefViewModel.saveLocNamePref(localityList[position].localityName)
-                // presun do sessionov s projektom a lokalitou
-                goToSession(position)
-            }
-
-            override fun useLongClickListener(position: Int) {
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setPositiveButton("Yes") { _, _ ->
-
-                    // vymazat kombinaciu projektu a vybranej lokality
-                    deleteCombination(position)
-
-                    Toast.makeText(requireContext(), "Association deleted.", Toast.LENGTH_LONG)
-                        .show()
-                }
-                    .setNegativeButton("No") { _, _ -> }
-                    .setTitle("Delete Association?")
-                    .setMessage("Are you sure you want to delete this association?")
-                    .create().show()
-            }
-        })
-
-        binding.addLocalityFloatButton.setOnClickListener {
-            // prechod do vsetkych lokalit na pracu s lokalitami a vytvorenie kombinacie project a locality
-            val action =
-                ListPrjLocalityFragmentDirections.actionListPrjLocalityFragmentToListAllLocalityFragment(
-                    args.project
-                )
-            findNavController().navigate(action)
+            else -> Unit
         }
     }
 
-    fun onQueryTextChange(newText: String?): Boolean {
-        if (newText != null) {
-            searchLocalities(newText)
+    private fun searchProjects(query: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            _state.update { it.copy(
+                isLoading = true,
+                searchTextFieldValue = query,
+            ) }
         }
-        return true
-    }
 
-    private fun goToMap() {
-        if (hasPermissions(Manifest.permission.ACCESS_FINE_LOCATION)) {
-            val action = ListAllLocalityFragmentDirections.actionListAllLocalityFragmentToLocalityMapFragment(
-                localityList.toTypedArray()
-            )
-            findNavController().navigate(action)
-        }
-        else {
-            requestPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-        }
-    }
-
-    private fun searchLocalities(query: String?) {
-        val searchQuery = "%$query%"
-        localityListViewModel.searchLocalities(searchQuery).observe(viewLifecycleOwner) { localities ->
-            localities.let {
-                adapter.setData(it)
+        viewModelScope.launch(Dispatchers.IO) {
+            val searchQuery = "%$query%"
+            localityRepository.searchLocalities(searchQuery).onEach { localityList ->
+                _state.update { it.copy(
+                    isLoading = false,
+                    localityList = localityList,
+                ) }
             }
+        }
+    }
+
+    private fun deleteLocality(localityEntity: LocalityEntity) {
+        viewModelScope.launch(Dispatchers.IO){
+            localityRepository.deleteLocality(localityEntity)
         }
     }
 
     ///////////////////////////////PERMISSIONS////////////////////////////////////////
 
-    private fun hasPermissions(vararg permissions: String): Boolean {
-        permissions.forEach {
-            if (ContextCompat.checkSelfPermission(requireContext(), it) != PackageManager.PERMISSION_GRANTED) {
-                return false
-            }
+    // We want to show multiple dialogs (one after the other) because the user may decline all of the permissions
+    // We need to queue these dialogs, queue data structure
+    // String will be the permission
+    val visiblePermissionDialogQueue = mutableStateListOf<String>()
+
+    // for dismissing a dialog by clicking OK or outside the dialog
+    // We want to pop the entry of our queue
+    fun dismissDialog() {
+        visiblePermissionDialogQueue.removeFirst()
+    }
+
+    // call this function when we get permission results
+    fun onPermissionResult(
+        permission: String,
+        isGranted: Boolean
+    ) {
+        // if the permission was not granted we want to put it into our queue on the first index
+        // And the permission should not be duplicated in our queue
+        if(!isGranted && !visiblePermissionDialogQueue.contains(permission)) {
+            visiblePermissionDialogQueue.add(permission)
         }
-        return true
-    }
-
-    private fun requestPermissions(permissions: Array<String>) {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(
-                requireActivity(),
-                permissions[0]
-            )
-        ) {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setMessage("Application needs this permission to work.")
-                .setPositiveButton("OK") { _, _ ->
-                    requestAppSettings()
-                }
-                .setNegativeButton("Cancel") { _, _ ->
-                    Toast.makeText(requireContext(), "Application can not proceed.", Toast.LENGTH_LONG)
-                        .show()
-                }
-                .create().show()
-            Log.d("PERMISSIONS", "DOUBLE DENIAL")
-
-        } else {
-            Log.d("PERMISSIONS", "GETTING PERMISSIONS")
-            requestMultiplePermissions.launch(
-                permissions
-            )
-        }
-    }
-
-    private fun requestAppSettings(){
-        val intent = Intent(
-            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-            Uri.fromParts("package", requireContext().packageName, null)
-        )
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
-    }
-
-    fun deleteLocality(localityId: Long) {
-        viewModelScope.launch(Dispatchers.IO){
-            localityRepository.deleteLocality(localityId)
-        }
-    }
-
-    fun searchLocalities(localityName: String): LiveData<List<LocList>> {
-        return localityRepository.searchLocalities(localityName)
     }
 }

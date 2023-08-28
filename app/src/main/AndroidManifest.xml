@@ -8,19 +8,15 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!--povolenie pre Volley-->
     <uses-permission android:name="android.permission.INTERNET"/>
 
-    <!--povolenie pre kameru-->
     <uses-feature
         android:name="android.hardware.camera.any"
         android:required="true" />
 
-    <!--Aby sme mohli ukladat fotky do mobilu-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <!--usesCleartextTraffic= aby aplikacia nepadala ak bude HTTP narozdiel od HTTPS-->
     <application
         android:name=".MyApplication"
         android:allowBackup="true"

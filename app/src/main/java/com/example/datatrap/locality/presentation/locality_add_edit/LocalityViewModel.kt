@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.gms.tasks.Task
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
 import java.util.Calendar
 
 class LocalityViewModel: ViewModel() {
@@ -42,6 +43,10 @@ class LocalityViewModel: ViewModel() {
     private lateinit var cancellationTokenSource: CancellationTokenSource
 
     init {
+        holder.binding.tvName.text = currenItem.localityName
+        holder.binding.tvDate.text = SimpleDateFormat.getDateTimeInstance().format(currenItem.dateTime)
+        holder.binding.tvNumSes.text = currenItem.numSessions.toString()
+
         binding.btnGetCoorA.setOnClickListener {
             getCoordinates(true)
         }
