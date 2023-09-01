@@ -13,7 +13,7 @@ import com.example.datatrap.specie.domain.model.SpecList
 import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
 import java.util.Calendar
 
-class MultiMouseViewModel: ViewModel() {
+class MouseMultiViewModel: ViewModel() {
 
     private val mouseListViewModel: MouseListViewModel by viewModels()
     private val specieListViewModel: SpecieListViewModel by viewModels()

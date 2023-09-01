@@ -1,0 +1,3 @@
+package com.example.datatrap.occasion.presentation.occasion_list
+
+sealed interface OccasionListScreenEvent

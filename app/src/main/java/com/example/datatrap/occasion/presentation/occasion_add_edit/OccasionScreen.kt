@@ -1,6 +1,7 @@
 package com.example.datatrap.occasion.presentation.occasion_add_edit
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
@@ -17,7 +18,7 @@ fun OccasionScreen(
 ) {
     Scaffold {
         Column(
-            modifier = Modifier.padding(it)
+            modifier = Modifier.fillMaxSize().padding(it)
         ) {
             DropdownMenu(expanded = true, onDismissRequest = { /*TODO*/ }) {
                 DropdownMenuItem(onClick = { /*TODO*/ }) {

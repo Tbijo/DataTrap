@@ -1,0 +1,3 @@
+package com.example.datatrap.mouse.presentation.mouse_add_multi
+
+sealed interface MouseMultiScreenEvent

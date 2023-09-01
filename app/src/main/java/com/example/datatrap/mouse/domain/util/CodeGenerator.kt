@@ -1,7 +1,7 @@
 package com.example.datatrap.mouse.domain.util
 
 import android.util.Log
-import com.example.datatrap.core.util.EnumTeam
+import com.example.datatrap.core.util.ScienceTeam
 
 class CodeGenerator(
     private var code: Int,
@@ -76,7 +76,7 @@ class CodeGenerator(
 
     private fun checkNumberEvenOrOddForTeam(team: Int) {
         if (isCycle2 < 2) {
-            if (team == EnumTeam.EVEN_TEAM.numTeam) {
+            if (team == ScienceTeam.EVEN_TEAM.numTeam) {
                 if (code % 2 == 0) {
                     Log.d("CodeGenerator", "Generation Complete")
                 } else {
@@ -88,7 +88,7 @@ class CodeGenerator(
                     }
                     checkNumberEvenOrOddForTeam(team)
                 }
-            } else if (team == EnumTeam.ODD_TEAM.numTeam) {
+            } else if (team == ScienceTeam.ODD_TEAM.numTeam) {
                 if (code % 2 != 0) {
                     Log.d("CodeGenerator", "Generation Complete")
                 } else {

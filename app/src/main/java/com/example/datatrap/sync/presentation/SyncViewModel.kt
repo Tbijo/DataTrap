@@ -44,7 +44,7 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class SyncClassViewModel @Inject constructor(
+class SyncViewModel @Inject constructor(
     private val mouseRepository: MouseRepository,
     private val occasionRepository: OccasionRepository,
     private val localityRepository: LocalityRepository,

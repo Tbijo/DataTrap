@@ -16,9 +16,9 @@ interface UserDao {
     fun getUsers(): Flow<List<UserEntity>>
 
     @Query("SELECT * FROM UserEntity WHERE userId = :userId")
-    fun getActiveUser(userId: Long): Flow<UserEntity>
+    fun getActiveUser(userId: String): Flow<UserEntity>
 
     @Query("SELECT userId FROM UserEntity WHERE userName = :userName AND password = :password")
-    fun checkUser(userName: String, password: String): Flow<Long?>
+    fun checkUser(userName: String, password: String): Flow<String?>
 
 }

@@ -1,11 +1,15 @@
 package com.example.datatrap.login.presentation
 
-import com.example.datatrap.core.util.EnumTeam
+import com.example.datatrap.core.util.ScienceTeam
 
 data class LoginUiState(
-    val userName: String? = null,
-    val password: String? = null,
+    val error: String? = null,
+
+    val userName: String = "",
     val userNameError: String? = null,
+
+    val password: String = "",
     val passwordError: String? = null,
-    val selectedTeam: EnumTeam? = null,
+
+    val selectedTeam: ScienceTeam? = null,
 )

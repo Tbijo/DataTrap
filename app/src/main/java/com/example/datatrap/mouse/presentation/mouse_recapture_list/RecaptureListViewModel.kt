@@ -9,7 +9,7 @@ import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-class RecaptureViewModel: ViewModel() {
+class RecaptureListViewModel: ViewModel() {
 
     private val mouseListViewModel: MouseListViewModel by viewModels()
     private val specieListViewModel: SpecieListViewModel by viewModels()

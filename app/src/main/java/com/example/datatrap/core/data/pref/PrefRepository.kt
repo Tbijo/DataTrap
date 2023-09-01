@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
-import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -23,30 +22,30 @@ class PrefRepository @Inject constructor(private val context: Context) {
     private object PreferencesKeys {
         val keyUserId = stringPreferencesKey("userId")
         val keyTeam = intPreferencesKey("team")
-        val keySyncDate = longPreferencesKey("syncDate")
+        val keySyncDate = stringPreferencesKey("syncDate")
     }
 
     private val Context.storePref: DataStore<Preferences> by preferencesDataStore(name = PATH_PREF_NAME)
 
-    suspend fun saveUserIdPref(userId: String) {
+    suspend fun saveUserId(userId: String) {
         context.storePref.edit { preference ->
             preference[PreferencesKeys.keyUserId] = userId
         }
     }
 
-    suspend fun saveUserTeamPref(selTeam: Int) {
+    suspend fun saveUserTeam(selTeam: Int) {
         context.storePref.edit { preference ->
             preference[PreferencesKeys.keyTeam] = selTeam
         }
     }
 
-    suspend fun saveLastSyncDatePref(syncDate: Long) {
+    suspend fun saveLastSyncDate(syncDate: String) {
         context.storePref.edit { preference ->
             preference[PreferencesKeys.keySyncDate] = syncDate
         }
     }
 
-    fun readUserIdPref(): Flow<String?> {
+    fun readUserId(): Flow<String?> {
         return context.storePref.data
             .catch { exception ->
                 if (exception is IOException) {
@@ -62,7 +61,7 @@ class PrefRepository @Inject constructor(private val context: Context) {
             }
     }
 
-    fun readUserTeamPref(): Flow<Int?> {
+    fun readUserTeam(): Flow<Int?> {
         return context.storePref.data
             .catch { exception ->
                 if (exception is IOException) {
@@ -78,7 +77,7 @@ class PrefRepository @Inject constructor(private val context: Context) {
             }
     }
 
-    fun readLastSyncDatePref(): Flow<Long?> {
+    fun readLastSyncDate(): Flow<String?> {
         return context.storePref.data
             .catch { exception ->
                 if (exception is IOException) {
@@ -89,7 +88,7 @@ class PrefRepository @Inject constructor(private val context: Context) {
                 }
             }
             .map { preference ->
-                val lastSyncDate: Long? = preference[PreferencesKeys.keySyncDate]
+                val lastSyncDate: String? = preference[PreferencesKeys.keySyncDate]
                 lastSyncDate
             }
     }
