@@ -100,8 +100,10 @@ dependencies {
 
     // fused location provider
     implementation("com.google.android.gms:play-services-location:19.0.1")
-    // mapa 17.0.1
-    implementation("com.google.android.gms:play-services-maps:18.0.2")
+    // map 17.0.1
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+    // compose map
+    implementation("com.google.maps.android:maps-compose:2.14.0")
 
     // na dagger hilt
     implementation("com.google.dagger:hilt-android:2.42")

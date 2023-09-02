@@ -15,7 +15,7 @@ sealed class LocalityScreens(val route: String) {
 
         const val localityIdKey = "localityIdKey"
 
-        fun passParams(localityIdVal: String): String {
+        fun passParams(localityIdVal: String?): String {
             return "locality_screen/$localityIdVal"
         }
     }

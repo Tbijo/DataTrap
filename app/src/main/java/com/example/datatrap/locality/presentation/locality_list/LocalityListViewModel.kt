@@ -1,10 +1,9 @@
 package com.example.datatrap.locality.presentation.locality_list
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.locality.data.LocalityEntity
-import com.example.datatrap.locality.data.LocalityRepository
+import com.example.datatrap.locality.data.locality.LocalityEntity
+import com.example.datatrap.locality.data.locality.LocalityRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +37,6 @@ class LocalityListViewModel @Inject constructor (
 
     fun onEvent(event: LocalityListScreenEvent) {
         when(event) {
-            is LocalityListScreenEvent.OnDeleteClick -> deleteLocality(event.localityEntity)
             is LocalityListScreenEvent.OnSearchTextChange -> searchProjects(event.text)
             is LocalityListScreenEvent.ChangeTitleFocus -> {
                 _state.update { it.copy(
@@ -46,6 +44,14 @@ class LocalityListViewModel @Inject constructor (
                             && state.value.searchTextFieldValue.isBlank(),
                 ) }
             }
+            is LocalityListScreenEvent.OnDeleteClick -> deleteLocality(event.localityEntity)
+            LocalityListScreenEvent.OnDismissDialog -> onDismissDialog()
+
+            is LocalityListScreenEvent.OnPermissionResult -> onPermissionResult(
+                isGranted = event.isGranted,
+                permission = event.permission,
+            )
+
             else -> Unit
         }
     }
@@ -75,28 +81,29 @@ class LocalityListViewModel @Inject constructor (
         }
     }
 
-    ///////////////////////////////PERMISSIONS////////////////////////////////////////
+    private fun onPermissionResult(isGranted: Boolean, permission: String) {
+        // call this function when we get permission results
 
-    // We want to show multiple dialogs (one after the other) because the user may decline all of the permissions
-    // We need to queue these dialogs, queue data structure
-    // String will be the permission
-    val visiblePermissionDialogQueue = mutableStateListOf<String>()
-
-    // for dismissing a dialog by clicking OK or outside the dialog
-    // We want to pop the entry of our queue
-    fun dismissDialog() {
-        visiblePermissionDialogQueue.removeFirst()
-    }
-
-    // call this function when we get permission results
-    fun onPermissionResult(
-        permission: String,
-        isGranted: Boolean
-    ) {
         // if the permission was not granted we want to put it into our queue on the first index
         // And the permission should not be duplicated in our queue
-        if(!isGranted && !visiblePermissionDialogQueue.contains(permission)) {
-            visiblePermissionDialogQueue.add(permission)
+        if(!isGranted && !state.value.visiblePermissionDialogQueue.contains(permission)) {
+            val newList = state.value.visiblePermissionDialogQueue
+            newList.add(permission)
+
+            _state.update { it.copy(
+                visiblePermissionDialogQueue = newList,
+            ) }
         }
+    }
+
+    private fun onDismissDialog() {
+        // for dismissing a dialog by clicking OK or outside the dialog
+        // We want to pop the entry of our queue
+        val newList = state.value.visiblePermissionDialogQueue
+        newList.removeFirst()
+
+        _state.update { it.copy(
+            visiblePermissionDialogQueue = newList
+        ) }
     }
 }

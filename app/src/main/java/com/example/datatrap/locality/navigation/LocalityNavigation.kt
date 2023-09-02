@@ -16,6 +16,8 @@ import com.example.datatrap.locality.presentation.locality_list.LocalityListScre
 import com.example.datatrap.locality.presentation.locality_list.LocalityListScreenEvent
 import com.example.datatrap.locality.presentation.locality_list.LocalityListViewModel
 import com.example.datatrap.locality.presentation.locality_map.LocalityMapScreen
+import com.example.datatrap.locality.presentation.locality_map.LocalityMapViewModel
+import com.example.datatrap.session.navigation.SessionScreens
 import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
@@ -35,10 +37,36 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
         LocalityListScreen(
             onEvent = { event ->
                 when(event) {
-                    LocalityListScreenEvent.OnAddButtonClick -> TODO()
-                    is LocalityListScreenEvent.OnItemClick -> TODO()
-                    is LocalityListScreenEvent.OnUpdateButtonClick -> TODO()
-                    is LocalityListScreenEvent.OnDeleteClick -> viewModel.onEvent(event)
+                    LocalityListScreenEvent.OnAddButtonClick ->
+                        navController.navigate(
+                            LocalityScreens.LocalityScreen.passParams(
+                                localityIdVal = null
+                            )
+                        )
+                    is LocalityListScreenEvent.OnItemClick -> {
+                        // To session screen needs projectId
+                        navController.navigate(
+                            SessionScreens.SessionListScreen.passParams(
+                                projectIdVal = "",
+                                localityIdVal = event.localityEntity.localityId,
+                            )
+                        )
+                    }
+                    is LocalityListScreenEvent.OnUpdateButtonClick -> {
+                        // Update Loc locId needed
+                        navController.navigate(
+                            LocalityScreens.LocalityScreen.passParams(
+                                localityIdVal = event.localityEntity.localityId
+                            )
+                        )
+                    }
+                    LocalityListScreenEvent.OnMapButtonCLick -> {
+                        // MAP
+                        navController.navigate(
+                            LocalityScreens.LocalityMapScreen.route
+                        )
+                    }
+                    else -> viewModel.onEvent(event)
                 }
             },
             state = state,
@@ -46,7 +74,13 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
     }
 
     composable(
-        route = LocalityScreens.LocalityScreen.route
+        route = LocalityScreens.LocalityScreen.route,
+        arguments = listOf(
+            navArgument(LocalityScreens.LocalityScreen.localityIdKey) {
+                type = NavType.StringType
+                defaultValue = null
+            },
+        )
     ) {
         val viewModel: LocalityViewModel = viewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -63,7 +97,7 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
         }
 
         LocalityScreen(
-            onEvent = {},
+            onEvent = viewModel::onEvent,
             state = state,
         )
     }
@@ -71,6 +105,11 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
     composable(
         route = LocalityScreens.LocalityMapScreen.route
     ) {
-        LocalityMapScreen()
+        val viewModel: LocalityMapViewModel = viewModel()
+        val state by viewModel.state.collectAsStateWithLifecycle()
+
+        LocalityMapScreen(
+            state = state,
+        )
     }
 }

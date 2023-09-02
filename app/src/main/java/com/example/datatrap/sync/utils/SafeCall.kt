@@ -2,15 +2,6 @@ package com.example.datatrap.sync.utils
 
 import java.io.IOException
 
-sealed class Resource<T>(val data: T?, val throwable: Throwable? = null) {
-
-    class Success<T>(data: T): Resource<T>(data)
-
-    class Error<T>(throwable: Throwable): Resource<T>(null, throwable)
-
-    class Loading<T>(message: String? = null, data: T? = null): Resource<T>(data = data)
-}
-
 suspend inline fun <reified T> safeApiCall(apiCall: () -> T): Resource<T> {
 
     val response: T

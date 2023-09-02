@@ -14,7 +14,7 @@ import androidx.compose.material.icons.filled.Update
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import com.example.datatrap.locality.data.LocalityEntity
+import com.example.datatrap.locality.data.locality.LocalityEntity
 
 @Composable
 fun LocalityListItem(

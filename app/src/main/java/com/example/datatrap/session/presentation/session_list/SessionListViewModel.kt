@@ -3,7 +3,7 @@ package com.example.datatrap.session.presentation.session_list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.locality.data.LocalityRepository
+import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionEntity
 import com.example.datatrap.session.data.SessionRepository

@@ -3,7 +3,7 @@ package com.example.datatrap.di
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.db.TrapDatabase
-import com.example.datatrap.locality.data.LocalityRepository
+import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.occasion.data.OccasionRepository
 import com.example.datatrap.project.data.ProjectRepository
@@ -24,13 +24,12 @@ import dagger.hilt.android.components.ActivityRetainedComponent
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 
 @Module
-@InstallIn(ActivityRetainedComponent::class) // zivotnost len v ramci fragmentov kde ich treba
+@InstallIn(ActivityRetainedComponent::class)
 object RepModule {
 
     @ActivityRetainedScoped
     @Provides
     fun provideEnvTypeRep(db: TrapDatabase) = EnvTypeRepository(db.envTypeDao())
-    // najprv sa vytvori Dao z DBmodule tym sa mysli TrapDatabase a potom z toho sa vytvori tato Repository
 
     @ActivityRetainedScoped
     @Provides

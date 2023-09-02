@@ -1,4 +1,4 @@
-package com.example.datatrap.locality.data
+package com.example.datatrap.locality.data.locality
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

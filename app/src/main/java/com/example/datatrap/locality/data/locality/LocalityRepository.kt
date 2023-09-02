@@ -1,4 +1,4 @@
-package com.example.datatrap.locality.data
+package com.example.datatrap.locality.data.locality
 
 import kotlinx.coroutines.flow.Flow
 
@@ -26,11 +26,11 @@ class LocalityRepository(
         return localityDao.searchLocalities(localityName)
     }
 
-    suspend fun getLocalityForSync(localityIds: List<Long>): List<LocalityEntity> {
+    suspend fun getLocalityForSync(localityIds: List<String>): List<LocalityEntity> {
         return localityDao.getLocalityForSync(localityIds)
     }
 
-    suspend fun insertSyncLocality(localityEntity: LocalityEntity): Long {
+    suspend fun insertSyncLocality(localityEntity: LocalityEntity): String {
         return localityDao.insertSyncLocality(localityEntity)
     }
 

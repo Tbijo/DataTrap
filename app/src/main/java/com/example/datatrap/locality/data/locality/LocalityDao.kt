@@ -1,4 +1,4 @@
-package com.example.datatrap.locality.data
+package com.example.datatrap.locality.data.locality
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
@@ -23,10 +23,10 @@ interface LocalityDao {
 
     // SYNC
     @Query("SELECT * FROM LocalityEntity WHERE localityId IN (:localityIds)")
-    suspend fun getLocalityForSync(localityIds: List<Long>): List<LocalityEntity>
+    suspend fun getLocalityForSync(localityIds: List<String>): List<LocalityEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSyncLocality(localityEntity: LocalityEntity): Long
+    suspend fun insertSyncLocality(localityEntity: LocalityEntity): String
 
     @Query("SELECT * FROM LocalityEntity WHERE localityName = :localityName")
     suspend fun getLocalityByName(localityName: String): LocalityEntity?

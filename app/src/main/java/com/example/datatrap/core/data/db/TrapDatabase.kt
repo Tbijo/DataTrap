@@ -4,8 +4,8 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.datatrap.databaseio.dao.*
-import com.example.datatrap.locality.data.LocalityEntity
-import com.example.datatrap.locality.data.LocalityDao
+import com.example.datatrap.locality.data.locality.LocalityEntity
+import com.example.datatrap.locality.data.locality.LocalityDao
 import com.example.datatrap.models.*
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseDao
