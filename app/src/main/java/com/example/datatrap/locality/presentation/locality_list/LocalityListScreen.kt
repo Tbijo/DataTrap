@@ -12,9 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Map
@@ -24,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.SearchTextField
 import com.example.datatrap.core.presentation.permission.LocalityPermissionTextProvider
 import com.example.datatrap.core.presentation.permission.PermissionDialog
@@ -71,26 +70,21 @@ private fun ScreenContent(
         locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Locality List")
-                },
-                actions = {
-                    IconButton(onClick = {
-                        if (context.hasFineLocationPermission()) {
-                            onEvent(
-                                LocalityListScreenEvent.OnMapButtonCLick
-                            )
-                        } else {
-                            locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
-                        }
-                    }) {
-                        Icon(imageVector = Icons.Default.Map, contentDescription = "map icon")
-                    }
+    MyScaffold(
+        title = "Locality List",
+        errorState = state.error,
+        actions = {
+            IconButton(onClick = {
+                if (context.hasFineLocationPermission()) {
+                    onEvent(
+                        LocalityListScreenEvent.OnMapButtonCLick
+                    )
+                } else {
+                    locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
                 }
-            )
+            }) {
+                Icon(imageVector = Icons.Default.Map, contentDescription = "map icon")
+            }
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
@@ -104,14 +98,13 @@ private fun ScreenContent(
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "add icon")
             }
-        }
+        },
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
         ) {
-
             SearchTextField(
                 text = state.searchTextFieldValue,
                 hint = state.searchTextFieldHint,

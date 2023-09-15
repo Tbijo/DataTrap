@@ -40,7 +40,7 @@ class LoginViewModel @Inject constructor(
             LoginScreenEvent.LogIn -> logIn()
             is LoginScreenEvent.OnPasswordChanged -> {
                 _state.update { it.copy(
-                    password = event.text,
+                    password = event.text.trim(),
                     passwordError = null,
                 ) }
             }
@@ -51,7 +51,7 @@ class LoginViewModel @Inject constructor(
             }
             is LoginScreenEvent.OnUserNameChanged -> {
                 _state.update { it.copy(
-                    userName = event.text,
+                    userName = event.text.trim(),
                     userNameError = null,
                 ) }
             }

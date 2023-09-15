@@ -1,4 +1,4 @@
-package com.example.datatrap.occasion.data
+package com.example.datatrap.occasion.data.occasion
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -78,5 +78,4 @@ data class OccasionEntity(
     var note: String?,
 
     var occasionStart: Long,
-
 )

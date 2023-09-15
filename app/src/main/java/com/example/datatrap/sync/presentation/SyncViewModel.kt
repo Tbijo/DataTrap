@@ -10,8 +10,8 @@ import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseRepository
-import com.example.datatrap.occasion.data.OccasionEntity
-import com.example.datatrap.occasion.data.OccasionRepository
+import com.example.datatrap.occasion.data.occasion.OccasionEntity
+import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionEntity

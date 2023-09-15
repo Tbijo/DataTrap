@@ -9,10 +9,10 @@ import kotlinx.coroutines.flow.Flow
 interface SpecieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSpecie(specieEntity: SpecieEntity): Long
+    suspend fun insertSpecie(specieEntity: SpecieEntity): String
 
-    @Query("DELETE FROM SpecieEntity WHERE specieId = :specieId")
-    suspend fun deleteSpecie(specieId: Long)
+    @Delete
+    suspend fun deleteSpecie(specieEntity: SpecieEntity)
 
     @Query("SELECT * FROM SpecieEntity WHERE specieId = :specieId")
     fun getSpecie(specieId: Long): Flow<SpecieEntity>

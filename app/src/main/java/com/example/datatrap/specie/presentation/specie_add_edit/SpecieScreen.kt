@@ -8,21 +8,40 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
 
 @Composable
 fun SpecieScreen(
-    onEvent: () -> Unit,
+    onEvent: (SpecieScreenEvent) -> Unit,
+    state: SpecieUiState,
+) {
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            onEvent = onEvent,
+            state = state,
+        )
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    onEvent: (SpecieScreenEvent) -> Unit,
+    state: SpecieUiState,
 ) {
     val scrollState = rememberScrollState()
 
-    Scaffold {
+    MyScaffold(
+        title = "Specie",
+        errorState = state.error,
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -49,7 +68,7 @@ fun SpecieScreen(
             ToggleButton(text = "Is it a small mammal?", isSelected = false) {
                 // TODO
             }
-            
+
             Spacer(modifier = Modifier.height(16.dp))
             Text(text = "Number of fingers?")
             Row {

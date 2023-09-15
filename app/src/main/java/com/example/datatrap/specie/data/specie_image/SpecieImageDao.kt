@@ -1,6 +1,7 @@
 package com.example.datatrap.specie.data.specie_image
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -13,8 +14,8 @@ interface SpecieImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertImage(specieImageEntity: SpecieImageEntity)
 
-    @Query("DELETE FROM SpecieImageEntity WHERE specieImgId = :specieImgId")
-    suspend fun deleteImage(specieImgId: Long)
+    @Delete
+    suspend fun deleteImage(specieImageEntity: SpecieImageEntity)
 
     @Query("SELECT * FROM SpecieImageEntity WHERE specieID = :specieId")
     fun getImageForSpecie(specieId: Long): Flow<SpecieImageEntity>

@@ -1,5 +1,6 @@
 package com.example.datatrap.occasion.presentation.occasion_detail
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.core.util.EnumSpecie
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
@@ -84,5 +85,9 @@ class OccasionDetailViewModel: ViewModel() {
         binding.tvWeather.text = occasion.weather.toString()
         binding.tvLeg.text = occasion.leg
         binding.tvOccNote.text = occasion.note.toString()
+    }
+
+    fun getOccasionView(occasionId: Long): LiveData<OccasionView> {
+        return occasionRepository.getOccasionView(occasionId)
     }
 }

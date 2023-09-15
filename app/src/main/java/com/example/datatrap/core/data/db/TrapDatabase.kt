@@ -9,8 +9,8 @@ import com.example.datatrap.locality.data.locality.LocalityDao
 import com.example.datatrap.models.*
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseDao
-import com.example.datatrap.occasion.data.OccasionEntity
-import com.example.datatrap.occasion.data.OccasionDao
+import com.example.datatrap.occasion.data.occasion.OccasionEntity
+import com.example.datatrap.occasion.data.occasion.OccasionDao
 import com.example.datatrap.camera.data.occasion_image.OccasionImageEntity
 import com.example.datatrap.camera.data.occasion_image.OccasionImageDao
 import com.example.datatrap.camera.data.mouse_image.MouseImageEntity

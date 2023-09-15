@@ -3,8 +3,8 @@ package com.example.datatrap.login.presentation
 import com.example.datatrap.core.util.ScienceTeam
 
 data class LoginUiState(
+    val isLoading: Boolean = true,
     val error: String? = null,
-
     val userName: String = "",
     val userNameError: String? = null,
 

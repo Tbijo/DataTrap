@@ -5,7 +5,7 @@ import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.db.TrapDatabase
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
-import com.example.datatrap.occasion.data.OccasionRepository
+import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionRepository
 import com.example.datatrap.settings.envtype.data.EnvTypeRepository

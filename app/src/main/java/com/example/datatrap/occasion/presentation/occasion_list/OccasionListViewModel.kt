@@ -1,105 +1,91 @@
 package com.example.datatrap.occasion.presentation.occasion_list
 
-import androidx.lifecycle.*
-import com.example.datatrap.occasion.data.OccasionEntity
-import com.example.datatrap.occasion.domain.model.OccList
-import com.example.datatrap.occasion.domain.model.OccasionView
-import com.example.datatrap.occasion.data.OccasionRepository
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
+import com.example.datatrap.locality.data.locality.LocalityRepository
+import com.example.datatrap.occasion.data.occasion.OccasionEntity
+import com.example.datatrap.occasion.data.occasion.OccasionRepository
+import com.example.datatrap.occasion.navigation.OccasionScreens
+import com.example.datatrap.project.data.ProjectRepository
+import com.example.datatrap.session.data.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
 class OccasionListViewModel @Inject constructor(
-    private val occasionRepository: OccasionRepository
+    private val occasionRepository: OccasionRepository,
+    private val projectRepository: ProjectRepository,
+    private val occasionImageRepository: OccasionImageRepository,
+    private val sessionRepository: SessionRepository,
+    private val localityRepository: LocalityRepository,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
-    private val occasionListViewModel: OccasionListViewModel by viewModels()
-    private val prefViewModel: PrefViewModel by viewModels()
-
-    private var newOccasionNumber: Int = 0
-    private lateinit var occList: List<OccList>
-
-    val occasionId: MutableLiveData<Long> = MutableLiveData<Long>()
+    private val _state = MutableStateFlow(OccasionListUiState())
+    val state = _state.asStateFlow()
 
     init {
-        holder.binding.tvOccDate.text = SimpleDateFormat.getDateTimeInstance().format(Date(currenItem.occasionStart))
-        prefViewModel.readPrjNamePref.observe(viewLifecycleOwner) {
-            binding.tvOccPathPrjName.text = it
-        }
-        binding.tvSesPathLocName.text = args.locList.localityName
-        binding.tvSesNum.text = args.session.session.toString()
-
-        occasionListViewModel.getOccasionsForSession(args.session.sessionId).observe(viewLifecycleOwner) {
-            adapter.setData(it)
-            occList = it
-            newOccasionNumber = (it.size + 1)
-        }
-
-        adapter.setOnItemClickListener(object : OccasionRecyclerAdapter.MyClickListener {
-            override fun useClickListener(position: Int) {
-                // tu sa pojde do Mouse s occasion
-                val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToListOccMouseFragment(occList[position])
-                findNavController().navigate(action)
-            }
-
-            override fun useLongClickListener(position: Int) {
-                // tu sa pojde do update occasion
-                val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToUpdateOccasionFragment(occList[position], args.locList)
-                findNavController().navigate(action)
-            }
-
-        })
-
-        binding.addOccasionFloatButton.setOnClickListener {
-            val action = ListSesOccasionFragmentDirections.actionListSesOccasionFragmentToAddOccasionFragment(args.session, args.locList, newOccasionNumber)
-            findNavController().navigate(action)
-        }
-    }
-
-    fun insertOccasion(occasionEntity: OccasionEntity) {
-        viewModelScope.launch {
-            occasionId.value = occasionRepository.insertOccasion(occasionEntity)
-        }
-    }
-
-    fun updateOccasion(occasionEntity: OccasionEntity) {
-        viewModelScope.launch(Dispatchers.IO) {
-            occasionRepository.updateOccasion(occasionEntity)
-        }
-    }
-
-    fun deleteOccasion(occasionId: Long, imagePath: String?) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val job1 = launch {
-                if (imagePath != null) {
-                    // odstranit fyzicku zlozku
-                    val myFile = File(imagePath)
-                    if (myFile.exists()) myFile.delete()
+        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionListScreen.sessionIdKey, null).onEach { sesId ->
+            sesId?.let { sessionId ->
+                occasionRepository.getOccasionsForSession(sessionId).onEach { occasionList ->
+                    _state.update { it.copy(
+                        isLoading = false,
+                        occasionList = occasionList,
+                    ) }
+                }
+                sessionRepository.getSession(sessionId).onEach { session ->
+                    _state.update { it.copy(
+                        sessionNum = session.session.toString()
+                    ) }
                 }
             }
-            val job2 = launch {
-                occasionRepository.deleteOccasion(occasionId)
+        }.launchIn(viewModelScope)
+
+        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionListScreen.localityIdKey, null).onEach { locId ->
+            locId?.let { localityId ->
+                localityRepository.getLocality(localityId).onEach { locality ->
+                    _state.update { it.copy(
+                        localityName = locality.localityName
+                    ) }
+                }
             }
-            job1.join()
-            job2.join()
+        }.launchIn(viewModelScope)
+
+        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionListScreen.projectIdKey, null).onEach { prjId ->
+            prjId?.let { projectId ->
+                projectRepository.getProjectById(projectId).onEach { project ->
+                    _state.update { it.copy(
+                        projectName = project.projectName,
+                    ) }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun onEvent(event: OccasionListScreenEvent) {
+        when(event) {
+            is OccasionListScreenEvent.OnDeleteClick -> deleteOccasion(event.occasionEntity)
+            else -> Unit
         }
     }
 
-    fun getOccasion(occasionId: Long): LiveData<OccasionEntity> {
-        return occasionRepository.getOccasion(occasionId)
-    }
-
-    fun getOccasionView(occasionId: Long): LiveData<OccasionView> {
-        return occasionRepository.getOccasionView(occasionId)
-    }
-
-    fun getOccasionsForSession(idSession: Long): LiveData<List<OccList>> {
-        return occasionRepository.getOccasionsForSession(idSession)
+    fun deleteOccasion(occasionEntity: OccasionEntity) {
+        occasionImageRepository.getImageForOccasion(occasionEntity.occasionId).onEach { imageEntity ->
+            imageEntity?.let {
+                // delete image file
+                val myFile = File(it.path)
+                if (myFile.exists()) myFile.delete()
+            }
+            occasionRepository.deleteOccasion(occasionEntity)
+        }.launchIn(viewModelScope)
     }
 
 }

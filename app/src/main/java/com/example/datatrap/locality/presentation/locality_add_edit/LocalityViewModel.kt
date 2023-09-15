@@ -189,4 +189,8 @@ class LocalityViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        locationClient.cancelLocationProvider()
+    }
 }

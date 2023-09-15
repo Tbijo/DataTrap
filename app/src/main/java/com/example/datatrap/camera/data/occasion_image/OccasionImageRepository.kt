@@ -9,11 +9,11 @@ class OccasionImageRepository(private val occasionImageDao: OccasionImageDao) {
         occasionImageDao.insertImage(occasionImageEntity)
     }
 
-    suspend fun deleteImage(occasionImgId: Long) {
-        occasionImageDao.deleteImage(occasionImgId)
+    suspend fun deleteImage(occasionImageEntity: OccasionImageEntity) {
+        occasionImageDao.deleteImage(occasionImageEntity)
     }
 
-    fun getImageForOccasion(occasionId: Long): Flow<OccasionImageEntity> {
+    fun getImageForOccasion(occasionId: String): Flow<OccasionImageEntity?> {
         return occasionImageDao.getImageForOccasion(occasionId)
     }
 

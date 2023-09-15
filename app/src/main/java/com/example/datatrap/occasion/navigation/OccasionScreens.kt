@@ -18,8 +18,8 @@ sealed class OccasionScreens(val route: String) {
         const val sessionIdKey = "sessionIdKey"
         const val occasionIdKey = "occasionIdKey"
 
-        fun passParams(projectIdVal: String, localityIdVal: String, sessionIdVal: String, occasionIdKey: String): String {
-            return "occasion_screen/$projectIdVal/$localityIdVal/$sessionIdVal/$occasionIdKey"
+        fun passParams(projectIdVal: String, localityIdVal: String, sessionIdVal: String, occasionIdVal: String): String {
+            return "occasion_screen/$projectIdVal/$localityIdVal/$sessionIdVal/$occasionIdVal"
         }
     }
 
@@ -29,8 +29,8 @@ sealed class OccasionScreens(val route: String) {
         const val sessionIdKey = "sessionIdKey"
         const val occasionIdKey = "occasionIdKey"
 
-        fun passParams(projectIdVal: String, localityIdVal: String, sessionIdVal: String, occasionIdKey: String): String {
-            return "occasion_detail_screen/$projectIdVal/$localityIdVal/$sessionIdVal/$occasionIdKey"
+        fun passParams(projectIdVal: String, localityIdVal: String, sessionIdVal: String, occasionIdVal: String): String {
+            return "occasion_detail_screen/$projectIdVal/$localityIdVal/$sessionIdVal/$occasionIdVal"
         }
     }
 

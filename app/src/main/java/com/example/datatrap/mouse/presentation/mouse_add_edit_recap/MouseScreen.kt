@@ -8,18 +8,37 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
 
 @Composable
 fun MouseScreen(
     onEvent: () -> Unit,
+    state: MouseUiState,
 ) {
-    Scaffold {
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            onEvent = onEvent,
+            state = state,
+        )
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    onEvent: () -> Unit,
+    state: MouseUiState,
+) {
+    MyScaffold(
+        title = "Mouse",
+        errorState = state.error,
+    ) {
         Column(
             modifier = Modifier
                 .padding(it)
@@ -115,7 +134,7 @@ fun MouseScreen(
                     // TODO
                 }
             }
-            
+
             Row {
                 MyTextField(value = "11.3", placeholder = "Body", error = null, label = "Body",
                     onValueChanged = {

@@ -15,9 +15,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
+import androidx.compose.material.ScaffoldState
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
@@ -26,7 +25,6 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +35,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.datatrap.R
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 data class DrawerItem(
@@ -79,10 +78,10 @@ fun DrawerBody(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(16.dp)
                     .clickable {
                         onItemClick(item)
                     }
-                    .padding(16.dp)
             ) {
                 item.iconVector?.let {
                     Icon(
@@ -108,47 +107,33 @@ fun DrawerBody(
 }
 
 @Composable
-fun MyScaffold(
+fun NavigationScaffold(
     title: String,
-    errorState: String? = null,
+    errorState: String?,
     onDrawerItemClick: (DrawerScreens) -> Unit = {},
     floatingActionButton: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
+    scope: CoroutineScope = rememberCoroutineScope(),
+    scaffoldState: ScaffoldState = rememberScaffoldState(),
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
-
-    LaunchedEffect(key1 = errorState) {
-        errorState?.let {
-            scaffoldState.snackbarHostState.showSnackbar(
-                message = it
-            )
-        }
-    }
-
-    Scaffold(
+    MyScaffold(
+        title = title,
         scaffoldState = scaffoldState,
+        errorState = errorState,
         floatingActionButton = floatingActionButton,
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = title)
-                },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        scope.launch {
-                            scaffoldState.drawerState.open()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Menu,
-                            contentDescription = "Toggle drawer"
-                        )
-                    }
-                },
-                actions = actions
-            )
+        actions = actions,
+        navigationIcon = {
+            IconButton(onClick = {
+                scope.launch {
+                    scaffoldState.drawerState.open()
+                }
+            }) {
+                Icon(
+                    imageVector = Icons.Default.Menu,
+                    contentDescription = "Toggle drawer",
+                )
+            }
         },
         drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
         drawerContent = {
@@ -159,7 +144,7 @@ fun MyScaffold(
                         id = DrawerScreens.PROJECTS,
                         title = "Projects",
                         contentDescription = "Go to projects screen",
-                        iconVector = Icons.Default.List
+                        iconVector = Icons.Default.List,
                     ),
                     DrawerItem(
                         id = DrawerScreens.SPECIES,
@@ -172,19 +157,19 @@ fun MyScaffold(
                         id = DrawerScreens.SETTINGS,
                         title = "Settings",
                         contentDescription = "Go to settings screen",
-                        iconVector = Icons.Default.Settings
+                        iconVector = Icons.Default.Settings,
                     ),
                     DrawerItem(
                         id = DrawerScreens.ABOUT,
                         title = "About",
                         contentDescription = "Go to about screen",
-                        iconVector = Icons.Default.Info
+                        iconVector = Icons.Default.Info,
                     ),
                     DrawerItem(
                         id = DrawerScreens.SYNCHRONIZE,
                         title = "Synchronize",
                         contentDescription = "Go to synchronize screen",
-                        iconVector = Icons.Filled.Share // TODO cloud
+                        iconVector = Icons.Filled.Share, // TODO cloud
                     ),
                 ),
                 onItemClick = {
@@ -192,6 +177,6 @@ fun MyScaffold(
                 }
             )
         },
-        content = content
+        content = content,
     )
 }

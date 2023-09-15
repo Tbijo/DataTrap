@@ -9,14 +9,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
@@ -24,22 +24,31 @@ fun LocalityScreen(
     onEvent: (LocalityScreenEvent) -> Unit,
     state: LocalityUiState,
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Locality")
-                },
-                actions = {
-                    IconButton(onClick = {
-                        onEvent(
-                            LocalityScreenEvent.OnInsertClick
-                        )
-                    }) {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "save locality")
-                    }
-                }
-            )
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            onEvent = onEvent,
+            state = state,
+        )
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    onEvent: (LocalityScreenEvent) -> Unit,
+    state: LocalityUiState,
+) {
+    MyScaffold(
+        title = "Locality",
+        errorState = state.error,
+        actions = {
+            IconButton(onClick = {
+                onEvent(
+                    LocalityScreenEvent.OnInsertClick
+                )
+            }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "save locality")
+            }
         },
     ) {
         Column(

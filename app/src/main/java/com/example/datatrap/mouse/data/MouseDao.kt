@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.Flow
 interface MouseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMouse(mouseEntity: MouseEntity): Long
+    suspend fun insertMouse(mouseEntity: MouseEntity): String
 
-    @Query("DELETE FROM MouseEntity WHERE mouseId = :mouseId")
-    suspend fun deleteMouse(mouseId: Long)
+    @Delete
+    suspend fun deleteMouse(mouseEntity: MouseEntity)
 
     @Query("SELECT * FROM MouseEntity WHERE mouseId = :mouseId")
     fun getMouse(mouseId: Long): Flow<MouseEntity>

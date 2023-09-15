@@ -10,8 +10,8 @@ interface MouseImageDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertImage(mouseImageEntity: MouseImageEntity)
 
-    @Query("DELETE FROM MouseImageEntity WHERE mouseImgId = :mouseImgId")
-    suspend fun deleteImage(mouseImgId: Long)
+    @Delete
+    suspend fun deleteImage(mouseImageEntity: MouseImageEntity)
 
     @Query("SELECT * FROM MouseImageEntity WHERE mouseIiD = :mouseIid AND deviceID = :deviceID")
     fun getImageForMouse(mouseIid: Long, deviceID: String): Flow<MouseImageEntity>

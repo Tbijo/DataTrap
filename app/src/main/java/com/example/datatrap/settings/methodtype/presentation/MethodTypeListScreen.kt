@@ -9,14 +9,15 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.GenericListItem
+import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 
 @Composable
@@ -24,7 +25,23 @@ fun MethodTypeListScreen(
     onEvent: (MethodTypeListScreenEvent) -> Unit,
     state: MethodTypeListUiState,
 ) {
-    Scaffold(
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            onEvent = onEvent,
+            state = state,
+        )
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    onEvent: (MethodTypeListScreenEvent) -> Unit,
+    state: MethodTypeListUiState,
+) {
+    MyScaffold(
+        title = "Method Type List",
+        errorState = state.error,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
@@ -39,7 +56,7 @@ fun MethodTypeListScreen(
                     contentDescription = "Add Method Type"
                 )
             }
-        }
+        },
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

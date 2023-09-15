@@ -3,7 +3,6 @@ package com.example.datatrap.locality.presentation.locality_map
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -11,6 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.MyScaffold
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -25,8 +26,22 @@ import com.google.maps.android.compose.rememberCameraPositionState
 fun LocalityMapScreen(
     state: LocalityMapUiState,
 ) {
-    Scaffold {
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            state = state,
+        )
+    }
+}
 
+@Composable
+private fun ScreenContent(
+    state: LocalityMapUiState,
+) {
+    MyScaffold(
+        title = "Map",
+        errorState = state.error,
+    ) {
         val cameraPositionState = rememberCameraPositionState {
             if (state.localityList.isNotEmpty()) {
                 val lastLat = state.localityList.last().xA
@@ -45,7 +60,9 @@ fun LocalityMapScreen(
         }
 
         Box(
-            modifier = Modifier.fillMaxSize().padding(it),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it),
         ) {
             GoogleMap(
                 cameraPositionState = cameraPositionState,

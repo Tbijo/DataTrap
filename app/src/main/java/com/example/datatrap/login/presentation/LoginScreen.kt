@@ -6,14 +6,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
 import com.example.datatrap.core.util.ScienceTeam
@@ -23,18 +22,23 @@ fun LoginScreen(
     onEvent: (LoginScreenEvent) -> Unit,
     state: LoginUiState,
 ) {
-    val scaffoldState = rememberScaffoldState()
-
-    LaunchedEffect(key1 = state.error) {
-        state.error?.let {
-            scaffoldState.snackbarHostState.showSnackbar(
-                message = it,
-            )
-        }
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            onEvent = onEvent,
+            state = state,
+        )
     }
+}
 
-    Scaffold(
-        scaffoldState = scaffoldState,
+@Composable
+private fun ScreenContent(
+    onEvent: (LoginScreenEvent) -> Unit,
+    state: LoginUiState,
+) {
+    MyScaffold(
+        title = "Log In",
+        errorState = state.error
     ) {
         Column(
             modifier = Modifier

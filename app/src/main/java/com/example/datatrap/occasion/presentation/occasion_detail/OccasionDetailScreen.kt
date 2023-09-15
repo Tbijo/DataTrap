@@ -7,20 +7,39 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.datatrap.R
+import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.LabeledText
+import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun OccasionDetailScreen(
-    onEvent: () -> Unit,
+    onEvent: (OccasionDetailScreenEvent) -> Unit,
+    state: OccasionDetailUiState,
 ) {
-    Scaffold {
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            onEvent = onEvent,
+            state = state,
+        )
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    onEvent: (OccasionDetailScreenEvent) -> Unit,
+    state: OccasionDetailUiState,
+) {
+    MyScaffold(
+        title = "Occasion Detail",
+        errorState = state.error,
+    ) {
         Column(
             modifier = Modifier
                 .padding(it)

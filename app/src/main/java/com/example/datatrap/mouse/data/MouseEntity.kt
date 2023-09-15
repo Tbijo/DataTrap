@@ -6,7 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import com.example.datatrap.locality.data.locality.LocalityEntity
-import com.example.datatrap.occasion.data.OccasionEntity
+import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.settings.protocol.data.ProtocolEntity
 import com.example.datatrap.specie.data.SpecieEntity
 import java.time.ZonedDateTime

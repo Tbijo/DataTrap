@@ -5,22 +5,40 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.example.datatrap.R
+import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.LabeledText
+import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun MouseDetailScreen(
-    title: String = "Individual Code: ${args.mouseOccTuple.mouseCode}"
+    title: String = "Individual Code: ${args.mouseOccTuple.mouseCode}",
+    onEvent: () -> Unit,
+    state: MouseDetailUiState,
 ) {
-    Scaffold(
-        topBar = {
-            Text(text = title)
-        }
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            title = title,
+            onEvent = onEvent,
+            state = state,
+        )
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    title: String = "Individual Code: ${args.mouseOccTuple.mouseCode}",
+    onEvent: () -> Unit,
+    state: MouseDetailUiState,
+) {
+    MyScaffold(
+        title = title,
+        errorState = state.error,
     ) {
         Column(modifier = Modifier.padding(it)) {
 

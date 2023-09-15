@@ -7,12 +7,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.session.presentation.session_list.components.SessionListItem
 
 @Composable
@@ -20,7 +21,23 @@ fun SessionListScreen(
     onEvent: (SessionListScreenEvent) -> Unit,
     state: SessionListUiState,
 ) {
-    Scaffold(
+    when(state.isLoading) {
+        true -> LoadingScreen()
+        false -> ScreenContent(
+            onEvent = onEvent,
+            state = state,
+        )
+    }
+}
+
+@Composable
+private fun ScreenContent(
+    onEvent: (SessionListScreenEvent) -> Unit,
+    state: SessionListUiState,
+) {
+    MyScaffold(
+        title = "Session List",
+        errorState = state.error,
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 onEvent(
@@ -32,7 +49,9 @@ fun SessionListScreen(
         },
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(it)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
         ) {
             item {
                 Row {

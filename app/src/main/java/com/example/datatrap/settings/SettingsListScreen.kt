@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.components.DrawerScreens
-import com.example.datatrap.core.presentation.components.MyScaffold
+import com.example.datatrap.core.presentation.components.NavigationScaffold
 import com.example.datatrap.settings.navigation.SettingsScreens
 
 enum class SettingsScreenNames(val route: String, val properName: String) {
@@ -55,8 +55,9 @@ sealed interface SettingsListEvent {
 fun SettingsListScreen(
     onEvent: (SettingsListEvent) -> Unit,
 ) {
-    MyScaffold(
+    NavigationScaffold(
         title = "Settings",
+        errorState = null,
         onDrawerItemClick = {
             onEvent(
                 SettingsListEvent.OnDrawerClick(it)

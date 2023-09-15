@@ -3,9 +3,9 @@ package com.example.datatrap.locality.presentation.locality_add_edit
 import com.example.datatrap.locality.data.locality.LocalityEntity
 
 data class LocalityUiState(
-    val localityEntity: LocalityEntity? = null,
     val isLoading: Boolean = true,
-    val error: String = "",
+    val error: String? = null,
+    val localityEntity: LocalityEntity? = null,
 
     val localityName: String = "",
     val localityNameError: String? = null,
