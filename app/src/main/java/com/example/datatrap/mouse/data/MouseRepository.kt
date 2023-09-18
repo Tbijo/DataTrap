@@ -8,39 +8,39 @@ import kotlinx.coroutines.flow.Flow
 
 class MouseRepository(private val mouseDao: MouseDao) {
 
-    suspend fun insertMouse(mouseEntity: MouseEntity): Long {
+    suspend fun insertMouse(mouseEntity: MouseEntity): String {
         return mouseDao.insertMouse(mouseEntity)
     }
 
-    suspend fun deleteMouse(mouseId: Long) {
-        mouseDao.deleteMouse(mouseId)
+    suspend fun deleteMouse(mouseEntity: MouseEntity) {
+        mouseDao.deleteMouse(mouseEntity)
     }
 
-    fun getMouse(mouseId: Long): Flow<MouseEntity> {
+    fun getMouse(mouseId: String): Flow<MouseEntity> {
         return mouseDao.getMouse(mouseId)
     }
 
-    fun getMouseForView(idMouse: Long): Flow<MouseView> {
+    fun getMouseForView(idMouse: String): Flow<MouseView> {
         return mouseDao.getMouseForView(idMouse)
     }
 
-    fun getMiceForOccasion(idOccasion: Long): Flow<List<MouseOccList>> {
+    fun getMiceForOccasion(idOccasion: String): Flow<List<MouseOccList>> {
         return mouseDao.getMiceForOccasion(idOccasion)
     }
 
-    fun getMiceForRecapture(code: Int?, specieID: Long?, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean,lactating: Boolean, dateFrom: Long?, dateTo: Long?, currentTime: Long): Flow<List<MouseRecapList>> {
+    fun getMiceForRecapture(code: Int?, specieID: String?, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean,lactating: Boolean, dateFrom: Long?, dateTo: Long?, currentTime: Long): Flow<List<MouseRecapList>> {
         return mouseDao.getMiceForRecapture(code, specieID, sex, age, gravidity, sexActive,lactating, dateFrom, dateTo, currentTime)
     }
 
-    fun getMiceForLog(primeMouseID: Long, deviceID: String): Flow<List<MouseLog>> {
+    fun getMiceForLog(primeMouseID: String, deviceID: String): Flow<List<MouseLog>> {
         return mouseDao.getMiceForLog(primeMouseID, deviceID)
     }
 
-    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long): Flow<List<Int>> {
+    fun getActiveCodeOfLocality(localityId: String, currentTime: Long): Flow<List<Int>> {
         return mouseDao.getActiveCodeOfLocality(localityId, currentTime)
     }
 
-    fun countMiceForLocality(localityId: Long): Flow<Int> {
+    fun countMiceForLocality(localityId: String): Flow<Int> {
         return mouseDao.countMiceForLocality(localityId)
     }
 
@@ -48,7 +48,7 @@ class MouseRepository(private val mouseDao: MouseDao) {
         mouseDao.insertMultiMouse(mice)
     }
 
-    fun getTrapsIdInOccasion(occasionId: Long): Flow<List<Int>> {
+    fun getTrapsIdInOccasion(occasionId: String): Flow<List<Int>> {
         return mouseDao.getTrapsIdInOccasion(occasionId)
     }
 
@@ -61,7 +61,7 @@ class MouseRepository(private val mouseDao: MouseDao) {
         mouseDao.inserSynctMouse(mouseEntity)
     }
 
-    suspend fun getSyncMouse(occasionID: Long, mouseCaught: Long): MouseEntity? {
+    suspend fun getSyncMouse(occasionID: String, mouseCaught: Long): MouseEntity? {
         return mouseDao.getSyncMouse(occasionID, mouseCaught)
     }
 

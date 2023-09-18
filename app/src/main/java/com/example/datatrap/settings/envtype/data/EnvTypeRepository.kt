@@ -10,6 +10,10 @@ class EnvTypeRepository(
         return envTypeDao.getEnvTypes()
     }
 
+    fun getEnvType(envTypeId: String): Flow<EnvTypeEntity> {
+        return envTypeDao.getEnvType(envTypeId)
+    }
+
     suspend fun insertEnvType(envTypeEntity: EnvTypeEntity) {
         envTypeDao.insertEnvType(envTypeEntity)
     }

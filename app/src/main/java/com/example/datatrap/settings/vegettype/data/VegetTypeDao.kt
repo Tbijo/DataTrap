@@ -12,6 +12,9 @@ interface VegetTypeDao {
     @Delete
     suspend fun deleteVegetType(vegetTypeEntity: VegetTypeEntity)
 
+    @Query("SELECT * FROM VegetTypeEntity WHERE vegetTypeId = :vegetTypeId")
+    fun getVegetType(vegetTypeId: String): Flow<VegetTypeEntity>
+
     @Query("SELECT * FROM VegetTypeEntity")
     fun getVegetTypes(): Flow<List<VegetTypeEntity>>
 }

@@ -12,6 +12,9 @@ interface MethodTypeDao {
     @Delete
     suspend fun deleteMethodType(methodTypeEntity: MethodTypeEntity)
 
+    @Query("SELECT * FROM MethodTypeEntity WHERE methodTypeId = :methodTypeId")
+    fun getMethodType(methodTypeId: String): Flow<MethodTypeEntity>
+
     @Query("SELECT * FROM MethodTypeEntity")
     fun getMethodTypes(): Flow<List<MethodTypeEntity>>
 }

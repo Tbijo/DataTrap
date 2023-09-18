@@ -143,9 +143,7 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         OccasionDetailScreen(
-            onEvent = {
-
-            },
+            onEvent = viewModel::onEvent,
             state = state,
         )
     }

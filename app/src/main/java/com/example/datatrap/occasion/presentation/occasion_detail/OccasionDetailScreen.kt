@@ -1,6 +1,5 @@
 package com.example.datatrap.occasion.presentation.occasion_detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,12 +9,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.datatrap.R
 import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.LabeledText
+import com.example.datatrap.core.presentation.components.MyImage
 import com.example.datatrap.core.presentation.components.MyScaffold
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun OccasionDetailScreen(
@@ -47,56 +46,67 @@ private fun ScreenContent(
             verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = Alignment.Top)
         ) {
 
-            Image(painter = painterResource(id = R.drawable.empty), contentDescription = "Occasion Image")
+            MyImage(
+                modifier = Modifier, // TODO Set size
+                imagePath = state.imagePath,
+                contentDescription = "Occasion Image",
+                onClick = {
+                    onEvent(
+                        OccasionDetailScreenEvent.OnImageClick
+                    )
+                }
+            )
 
             Row {
-                LabeledText(label = "Order of Occasion in Session", text = "22")
-                LabeledText(label = "Locality", text = "Topolcany")
+                LabeledText(label = "Order of Occasion in Session", text = "${state.occasionEntity?.occasion}")
+                LabeledText(label = "Locality", text = state.localityName)
             }
 
             Row {
-                LabeledText(label = "Method", text = "MethodName")
-                LabeledText(label = "MethodType", text = "MethodTypeName")
+                LabeledText(label = "Method", text = state.methodName)
+                LabeledText(label = "MethodType", text = state.methodTypeName)
             }
 
             Row {
-                LabeledText(label = "TrapType", text = "TrapTypeName")
-                LabeledText(label = "Environment Type", text = "Environment TypeName")
+                LabeledText(label = "TrapType", text = state.trapTypeName)
+                LabeledText(label = "Environment Type", text = state.envTypeName)
             }
 
             Row {
-                LabeledText(label = "VegType", text = "VegTypeName")
-                LabeledText(label = "Occasion Created DateTime", text = "11.12.2019 12:12:12")
+                LabeledText(label = "VegType", text = state.vegTypeName)
+                LabeledText(label = "Occasion Created DateTime",
+                    text = "${state.occasionEntity?.occasionDateTimeCreated?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+                )
             }
 
             Row {
-                LabeledText(label = "Number of Traps", text = "11")
-                LabeledText(label = "Number of Mice Caught", text = "22")
+                LabeledText(label = "Number of Traps", text = "${state.occasionEntity?.numTraps}")
+                LabeledText(label = "Number of Mice Caught", text = "${state.occasionEntity?.numMice}")
             }
 
             Row {
-                LabeledText(label = "Temperature °C", text = "22")
-                LabeledText(label = "Weather", text = "Rain")
+                LabeledText(label = "Temperature °C", text = "${state.occasionEntity?.temperature}")
+                LabeledText(label = "Weather", text = "${state.occasionEntity?.weather}")
             }
 
             Row {
-                LabeledText(label = "Legitimation", text = "Marosko")
-                LabeledText(label = "Caught something", text = "Yes")
+                LabeledText(label = "Legitimation", text = "${state.occasionEntity?.leg}")
+                LabeledText(label = "Caught something", text = if (state.occasionEntity?.gotCaught == true) "Yes" else "No")
             }
 
             Row {
-                LabeledText(label = "Number of Species", text = "11")
-                LabeledText(label = "Number of Errors", text = "22")
-                LabeledText(label = "Number of Close", text = "33")
+                LabeledText(label = "Number of Species", text = "${state.specieNum}")
+                LabeledText(label = "Number of Errors", text = "${state.errorNum}")
+                LabeledText(label = "Number of Close", text = "${state.closeNum}")
             }
 
             Row {
-                LabeledText(label = "Number of Predator", text = "44")
-                LabeledText(label = "Number of PVP", text = "55")
-                LabeledText(label = "Number of Other", text = "66")
+                LabeledText(label = "Number of Predator", text = "${state.predatorNum}")
+                LabeledText(label = "Number of PVP", text = "${state.pvpNum}")
+                LabeledText(label = "Number of Other", text = "${state.otherNum}")
             }
 
-            LabeledText(label = "Note", text = "Note .... note")
+            LabeledText(label = "Note", text = "${state.occasionEntity?.note}")
         }
     }
 }

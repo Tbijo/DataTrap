@@ -16,14 +16,12 @@ import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun MouseDetailScreen(
-    title: String = "Individual Code: ${args.mouseOccTuple.mouseCode}",
     onEvent: () -> Unit,
     state: MouseDetailUiState,
 ) {
     when(state.isLoading) {
         true -> LoadingScreen()
         false -> ScreenContent(
-            title = title,
             onEvent = onEvent,
             state = state,
         )
@@ -32,12 +30,11 @@ fun MouseDetailScreen(
 
 @Composable
 private fun ScreenContent(
-    title: String = "Individual Code: ${args.mouseOccTuple.mouseCode}",
     onEvent: () -> Unit,
     state: MouseDetailUiState,
 ) {
     MyScaffold(
-        title = title,
+        title = "Individual Code: ${args.mouseOccTuple.mouseCode}",
         errorState = state.error,
     ) {
         Column(modifier = Modifier.padding(it)) {

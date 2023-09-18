@@ -1,6 +1,6 @@
 package com.example.datatrap.di
 
-import com.example.datatrap.core.util.Constants.BASE_URL
+import com.example.datatrap.core.util.Constants.SERVER_URL
 import com.example.datatrap.sync.data.DataTrapAPI
 import com.example.datatrap.sync.data.DataTrapRepository
 import dagger.Module
@@ -13,28 +13,22 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-object RetrofitModule {
+object DataTrapApiModule {
 
     @ActivityRetainedScoped
     @Provides
-    fun provideRetrofit(): Retrofit {
+    fun provideDataTrapApi(): DataTrapAPI {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(SERVER_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+            .create(DataTrapAPI::class.java)
     }
 
     @ActivityRetainedScoped
     @Provides
-    fun provideSimpleApi(retrofit: Retrofit): DataTrapAPI {
-        return retrofit.create(DataTrapAPI::class.java)
-    }
-
-    @ActivityRetainedScoped
-    @Provides
-    fun provideRepository(
+    fun provideDataTrapRepository(
         api: DataTrapAPI
-    ): DataTrapRepository =
-        DataTrapRepository(api)
+    ): DataTrapRepository = DataTrapRepository(api)
 
 }

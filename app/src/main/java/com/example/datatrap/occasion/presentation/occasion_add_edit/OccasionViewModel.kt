@@ -6,9 +6,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.pref.PrefRepository
 import com.example.datatrap.core.presentation.util.UiEvent
+import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ifNullOrBlank
+import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
+import com.example.datatrap.occasion.data.weather.WeatherRepository
+import com.example.datatrap.occasion.domain.use_case.GetWeatherUseCase
 import com.example.datatrap.occasion.navigation.OccasionScreens
 import com.example.datatrap.settings.envtype.data.EnvTypeRepository
 import com.example.datatrap.settings.method.data.MethodRepository
@@ -35,6 +39,9 @@ class OccasionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val occasionRepository: OccasionRepository,
     private val occasionImageRepository: OccasionImageRepository,
+    private val weatherRepository: WeatherRepository,
+    private val getWeatherUseCase: GetWeatherUseCase = GetWeatherUseCase(weatherRepository),
+    private val localityRepository: LocalityRepository,
     private val envTypeRepository: EnvTypeRepository,
     private val methodRepository: MethodRepository,
     private val methodTypeRepository: MethodTypeRepository,
@@ -107,7 +114,7 @@ class OccasionViewModel @Inject constructor(
     fun onEvent(event: OccasionScreenEvent) {
         when(event) {
             is OccasionScreenEvent.OnInsertClick -> insertOccasion()
-            is OccasionScreenEvent.OnCloudClick -> getHistoryWeather()
+            is OccasionScreenEvent.OnCloudClick -> getWeather()
 
             OccasionScreenEvent.OnEnvTypeDropDownClick -> {
                 _state.update { it.copy(
@@ -200,6 +207,7 @@ class OccasionViewModel @Inject constructor(
             is OccasionScreenEvent.OnNoteChanged -> {
                 _state.update { it.copy(
                     noteText = event.text,
+                    noteError = null,
                 ) }
             }
             is OccasionScreenEvent.OnNumberOfTrapsChanged -> {
@@ -211,16 +219,19 @@ class OccasionViewModel @Inject constructor(
             is OccasionScreenEvent.OnNumberOfMiceChanged -> {
                 _state.update { it.copy(
                     numberOfMiceText = event.text,
+                    numberOfMiceError = null,
                 ) }
             }
             is OccasionScreenEvent.OnWeatherChanged -> {
                 _state.update { it.copy(
                     weatherText = event.text,
+                    weatherError = null,
                 ) }
             }
             is OccasionScreenEvent.OnTemperatureChanged -> {
                 _state.update { it.copy(
                     temperatureText = event.text,
+                    temperatureError = null,
                 ) }
             }
 
@@ -317,12 +328,30 @@ class OccasionViewModel @Inject constructor(
         }
     }
 
-    private fun getHistoryWeather() {
-        // TODO Weather repo
-        _state.update { it.copy(
-            weatherText = "Rain",
-            temperatureText = "12"
-        ) }
+    private fun getWeather() {
+        viewModelScope.launch {
+            localityRepository.getLocality(localityID!!).collectLatest { locality ->
+                getWeatherUseCase(
+                    occasionEntity = state.value.occasionEntity,
+                    latitude = locality.xA?.toDouble(),
+                    longitude = locality.yA?.toDouble(),
+                ).collect { result ->
+                    when(result) {
+                        is Resource.Error -> {
+                            _state.update { it.copy(
+                                error = result.throwable?.message.toString()
+                            ) }
+                        }
+                        is Resource.Success -> {
+                            _state.update { it.copy(
+                                weatherText = result.data?.weather ?: "",
+                                temperatureText = result.data?.temp?.toString() ?: ""
+                            ) }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun fillDropDowns() {

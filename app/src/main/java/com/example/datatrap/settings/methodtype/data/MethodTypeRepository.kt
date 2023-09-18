@@ -8,6 +8,10 @@ class MethodTypeRepository(private val methodTypeDao: MethodTypeDao) {
         return methodTypeDao.getMethodTypes()
     }
 
+    fun getMethodType(methodTypeId: String): Flow<MethodTypeEntity> {
+        return methodTypeDao.getMethodType(methodTypeId)
+    }
+
     suspend fun insertMethodType(methodTypeEntity: MethodTypeEntity) {
         methodTypeDao.insertMethodType(methodTypeEntity)
     }

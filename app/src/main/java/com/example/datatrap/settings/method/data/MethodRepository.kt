@@ -9,6 +9,10 @@ class MethodRepository(
         return methodDao.getMethods()
     }
 
+    fun getMethod(methodId: String): Flow<MethodEntity> {
+        return methodDao.getMethod(methodId)
+    }
+
     suspend fun insertMethod(methodEntity: MethodEntity) {
         methodDao.insertMethod(methodEntity)
     }

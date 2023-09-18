@@ -8,6 +8,10 @@ class TrapTypeRepository(private val trapTypeDao: TrapTypeDao) {
         return trapTypeDao.getTrapTypes()
     }
 
+    fun getTrapType(trapTypeId: String): Flow<TrapTypeEntity> {
+        return trapTypeDao.getTrapType(trapTypeId)
+    }
+
     suspend fun insertTrapType(trapTypeEntity: TrapTypeEntity) {
         trapTypeDao.insertTrapType(trapTypeEntity)
     }

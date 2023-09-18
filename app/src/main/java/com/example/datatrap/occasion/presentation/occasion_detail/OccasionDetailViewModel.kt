@@ -1,93 +1,129 @@
 package com.example.datatrap.occasion.presentation.occasion_detail
 
-import androidx.lifecycle.LiveData
+import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.util.EnumSpecie
-import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
-import com.example.datatrap.occasion.domain.model.OccasionView
-import com.example.datatrap.occasion.presentation.occasion_list.OccasionListViewModel
-import com.example.datatrap.core.presentation.components.ViewImageFragment
-import java.text.SimpleDateFormat
-import java.util.Date
+import com.example.datatrap.locality.data.locality.LocalityRepository
+import com.example.datatrap.mouse.data.MouseRepository
+import com.example.datatrap.occasion.data.occasion.OccasionRepository
+import com.example.datatrap.occasion.navigation.OccasionScreens
+import com.example.datatrap.settings.envtype.data.EnvTypeRepository
+import com.example.datatrap.settings.method.data.MethodRepository
+import com.example.datatrap.settings.methodtype.data.MethodTypeRepository
+import com.example.datatrap.settings.traptype.data.TrapTypeRepository
+import com.example.datatrap.settings.vegettype.data.VegetTypeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.update
+import javax.inject.Inject
 
-class OccasionDetailViewModel: ViewModel() {
-
-    private val occasionListViewModel: OccasionListViewModel by viewModels()
-    private val occasionImageViewModel: OccasionImageViewModel by viewModels()
-    private val mouseListViewModel: MouseListViewModel by viewModels()
+@HiltViewModel
+class OccasionDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val occasionRepository: OccasionRepository,
+    private val occasionImageRepository: OccasionImageRepository,
+    private val mouseRepository: MouseRepository,
+    private val localityRepository: LocalityRepository,
+    private val methodRepository: MethodRepository,
+    private val methodTypeRepository: MethodTypeRepository,
+    private val envTypeRepository: EnvTypeRepository,
+    private val vegetTypeRepository: VegetTypeRepository,
+    private val trapTypeRepository: TrapTypeRepository,
+): ViewModel() {
 
     private var path: String? = null
 
+    private val _state = MutableStateFlow(OccasionDetailUiState())
+    val state = _state.asStateFlow()
+
     init {
-        mouseListViewModel.getMiceForOccasion(args.occasionId).observe(viewLifecycleOwner) { miceList ->
-            val specieCodeStr = EnumSpecie.values().map {
-                it.name
-            }
-            var numError = 0
-            var numClose = 0
-            var numPredator = 0
-            var numPVP = 0
-            var numOther = 0
-            val setSpecie = mutableSetOf<String>()
-            miceList.forEach {
-                when(it.specieCode) {
-                    EnumSpecie.TRE.name -> numError++
-                    EnumSpecie.C.name -> numClose++
-                    EnumSpecie.P.name -> numPredator++
-                    EnumSpecie.PVP.name -> numPVP++
-                    EnumSpecie.Other.name -> numOther++
+        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionDetailScreen.occasionIdKey, null).onEach { occasionId ->
+            occasionId?.let {
+                mouseRepository.getMiceForOccasion(occasionId).collect { miceList ->
+                    val specieCodeStr = EnumSpecie.values().map { it.name }
+
+                    _state.update { it.copy(
+                        errorNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.TRE.name },
+                        closeNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.C.name },
+                        predatorNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.P.name },
+                        pvpNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.PVP.name },
+                        otherNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.Other.name },
+                        specieNum = miceList.count { mouse -> mouse.specieCode !in specieCodeStr },
+                    ) }
                 }
-                if (it.specieCode !in specieCodeStr) setSpecie.add(it.specieCode)
-            }
-            binding.tvErrorNum.text = numError.toString()
-            binding.tvCloseNum.text = numClose.toString()
-            binding.tvPredatorNum.text = numPredator.toString()
-            binding.tvPvpNum.text = numPVP.toString()
-            binding.tvOtherNum.text = numOther.toString()
-            binding.tvSpecieNum.text = setSpecie.size.toString()
-        }
 
-        occasionListViewModel.getOccasionView(args.occasionId).observe(viewLifecycleOwner) {
-            if (it != null) {
-                initOccasionValuesToView(it)
-            }
-        }
+                occasionRepository.getOccasion(occasionId).collect { occasion ->
+                    _state.update { it.copy(
+                        occasionEntity = occasion,
+                    ) }
 
-        occasionImageViewModel.getImageForOccasion(args.occasionId).observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.ivOccImage.setImageURI(it.path.toUri())
-                path = it.path
-            }
-        }
+                    methodRepository.getMethod(occasion.methodID).collect { method ->
+                        _state.update { it.copy(
+                            methodName = method.methodName,
+                        ) }
+                    }
+                    methodTypeRepository.getMethodType(occasion.methodTypeID).collect { methodType ->
+                        _state.update { it.copy(
+                            methodName = methodType.methodTypeName,
+                        ) }
+                    }
+                    occasion.envTypeID?.let { envTypeID ->
+                        envTypeRepository.getEnvType(envTypeID).collect { envType ->
+                            _state.update { it.copy(
+                                envTypeName = envType.envTypeName,
+                            ) }
+                        }
+                    }
+                    occasion.vegetTypeID?.let { vegetTypeID ->
+                        vegetTypeRepository.getVegetType(vegetTypeID).collect { vegType ->
+                            _state.update { it.copy(
+                                vegTypeName = vegType.vegetTypeName,
+                            ) }
+                        }
+                    }
+                    trapTypeRepository.getTrapType(occasion.trapTypeID).collect { trapType ->
+                        _state.update { it.copy(
+                            trapTypeName = trapType.trapTypeName,
+                        ) }
+                    }
+                }
 
-        binding.ivOccImage.setOnClickListener {
-            if (path != null) {
-                val fragman = requireActivity().supportFragmentManager
-                val floatFrag = ViewImageFragment(path!!)
-                floatFrag.show(fragman, "FloatFragViewImage")
+                occasionImageRepository.getImageForOccasion(occasionId).collect { occImage ->
+                    occImage?.let {
+                        _state.update { it.copy(
+                            imagePath = occImage.path.toUri().path
+                        ) }
+                        path = occImage.path
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+
+        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionDetailScreen.localityIdKey, null).onEach { locId ->
+            locId?.let {
+                localityRepository.getLocality(locId).collect { locality ->
+                    _state.update { it.copy(
+                        localityName = locality.localityName,
+                    ) }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    fun onEvent(event: OccasionDetailScreenEvent) {
+        when(event) {
+            OccasionDetailScreenEvent.OnImageClick -> {
+                path?.let {
+                    // TODO Display the big picture, Dialog maybe?
+                }
             }
         }
     }
 
-    private fun initOccasionValuesToView(occasion: OccasionView) {
-        binding.tvOccNum.text = occasion.occasionNum.toString()
-        binding.tvLocalityName.text = occasion.locality
-        binding.tvMethod.text = occasion.method
-        binding.tvMethodType.text = occasion.methodType
-        binding.tvTrapType.text = occasion.trapType
-        binding.tvEnvType.text = occasion.envType.toString()
-        binding.tvVegType.text = occasion.vegetType.toString()
-        binding.tvOccDatetime.text = SimpleDateFormat.getDateTimeInstance().format(Date(occasion.occasionStart))
-        binding.tvGotCaught.text = if (occasion.gotCaught == true) "Yes" else "No"
-        binding.tvOccNumTraps.text = occasion.numTraps.toString()
-        binding.tvOccNumMice.text = occasion.numMice.toString()
-        binding.tvTemp.text = occasion.temperature.toString()
-        binding.tvWeather.text = occasion.weather.toString()
-        binding.tvLeg.text = occasion.leg
-        binding.tvOccNote.text = occasion.note.toString()
-    }
-
-    fun getOccasionView(occasionId: Long): LiveData<OccasionView> {
-        return occasionRepository.getOccasionView(occasionId)
-    }
 }

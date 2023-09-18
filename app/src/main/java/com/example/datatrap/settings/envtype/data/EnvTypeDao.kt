@@ -12,6 +12,9 @@ interface EnvTypeDao {
     @Delete
     suspend fun deleteEnvType(envTypeEntity: EnvTypeEntity)
 
+    @Query("SELECT * FROM EnvTypeEntity WHERE envTypeId = :envTypeId")
+    fun getEnvType(envTypeId: String): Flow<EnvTypeEntity>
+
     @Query("SELECT * FROM EnvTypeEntity")
     fun getEnvTypes(): Flow<List<EnvTypeEntity>>
 }
