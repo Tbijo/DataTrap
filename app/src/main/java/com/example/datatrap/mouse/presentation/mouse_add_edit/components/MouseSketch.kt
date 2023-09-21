@@ -1,4 +1,4 @@
-package com.example.datatrap.mouse.presentation.mouse_add_edit_recap.components
+package com.example.datatrap.mouse.presentation.mouse_add_edit.components
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory

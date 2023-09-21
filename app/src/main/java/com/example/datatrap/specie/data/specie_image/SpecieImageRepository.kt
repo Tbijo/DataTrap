@@ -1,6 +1,6 @@
 package com.example.datatrap.specie.data.specie_image
 
-import com.example.datatrap.sync.data.SpecieImageSync
+import com.example.datatrap.sync.data.remote.SpecieImageSync
 import kotlinx.coroutines.flow.Flow
 
 class SpecieImageRepository(private val specieImageDao: SpecieImageDao) {

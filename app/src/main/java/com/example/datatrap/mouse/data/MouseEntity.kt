@@ -23,51 +23,44 @@ data class MouseEntity(
     @PrimaryKey
     var mouseId: String = UUID.randomUUID().toString(),
 
-    var mouseIid: String,
-
-    var code: Int?, //pazure
-
-    var deviceID: String,
+    var code: Int?, //claws
 
     var primeMouseID: String?,
 
-    // cudzi kluc
+    // FE
     @ColumnInfo(index = true)
     var speciesID: String,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     var protocolID: String?,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     var occasionID: String,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     var localityID: String,
 
     var trapID: Int?,
 
-    var mouseDateTimeCreated: ZonedDateTime,
+    var mouseDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
     var mouseDateTimeUpdated: ZonedDateTime?,
 
-    var sex: String?, //list male female null
+    var sex: String?, //enum
 
-    var age: String?, //vytvor list hodnot
+    var age: String?, //enum
 
-    var gravidity: Boolean?, //bool
+    var gravidity: Boolean?,
 
-    var lactating: Boolean?, //bool
+    var lactating: Boolean?,
 
-    var sexActive: Boolean?, //bool
+    var sexActive: Boolean?,
 
     var weight: Float?,
 
-    var recapture: Boolean?, //bool
+    var recapture: Boolean?,
 
-    var captureID: String?, //vytvor list hodnot
+    var captureID: String?, //enum
 
     var body: Float?,
 
@@ -87,7 +80,7 @@ data class MouseEntity(
 
     var embryoDiameter: Float?,
 
-    var MC: Boolean?, //bool
+    var MC: Boolean?,
 
     var MCright: Int?,
 
@@ -95,5 +88,5 @@ data class MouseEntity(
 
     var note: String?,
 
-    var mouseCaught: Long
+    var mouseCaught: ZonedDateTime = ZonedDateTime.now(),
 )

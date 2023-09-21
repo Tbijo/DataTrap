@@ -12,21 +12,12 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
         occasionDao.deleteOccasion(occasionEntity)
     }
 
-    fun getOccasion(occasionId: String): Flow<OccasionEntity> {
+    suspend fun getOccasion(occasionId: String): OccasionEntity {
         return occasionDao.getOccasion(occasionId)
     }
 
     fun getOccasionsForSession(idSession: String): Flow<List<OccasionEntity>> {
         return occasionDao.getOccasionsForSession(idSession)
-    }
-
-    // SYNC
-    suspend fun getOccasionForSync(occasionId: List<String>): List<OccasionEntity> {
-        return occasionDao.getOccasionForSync(occasionId)
-    }
-
-    suspend fun getSyncOccasion(sessionID: String, occasionStart: Long): OccasionEntity? {
-        return occasionDao.getSyncOccasion(sessionID, occasionStart)
     }
 
 }

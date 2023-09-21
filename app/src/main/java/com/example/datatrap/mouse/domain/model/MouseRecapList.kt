@@ -9,8 +9,8 @@ data class MouseRecapList(
     val sex: String?,
     val gravidity: Boolean?,
     val lactating: Boolean?,
-    val sexActive: Boolean,
+    val sexActive: Boolean?,
     val localityName: String, // Locality
     val specieCode: String, // Specie
-    val mouseCaught: Long
+    val mouseCaught: String
 )

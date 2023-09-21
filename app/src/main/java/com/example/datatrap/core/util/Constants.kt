@@ -17,12 +17,12 @@ object Constants {
     private const val SECONDS_IN_MINUTE = 60
     private const val MINUTES_IN_HOUR = 60
     private const val HOURS_IN_DAY = 24
-    const val FIVE_DAYS =
-        5 * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE * MILLIS_IN_SECOND
+    const val SECONDS_IN_FIVE_DAYS =
+        5 * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE //* MILLIS_IN_SECOND
 
     private const val DAYS_IN_YEAR = 365
-    const val MILLISECONDS_IN_2_YEAR: Long =
-        2 * MILLIS_IN_SECOND * SECONDS_IN_MINUTE * MINUTES_IN_HOUR * HOURS_IN_DAY * DAYS_IN_YEAR
+    const val SECONDS_IN_2_YEAR: Long =
+        2L * DAYS_IN_YEAR * HOURS_IN_DAY * MINUTES_IN_HOUR * SECONDS_IN_MINUTE //* MILLIS_IN_SECOND
 
     // SERVER
     const val SERVER_URL = "http://192.168.0.27:8000/"

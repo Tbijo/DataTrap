@@ -17,7 +17,9 @@ data class ProjectEntity(
 
     var numMice: Int,
 
-    var projectDateTimeCreated: ZonedDateTime,
+    var projectDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
     var projectDateTimeUpdated: ZonedDateTime?,
+
+    var projectStart: ZonedDateTime = ZonedDateTime.now(),
 )

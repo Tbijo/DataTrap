@@ -16,7 +16,7 @@ interface ProjectDao {
     fun getProjects(): Flow<List<ProjectEntity>>
 
     @Query("SELECT * FROM ProjectEntity WHERE projectId = :projectId")
-    fun getProjectById(projectId: String): Flow<ProjectEntity>
+    suspend fun getProjectById(projectId: String): ProjectEntity
 
     @Query("SELECT * FROM ProjectEntity WHERE ProjectName LIKE :nameProject")
     fun searchProjects(nameProject: String): Flow<List<ProjectEntity>>

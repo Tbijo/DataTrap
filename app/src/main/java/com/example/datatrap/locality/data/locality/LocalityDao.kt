@@ -13,7 +13,7 @@ interface LocalityDao {
     suspend fun deleteLocality(localityEntity: LocalityEntity)
 
     @Query("SELECT * FROM LocalityEntity WHERE localityId = :localityId")
-    fun getLocality(localityId: String): Flow<LocalityEntity>
+    suspend fun getLocality(localityId: String): LocalityEntity
 
     @Query("SELECT * FROM LocalityEntity")
     fun getLocalities(): Flow<List<LocalityEntity>>

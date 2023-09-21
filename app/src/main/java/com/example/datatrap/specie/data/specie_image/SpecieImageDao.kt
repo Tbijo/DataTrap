@@ -5,7 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.datatrap.sync.data.SpecieImageSync
+import com.example.datatrap.sync.data.remote.SpecieImageSync
 import kotlinx.coroutines.flow.Flow
 
 @Dao

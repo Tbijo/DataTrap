@@ -1,8 +1,8 @@
 package com.example.datatrap.di
 
 import com.example.datatrap.core.util.Constants.SERVER_URL
-import com.example.datatrap.sync.data.DataTrapAPI
-import com.example.datatrap.sync.data.DataTrapRepository
+import com.example.datatrap.sync.data.remote.DataTrapAPI
+import com.example.datatrap.sync.data.remote.DataTrapRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

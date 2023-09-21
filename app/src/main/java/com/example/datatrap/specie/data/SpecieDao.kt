@@ -3,7 +3,6 @@ package com.example.datatrap.specie.data
 import androidx.room.*
 import com.example.datatrap.specie.domain.model.SpecList
 import com.example.datatrap.specie.domain.model.SpecSelectList
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SpecieDao {
@@ -15,17 +14,17 @@ interface SpecieDao {
     suspend fun deleteSpecie(specieEntity: SpecieEntity)
 
     @Query("SELECT * FROM SpecieEntity WHERE specieId = :specieId")
-    fun getSpecie(specieId: Long): Flow<SpecieEntity>
+    suspend fun getSpecie(specieId: String): SpecieEntity
 
-    @Query("SELECT specieId, speciesCode, fullName FROM SpecieEntity")
-    fun getSpecies(): Flow<List<SpecList>>
+    @Query("SELECT * FROM SpecieEntity")
+    suspend fun getSpecies(): List<SpecieEntity>
 
     @Query("SELECT specieId, speciesCode, upperFingers, minWeight, maxWeight FROM SpecieEntity")
-    fun getSpeciesForSelect(): Flow<List<SpecSelectList>>
+    suspend fun getSpeciesForSelect(): List<SpecSelectList>
 
     @Query("SELECT specieId, speciesCode, fullName FROM SpecieEntity WHERE speciesCode LIKE :specieCode")
-    fun searchSpecies(specieCode: String): Flow<List<SpecList>>
+    suspend fun searchSpecies(specieCode: String): List<SpecList>
 
     @Query("SELECT specieId, speciesCode, fullName FROM SpecieEntity WHERE speciesCode IN (:spCode)")
-    fun getNonSpecie(spCode: List<String>): Flow<List<SpecList>>
+    suspend fun getNonSpecie(spCode: List<String>): List<SpecList>
 }

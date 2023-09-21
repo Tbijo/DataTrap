@@ -9,7 +9,7 @@ import com.example.datatrap.mouse.data.MouseEntity
 import java.util.UUID
 
 @Entity(foreignKeys = [
-    ForeignKey(entity = MouseEntity::class, parentColumns = ["mouseId"], childColumns = ["mouseIiD"], onDelete = CASCADE)
+    ForeignKey(entity = MouseEntity::class, parentColumns = ["mouseId"], childColumns = ["mouseID"], onDelete = CASCADE)
 ])
 data class MouseImageEntity(
 
@@ -23,9 +23,5 @@ data class MouseImageEntity(
     var note: String?,
 
     @ColumnInfo(index = true)
-    var mouseIiD: String,
-
-    var deviceID: String,
-
-    var uniqueCode: Long
+    var mouseID: String,
 )

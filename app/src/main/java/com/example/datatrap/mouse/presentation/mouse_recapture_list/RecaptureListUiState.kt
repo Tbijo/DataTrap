@@ -5,5 +5,5 @@ import com.example.datatrap.mouse.data.MouseEntity
 data class RecaptureListUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
-    val mouseEntity: MouseEntity? = null,
+    val mouseList: List<MouseEntity> = emptyList(),
 )

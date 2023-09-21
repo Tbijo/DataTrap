@@ -18,7 +18,7 @@ class LocalityRepository(
         localityDao.deleteLocality(localityEntity)
     }
 
-    fun getLocality(localityId: String): Flow<LocalityEntity> {
+    suspend fun getLocality(localityId: String): LocalityEntity {
         return localityDao.getLocality(localityId)
     }
 

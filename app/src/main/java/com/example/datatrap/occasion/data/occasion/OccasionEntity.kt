@@ -59,7 +59,7 @@ data class OccasionEntity(
     @ColumnInfo(index = true)
     var vegetTypeID: String?,
 
-    var occasionDateTimeCreated: ZonedDateTime,
+    var occasionDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
     var occasionDateTimeUpdated: ZonedDateTime?,
 
@@ -77,5 +77,5 @@ data class OccasionEntity(
 
     var note: String?,
 
-    var occasionStart: Long,
+    var occasionStart: ZonedDateTime = ZonedDateTime.now(),
 )

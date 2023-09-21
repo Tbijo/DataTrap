@@ -73,7 +73,7 @@ class GetWeatherUseCase(
     ): Resource<MyWeather> {
         return try {
             val currentTime = Calendar.getInstance().time.time
-            if (currentTime - unixTime >= Constants.FIVE_DAYS) {
+            if (currentTime - unixTime >= Constants.SECONDS_IN_FIVE_DAYS) {
                 Resource.Error<MyWeather>(Exception("Occasion is older than 5 days."))
             }
 

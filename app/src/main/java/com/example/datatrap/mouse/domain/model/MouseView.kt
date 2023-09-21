@@ -1,16 +1,15 @@
 package com.example.datatrap.mouse.domain.model
 
 data class MouseView(
-    var mouseIid: String,
-    var deviceID: String,
+    var mouseId: String,
     val body: Float?,
     val tail: Float?,
     val feet: Float?,
     val ear: Float?,
-    val mouseCaught: Long,
+    val mouseCaught: String,
     val gravidity: Boolean?,
     val lactating: Boolean?,
-    val sexActive: Boolean,
+    val sexActive: Boolean?,
     val age: String?,
     val sex: String?,
     val weight: Float?,

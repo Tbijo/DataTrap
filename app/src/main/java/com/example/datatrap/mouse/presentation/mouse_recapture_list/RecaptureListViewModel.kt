@@ -1,6 +1,7 @@
 package com.example.datatrap.mouse.presentation.mouse_recapture_list
 
 import android.widget.Toast
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.mouse.domain.model.MouseRecapList
 import com.example.datatrap.mouse.domain.model.SearchMouse
@@ -70,6 +71,10 @@ class RecaptureListViewModel: ViewModel() {
             //parentFragmentManager
             searchDialogFragment.show(childFragmentManager, "search")
         }
+    }
+
+    fun getMiceForRecapture(code: Int?, specieID: Long?, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean, lactating: Boolean, dateFrom: Long?, dateTo: Long?, currentTime: Long): LiveData<List<MouseRecapList>> {
+        return mouseRepository.getMiceForRecapture(code, specieID, sex, age, gravidity, sexActive, lactating, dateFrom, dateTo, currentTime)
     }
 
     private fun goToRecaptureMouse(position: Int) {

@@ -1,4 +1,4 @@
-package com.example.datatrap.sync.data
+package com.example.datatrap.sync.data.remote
 
 import okhttp3.MultipartBody
 import retrofit2.http.*

@@ -1,4 +1,4 @@
-package com.example.datatrap.sync.data
+package com.example.datatrap.sync.data.remote
 
 import okhttp3.MediaType
 import okhttp3.MultipartBody

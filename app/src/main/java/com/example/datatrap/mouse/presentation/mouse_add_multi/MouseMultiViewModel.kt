@@ -4,6 +4,7 @@ import android.provider.Settings
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.datatrap.R
 import com.example.datatrap.core.util.EnumSpecie
 import com.example.datatrap.mouse.data.MouseEntity
@@ -11,6 +12,8 @@ import com.example.datatrap.mouse.domain.model.MultiMouse
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
 import com.example.datatrap.specie.domain.model.SpecList
 import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class MouseMultiViewModel: ViewModel() {
@@ -51,6 +54,12 @@ class MouseMultiViewModel: ViewModel() {
         }
 
         R.id.menu_save -> insertMouse()
+    }
+
+    fun insertMultiMouse(mice: List<MouseEntity>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            mouseRepository.insertMultiMouse(mice)
+        }
     }
 
     private fun insertMouse() {

@@ -12,6 +12,10 @@ class SessionRepository(private val sessionDao: SessionDao) {
         sessionDao.deleteSession(sessionEntity)
     }
 
+    suspend fun getSession(sessionId: String): SessionEntity {
+        return sessionDao.getSession(sessionId)
+    }
+
     fun getSessionsForProject(projectId: String): Flow<List<SessionEntity>> {
         return sessionDao.getSessionsForProject(projectId)
     }
@@ -22,10 +26,6 @@ class SessionRepository(private val sessionDao: SessionDao) {
 
     suspend fun insertSyncSession(sessionEntity: SessionEntity): Long {
         return sessionDao.insertSyncSession(sessionEntity)
-    }
-
-    fun getSession(sessionId: String): Flow<SessionEntity> {
-        return sessionDao.getSession(sessionId)
     }
 
     // 604 800 dlzka tyzdna v sekundach treba v milisekundach 604 800 000

@@ -1,11 +1,10 @@
 package com.example.datatrap.mouse.domain.model
 
-data class MouseOccList(
+data class MouseListData(
     val mouseId: String,
-    val primeMouseID: Long?,
+    val primeMouseID: String?,
     val mouseCode: Int?,
     val specieCode: String,
-    val mouseCaught: Long,
+    val mouseCaught: String,
     val sex: String?,
-    var deviceID: String
 )

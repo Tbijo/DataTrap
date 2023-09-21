@@ -16,7 +16,7 @@ class ProjectRepository(private val projectDao: ProjectDao) {
         projectDao.deleteProject(projectEntity)
     }
 
-    fun getProjectById(projectId: String): Flow<ProjectEntity> {
+    suspend fun getProjectById(projectId: String): ProjectEntity {
         return projectDao.getProjectById(projectId)
     }
 

@@ -12,6 +12,9 @@ interface SessionDao {
     @Delete
     suspend fun deleteSession(sessionEntity: SessionEntity)
 
+    @Query("SELECT * FROM SessionEntity WHERE sessionId = :sessionId")
+    suspend fun getSession(sessionId: String): SessionEntity
+
     @Query("SELECT * FROM SessionEntity WHERE projectID = :projectId")
     fun getSessionsForProject(projectId: String): Flow<List<SessionEntity>>
 
@@ -21,9 +24,6 @@ interface SessionDao {
     // SYNC
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSyncSession(sessionEntity: SessionEntity): Long
-
-    @Query("SELECT * FROM SessionEntity WHERE sessionId = :sessionId")
-    fun getSession(sessionId: String): Flow<SessionEntity>
 
     // 604800 dlzka tyzdna v sekundach treba v milisekundach 604 800 000
 //    @Query("SELECT * FROM SessionEntity WHERE projectID = :projectID GROUP BY sessionId HAVING MIN(ABS(sessionStart - :sessionStart)) <= 604800000")

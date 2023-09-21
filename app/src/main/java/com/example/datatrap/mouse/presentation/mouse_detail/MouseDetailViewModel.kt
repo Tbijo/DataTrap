@@ -1,5 +1,6 @@
 package com.example.datatrap.mouse.presentation.mouse_detail
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.datatrap.core.util.EnumSex
 import com.example.datatrap.mouse.domain.model.MouseLog
@@ -45,6 +46,26 @@ class MouseDetailViewModel: ViewModel() {
 
         var historyList = emptyList<String>()
         holder.binding.tvLog.text = historyList[1]
+    }
+
+    fun getMouseForView(idMouse: Long): LiveData<MouseView> {
+        return mouseRepository.getMouseForView(idMouse)
+    }
+
+    fun getMiceForLog(primeMouseID: Long, deviceID: String): LiveData<List<MouseLog>> {
+        return mouseRepository.getMiceForLog(primeMouseID, deviceID)
+    }
+
+    fun getActiveCodeOfLocality(localityId: Long, currentTime: Long): LiveData<List<Int>> {
+        return mouseRepository.getActiveCodeOfLocality(localityId, currentTime)
+    }
+
+    fun countMiceForLocality(localityId: Long): LiveData<Int> {
+        return mouseRepository.countMiceForLocality(localityId)
+    }
+
+    fun getTrapsIdInOccasion(occasionId: Long): LiveData<List<Int>> {
+        return mouseRepository.getTrapsIdInOccasion(occasionId)
     }
 
     private fun initMouseValues(mouseView: MouseView) {

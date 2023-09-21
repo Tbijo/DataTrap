@@ -77,14 +77,15 @@ class OccasionListViewModel @Inject constructor(
         }
     }
 
-    fun deleteOccasion(occasionEntity: OccasionEntity) {
+    private fun deleteOccasion(occasionEntity: OccasionEntity) {
+        val imagePath = ""
         occasionImageRepository.getImageForOccasion(occasionEntity.occasionId).onEach { imageEntity ->
             imageEntity?.let {
                 // delete image file
                 val myFile = File(it.path)
                 if (myFile.exists()) myFile.delete()
             }
-            occasionRepository.deleteOccasion(occasionEntity)
+            occasionRepository.deleteOccasion(occasionEntity, imagePath)
         }.launchIn(viewModelScope)
     }
 

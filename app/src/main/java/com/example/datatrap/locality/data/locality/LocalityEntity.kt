@@ -13,7 +13,7 @@ data class LocalityEntity(
 
     var localityName: String,
 
-    var localityDateTimeCreated: ZonedDateTime,
+    var localityDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
     var localityDateTimeUpdated: ZonedDateTime?,
 

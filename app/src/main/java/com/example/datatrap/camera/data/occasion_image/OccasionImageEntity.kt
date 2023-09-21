@@ -24,6 +24,4 @@ data class OccasionImageEntity(
 
     @ColumnInfo(index = true)
     var occasionID: String,
-
-    var uniqueCode: Long
 )

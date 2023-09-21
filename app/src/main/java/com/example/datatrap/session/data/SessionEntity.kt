@@ -25,7 +25,9 @@ data class SessionEntity(
 
     var numOcc: Int,
 
-    var sessionDateTimeCreated: ZonedDateTime,
+    var sessionDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
     var sessionDateTimeUpdated: ZonedDateTime?,
+
+    var sessionStart: ZonedDateTime = ZonedDateTime.now(),
 )

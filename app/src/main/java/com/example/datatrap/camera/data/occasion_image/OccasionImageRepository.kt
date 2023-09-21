@@ -1,7 +1,6 @@
 package com.example.datatrap.camera.data.occasion_image
 
-import com.example.datatrap.sync.data.OccasionImageSync
-import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 class OccasionImageRepository(private val occasionImageDao: OccasionImageDao) {
 
@@ -10,14 +9,12 @@ class OccasionImageRepository(private val occasionImageDao: OccasionImageDao) {
     }
 
     suspend fun deleteImage(occasionImageEntity: OccasionImageEntity) {
+        val myFile = File(occasionImageEntity.path)
+        if (myFile.exists()) myFile.delete()
         occasionImageDao.deleteImage(occasionImageEntity)
     }
 
-    fun getImageForOccasion(occasionId: String): Flow<OccasionImageEntity?> {
-        return occasionImageDao.getImageForOccasion(occasionId)
-    }
-
-    suspend fun getOccasionImages(unixTime: Long): List<OccasionImageSync> {
-        return occasionImageDao.getOccasionImages(unixTime)
+    suspend fun getImageForOccasion(occasionID: String): OccasionImageEntity? {
+        return occasionImageDao.getImageForOccasion(occasionID)
     }
 }

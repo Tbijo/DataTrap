@@ -1,4 +1,4 @@
-package com.example.datatrap.sync.data
+package com.example.datatrap.sync.data.remote
 
 data class MouseImageSync(
     var imgName: String,

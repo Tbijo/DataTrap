@@ -280,7 +280,7 @@ class OccasionViewModel @Inject constructor(
                 occasion = (occasionCount + 1),
                 localityID = localityID ?: return,
                 sessionID = sessionID ?: return,
-                occasionStart = ZonedDateTime.now().toEpochSecond(),
+                occasionStart = ZonedDateTime.now(),
                 occasionDateTimeCreated = ZonedDateTime.now(),
                 occasionDateTimeUpdated = null,
 
