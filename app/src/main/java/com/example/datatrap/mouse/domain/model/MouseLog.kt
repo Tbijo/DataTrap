@@ -5,7 +5,7 @@ data class MouseLog(
     val localityName: String,
     val trapID: Int?,
     val weight: Float?,
-    val sexActive: Boolean?,
-    val gravidity: Boolean?,
-    val lactating: Boolean?
+    val sexActive: String?,
+    val gravidity: String?,
+    val lactating: String?,
 )

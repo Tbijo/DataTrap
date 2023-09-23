@@ -1,9 +1,12 @@
 package com.example.datatrap.mouse.presentation.mouse_detail
 
-import com.example.datatrap.mouse.data.MouseEntity
+import com.example.datatrap.mouse.domain.model.MouseView
 
 data class MouseDetailUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
-    val mouseEntity: MouseEntity,
+    val mouseView: MouseView? = null,
+
+    val mouseImagePath: String? = null,
+    val logList: List<String> = emptyList(),
 )

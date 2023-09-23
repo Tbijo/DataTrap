@@ -27,14 +27,16 @@ class GetMouseDetail(
 
         val mouseView = MouseView(
             mouseId = mouse.mouseId,
+            primeMouseId = mouse.primeMouseID,
+            code = mouse.code,
             body = mouse.body,
             tail = mouse.tail,
             feet = mouse.feet,
             ear = mouse.ear,
-            mouseCaught = mouse.mouseCaught.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-            gravidity = mouse.gravidity,
-            lactating = mouse.lactating,
-            sexActive = mouse.sexActive,
+            mouseCaughtDateTime = mouse.mouseCaught.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
+            gravidity = if (mouse.gravidity == true) "Yes" else "No",
+            lactating = if (mouse.lactating == true) "Yes" else "No",
+            sexActive = if (mouse.sexActive == true) "Yes" else "No",
             age = mouse.age,
             sex = mouse.sex,
             weight = mouse.weight,
@@ -44,7 +46,11 @@ class GetMouseDetail(
             embryoRight = mouse.embryoRight,
             embryoLeft = mouse.embryoLeft,
             embryoDiameter = mouse.embryoDiameter,
-            mc = mouse.MC,
+            mc = when(mouse.MC) {
+                true -> "Yes"
+                false -> "No"
+                else -> "null"
+            },
             mcRight = mouse.MCright,
             mcLeft = mouse.MCleft,
             specieFullName = specie.fullName,

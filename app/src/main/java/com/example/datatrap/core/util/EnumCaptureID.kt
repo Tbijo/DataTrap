@@ -6,3 +6,14 @@ enum class EnumCaptureID(val myName: String) {
     ESCAPED("Escaped"),
     RELEASED("Released")
 }
+
+fun toEnumCaptureID(captureId: String?): EnumCaptureID? {
+    return when(captureId) {
+        null -> null
+        EnumCaptureID.CAPTURED.myName -> EnumCaptureID.CAPTURED
+        EnumCaptureID.DIED.myName -> EnumCaptureID.DIED
+        EnumCaptureID.ESCAPED.myName -> EnumCaptureID.ESCAPED
+        EnumCaptureID.RELEASED.myName -> EnumCaptureID.RELEASED
+        else -> null
+    }
+}

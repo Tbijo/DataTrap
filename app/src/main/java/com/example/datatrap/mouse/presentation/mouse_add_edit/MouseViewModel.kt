@@ -1,18 +1,16 @@
 package com.example.datatrap.mouse.presentation.mouse_add_edit
 
-import android.app.AlertDialog
-import android.widget.ArrayAdapter
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.R
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.core.data.pref.PrefRepository
-import com.example.datatrap.core.util.EnumCaptureID
-import com.example.datatrap.core.util.EnumMouseAge
-import com.example.datatrap.core.util.EnumSex
+import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ifNullOrBlank
+import com.example.datatrap.core.util.toEnumCaptureID
+import com.example.datatrap.core.util.toEnumMouseAge
+import com.example.datatrap.core.util.toEnumSex
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.GenerateCodeUseCase
@@ -23,7 +21,9 @@ import com.example.datatrap.settings.protocol.data.ProtocolRepository
 import com.example.datatrap.specie.data.SpecieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -49,6 +49,9 @@ class MouseViewModel @Inject constructor(
     private val _state = MutableStateFlow(MouseUiState())
     val state = _state.asStateFlow()
 
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
+
     //private val mouseImageEntity: MouseImageEntity? = null
 
     init {
@@ -63,17 +66,16 @@ class MouseViewModel @Inject constructor(
                 ) }
             }
 
-            viewModelScope.launch {
-                _state.update { it.copy(
-                    specieList = specieRepository.getSpecies(),
-                ) }
-            }
+            _state.update { it.copy(
+                specieList = specieRepository.getSpecies(),
+            ) }
 
             mouseId?.let {
                 val mouse = mouseRepository.getMouse(mouseId)
                 _state.update { it.copy(
                     mouseEntity = mouse,
                 ) }
+                initMouseValuesToView(mouse)
             }
 
             occasionId?.let { occId ->
@@ -87,7 +89,7 @@ class MouseViewModel @Inject constructor(
                 // get max number of traps in occasion
                 val numberOfTrapsInOccasion = occasionRepository.getOccasion(occId).numTraps
                 _state.update { it.copy(
-                    trapIDList = (1..numberOfTrapsInOccasion).toList()
+                    trapIDList = (1..numberOfTrapsInOccasion).toList(),
                 ) }
             }
         }
@@ -95,6 +97,7 @@ class MouseViewModel @Inject constructor(
 
     fun onEvent(event: MouseScreenEvent) {
         when(event) {
+            MouseScreenEvent.OnCameraClick -> TODO()
             MouseScreenEvent.OnInsertClick -> insertMouse()
             MouseScreenEvent.OnGenerateButtonClick -> generateCode()
             MouseScreenEvent.OnMouseClick -> showDrawnRat()
@@ -103,36 +106,169 @@ class MouseViewModel @Inject constructor(
                     captureID = event.captureID
                 ) }
             }
-            MouseScreenEvent.OnCameraClick -> TODO()
-            MouseScreenEvent.OnProtocolDropDownClick -> TODO()
-            MouseScreenEvent.OnProtocolDropDownDismiss -> TODO()
-            is MouseScreenEvent.OnSelectProtocol -> TODO()
-            is MouseScreenEvent.OnSelectSpecie -> TODO()
-            is MouseScreenEvent.OnSelectTrapID -> TODO()
-            MouseScreenEvent.OnSpecieDropDownClick -> TODO()
-            MouseScreenEvent.OnSpecieDropDownDismiss -> TODO()
-            MouseScreenEvent.OnTrapIDDropDownClick -> TODO()
-            MouseScreenEvent.OnTrapIDDropDownDismiss -> TODO()
-            is MouseScreenEvent.OnAgeClick -> TODO()
-            is MouseScreenEvent.OnBodyTextChanged -> TODO()
-            is MouseScreenEvent.OnCodeTextChanged -> TODO()
-            is MouseScreenEvent.OnEarTextChanged -> TODO()
-            is MouseScreenEvent.OnEmbryoDiameterTextChanged -> TODO()
-            is MouseScreenEvent.OnFeetTextChanged -> TODO()
-            MouseScreenEvent.OnGravidityClick -> TODO()
-            MouseScreenEvent.OnLactatingClick -> TODO()
-            is MouseScreenEvent.OnLeftEmbryoTextChanged -> TODO()
-            MouseScreenEvent.OnMcClick -> TODO()
-            is MouseScreenEvent.OnMcLeftTextChanged -> TODO()
-            is MouseScreenEvent.OnMcRightTextChanged -> TODO()
-            is MouseScreenEvent.OnNoteTextChanged -> TODO()
-            is MouseScreenEvent.OnRightEmbryoTextChanged -> TODO()
-            MouseScreenEvent.OnSexActiveClick -> TODO()
-            is MouseScreenEvent.OnSexClick -> TODO()
-            is MouseScreenEvent.OnTailTextChanged -> TODO()
-            is MouseScreenEvent.OnTestesLengthTextChanged -> TODO()
-            is MouseScreenEvent.OnTestesWidthTextChanged -> TODO()
-            is MouseScreenEvent.OnWeightTextChanged -> TODO()
+            is MouseScreenEvent.OnCodeTextChanged -> {
+                _state.update { it.copy(
+                    code = event.text,
+                    codeError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnBodyTextChanged -> {
+                _state.update { it.copy(
+                    body = event.text,
+                    bodyError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnTailTextChanged -> {
+                _state.update { it.copy(
+                    tail = event.text,
+                    tailError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnEarTextChanged -> {
+                _state.update { it.copy(
+                    ear = event.text,
+                    earError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnFeetTextChanged -> {
+                _state.update { it.copy(
+                    feet = event.text,
+                    feetError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnRightEmbryoTextChanged -> {
+                _state.update { it.copy(
+                    rightEmbryo = event.text,
+                    rightEmbryoError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnLeftEmbryoTextChanged -> {
+                _state.update { it.copy(
+                    leftEmbryo = event.text,
+                    leftEmbryoError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnEmbryoDiameterTextChanged -> {
+                _state.update { it.copy(
+                    embryoDiameter = event.text,
+                    embryoDiameterError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnMcLeftTextChanged -> {
+                _state.update { it.copy(
+                    mcLeft = event.text,
+                    mcLeftError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnMcRightTextChanged -> {
+                _state.update { it.copy(
+                    mcRight = event.text,
+                    mcRightError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnNoteTextChanged -> {
+                _state.update { it.copy(
+                    note = event.text,
+                    noteError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnTestesLengthTextChanged -> {
+                _state.update { it.copy(
+                    testesLength = event.text,
+                    testesLengthError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnTestesWidthTextChanged -> {
+                _state.update { it.copy(
+                    testesWidth = event.text,
+                    testesWidthError = null,
+                ) }
+            }
+            is MouseScreenEvent.OnWeightTextChanged -> {
+                _state.update { it.copy(
+                    weight = event.text,
+                    weightError = null,
+                ) }
+            }
+
+            MouseScreenEvent.OnProtocolDropDownClick -> {
+                _state.update { it.copy(
+                    isProtocolExpanded = !state.value.isProtocolExpanded,
+                ) }
+            }
+            MouseScreenEvent.OnProtocolDropDownDismiss -> {
+                _state.update { it.copy(
+                    isProtocolExpanded = false,
+                ) }
+            }
+            is MouseScreenEvent.OnSelectProtocol -> {
+                _state.update { it.copy(
+                    protocolEntity = event.protocol,
+                ) }
+            }
+
+            MouseScreenEvent.OnSpecieDropDownClick -> {
+                _state.update { it.copy(
+                    isSpecieExpanded = !state.value.isSpecieExpanded,
+                ) }
+            }
+            MouseScreenEvent.OnSpecieDropDownDismiss -> {
+                _state.update { it.copy(
+                    isSpecieExpanded = false,
+                ) }
+            }
+            is MouseScreenEvent.OnSelectSpecie -> {
+                _state.update { it.copy(
+                    specieEntity = event.specieEntity,
+                ) }
+            }
+
+            MouseScreenEvent.OnTrapIDDropDownClick -> {
+                _state.update { it.copy(
+                    isTrapIDExpanded = !state.value.isTrapIDExpanded,
+                ) }
+            }
+            MouseScreenEvent.OnTrapIDDropDownDismiss -> {
+                _state.update { it.copy(
+                    isTrapIDExpanded = false,
+                ) }
+            }
+            is MouseScreenEvent.OnSelectTrapID -> {
+                _state.update { it.copy(
+                    trapID = event.trapID,
+                ) }
+            }
+
+            MouseScreenEvent.OnGravidityClick -> {
+                _state.update { it.copy(
+                    gravidity = !state.value.gravidity,
+                ) }
+            }
+            MouseScreenEvent.OnLactatingClick -> {
+                _state.update { it.copy(
+                    lactating = !state.value.lactating,
+                ) }
+            }
+            MouseScreenEvent.OnSexActiveClick -> {
+                _state.update { it.copy(
+                    sexActive = !state.value.sexActive,
+                ) }
+            }
+            is MouseScreenEvent.OnAgeClick -> {
+                _state.update { it.copy(
+                    age = event.age,
+                ) }
+            }
+            MouseScreenEvent.OnMcClick -> {
+                _state.update { it.copy(
+                    mc = !state.value.mc,
+                ) }
+            }
+            is MouseScreenEvent.OnSexClick -> {
+                _state.update { it.copy(
+                    sex = event.sex,
+                ) }
+            }
         }
     }
 
@@ -161,14 +297,18 @@ class MouseViewModel @Inject constructor(
             }
         }
     }
+
     private fun showDrawnRat() {
-        if (state.value.specieEntity == null) {
+        val specie = state.value.specieEntity
+        val code = state.value.code.toIntOrNull()
+
+        if (specie == null) {
             _state.update { it.copy(
                 error = "Select a Specie",
             ) }
             return
         }
-        if (speciesID <= 0 || code == null || code <= 0 || state.value.code.length >= 5) {
+        if (code == null || code <= 0 || state.value.code.length >= 5) {
             _state.update { it.copy(
                 error = "Generate a valid code.",
             ) }
@@ -179,7 +319,8 @@ class MouseViewModel @Inject constructor(
     }
 
     private fun insertMouse() {
-        val specieID = state.value.specieEntity?.specieId
+        val specie = state.value.specieEntity
+        val specieID = specie?.specieId
         if (specieID == null) {
             _state.update { it.copy(
                 error = "Fill required fields.",
@@ -202,41 +343,23 @@ class MouseViewModel @Inject constructor(
         }!!
 
         val code: Int = Integer.parseInt(state.value.code)
-        if (code in activeCodeList) {
-            _state.update { it.copy(
-                error = "Code is not available.",
-            ) }
-            return
-        }
 
         val weight: Float? = state.value.weight.toFloatOrNull()
         val minWeightOfSpecie = state.value.specieEntity?.minWeight
         val maxWeightOfSpecie = state.value.specieEntity?.maxWeight
         if (weight != null && minWeightOfSpecie != null && maxWeightOfSpecie != null) {
-            // TODO how to make function wait for modal Window?
-            if (mouseEntity.weight!! > specie?.maxWeight!! || mouseEntity.weight!! < specie?.minWeight!!) {
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setPositiveButton("Yes") { _, _ ->
-                    checkTrapAvailability(mouseEntity)
-                }
-                    .setNegativeButton("No") { _, _ -> }
-                    .setTitle("Warning: Mouse Weight")
-                    .setMessage("Mouse weight out of bounds, save anyway?")
-                    .create().show()
+            if (weight > maxWeightOfSpecie || weight < minWeightOfSpecie) {
+                // TODO how to make function wait for modal Window?
+                "Warning: Mouse Weight"
+                "Mouse weight out of bounds, save anyway?"
             }
         }
 
         val trapID: Int? = state.value.trapID
         if (trapID != null && trapID in state.value.occupiedTrapIdList) {
             // TODO how to make function wait for modal Window?
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setPositiveButton("Yes") { _, _ ->
-                executeTask(mouseEntity)
-            }
-                .setNegativeButton("No") { _, _ -> }
-                .setTitle("Warning: Trap In Use")
-                .setMessage("Selected trap is in use, save anyway?")
-                .create().show()
+            "Warning: Trap In Use"
+            "Selected trap is in use, save anyway?"
         }
 
         val captureID = state.value.captureID?.myName
@@ -344,138 +467,34 @@ class MouseViewModel @Inject constructor(
 
         viewModelScope.launch(Dispatchers.IO) {
             mouseRepository.insertMouse(mouseEntity)
+            _eventFlow.emit(UiEvent.NavigateBack)
         }
     }
 
-    private fun fillDropDown(mouseEntity: MouseEntity) {
-        mouseListViewModel.getMouse(args.mouseOccTuple.mouseId).observe(viewLifecycleOwner) {
-            fillDropDown(it)
-        }
-        specieListViewModel.getSpeciesForSelect().observe(viewLifecycleOwner) {
-            listSpecie = it
-            val listCode = mutableListOf<String>()
-            it.forEach { specie ->
-                listCode.add(specie.speciesCode)
-            }
-            val dropDownArrSpecie =
-                ArrayAdapter(requireContext(), R.layout.dropdown_names, listCode)
-            binding.autoCompTvSpecie.setAdapter(dropDownArrSpecie)
-
-            // init values
-            specie = it.first { specie ->
-                specie.specieId == mouseEntity.speciesID
-            }
-            speciesID = specie?.specieId
-            binding.autoCompTvSpecie.setText(specie?.speciesCode, false)
-        }
-
-        protocolViewModel.procolList.observe(viewLifecycleOwner) {
-            listProtocolEntity = it
-            val listProtName = mutableListOf<String>()
-            listProtName.add("null")
-            it.forEach { protocol ->
-                listProtName.add(protocol.protocolName)
-            }
-            val dropDownArrProtocol =
-                ArrayAdapter(requireContext(), R.layout.dropdown_names, listProtName)
-            binding.autoCompTvProtocol.setAdapter(dropDownArrProtocol)
-
-            // init values
-            val protocol = it.firstOrNull { protocol ->
-                protocol.protocolId == mouseEntity.protocolID
-            }
-            protocolID = protocol?.protocolId
-            binding.autoCompTvProtocol.setText(protocol.toString(), false)
-        }
-
-        val dropDownArrTrapID = ArrayAdapter(
-            requireContext(),
-            R.layout.dropdown_names,
-            (1..args.occList.numTraps).toList()
-        )
-        binding.autoCompTvTrapId.setAdapter(dropDownArrTrapID)
-
-        // init value
-        binding.autoCompTvTrapId.setText(mouseEntity.trapID.toString(), false)
-    }
     private fun initMouseValuesToView(mouseEntity: MouseEntity) {
-        binding.cbGravit.isChecked = mouseEntity.gravidity == true
-        binding.cbLactating.isChecked = mouseEntity.lactating == true
-        binding.cbSexActive.isChecked = mouseEntity.sexActive == true
-        binding.cbMc.isChecked = mouseEntity.MC == true
-
-        binding.etMouseCodeUpdate.setText(mouseEntity.code.toString())
-        binding.etWeight.setText(mouseEntity.weight.toString())
-        binding.etTestesLength.setText(mouseEntity.testesLength.toString())
-        binding.etTestesWidth.setText(mouseEntity.testesWidth.toString())
-        binding.etMouseNote.setText(mouseEntity.note.toString())
-
-        binding.etBody.setText(mouseEntity.body.toString())
-        binding.etTail.setText(mouseEntity.tail.toString())
-        binding.etFeet.setText(mouseEntity.feet.toString())
-        binding.etEar.setText(mouseEntity.ear.toString())
-
-        binding.etEmbryoRight.setText(mouseEntity.embryoRight.toString())
-        binding.etEmbryoLeft.setText(mouseEntity.embryoLeft.toString())
-        binding.etEmbryoDiameter.setText(mouseEntity.embryoDiameter.toString())
-        binding.etMcRight.setText(mouseEntity.MCright.toString())
-        binding.etMcLeft.setText(mouseEntity.MCleft.toString())
-
-        when(mouseEntity.sex) {
-            EnumSex.MALE.myName -> {
-                binding.rbMale.isChecked = true
-                hideNonMaleFields()
-            }
-            EnumSex.FEMALE.myName -> binding.rbFemale.isChecked = true
-
-            null -> {
-                binding.rbNullSex.isChecked = true
-                hideNonMaleFields()
-            }
-        }
-
-        when(mouseEntity.age) {
-            EnumMouseAge.ADULT.myName -> binding.rbAdult.isChecked = true
-            EnumMouseAge.SUBADULT.myName -> binding.rbSubadult.isChecked = true
-            EnumMouseAge.JUVENILE.myName -> binding.rbJuvenile.isChecked = true
-            null -> binding.rbNullAge.isChecked = true
-        }
-
-        when(mouseEntity.captureID) {
-            EnumCaptureID.CAPTURED.myName -> binding.rbCaptured.isChecked = true
-            EnumCaptureID.DIED.myName -> binding.rbDied.isChecked = true
-            EnumCaptureID.ESCAPED.myName -> binding.rbEscaped.isChecked = true
-            EnumCaptureID.RELEASED.myName -> binding.rbReleased.isChecked = true
-            null -> binding.rbNullCapture.isChecked = true
-        }
-    }
-    private fun hideFemaleFields() {
-        binding.cbGravit.isEnabled = false
-        binding.cbGravit.isChecked = false
-        binding.cbLactating.isEnabled = false
-        binding.cbLactating.isChecked = false
-        binding.cbMc.isEnabled = false
-        binding.cbMc.isChecked = false
-        binding.etMcRight.isEnabled = false
-        binding.etMcRight.setText("")
-        binding.etMcLeft.isEnabled = false
-        binding.etMcLeft.setText("")
-        binding.etEmbryoRight.isEnabled = false
-        binding.etEmbryoRight.setText("")
-        binding.etEmbryoLeft.isEnabled = false
-        binding.etEmbryoLeft.setText("")
-        binding.etEmbryoDiameter.isEnabled = false
-        binding.etEmbryoDiameter.setText("")
-    }
-    private fun showFemaleFields() {
-        binding.cbGravit.isEnabled = true
-        binding.cbLactating.isEnabled = true
-        binding.cbMc.isEnabled = true
-        binding.etMcRight.isEnabled = true
-        binding.etMcLeft.isEnabled = true
-        binding.etEmbryoRight.isEnabled = true
-        binding.etEmbryoLeft.isEnabled = true
-        binding.etEmbryoDiameter.isEnabled = true
+        _state.update { it.copy(
+            gravidity = mouseEntity.gravidity == true,
+            lactating = mouseEntity.lactating == true,
+            sexActive = mouseEntity.sexActive == true,
+            mc = mouseEntity.MC == true,
+            code = "${mouseEntity.code}",
+            weight = "${mouseEntity.weight}",
+            testesLength = "${mouseEntity.testesLength}",
+            testesWidth = "${mouseEntity.testesWidth}",
+            note = "${mouseEntity.note}",
+            body = "${mouseEntity.body}",
+            tail = "${mouseEntity.tail}",
+            feet = "${mouseEntity.feet}",
+            ear = "${mouseEntity.ear}",
+            rightEmbryo = "${mouseEntity.embryoRight}",
+            leftEmbryo = "${mouseEntity.embryoLeft}",
+            embryoDiameter = "${mouseEntity.embryoDiameter}",
+            mcRight = "${mouseEntity.MCright}",
+            mcLeft = "${mouseEntity.MCleft}",
+            sex = toEnumSex(mouseEntity.sex),
+            age = toEnumMouseAge(mouseEntity.age),
+            captureID = toEnumCaptureID(mouseEntity.captureID),
+        ) }
     }
 
 }

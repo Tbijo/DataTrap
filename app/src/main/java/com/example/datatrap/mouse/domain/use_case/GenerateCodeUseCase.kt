@@ -42,13 +42,10 @@ class GenerateCodeUseCase(
     }
 
     private fun isCodeFreeInLocality(code: Int): Boolean {
-        // volny bude vtedy ak datetime je starsi ako 2 roky
-        codeList.forEach {
-            if (it == code) {
-                return true
-            }
-        }
-        return false
+        // if code is in codeList it is not free
+        // if this returns true the loop in next part will continue and vice versa
+        // so true will increment code and true means code is occupied
+        return code in codeList
     }
 
     private fun checkCodeFreeInLocality() {

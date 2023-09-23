@@ -1,5 +1,6 @@
 package com.example.datatrap.mouse.presentation.mouse_recapture_list.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,50 +12,46 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.datatrap.mouse.domain.model.MouseRecapList
 
 @Composable
-fun RecaptureListItem() {
-    val id = 301
-    val weight = 20
-    val locality = "Topolcany"
-    val dateTime = "12.12.2012"
-    val age = "Juvenile"
-    val sex = "Female"
-    val specie = "AAG"
-    val sexActive = false
-    val lactating = false
-    val gravidity = false
-
+fun RecaptureListItem(
+    mouse: MouseRecapList,
+    onItemClick: () -> Unit,
+) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth()
+            .clickable {
+                onItemClick()
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start,
     ) {
 
-        Text(text = "ID: $id")
+        Text(text = "ID: ${mouse.code}")
 
         Spacer(modifier = Modifier.width(16.dp))
 
         Column {
-            Text(text = "Weight: ${weight}g")
-            Text(text = "Locality: $locality")
-            Text(text = "DateTime: $dateTime")
+            Text(text = "Weight: ${mouse.weight}g")
+            Text(text = "Locality: ${mouse.localityName}")
+            Text(text = "DateTime: ${mouse.mouseCaught}")
         }
 
         Spacer(modifier = Modifier.width(32.dp))
 
         Column {
-            Text(text = "Age: $age")
-            Text(text = "Sex: $sex")
-            Text(text = "Specie: $specie")
+            Text(text = "Age: ${mouse.age}")
+            Text(text = "Sex: ${mouse.sex}")
+            Text(text = "Specie: ${mouse.specieCode}")
         }
 
         Spacer(modifier = Modifier.width(32.dp))
 
         Column {
-            Text(text = "Sex. Active: ${if(sexActive) "Yes" else "No"}")
-            Text(text = "Lactating: ${if(lactating) "Yes" else "No"}")
-            Text(text = "Gravidity: ${if(gravidity) "Yes" else "No"}")
+            Text(text = "Sex. Active: ${if(mouse.sexActive == true) "Yes" else "No"}")
+            Text(text = "Lactating: ${if(mouse.lactating == true) "Yes" else "No"}")
+            Text(text = "Gravidity: ${if(mouse.gravidity == true) "Yes" else "No"}")
         }
     }
 }

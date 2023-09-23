@@ -1,22 +1,22 @@
 package com.example.datatrap.mouse.presentation.mouse_detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import com.example.datatrap.R
 import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.LabeledText
+import com.example.datatrap.core.presentation.components.MyImage
 import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun MouseDetailScreen(
-    onEvent: () -> Unit,
+    onEvent: (MouseDetailScreenEvent) -> Unit,
     state: MouseDetailUiState,
 ) {
     when(state.isLoading) {
@@ -30,69 +30,75 @@ fun MouseDetailScreen(
 
 @Composable
 private fun ScreenContent(
-    onEvent: () -> Unit,
+    onEvent: (MouseDetailScreenEvent) -> Unit,
     state: MouseDetailUiState,
 ) {
     MyScaffold(
-        title = "Individual Code: ${args.mouseOccTuple.mouseCode}",
+        title = "Individual Code: ${state.mouseView?.code ?: "NONE"}",
         errorState = state.error,
     ) {
-        Column(modifier = Modifier.padding(it)) {
+        Column(modifier = Modifier.fillMaxSize().padding(it)) {
 
-            Image(painter = painterResource(id = R.drawable.empty), contentDescription = "mouse image")
+            MyImage(
+                imagePath = state.mouseImagePath,
+                contentDescription = "Mouse image",
+                onClick = {
+                    onEvent(MouseDetailScreenEvent.OnImageClick)
+                },
+            )
 
             Row {
-                LabeledText(label = "Project", text = "Komjatice")
-                LabeledText(label = "Specie Code", text = "AAG")
-                LabeledText(label = "Species Full Name", text = "Agrelis Midisis")
+                LabeledText(label = "Project", text = state.mouseView?.projectName ?: "None")
+                LabeledText(label = "Specie Code", text = state.mouseView?.specieCode ?: "None")
+                LabeledText(label = "Species Full Name", text = state.mouseView?.specieFullName ?: "None")
             }
 
             Row {
-                LabeledText(label = "Weight (g)", text = "38.0")
-                LabeledText(label = "Age", text = "Adul")
-                LabeledText(label = "Sex", text = "Male")
+                LabeledText(label = "Weight (g)", text = "${state.mouseView?.weight ?: "None"}")
+                LabeledText(label = "Age", text = state.mouseView?.age ?: "None")
+                LabeledText(label = "Sex", text = state.mouseView?.sex ?: "None")
             }
 
             Row {
-                LabeledText(label = "Gravidity", text = "No")
-                LabeledText(label = "Lactating", text = "No")
-                LabeledText(label = "Sex. Active", text = "No")
+                LabeledText(label = "Gravidity", text = state.mouseView?.gravidity ?: "None")
+                LabeledText(label = "Lactating", text = state.mouseView?.lactating?: "None")
+                LabeledText(label = "Sex. Active", text = state.mouseView?.sexActive ?: "None")
             }
 
             Row {
-                LabeledText(label = "Body Length (mm)", text = "5.4")
-                LabeledText(label = "Tail Length (mm)", text = "5.4")
-                LabeledText(label = "Feet Length (mm)", text = "5.4")
-                LabeledText(label = "Ear Length (mm)", text = "5.4")
+                LabeledText(label = "Body Length (mm)", text = "${state.mouseView?.body ?: "None"}")
+                LabeledText(label = "Tail Length (mm)", text = "${state.mouseView?.tail ?: "None"}")
+                LabeledText(label = "Feet Length (mm)", text = "${state.mouseView?.feet ?: "None"}")
+                LabeledText(label = "Ear Length (mm)", text = "${state.mouseView?.ear ?: "None"}")
             }
 
             Row {
-                LabeledText(label = "Catch DateTime", text = "20.12.2021 12:50:33")
-                LabeledText(label = "Legitimation", text = "Mister Perfect")
-                LabeledText(label = "Note", text = "Note ... note.")
+                LabeledText(label = "Catch DateTime", text = state.mouseView?.mouseCaughtDateTime ?: "None")
+                LabeledText(label = "Legitimation", text = state.mouseView?.legit ?: "None")
+                LabeledText(label = "Note", text = state.mouseView?.note ?: "None")
             }
 
             Row {
-                LabeledText(label = "Testes Length", text = "9.6")
-                LabeledText(label = "Testes Width", text = "9.6")
+                LabeledText(label = "Testes Length", text = "${state.mouseView?.testesLength ?: "None"}")
+                LabeledText(label = "Testes Width", text = "${state.mouseView?.testesWidth ?: "None"}")
             }
 
             Row {
-                LabeledText(label = "Embryo Right", text = "6")
-                LabeledText(label = "Embryo Left", text = "4")
-                LabeledText(label = "Embryo Diameter", text = "9.6")
+                LabeledText(label = "Embryo Right", text = "${state.mouseView?.embryoRight ?: "None"}")
+                LabeledText(label = "Embryo Left", text = "${state.mouseView?.embryoLeft ?: "None"}")
+                LabeledText(label = "Embryo Diameter", text = "${state.mouseView?.embryoDiameter ?: "None"}")
             }
 
             Row {
-                LabeledText(label = "MC Right", text = "10")
-                LabeledText(label = "MC Left", text = "10")
-                LabeledText(label = "MC", text = "Yes")
+                LabeledText(label = "MC Right", text = "${state.mouseView?.mcRight ?: "None"}")
+                LabeledText(label = "MC Left", text = "${state.mouseView?.mcLeft ?: "None"}")
+                LabeledText(label = "MC", text = state.mouseView?.mc ?: "None")
             }
 
             // History of previous captures
             LazyColumn {
-                item {
-                    Text(text = "Mouse Log")
+                items(state.logList) {log ->
+                    Text(text = log)
                 }
             }
         }

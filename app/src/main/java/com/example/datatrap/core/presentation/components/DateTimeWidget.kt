@@ -16,30 +16,29 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun DateTimeWidget(
-    onSelectTime: (LocalTime?) -> Unit,
+//    onSelectTime: (LocalTime?) -> Unit,
+    dateButtonText: String = "Pick a date",
     onSelectDate: (LocalDate?) -> Unit,
 ) {
     // dialog windows
     val dateDialogState = rememberMaterialDialogState()
-    val timeDialogState = rememberMaterialDialogState()
+//    val timeDialogState = rememberMaterialDialogState()
 
     var newDate: LocalDate? = null
-    var newTime: LocalTime? = null
+//    var newTime: LocalTime? = null
 
     var pickedDate: LocalDate? by remember {
         mutableStateOf(LocalDate.now())
     }
-    var pickedTime: LocalTime? by remember {
-        mutableStateOf(LocalTime.now())
-    }
+//    var pickedTime: LocalTime? by remember {
+//        mutableStateOf(LocalTime.now())
+//    }
 
     val formattedDate by remember {
         // derived - creates a state from another state
@@ -49,13 +48,13 @@ fun DateTimeWidget(
             } ?: "No date selected."
         }
     }
-    val formattedTime by remember {
-        derivedStateOf {
-            pickedTime?.let {
-                DateTimeFormatter.ISO_LOCAL_TIME.format(it)
-            } ?: "No time selected."
-        }
-    }
+//    val formattedTime by remember {
+//        derivedStateOf {
+//            pickedTime?.let {
+//                DateTimeFormatter.ISO_LOCAL_TIME.format(it)
+//            } ?: "No time selected."
+//        }
+//    }
 
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -67,19 +66,19 @@ fun DateTimeWidget(
                 // display dialog windows
                 dateDialogState.show()
             }) {
-                Text(text = "Pick a date")
+                Text(text = dateButtonText)
             }
             Text(text = formattedDate)
         }
 
-        Column {
-            Button(onClick = {
-                timeDialogState.show()
-            }) {
-                Text(text = "Pick a time")
-            }
-            Text(text = formattedTime)
-        }
+//        Column {
+//            Button(onClick = {
+//                timeDialogState.show()
+//            }) {
+//                Text(text = "Pick a time")
+//            }
+//            Text(text = formattedTime)
+//        }
     }
 
     MaterialDialog(
@@ -94,7 +93,7 @@ fun DateTimeWidget(
                 onSelectDate(null)
                 pickedDate = null
             }
-        }
+        },
     ) {
         // Type of Dialog
         datepicker(
@@ -111,27 +110,27 @@ fun DateTimeWidget(
         }
     }
 
-    MaterialDialog(
-        dialogState = timeDialogState,
-        buttons = {
-            positiveButton(text = "Ok") {
-                pickedTime = newTime
-                onSelectTime(pickedTime)
-            }
-            negativeButton(text = "Cancel") {
-                onSelectTime(null)
-                pickedTime = null
-            }
-        }
-    ) {
-        timepicker(
-            initialTime = LocalTime.now(),
-            is24HourClock = true,
-            title = "Pick a time",
-            // timeRange which time is possible to pick
-        ) {
-            // get the selected time
-            newTime = it
-        }
-    }
+//    MaterialDialog(
+//        dialogState = timeDialogState,
+//        buttons = {
+//            positiveButton(text = "Ok") {
+//                pickedTime = newTime
+//                onSelectTime(pickedTime)
+//            }
+//            negativeButton(text = "Cancel") {
+//                onSelectTime(null)
+//                pickedTime = null
+//            }
+//        },
+//    ) {
+//        timepicker(
+//            initialTime = LocalTime.now(),
+//            is24HourClock = true,
+//            title = "Pick a time",
+//            // timeRange which time is possible to pick
+//        ) {
+//            // get the selected time
+//            newTime = it
+//        }
+//    }
 }

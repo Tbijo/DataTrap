@@ -7,6 +7,9 @@ import com.example.datatrap.mouse.domain.model.MouseRecapList
 import com.example.datatrap.specie.data.SpecieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.LocalDate
+import java.time.LocalTime
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -19,9 +22,14 @@ class GetMiceForRecapture(
     // must not be older than 2 years
     operator fun invoke(
         code: Int?, specieID: String?, sex: String?, age: String?, gravidity: Boolean,
-        sexActive: Boolean, lactating: Boolean, dateFrom: ZonedDateTime?, dateTo: ZonedDateTime?
+        sexActive: Boolean, lactating: Boolean, dateFrom: LocalDate?, dateTo: LocalDate?
     ): Flow<List<MouseRecapList>> = flow {
         val currentTime = ZonedDateTime.now()
+
+        val localTime = LocalTime.of(0, 0, 0)
+        val zoneId: ZoneId = ZoneId.systemDefault()
+        val zDateFrom = ZonedDateTime.of(dateFrom, localTime, zoneId)
+        val zDateTo = ZonedDateTime.of(dateTo, localTime, zoneId)
 
         val miceForRecap = mouseRepository.getMice()
             .filter {
@@ -32,7 +40,7 @@ class GetMiceForRecapture(
                 it.gravidity == gravidity &&
                 it.lactating == lactating &&
                 it.sexActive == sexActive &&
-                (it.mouseCaught.isBefore(dateTo) && it.mouseCaught.isAfter(dateFrom)) && // TODO check
+                (it.mouseCaught.isBefore(zDateTo) && it.mouseCaught.isAfter(zDateFrom)) && // TODO check
                 (currentTime.toEpochSecond() - it.mouseCaught.toEpochSecond()) < Constants.SECONDS_IN_2_YEAR
             }
             .map {

@@ -10,25 +10,27 @@ import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumMouseAge
 import com.example.datatrap.core.util.EnumSex
 import com.example.datatrap.mouse.data.MouseEntity
+import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.model.MouseRecapList
 import com.example.datatrap.mouse.domain.model.SearchMouse
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
+import com.example.datatrap.specie.data.SpecieRepository
 import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import javax.inject.Inject
 
 @HiltViewModel
 class RecaptureViewModel @Inject constructor(
-
+    private val mouseRepository: MouseRepository,
+    private val specieRepository: SpecieRepository,
 ): ViewModel() {
 
-    private val mouseListViewModel: MouseListViewModel by viewModels()
-    private val specieListViewModel: SpecieListViewModel by viewModels()
-
-    private var mouseList: List<MouseRecapList> = emptyList()
-    private val specieMap: MutableMap<String, Long> = mutableMapOf()
+    private val _state = MutableStateFlow(RecaptureUiState())
+    val state = _state.asStateFlow()
 
     init {
         // recapture
@@ -42,61 +44,10 @@ class RecaptureViewModel @Inject constructor(
             trapList = it
         }
 
-        val currenItem = mouseList[position]
-
-        holder.binding.tvMouseCode.text = currenItem.code.toString()
-
-        holder.binding.tvAge.text = currenItem.age.toString()
-
-        holder.binding.tvWeight.text = currenItem.weight.toString()
-
-        holder.binding.tvSex.text = currenItem.sex.toString()
-
-        holder.binding.tvGravitRecap.text = when (currenItem.gravidity) {
-            true -> "Yes"
-            false -> "No"
-            else -> "null"
-        }
-
-        holder.binding.tvLactaRecap.text = when (currenItem.lactating) {
-            true -> "Yes"
-            false -> "No"
-            else -> "null"
-        }
-
-        holder.binding.tvSexActiveRecap.text = if (currenItem.sexActive) "Yes" else "No"
-
-        holder.binding.tvLocality.text = currenItem.localityName
-
-        holder.binding.tvSpecieRecap.text = currenItem.specieCode
-
-        val dateFormated = SimpleDateFormat.getDateTimeInstance().format(Date(currenItem.mouseCaught))
-        holder.binding.tvRecapDate.text = dateFormated
-
-        adapter.setOnItemClickListener(object: RecaptureMouseRecyclerAdapter.MyClickListener {
-            override fun useClickListener(position: Int) {
-                goToRecaptureMouse(position)
-            }
-            override fun useLongClickListener(position: Int) {
-                Toast.makeText(requireContext(), "You have found an easter egg. :D", Toast.LENGTH_SHORT).show()
-            }
-        })
-
         specieListViewModel.getSpeciesForSelect().observe(viewLifecycleOwner) {
             it.forEach { specie ->
                 specieMap[specie.speciesCode] = specie.specieId
             }
-        }
-
-        binding.searchMouseFloatBtn.setOnClickListener {
-            // zobrazit formular na vyhliadanie
-            val searchDialogFragment = SearchRecaptureFragment(specieMap)
-            //parentFragmentManager
-            searchDialogFragment.show(childFragmentManager, "search")
-        }
-
-        mouseListViewModel.getMouse(args.recapMouse.mouseId).observe(viewLifecycleOwner) {
-            fillDropDown(it)
         }
     }
 
@@ -255,76 +206,6 @@ class RecaptureViewModel @Inject constructor(
         }
     }
 
-    private fun hideNonMaleFields() {
-        binding.cbGravit.isEnabled = false
-        binding.cbGravit.isChecked = false
-        binding.cbLactating.isEnabled = false
-        binding.cbLactating.isChecked = false
-        binding.cbMc.isEnabled = false
-        binding.cbMc.isChecked = false
-        binding.etMcRight.isEnabled = false
-        binding.etMcRight.setText("")
-        binding.etMcLeft.isEnabled = false
-        binding.etMcLeft.setText("")
-        binding.etEmbryoRight.isEnabled = false
-        binding.etEmbryoRight.setText("")
-        binding.etEmbryoLeft.isEnabled = false
-        binding.etEmbryoLeft.setText("")
-        binding.etEmbryoDiameter.isEnabled = false
-        binding.etEmbryoDiameter.setText("")
-    }
-
-    private fun showNonMaleFields() {
-        binding.cbGravit.isEnabled = true
-        binding.cbLactating.isEnabled = true
-        binding.cbMc.isEnabled = true
-        binding.etMcRight.isEnabled = true
-        binding.etMcLeft.isEnabled = true
-        binding.etEmbryoRight.isEnabled = true
-        binding.etEmbryoLeft.isEnabled = true
-        binding.etEmbryoDiameter.isEnabled = true
-    }
-
-    private fun checkWeightAndSave(mouseEntity: MouseEntity) {
-        if (mouseEntity.weight!! > specie!!.maxWeight!! || mouseEntity.weight!! < specie!!.minWeight!!) {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setPositiveButton("Yes") { _, _ ->
-                checkTrapAvailability(mouseEntity)
-            }
-                .setNegativeButton("No") { _, _ -> }
-                .setTitle("Warning: Mouse Weight")
-                .setMessage("Mouse weight out of bounds, save anyway?")
-                .create().show()
-        } else {
-            checkTrapAvailability(mouseEntity)
-        }
-    }
-
-    private fun checkTrapAvailability(mouseEntity: MouseEntity) {
-        if (mouseEntity.trapID != null && mouseEntity.trapID in trapList) {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setPositiveButton("Yes") { _, _ ->
-                executeTask(mouseEntity)
-            }
-                .setNegativeButton("No") { _, _ -> }
-                .setTitle("Warning: Trap In Use")
-                .setMessage("Selected trap is in use, save anyway?")
-                .create().show()
-        } else {
-            executeTask(mouseEntity)
-        }
-    }
-
-    private fun executeTask(mouseEntity: MouseEntity) {
-        mouseListViewModel.insertMouse(mouseEntity)
-
-        Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
-
-        mouseListViewModel.mouseId.observe(viewLifecycleOwner) {
-            mouseId = it
-        }
-    }
-
     private fun recaptureMouse() {
         if (mouseId > 0) {
             Toast.makeText(requireContext(), "Mouse already inserted.", Toast.LENGTH_LONG).show()
@@ -337,7 +218,6 @@ class RecaptureViewModel @Inject constructor(
         }
         val mouseEntity: MouseEntity = currentMouseEntity.copy()
         mouseEntity.mouseId = 0
-        mouseEntity.mouseIid = 0
         mouseEntity.primeMouseID = if (args.recapMouse.primeMouseID == null) currentMouseEntity.mouseIid else args.recapMouse.primeMouseID
         mouseEntity.occasionID = args.occList.occasionId
         mouseEntity.localityID = args.occList.localityID
@@ -389,10 +269,8 @@ class RecaptureViewModel @Inject constructor(
             checkTrapAvailability(mouseEntity)
         }
         else {
-            executeTask(mouseEntity)
+            mouseRepository.insertMouse(mouseEntity)
         }
-
-
     }
 
     private fun checkWeightAndSave(mouseEntity: MouseEntity) {
@@ -414,34 +292,15 @@ class RecaptureViewModel @Inject constructor(
         if (mouseEntity.trapID != null && mouseEntity.trapID in trapList) {
             val builder = AlertDialog.Builder(requireContext())
             builder.setPositiveButton("Yes") { _, _ ->
-                executeTask(mouseEntity)
+                mouseRepository.insertMouse(mouseEntity)
             }
                 .setNegativeButton("No") { _, _ -> }
                 .setTitle("Warning: Trap In Use")
                 .setMessage("Selected trap is in use, save anyway?")
                 .create().show()
         } else {
-            executeTask(mouseEntity)
+            mouseRepository.insertMouse(mouseEntity)
         }
-    }
-
-    private fun executeTask(mouseEntity: MouseEntity) {
-        mouseListViewModel.insertMouse(mouseEntity)
-
-        Toast.makeText(requireContext(), "Mouse recaptured.", Toast.LENGTH_SHORT).show()
-
-        mouseListViewModel.mouseId.observe(viewLifecycleOwner) {
-            mouseId = it
-        }
-    }
-
-
-    private fun giveOutPutInt(input: String?): Int? {
-        return if (input.isNullOrBlank() || input == "null") null else Integer.parseInt(input)
-    }
-
-    private fun giveOutPutFloat(input: String?): Float? {
-        return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
     }
 
     private fun goToCamera() {
@@ -459,29 +318,4 @@ class RecaptureViewModel @Inject constructor(
         findNavController().navigate(action)
     }
 
-    fun getMiceForRecapture(code: Int?, specieID: Long?, sex: String?, age: String?, gravidity: Boolean, sexActive: Boolean, lactating: Boolean, dateFrom: Long?, dateTo: Long?, currentTime: Long): LiveData<List<MouseRecapList>> {
-        return mouseRepository.getMiceForRecapture(code, specieID, sex, age, gravidity, sexActive, lactating, dateFrom, dateTo, currentTime)
-    }
-
-    private fun goToRecaptureMouse(position: Int) {
-        val mouse = mouseList[position]
-        val action = RecaptureListMouseFragmentDirections.actionRecaptureListMouseFragmentToRecaptureMouseFragment(mouse, args.occList)
-        findNavController().navigate(action)
-    }
-
-    fun onDialogPositiveClick(searchMouse: SearchMouse) {
-        val currenTime = Calendar.getInstance().time.time
-        mouseListViewModel.getMiceForRecapture(searchMouse.code, searchMouse.speciesID, searchMouse.sex,
-            searchMouse.age, searchMouse.gravidity, searchMouse.sexActive, searchMouse.lactating,
-            searchMouse.dateFrom, searchMouse.dateTo, currenTime).observe(viewLifecycleOwner) { mice ->
-            mice.let {
-                adapter.setData(it)
-                mouseList = it
-            }
-        }
-    }
-
-    fun onDialogNegativeClick() {
-        Toast.makeText(requireContext(), "Search Canceled", Toast.LENGTH_LONG).show()
-    }
 }

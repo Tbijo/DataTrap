@@ -3,6 +3,7 @@ package com.example.datatrap.mouse.presentation.mouse_add_edit
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -69,6 +70,7 @@ private fun ScreenContent(
     ) {
         Column(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(it)
                 .verticalScroll(rememberScrollState())
         ) {
@@ -90,12 +92,17 @@ private fun ScreenContent(
             }
 
             Row {
-                // TODO How to show initial value with Description when Update scenario?
                 DropdownMenu(
                     modifier = Modifier.clickable { onEvent(MouseScreenEvent.OnSpecieDropDownClick) },
                     expanded = state.isSpecieExpanded,
-                    onDismissRequest = { onEvent(MouseScreenEvent.OnSpecieDropDownDismiss) }
+                    onDismissRequest = { onEvent(MouseScreenEvent.OnSpecieDropDownDismiss) },
                 ) {
+                    state.mouseEntity?.let { mouse ->
+                        val specieCode = state.specieList.find { specie -> specie.specieId == mouse.speciesID }?.speciesCode
+                        DropdownMenuItem(onClick = {}, enabled = false) {
+                            Text(text = "$specieCode")
+                        }
+                    }
                     DropdownMenuItem(onClick = {}, enabled = false) {
                         Text(text = "Specie*")
                     }
@@ -109,8 +116,13 @@ private fun ScreenContent(
                 DropdownMenu(
                     modifier = Modifier.clickable { onEvent(MouseScreenEvent.OnTrapIDDropDownClick) },
                     expanded = state.isTrapIDExpanded,
-                    onDismissRequest = { onEvent(MouseScreenEvent.OnTrapIDDropDownDismiss) }
+                    onDismissRequest = { onEvent(MouseScreenEvent.OnTrapIDDropDownDismiss) },
                 ) {
+                    state.mouseEntity?.let { mouse ->
+                        DropdownMenuItem(onClick = {}, enabled = false) {
+                            Text(text = "${mouse.trapID}")
+                        }
+                    }
                     DropdownMenuItem(onClick = {}, enabled = false) {
                         Text(text = "TrapID")
                     }
@@ -124,8 +136,14 @@ private fun ScreenContent(
                 DropdownMenu(
                     modifier = Modifier.clickable { onEvent(MouseScreenEvent.OnProtocolDropDownClick) },
                     expanded = state.isProtocolExpanded,
-                    onDismissRequest = { onEvent(MouseScreenEvent.OnProtocolDropDownDismiss) }
+                    onDismissRequest = { onEvent(MouseScreenEvent.OnProtocolDropDownDismiss) },
                 ) {
+                    state.mouseEntity?.let { mouse ->
+                        val protocol = state.protocolList.find { protocol -> protocol.protocolId == mouse.protocolID }?.protocolName
+                        DropdownMenuItem(onClick = {}, enabled = false) {
+                            Text(text = "$protocol")
+                        }
+                    }
                     DropdownMenuItem(onClick = {}, enabled = false) {
                         Text(text = "Protocol")
                     }

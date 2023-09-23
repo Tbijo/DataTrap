@@ -71,12 +71,17 @@ private fun ScreenContent(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            // TODO How to show initial value with Description?
             DropdownMenu(
                 modifier = Modifier.clickable { onEvent(OccasionScreenEvent.OnEnvTypeDropDownClick) },
                 expanded = state.isEnvTypeExpanded,
                 onDismissRequest = { onEvent(OccasionScreenEvent.OnEnvTypeDropDownDismiss) },
             ) {
+                state.occasionEntity?.let { occasion ->
+                    val envType = state.envTypeList.find { envType -> envType.envTypeId == occasion.envTypeID }?.envTypeName
+                    DropdownMenuItem(onClick = {}, enabled = false) {
+                        Text(text = "$envType")
+                    }
+                }
                 DropdownMenuItem(onClick = {}, enabled = false) {
                     Text(text = "Environment type")
                 }
@@ -92,6 +97,14 @@ private fun ScreenContent(
                 expanded = state.isMethodExpanded,
                 onDismissRequest = { onEvent(OccasionScreenEvent.OnMethodDropDownDismiss) }
             ) {
+                state.occasionEntity?.let { occasion ->
+                    val methodName = state.methodList.find { method ->
+                        method.methodId == occasion.methodID
+                    }?.methodName
+                    DropdownMenuItem(onClick = {}, enabled = false) {
+                        Text(text = "$methodName")
+                    }
+                }
                 DropdownMenuItem(onClick = {}, enabled = false) {
                     Text(text = "Method*")
                 }
@@ -107,6 +120,14 @@ private fun ScreenContent(
                 expanded = state.isMethodTypeExpanded,
                 onDismissRequest = { onEvent(OccasionScreenEvent.OnMethodTypeDropDownDismiss) }
             ) {
+                state.occasionEntity?.let { occasion ->
+                    val metTypeName = state.methodTypeList.find { methType ->
+                        methType.methodTypeId == occasion.methodTypeID
+                    }?.methodTypeName
+                    DropdownMenuItem(onClick = {}, enabled = false) {
+                        Text(text = "$metTypeName")
+                    }
+                }
                 DropdownMenuItem(onClick = {}, enabled = false) {
                     Text(text = "Method type*")
                 }
@@ -122,6 +143,14 @@ private fun ScreenContent(
                 expanded = state.isTrapTypeExpanded,
                 onDismissRequest = { onEvent(OccasionScreenEvent.OnTrapTypeDropDownDismiss) }
             ) {
+                state.occasionEntity?.let { occasion ->
+                    val trapTypeName = state.trapTypeList.find { trapType ->
+                        trapType.trapTypeId == occasion.trapTypeID
+                    }?.trapTypeName
+                    DropdownMenuItem(onClick = {}, enabled = false) {
+                        Text(text = "$trapTypeName")
+                    }
+                }
                 DropdownMenuItem(onClick = {}, enabled = false) {
                     Text(text = "Trap type*")
                 }
@@ -137,6 +166,14 @@ private fun ScreenContent(
                 expanded = state.isVegTypeExpanded,
                 onDismissRequest = { onEvent(OccasionScreenEvent.OnVegTypeDropDownDismiss) }
             ) {
+                state.occasionEntity?.let { occasion ->
+                    val vegTypeName = state.vegTypeList.find { vegType ->
+                        vegType.vegetTypeId == occasion.vegetTypeID
+                    }?.vegetTypeName
+                    DropdownMenuItem(onClick = {}, enabled = false) {
+                        Text(text = "$vegTypeName")
+                    }
+                }
                 DropdownMenuItem(onClick = {}, enabled = false) {
                     Text(text = "Vegetation type")
                 }

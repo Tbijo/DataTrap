@@ -1,11 +1,13 @@
 package com.example.datatrap.mouse.navigation
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseScreen
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseViewModel
 import com.example.datatrap.mouse.presentation.mouse_add_multi.MouseMultiScreen
@@ -19,6 +21,7 @@ import com.example.datatrap.mouse.presentation.mouse_recapture.RecaptureScreen
 import com.example.datatrap.mouse.presentation.mouse_recapture.RecaptureViewModel
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListScreen
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListViewModel
+import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
 
@@ -59,6 +62,17 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         val viewModel: MouseViewModel = viewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
+        LaunchedEffect(key1 = Unit) {
+            viewModel.eventFlow.collectLatest { event ->
+                when(event) {
+                    UiEvent.NavigateBack -> {
+                        navController.navigateUp()
+                    }
+                    else -> Unit
+                }
+            }
+        }
+
         MouseScreen(
             onEvent = {},
             state = state,
@@ -83,6 +97,17 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         val viewModel: MouseMultiViewModel = viewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
+        LaunchedEffect(key1 = Unit) {
+            viewModel.eventFlow.collectLatest { event ->
+                when(event) {
+                    UiEvent.NavigateBack -> {
+                        navController.navigateUp()
+                    }
+                    else -> Unit
+                }
+            }
+        }
+
         MouseMultiScreen(
             onEvent = {},
             state = state,
@@ -106,6 +131,17 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
     ) {
         val viewModel: RecaptureViewModel = viewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
+
+        LaunchedEffect(key1 = Unit) {
+            viewModel.eventFlow.collectLatest { event ->
+                when(event) {
+                    UiEvent.NavigateBack -> {
+                        navController.navigateUp()
+                    }
+                    else -> Unit
+                }
+            }
+        }
 
         RecaptureScreen(
             onEvent = {},

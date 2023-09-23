@@ -1,196 +1,141 @@
 package com.example.datatrap.mouse.presentation.mouse_recapture_list.components
 
-import android.app.AlertDialog
-import android.app.Dialog
-import android.os.Bundle
-import android.util.Log
-import android.widget.ArrayAdapter
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
-import androidx.fragment.app.DialogFragment
-import com.example.datatrap.R
+import androidx.compose.ui.Modifier
+import com.example.datatrap.core.presentation.components.DateTimeWidget
 import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
-import com.example.datatrap.mouse.domain.model.SearchMouse
 import com.example.datatrap.core.util.EnumMouseAge
 import com.example.datatrap.core.util.EnumSex
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
+import com.example.datatrap.specie.data.SpecieEntity
+import java.time.LocalDate
 
 @Composable
-fun RecaptureSearchWidget(specieMap: Map<String, Long>) {
-    var sex: String? = null
-    var age: String? = null
-    var speciesID: Long? = null
-    var dateFrom: Long? = null
-    var dateTo: Long? = null
-    var code: String? = null
+fun RecaptureSearchHeader(
+    specieList: List<SpecieEntity>,
+    codeText: String,
+    onCodeTextChanged: (String) -> Unit,
 
+    onSpecieDropDownClick: () -> Unit,
+    isSpecieDropDownExpanded: Boolean,
+    onSpecieDismiss: () -> Unit,
+    onSpecieSelect: (SpecieEntity) -> Unit,
+
+    onSexClick: (EnumSex?) -> Unit,
+    sexState: EnumSex?,
+
+    onAgeClick: (EnumMouseAge?) -> Unit,
+    ageState: EnumMouseAge?,
+
+    onSexActiveClick: (Boolean) -> Unit,
+    sexActiveState: Boolean,
+    onLactatingClick: (Boolean) -> Unit,
+    lactatingState: Boolean,
+    onGravidityClick: (Boolean) -> Unit,
+    gravidityState: Boolean,
+
+    onSelectFromDate: (LocalDate) -> Unit,
+    onSelectToDate: (LocalDate) -> Unit,
+
+    onConfirmClick: () -> Unit,
+) {
     Column {
         Row {
-            MyTextField(value = "301", placeholder = "301", error = null, label = "Individual Code",
-                onValueChanged = {
-                    // TODO
-                }
+            MyTextField(value = codeText, placeholder = "301", error = null, label = "Individual Code",
+                onValueChanged = onCodeTextChanged
             )
 
-            DropdownMenu(expanded = true, onDismissRequest = { /*TODO*/ }) {
-                DropdownMenuItem(onClick = { /*TODO*/ }) {
+            DropdownMenu(
+                modifier = Modifier.clickable { onSpecieDropDownClick() },
+                expanded = isSpecieDropDownExpanded,
+                onDismissRequest = onSpecieDismiss,
+            ) {
+                DropdownMenuItem(onClick = {}, enabled = false) {
                     Text(text = "Specie")
                 }
-            }
-
-            Row {
-                // Sex
-                ToggleButton(text = "Male", isSelected = false) {
-                    // TODO
+                specieList.forEach {
+                    DropdownMenuItem(onClick = { onSpecieSelect(it) }) {
+                        Text(text = it.speciesCode)
+                    }
                 }
-                ToggleButton(text = "Female", isSelected = false) {
-                    // TODO
-                }
-                ToggleButton(text = "N/A", isSelected = false) {
-                    // TODO
-                }
-            }
-
-            Row {
-                // Age
-                ToggleButton(text = "Juvenile", isSelected = false) {
-                    // TODO
-                }
-                ToggleButton(text = "Subadult", isSelected = false) {
-                    // TODO
-                }
-                ToggleButton(text = "Adult", isSelected = false) {
-                    // TODO
-                }
-                ToggleButton(text = "N/A", isSelected = false) {
-                    // TODO
-                }
-            }
-
-            Row {
-                // Sexual Activity / checkbox
-                ToggleButton(text = "Sex. Active", isSelected = false) {
-                    // TODO
-                }
-                ToggleButton(text = "Lactating", isSelected = false) {
-                    // TODO
-                }
-                ToggleButton(text = "Gravidity", isSelected = false) {
-                    // TODO
-                }
-            }
-
-            Row {
-                // Date From*
-                DateTimePicker()
-
-                // Date To*
-                DateTimePicker()
             }
         }
-    }
-}
 
-fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-    _binding = FragmentSearchRecaptureBinding.inflate(layoutInflater)
-    fillDropDown()
-    setListeners()
-    initInterface()
-    return AlertDialog.Builder(requireActivity())
-        .setView(binding.root)
-        .setPositiveButton("OK") { _, _ ->
-            code = binding.etSrchCode.text.toString()
-            val gravidity = binding.cbGravit.isChecked
-            val sexActive = binding.cbSexActive.isChecked
-            val lactating = binding.cbLactating.isChecked
+        Row {
+            // Sex
+            ToggleButton(text = "Male", isSelected = sexState == EnumSex.MALE) {
+                onSexClick(EnumSex.MALE)
+            }
+            ToggleButton(text = "Female", isSelected = sexState == EnumSex.FEMALE) {
+                onSexClick(EnumSex.FEMALE)
+            }
+            ToggleButton(text = "N/A", isSelected = sexState == null) {
+                onSexClick(null)
+            }
+        }
 
-            // ak jeden datum bude null tak aj druhy musi byt
-            if (dateFrom == null) dateTo = null
-            if (dateTo == null) dateFrom = null
+        Row {
+            // Age
+            ToggleButton(text = "Juvenile", isSelected = ageState == EnumMouseAge.JUVENILE) {
+                onAgeClick(EnumMouseAge.JUVENILE)
+            }
+            ToggleButton(text = "Subadult", isSelected = ageState == EnumMouseAge.SUBADULT) {
+                onAgeClick(EnumMouseAge.SUBADULT)
+            }
+            ToggleButton(text = "Adult", isSelected = ageState == EnumMouseAge.ADULT) {
+                onAgeClick(EnumMouseAge.ADULT)
+            }
+            ToggleButton(text = "N/A", isSelected = ageState == null) {
+                onAgeClick(null)
+            }
+        }
 
-            val mouse = SearchMouse(
-                if (!code.isNullOrBlank()) Integer.parseInt(code!!) else null,
-                sex,
-                age,
-                speciesID,
-                dateFrom,
-                dateTo,
-                gravidity,
-                sexActive,
-                lactating
+        Row {
+            // Sexual Activity / checkbox
+            ToggleButton(text = "Sex. Active", isSelected = sexActiveState) {
+                onSexActiveClick(!sexActiveState)
+            }
+            ToggleButton(text = "Lactating", isSelected = lactatingState) {
+                onLactatingClick(!lactatingState)
+            }
+            ToggleButton(text = "Gravidity", isSelected = gravidityState) {
+                onGravidityClick(!gravidityState)
+            }
+        }
+
+        Row {
+            // Date From*
+            DateTimeWidget(
+                dateButtonText = "Pick date from",
+                onSelectDate = {
+                    it?.let {
+                        onSelectFromDate(it)
+                    }
+                }
             )
-            listener.onDialogPositiveClick(mouse)
 
+            // Date To*
+            DateTimeWidget(
+                dateButtonText = "Pick date to",
+                onSelectDate = {
+                    it?.let {
+                        onSelectToDate(it)
+                    }
+                }
+            )
         }
-        .setNegativeButton("Cancel") { _, _ ->
-            listener.onDialogNegativeClick()
-        }
-        .create()
-}
 
-fun initInterface() {
-    try {
-        // kedze idem cez fragment tak treba fragment nie context ako pri aktivite
-        listener = requireParentFragment() as DialogListener
-    } catch (e: ClassCastException) {
-        Log.e("SearchRecaptureFragment", "Must implement DialogListener.")
-    }
-}
-
-fun fillDropDown() {
-    val listCode = specieMap.keys.toList()
-    val dropDownArrSpecie =
-        ArrayAdapter(requireContext(), R.layout.dropdown_names, listCode)
-    binding.acTvSpecie.setAdapter(dropDownArrSpecie)
-}
-
-fun setListeners() {
-    binding.acTvSpecie.setOnItemClickListener { parent, _, position, _ ->
-        val name: String = parent.getItemAtPosition(position) as String
-        speciesID = specieMap[name]!!
-    }
-
-    binding.rgSex.setOnCheckedChangeListener { _, radioButtonId ->
-        when (radioButtonId) {
-            binding.rbMale.id -> sex = EnumSex.MALE.myName
-            binding.rbFemale.id -> sex = EnumSex.FEMALE.myName
-            binding.rbNullSex.id -> sex = null
-        }
-    }
-
-    binding.rgAge.setOnCheckedChangeListener { _, radioButtonId ->
-        when (radioButtonId) {
-            binding.rbAdult.id -> age = EnumMouseAge.ADULT.myName
-            binding.rbJuvenile.id -> age = EnumMouseAge.JUVENILE.myName
-            binding.rbSubadult.id -> age = EnumMouseAge.SUBADULT.myName
-            binding.rbNullAge.id -> age = null
-        }
-    }
-
-    binding.cvDatetimeFrom.setOnDateChangeListener { _, year, month, day ->
-        val dtStart = "$year-${month + 1}-${day}"
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("SK"))
-        try {
-            dateFrom = format.parse(dtStart)?.time ?: 0L
-        } catch (e: ParseException) {
-            Log.e("DateFormat", "DateParser")
-        }
-    }
-
-    binding.cvDatetimeTo.setOnDateChangeListener { _, year, month, day ->
-        val dtStart = "$year-${month + 1}-${day}"
-        val format = SimpleDateFormat("yyyy-MM-dd", Locale.forLanguageTag("SK"))
-        try {
-            dateTo = format.parse(dtStart)?.time ?: 0L
-        } catch (e: ParseException) {
-            Log.e("DateFormat", "DateParser")
+        TextButton(onClick = {
+            onConfirmClick()
+        }) {
+            Text(text = "OK")
         }
     }
 }
