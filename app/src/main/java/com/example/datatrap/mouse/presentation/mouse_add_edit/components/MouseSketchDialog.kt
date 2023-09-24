@@ -1,76 +1,89 @@
 package com.example.datatrap.mouse.presentation.mouse_add_edit.components
 
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.widget.ImageView
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material.AlertDialog
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.imageResource
 import com.example.datatrap.R
 
+val TisRightTopID: List<Int> = listOf(
+    R.drawable.prava_predna_prvy,
+    R.drawable.prava_predna_druhy,
+    R.drawable.prava_predna_treti,
+    R.drawable.prava_predna_stvrty,
+    R.drawable.prava_predna_piaty
+)
+val DesRightBottomID: List<Int> = listOf(
+    R.drawable.prava_zadna_prvy,
+    R.drawable.prava_zadna_druhy,
+    R.drawable.prava_zadna_treti,
+    R.drawable.prava_zadna_stvrty,
+    R.drawable.prava_zadna_piaty
+)
+val StoLeftTopID: List<Int> = listOf(
+    R.drawable.lava_predna_prvy,
+    R.drawable.lava_predna_druhy,
+    R.drawable.lava_predna_treti,
+    R.drawable.lava_predna_stvrty,
+    R.drawable.lava_predna_piaty
+)
+val JedLeftBottomID: List<Int> = listOf(
+    R.drawable.lava_zadna_prvy,
+    R.drawable.lava_zadna_druhy,
+    R.drawable.lava_zadna_treti,
+    R.drawable.lava_zadna_stvrty,
+    R.drawable.lava_zadna_piaty
+)
+
 @Composable
-fun MouseSketch(uniCode: Int, fingers: Int) {
-
-    lateinit var TisRightTopID: List<Int>
-    lateinit var DesRightBottomID: List<Int>
-    lateinit var StoLeftTopID: List<Int>
-    lateinit var JedLeftBottomID: List<Int>
-
-    callResources()
-
-    if (fingers == 5) {
-        //drawAndView5(binding.mainImage, uniCode)
-        Image(bitmap = BitmapFactory.decodeFile("").asImageBitmap(), contentDescription = null)
-    } else {
-        //drawAndView4(binding.mainImage, uniCode)
-        Image(bitmap = BitmapFactory.decodeFile("").asImageBitmap(), contentDescription = null)
-    }
-
-}
-
-private fun callResources() {
-    TisRightTopID = listOf(
-        R.drawable.prava_predna_prvy,
-        R.drawable.prava_predna_druhy,
-        R.drawable.prava_predna_treti,
-        R.drawable.prava_predna_stvrty,
-        R.drawable.prava_predna_piaty
-    )
-    DesRightBottomID = listOf(
-        R.drawable.prava_zadna_prvy,
-        R.drawable.prava_zadna_druhy,
-        R.drawable.prava_zadna_treti,
-        R.drawable.prava_zadna_stvrty,
-        R.drawable.prava_zadna_piaty
-    )
-    StoLeftTopID = listOf(
-        R.drawable.lava_predna_prvy,
-        R.drawable.lava_predna_druhy,
-        R.drawable.lava_predna_treti,
-        R.drawable.lava_predna_stvrty,
-        R.drawable.lava_predna_piaty
-    )
-    JedLeftBottomID = listOf(
-        R.drawable.lava_zadna_prvy,
-        R.drawable.lava_zadna_druhy,
-        R.drawable.lava_zadna_treti,
-        R.drawable.lava_zadna_stvrty,
-        R.drawable.lava_zadna_piaty
+fun MouseSketchDialog(
+    uniCode: Int,
+    fingers: Int,
+    onDismiss: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(text = "Code: $uniCode") },
+        text = {
+            Box(
+                contentAlignment = Alignment.Center,
+            ) {
+                if (fingers == 5) {
+                    Image(bitmap = drawAndView5(uniCode).asImageBitmap(), contentDescription = "mouse sketch")
+                } else {
+                    Image(bitmap = drawAndView4(uniCode).asImageBitmap(), contentDescription = "mouse sketch")
+                }
+            }
+        },
+        buttons = {}
     )
 }
 
+@Composable
 private fun getImage(imageRes: Int): Bitmap {
-    return BitmapFactory.decodeResource(resources, imageRes)
+//    BitmapFactory.decodeResource(Resources.getSystem(), imageRes)
+//    return BitmapFactory.decodeResource(resources, imageRes)
+    val imageBitmap: ImageBitmap = ImageBitmap.imageResource(imageRes)
+    return imageBitmap.asAndroidBitmap()
 }
 
-private fun drawAndView5(imgView: ImageView, unicode: Int) {
-    val background5: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.pat_prstov)
-    val tempBitmap =
-        Bitmap.createBitmap(background5.width, background5.height, Bitmap.Config.RGB_565)
+@Composable
+private fun drawAndView5(unicode: Int): Bitmap {
+    val background5: ImageBitmap = ImageBitmap.imageResource(R.drawable.pat_prstov)
+
+    val tempBitmap = Bitmap.createBitmap(background5.width, background5.height, Bitmap.Config.RGB_565)
+
     val tempCanvas = Canvas(tempBitmap)
 
-    tempCanvas.drawBitmap(background5, 0f, 0f, null)
+    tempCanvas.drawBitmap(background5.asAndroidBitmap(), 0f, 0f, null)
 
     val unicodeS = unicode.toString()
 
@@ -82,16 +95,10 @@ private fun drawAndView5(imgView: ImageView, unicode: Int) {
             in 1..5 -> {//cislica
                 when (unicodeS.length - i) {// poradie
                     1 -> tempCanvas.drawBitmap(
-                        getImage(JedLeftBottomID[cislo - 1]),
-                        0f,
-                        0f,
-                        null
+                        getImage(JedLeftBottomID[cislo - 1]), 0f, 0f, null
                     )
                     2 -> tempCanvas.drawBitmap(
-                        getImage(DesRightBottomID[cislo - 1]),
-                        0f,
-                        0f,
-                        null
+                        getImage(DesRightBottomID[cislo - 1]), 0f, 0f, null
                     )
                     3 -> tempCanvas.drawBitmap(getImage(StoLeftTopID[cislo - 1]), 0f, 0f, null)
                     4 -> tempCanvas.drawBitmap(getImage(TisRightTopID[cislo - 1]), 0f, 0f, null)
@@ -179,17 +186,20 @@ private fun drawAndView5(imgView: ImageView, unicode: Int) {
             }
         }
     }
-
-    imgView.setImageBitmap(tempBitmap)
+    //imgView.setImageBitmap(tempBitmap)
+    return tempBitmap
 }
 
-private fun drawAndView4(imgView: ImageView, unicode: Int) {
-    val background4: Bitmap = BitmapFactory.decodeResource(resources, R.drawable.styri_prsty)
-    val tempBitmap =
-        Bitmap.createBitmap(background4.width, background4.height, Bitmap.Config.RGB_565)
+@Composable
+private fun drawAndView4(unicode: Int): Bitmap {
+
+    val background4: ImageBitmap = ImageBitmap.imageResource(R.drawable.styri_prsty)
+
+    val tempBitmap = Bitmap.createBitmap(background4.width, background4.height, Bitmap.Config.RGB_565)
+
     val tempCanvas = Canvas(tempBitmap)
 
-    tempCanvas.drawBitmap(background4, 0f, 0f, null)
+    tempCanvas.drawBitmap(background4.asAndroidBitmap(), 0f, 0f, null)
 
     val unicodeS = unicode.toString()
 
@@ -202,16 +212,10 @@ private fun drawAndView4(imgView: ImageView, unicode: Int) {
             in 1..4 -> {
                 when (unicodeS.length - i) {
                     1 -> tempCanvas.drawBitmap(
-                        getImage(JedLeftBottomID[cislo - 1]),
-                        0f,
-                        0f,
-                        null
+                        getImage(JedLeftBottomID[cislo - 1]), 0f, 0f, null
                     )
                     2 -> tempCanvas.drawBitmap(
-                        getImage(DesRightBottomID[cislo - 1]),
-                        0f,
-                        0f,
-                        null
+                        getImage(DesRightBottomID[cislo - 1]), 0f, 0f, null
                     )
                     3 -> tempCanvas.drawBitmap(getImage(StoLeftTopID[cislo - 1]), 0f, 0f, null)
                     4 -> tempCanvas.drawBitmap(getImage(TisRightTopID[cislo - 1]), 0f, 0f, null)
@@ -221,18 +225,12 @@ private fun drawAndView4(imgView: ImageView, unicode: Int) {
                 when (unicodeS.length - i) {
                     1 -> {
                         tempCanvas.drawBitmap(
-                            getImage(JedLeftBottomID[cislo - 1]),
-                            0f,
-                            0f,
-                            null
+                            getImage(JedLeftBottomID[cislo - 1]), 0f, 0f, null
                         )
                     }
                     2 -> {
                         tempCanvas.drawBitmap(
-                            getImage(DesRightBottomID[cislo - 1]),
-                            0f,
-                            0f,
-                            null
+                            getImage(DesRightBottomID[cislo - 1]), 0f, 0f, null
                         )
                     }
                     3 -> {
@@ -332,5 +330,6 @@ private fun drawAndView4(imgView: ImageView, unicode: Int) {
         }
     }
 
-    imgView.setImageBitmap(tempBitmap)
+    //imgView.setImageBitmap(tempBitmap)
+    return tempBitmap
 }

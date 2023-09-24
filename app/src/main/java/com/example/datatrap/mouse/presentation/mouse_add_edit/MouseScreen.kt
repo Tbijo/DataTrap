@@ -23,10 +23,12 @@ import com.example.datatrap.R
 import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
+import com.example.datatrap.core.presentation.components.SuspendDialog
 import com.example.datatrap.core.presentation.components.ToggleButton
 import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumMouseAge
 import com.example.datatrap.core.util.EnumSex
+import com.example.datatrap.mouse.presentation.mouse_add_edit.components.MouseSketchDialog
 
 @Composable
 fun MouseScreen(
@@ -306,6 +308,26 @@ private fun ScreenContent(
                     onEvent(MouseScreenEvent.OnNoteTextChanged(text))
                 }
             )
+        }
+
+        if (state.isDialogShowing) {
+            SuspendDialog(
+                title = state.dialogTitle,
+                message = state.dialogMessage,
+                onOkClick = { onEvent(MouseScreenEvent.OnDialogOkClick) },
+                onCancelClick = { onEvent(MouseScreenEvent.OnDialogCancelClick) },
+                onDismiss = { onEvent(MouseScreenEvent.OnDialogDismiss) },
+            )
+        }
+
+        if (state.isSketchShowing) {
+            state.specieEntity?.upperFingers?.let { fingers ->
+                MouseSketchDialog(
+                    uniCode = state.code.toInt(),
+                    fingers = fingers,
+                    onDismiss = { onEvent(MouseScreenEvent.OnSketchDismiss) },
+                )
+            }
         }
     }
 }

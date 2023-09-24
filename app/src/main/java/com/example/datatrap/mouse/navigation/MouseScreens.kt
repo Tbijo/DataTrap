@@ -13,13 +13,15 @@ sealed class MouseScreens(val route: String) {
         }
     }
 
-    object MouseScreen: MouseScreens("mouse_screen/{localityIdKey}/{occasionIdKey}/{mouseIdKey}") {
+    object MouseScreen: MouseScreens("mouse_screen/{localityIdKey}/{occasionIdKey}/{mouseIdKey}/{primeMouseIdKey}/{isRecaptureKey}") {
         const val localityIdKey = "localityIdKey"
         const val occasionIdKey = "occasionIdKey"
         const val mouseIdKey = "mouseIdKey"
+        const val primeMouseIdKey = "primeMouseIdKey"
+        const val isRecaptureKey = "isRecaptureKey"
 
-        fun passParams(localityIdVal: String, occasionIdVal: String, mouseIdVal: String): String {
-            return "mouse_screen/$localityIdVal/$occasionIdVal/$mouseIdVal"
+        fun passParams(localityIdVal: String, occasionIdVal: String, mouseIdVal: String, primeMouseIdVal: String, isRecaptureVal: Boolean): String {
+            return "mouse_screen/$localityIdVal/$occasionIdVal/$mouseIdVal/$primeMouseIdVal/$isRecaptureVal"
         }
     }
 
@@ -39,15 +41,6 @@ sealed class MouseScreens(val route: String) {
 
         fun passParams(localityIdVal: String, occasionIdVal: String, mouseIdVal: String): String {
             return "mouse_detail_screen/$localityIdVal/$occasionIdVal/$mouseIdVal"
-        }
-    }
-
-    object MouseRecaptureScreen: MouseScreens("mouse_recap_screen/{localityIdKey}/{occasionIdKey}") {
-        const val localityIdKey = "localityIdKey"
-        const val occasionIdKey = "occasionIdKey"
-
-        fun passParams(localityIdVal: String, occasionIdVal: String): String {
-            return "mouse_recap_screen/$localityIdVal/$occasionIdVal"
         }
     }
 

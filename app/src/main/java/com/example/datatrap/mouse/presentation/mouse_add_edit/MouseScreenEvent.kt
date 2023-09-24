@@ -12,6 +12,14 @@ sealed interface MouseScreenEvent {
     object OnMouseClick: MouseScreenEvent
     object OnGenerateButtonClick: MouseScreenEvent
 
+    // verify dialog
+    object OnDialogOkClick: MouseScreenEvent
+    object OnDialogCancelClick: MouseScreenEvent
+    object OnDialogDismiss: MouseScreenEvent
+
+    // sketch dialog
+    object OnSketchDismiss: MouseScreenEvent
+
     data class OnCodeTextChanged(val text: String): MouseScreenEvent
 
     data class OnSelectProtocol(val protocol: ProtocolEntity): MouseScreenEvent

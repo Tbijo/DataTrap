@@ -6,7 +6,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseScreen
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseViewModel
@@ -17,16 +19,21 @@ import com.example.datatrap.mouse.presentation.mouse_detail.MouseDetailViewModel
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListScreen
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListScreenEvent
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
-import com.example.datatrap.mouse.presentation.mouse_recapture.RecaptureScreen
-import com.example.datatrap.mouse.presentation.mouse_recapture.RecaptureViewModel
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListScreen
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListViewModel
+import com.example.datatrap.project.navigation.ProjectScreens
 import kotlinx.coroutines.flow.collectLatest
 
 fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
 
     composable(
         route = MouseScreens.MouseListScreen.route,
+        arguments = listOf(
+            navArgument(ProjectScreens.ProjectScreen.projectIdKey) {
+                type = NavType.BoolType
+                defaultValue = null
+            },
+        )
     ) {
         val viewModel: MouseListViewModel = viewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
@@ -115,35 +122,12 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
     }
 
     composable(
-        route = MouseScreens.MouseRecaptureScreen.route,
+        route = MouseScreens.MouseRecaptureListScreen.route,
     ) {
         val viewModel: RecaptureListViewModel = viewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         RecaptureListScreen(
-            onEvent = {},
-            state = state,
-        )
-    }
-
-    composable(
-        route = MouseScreens.MouseRecaptureListScreen.route,
-    ) {
-        val viewModel: RecaptureViewModel = viewModel()
-        val state by viewModel.state.collectAsStateWithLifecycle()
-
-        LaunchedEffect(key1 = Unit) {
-            viewModel.eventFlow.collectLatest { event ->
-                when(event) {
-                    UiEvent.NavigateBack -> {
-                        navController.navigateUp()
-                    }
-                    else -> Unit
-                }
-            }
-        }
-
-        RecaptureScreen(
             onEvent = {},
             state = state,
         )

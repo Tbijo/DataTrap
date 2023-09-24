@@ -13,6 +13,15 @@ data class MouseUiState(
     val mouseEntity: MouseEntity? = null,
     val occupiedTrapIdList: List<Int> = emptyList(),
 
+    // verify dialog
+    val isDialogShowing: Boolean = false,
+    val dialogTitle: String = "",
+    val dialogMessage: String = "",
+    val isMouseOkay: Boolean = true,
+
+    // sketch dialog
+    val isSketchShowing: Boolean = false,
+
     val code: String = "",
     val codeError: String? = null,
 

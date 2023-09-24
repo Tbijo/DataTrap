@@ -3,6 +3,7 @@ package com.example.datatrap.mouse.presentation.mouse_recapture_list.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
@@ -46,7 +47,9 @@ fun RecaptureSearchHeader(
 
     onConfirmClick: () -> Unit,
 ) {
-    Column {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
         Row {
             MyTextField(value = codeText, placeholder = "301", error = null, label = "Individual Code",
                 onValueChanged = onCodeTextChanged

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,6 +46,7 @@ class MouseViewModel @Inject constructor(
 
     private var occasionId: String? = null
     private var localityId: String? = null
+    private var isRecapture: Boolean? = null
 
     private val _state = MutableStateFlow(MouseUiState())
     val state = _state.asStateFlow()
@@ -59,6 +61,7 @@ class MouseViewModel @Inject constructor(
             val mouseId = savedStateHandle.get<String>(MouseScreens.MouseScreen.mouseIdKey)
             occasionId = savedStateHandle.get<String>(MouseScreens.MouseScreen.occasionIdKey)
             localityId = savedStateHandle.get<String>(MouseScreens.MouseScreen.localityIdKey)
+            isRecapture = savedStateHandle.get<Boolean>(MouseScreens.MouseScreen.isRecaptureKey)
 
             protocolRepository.getProtocolEntityList().collect { proList ->
                 _state.update { it.copy(
@@ -269,11 +272,36 @@ class MouseViewModel @Inject constructor(
                     sex = event.sex,
                 ) }
             }
+
+            MouseScreenEvent.OnDialogCancelClick -> {
+                _state.update { it.copy(
+                    isDialogShowing = false,
+                    isMouseOkay = false,
+                ) }
+            }
+            MouseScreenEvent.OnDialogDismiss -> {
+                _state.update { it.copy(
+                    isDialogShowing = false,
+                    isMouseOkay = false,
+                ) }
+            }
+            MouseScreenEvent.OnDialogOkClick -> {
+                _state.update { it.copy(
+                    isDialogShowing = false,
+                    isMouseOkay = true
+                ) }
+            }
+
+            MouseScreenEvent.OnSketchDismiss -> {
+                _state.update { it.copy(
+                    isSketchShowing = false,
+                ) }
+            }
         }
     }
 
     private fun generateCode() {
-        viewModelScope.launch(Dispatchers.Default) {
+        viewModelScope.launch(Dispatchers.IO) {
             generateCodeUseCase(
                 upperFingers = state.value.specieEntity?.upperFingers,
                 specieCode = state.value.specieEntity?.speciesCode,
@@ -314,8 +342,9 @@ class MouseViewModel @Inject constructor(
             ) }
             return
         }
-        // TODO Show MouseSketch as Roll-Up Window
-        // pass in code!!, specie?.upperFingers!!
+        _state.update { it.copy(
+            isSketchShowing = true,
+        ) }
     }
 
     private fun insertMouse() {
@@ -342,130 +371,202 @@ class MouseViewModel @Inject constructor(
             return
         }!!
 
-        val code: Int = Integer.parseInt(state.value.code)
-
-        val weight: Float? = state.value.weight.toFloatOrNull()
-        val minWeightOfSpecie = state.value.specieEntity?.minWeight
-        val maxWeightOfSpecie = state.value.specieEntity?.maxWeight
-        if (weight != null && minWeightOfSpecie != null && maxWeightOfSpecie != null) {
-            if (weight > maxWeightOfSpecie || weight < minWeightOfSpecie) {
-                // TODO how to make function wait for modal Window?
-                "Warning: Mouse Weight"
-                "Mouse weight out of bounds, save anyway?"
-            }
-        }
-
-        val trapID: Int? = state.value.trapID
-        if (trapID != null && trapID in state.value.occupiedTrapIdList) {
-            // TODO how to make function wait for modal Window?
-            "Warning: Trap In Use"
-            "Selected trap is in use, save anyway?"
-        }
-
-        val captureID = state.value.captureID?.myName
-
-        val sexActive: Boolean = state.value.sexActive
-
-        val body = state.value.body.toFloatOrNull()
-        val tail = state.value.tail.toFloatOrNull()
-        val feet = state.value.feet.toFloatOrNull()
-        val ear = state.value.ear.toFloatOrNull()
-
-        val sex = state.value.sex?.myName
-        val age = state.value.age?.myName
-
-        val testesLength: Float? = state.value.testesLength.toFloatOrNull()
-        val testesWidth: Float? = state.value.testesWidth.toFloatOrNull()
-
-        val gravidity = state.value.gravidity
-        val lactating = state.value.lactating
-
-        // počet embryí v oboch rohoch maternice a ich priemer
-        val embryoRight = state.value.rightEmbryo.toIntOrNull()
-        val embryoLeft = state.value.leftEmbryo.toIntOrNull()
-        val embryoDiameter = state.value.embryoDiameter.toFloatOrNull()
-
-        // počet placentálnych polypov
-        val MC = state.value.mc
-        val MCright = state.value.mcRight.toIntOrNull()
-        val MCleft = state.value.mcLeft.toIntOrNull()
-
-        val note: String? = state.value.note.ifEmpty { null }
-
-        val currentMouse = state.value.mouseEntity
-
-        val mouseEntity: MouseEntity = if (currentMouse == null) {
-            MouseEntity(
-                code = code,
-                primeMouseID = null,
-                speciesID = specieID,
-                protocolID = state.value.protocolEntity?.protocolId,
-                occasionID = occasionID,
-                localityID = localityID,
-                trapID = trapID,
-                mouseDateTimeCreated = ZonedDateTime.now(),
-                mouseDateTimeUpdated = null,
-                sex = sex,
-                age = age,
-                gravidity = gravidity,
-                lactating = lactating,
-                sexActive = sexActive,
-                weight = weight,
-                recapture = false,
-                captureID = captureID,
-                body = body,
-                tail = tail,
-                feet = feet,
-                ear = ear,
-                testesLength = testesLength,
-                testesWidth = testesWidth,
-                embryoRight = embryoRight,
-                embryoLeft = embryoLeft,
-                embryoDiameter = embryoDiameter,
-                MC = MC,
-                MCright = MCright,
-                MCleft = MCleft,
-                note = note,
-                mouseCaught = ZonedDateTime.now(),
-            )
-        } else {
-            MouseEntity(
-                mouseId = currentMouse.mouseId,
-                code = code,
-                primeMouseID = currentMouse.primeMouseID,
-                speciesID = specieID,
-                protocolID = state.value.protocolEntity?.protocolId,
-                occasionID = currentMouse.occasionID,
-                localityID = currentMouse.localityID,
-                trapID = trapID,
-                mouseDateTimeCreated = currentMouse.mouseDateTimeCreated,
-                mouseDateTimeUpdated = ZonedDateTime.now(),
-                sex = sex,
-                age = age,
-                gravidity = gravidity,
-                lactating = lactating,
-                sexActive = sexActive,
-                weight = weight,
-                recapture = currentMouse.recapture,
-                captureID = captureID,
-                body = body,
-                tail = tail,
-                feet = feet,
-                ear = ear,
-                testesLength = testesLength,
-                testesWidth = testesWidth,
-                embryoRight = embryoRight,
-                embryoLeft = embryoLeft,
-                embryoDiameter = embryoDiameter,
-                MC = MC,
-                MCright = MCright,
-                MCleft = MCleft,
-                note = note,
-                mouseCaught = currentMouse.mouseCaught,
-            )
-        }
-
         viewModelScope.launch(Dispatchers.IO) {
+
+            val code = state.value.code.toIntOrNull()
+
+            val weight: Float? = state.value.weight.toFloatOrNull()
+            val minWeightOfSpecie = state.value.specieEntity?.minWeight
+            val maxWeightOfSpecie = state.value.specieEntity?.maxWeight
+            if (weight != null && minWeightOfSpecie != null && maxWeightOfSpecie != null) {
+                if (weight > maxWeightOfSpecie || weight < minWeightOfSpecie) {
+                    // TODO other way to make function wait for modal Window?
+                    _state.update { it.copy(
+                        dialogTitle = "Warning: Mouse Weight",
+                        dialogMessage = "Mouse weight out of bounds, save anyway?",
+                        isDialogShowing = true,
+                    ) }
+                    // wait fo user to interact with dialog
+                    // possible ensureActive?
+                    launch { while (state.value.isDialogShowing) {} }.join()
+
+                } else {
+                    _state.update { it.copy(
+                        isMouseOkay = true
+                    ) }
+                }
+            } else {
+                _state.update { it.copy(
+                    isMouseOkay = true
+                ) }
+            }
+
+            if (!state.value.isMouseOkay) {
+                return@launch
+            }
+
+            val trapID: Int? = state.value.trapID
+            if (trapID != null && trapID in state.value.occupiedTrapIdList) {
+                // TODO other way to make function wait for modal Window?
+                _state.update { it.copy(
+                    dialogTitle = "Warning: Trap In Use",
+                    dialogMessage = "Selected trap is in use, save anyway?",
+                    isDialogShowing = true,
+                ) }
+                // wait fo user to interact with dialog
+                // possible ensureActive?
+                launch { while (state.value.isDialogShowing) {} }.join()
+
+            } else {
+                _state.update { it.copy(
+                    isMouseOkay = true
+                ) }
+            }
+
+            if (!state.value.isMouseOkay) {
+                return@launch
+            }
+
+            val captureID = state.value.captureID?.myName
+
+            val sexActive: Boolean = state.value.sexActive
+
+            val body = state.value.body.toFloatOrNull()
+            val tail = state.value.tail.toFloatOrNull()
+            val feet = state.value.feet.toFloatOrNull()
+            val ear = state.value.ear.toFloatOrNull()
+
+            val sex = state.value.sex?.myName
+            val age = state.value.age?.myName
+
+            val testesLength: Float? = state.value.testesLength.toFloatOrNull()
+            val testesWidth: Float? = state.value.testesWidth.toFloatOrNull()
+
+            val gravidity = state.value.gravidity
+            val lactating = state.value.lactating
+
+            // počet embryí v oboch rohoch maternice a ich priemer
+            val embryoRight = state.value.rightEmbryo.toIntOrNull()
+            val embryoLeft = state.value.leftEmbryo.toIntOrNull()
+            val embryoDiameter = state.value.embryoDiameter.toFloatOrNull()
+
+            // počet placentálnych polypov
+            val MC = state.value.mc
+            val MCright = state.value.mcRight.toIntOrNull()
+            val MCleft = state.value.mcLeft.toIntOrNull()
+
+            val note: String? = state.value.note.ifEmpty { null }
+
+            val currentMouse = state.value.mouseEntity
+
+            val mouseEntity: MouseEntity = if (currentMouse == null) {
+                MouseEntity(
+                    code = code,
+                    primeMouseID = null,
+                    speciesID = specieID,
+                    protocolID = state.value.protocolEntity?.protocolId,
+                    occasionID = occasionID,
+                    localityID = localityID,
+                    trapID = trapID,
+                    mouseDateTimeCreated = ZonedDateTime.now(),
+                    mouseDateTimeUpdated = null,
+                    sex = sex,
+                    age = age,
+                    gravidity = gravidity,
+                    lactating = lactating,
+                    sexActive = sexActive,
+                    weight = weight,
+                    recapture = false,
+                    captureID = captureID,
+                    body = body,
+                    tail = tail,
+                    feet = feet,
+                    ear = ear,
+                    testesLength = testesLength,
+                    testesWidth = testesWidth,
+                    embryoRight = embryoRight,
+                    embryoLeft = embryoLeft,
+                    embryoDiameter = embryoDiameter,
+                    MC = MC,
+                    MCright = MCright,
+                    MCleft = MCleft,
+                    note = note,
+                    mouseCaught = ZonedDateTime.now(),
+                )
+            } else {
+                if (isRecapture == true) {
+                    MouseEntity(
+                        mouseId = UUID.randomUUID().toString(),
+                        code = code,
+                        primeMouseID = currentMouse.primeMouseID ?: currentMouse.mouseId,
+                        speciesID = specieID,
+                        protocolID = state.value.protocolEntity?.protocolId,
+                        occasionID = occasionID,
+                        localityID = localityID,
+                        trapID = trapID,
+                        mouseDateTimeCreated = ZonedDateTime.now(),
+                        mouseDateTimeUpdated = null,
+                        sex = sex,
+                        age = age,
+                        gravidity = gravidity,
+                        lactating = lactating,
+                        sexActive = sexActive,
+                        weight = weight,
+                        recapture = true,
+                        captureID = captureID,
+                        body = body,
+                        tail = tail,
+                        feet = feet,
+                        ear = ear,
+                        testesLength = testesLength,
+                        testesWidth = testesWidth,
+                        embryoRight = embryoRight,
+                        embryoLeft = embryoLeft,
+                        embryoDiameter = embryoDiameter,
+                        MC = MC,
+                        MCright = MCright,
+                        MCleft = MCleft,
+                        note = note,
+                        mouseCaught = ZonedDateTime.now(),
+                    )
+                } else {
+                    MouseEntity(
+                        mouseId = currentMouse.mouseId,
+                        code = code,
+                        primeMouseID = currentMouse.primeMouseID,
+                        speciesID = specieID,
+                        protocolID = state.value.protocolEntity?.protocolId,
+                        occasionID = currentMouse.occasionID,
+                        localityID = currentMouse.localityID,
+                        trapID = trapID,
+                        mouseDateTimeCreated = currentMouse.mouseDateTimeCreated,
+                        mouseDateTimeUpdated = ZonedDateTime.now(),
+                        sex = sex,
+                        age = age,
+                        gravidity = gravidity,
+                        lactating = lactating,
+                        sexActive = sexActive,
+                        weight = weight,
+                        recapture = currentMouse.recapture,
+                        captureID = captureID,
+                        body = body,
+                        tail = tail,
+                        feet = feet,
+                        ear = ear,
+                        testesLength = testesLength,
+                        testesWidth = testesWidth,
+                        embryoRight = embryoRight,
+                        embryoLeft = embryoLeft,
+                        embryoDiameter = embryoDiameter,
+                        MC = MC,
+                        MCright = MCright,
+                        MCleft = MCleft,
+                        note = note,
+                        mouseCaught = currentMouse.mouseCaught,
+                    )
+                }
+            }
+
             mouseRepository.insertMouse(mouseEntity)
             _eventFlow.emit(UiEvent.NavigateBack)
         }
