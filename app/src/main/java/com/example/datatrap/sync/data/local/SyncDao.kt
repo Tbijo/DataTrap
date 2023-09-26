@@ -8,6 +8,7 @@ import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.sync.data.remote.MouseImageSync
 import com.example.datatrap.sync.data.remote.OccasionImageSync
+import com.example.datatrap.sync.data.remote.SpecieImageSync
 
 @Dao
 interface SyncDao {
@@ -36,4 +37,7 @@ interface SyncDao {
 
     @Query("SELECT imgName, path, note FROM MouseImageEntity")
     suspend fun getMouseImages(unixTime: Long): List<MouseImageSync>
+
+    @Query("SELECT imgName, path, note, specieID, uniqueCode FROM SpecieImageEntity WHERE uniqueCode >= :unixTime")
+    suspend fun getSpecieImages(unixTime: Long): List<SpecieImageSync>
 }

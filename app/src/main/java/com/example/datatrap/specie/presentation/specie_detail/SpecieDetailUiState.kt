@@ -6,4 +6,6 @@ data class SpecieDetailUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
     val specieEntity: SpecieEntity? = null,
+
+    val imagePath: String? = null,
 )

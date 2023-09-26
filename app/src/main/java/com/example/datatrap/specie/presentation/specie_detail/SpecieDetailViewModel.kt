@@ -1,53 +1,55 @@
 package com.example.datatrap.specie.presentation.specie_detail
 
-import androidx.core.net.toUri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.datatrap.core.presentation.components.ViewImageFragment
-import com.example.datatrap.specie.presentation.specie_image.SpecieImageViewModel
-import com.example.datatrap.specie.data.SpecieEntity
-import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.datatrap.specie.data.SpecieRepository
+import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
+import com.example.datatrap.specie.navigation.SpecieScreens
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class SpecieDetailViewModel: ViewModel() {
+@HiltViewModel
+class SpecieDetailViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val specieRepository: SpecieRepository,
+    private val specieImageRepository: SpecieImageRepository,
+): ViewModel() {
 
-    private val specieListViewModel: SpecieListViewModel by viewModels()
-    private val specieImageViewModel: SpecieImageViewModel by viewModels()
-    private var path: String? = null
+    private val _state = MutableStateFlow(SpecieDetailUiState())
+    val state = _state.asStateFlow()
 
     init {
-        specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
-            if (it != null) {
-                binding.ivPicture.setImageURI(it.path.toUri())
-                path = it.path
-            }
-        }
+        viewModelScope.launch(Dispatchers.IO) {
+            val specieId = savedStateHandle.get<String>(SpecieScreens.SpecieDetailScreen.specieIdKey)
+            specieId?.let {
+                val specie = specieRepository.getSpecie(specieId)
 
-        specieListViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
-            initSpecieValuesToView(it)
-        }
+                _state.update { it.copy(
+                    specieEntity = specie,
+                ) }
 
-        binding.ivPicture.setOnClickListener {
-            if (path != null) {
-                val fragman = requireActivity().supportFragmentManager
-                val floatFrag = ViewImageFragment(path!!)
-                floatFrag.show(fragman, "FloatFragViewImage")
+                val specieImage = specieImageRepository.getImageForSpecie(specieId)
+
+                specieImage?.let {
+                    _state.update { it.copy(
+                        imagePath = specieImage.path,
+                    ) }
+                }
             }
         }
     }
 
-    private fun initSpecieValuesToView(specieEntity: SpecieEntity) {
-        binding.tvSpecieCodeView.text = specieEntity.speciesCode
-        binding.tvFullName.text = specieEntity.fullName
-        binding.tvAuthority.text = specieEntity.authority.toString()
-        binding.tvDescription.text = specieEntity.description.toString()
-        binding.tvMaxWeight.text = specieEntity.maxWeight.toString()
-        binding.tvMinWeight.text = specieEntity.minWeight.toString()
-        binding.tvNumberUpperFinger.text = specieEntity.upperFingers.toString()
-        binding.tvSynonymum.text = specieEntity.synonym.toString()
-
-        binding.tvBody.text = specieEntity.bodyLength.toString()
-        binding.tvTail.text = specieEntity.tailLength.toString()
-        binding.tvMinFeet.text = specieEntity.feetLengthMin.toString()
-        binding.tvMaxFeet.text = specieEntity.feetLengthMax.toString()
-        binding.tvSpecieNote.text = specieEntity.note.toString()
+    fun onEvent(event: SpecieDetailScreenEvent) {
+        when(event) {
+            SpecieDetailScreenEvent.OnImageClick -> {
+                // TODO Display the big picture, Dialog maybe?
+            }
+        }
     }
 }

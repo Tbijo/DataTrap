@@ -6,4 +6,8 @@ data class SpecieImageUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
     val specieImageEntity: SpecieImageEntity? = null,
+
+    val imageStateText: String = "",
+
+    val note: String? = null,
 )

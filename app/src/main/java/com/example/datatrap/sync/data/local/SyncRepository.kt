@@ -4,6 +4,7 @@ import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.sync.data.remote.MouseImageSync
 import com.example.datatrap.sync.data.remote.OccasionImageSync
+import com.example.datatrap.sync.data.remote.SpecieImageSync
 
 class SyncRepository(
     private val syncDao: SyncDao,
@@ -38,5 +39,9 @@ class SyncRepository(
 
     suspend fun getMouseImages(unixTime: Long): List<MouseImageSync> {
         return syncDao.getMouseImages(unixTime)
+    }
+
+    suspend fun getSpecieImages(unixTime: Long): List<SpecieImageSync> {
+        return specieImageDao.getSpecieImages(unixTime)
     }
 }

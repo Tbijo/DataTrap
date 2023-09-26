@@ -25,7 +25,7 @@ class SpecieRepository(private val specieDao: SpecieDao) {
         return specieDao.getSpeciesForSelect()
     }
 
-    suspend fun searchSpecies(specieCode: String): List<SpecList> {
+    suspend fun searchSpecies(specieCode: String): List<SpecieEntity> {
         return specieDao.searchSpecies(specieCode)
     }
 

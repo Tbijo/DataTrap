@@ -22,8 +22,8 @@ interface SpecieDao {
     @Query("SELECT specieId, speciesCode, upperFingers, minWeight, maxWeight FROM SpecieEntity")
     suspend fun getSpeciesForSelect(): List<SpecSelectList>
 
-    @Query("SELECT specieId, speciesCode, fullName FROM SpecieEntity WHERE speciesCode LIKE :specieCode")
-    suspend fun searchSpecies(specieCode: String): List<SpecList>
+    @Query("SELECT * FROM SpecieEntity WHERE speciesCode LIKE :specieCode")
+    suspend fun searchSpecies(specieCode: String): List<SpecieEntity>
 
     @Query("SELECT specieId, speciesCode, fullName FROM SpecieEntity WHERE speciesCode IN (:spCode)")
     suspend fun getNonSpecie(spCode: List<String>): List<SpecList>

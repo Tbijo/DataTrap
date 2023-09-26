@@ -1,7 +1,6 @@
 package com.example.datatrap.specie.data.specie_image
 
-import com.example.datatrap.sync.data.remote.SpecieImageSync
-import kotlinx.coroutines.flow.Flow
+import java.io.File
 
 class SpecieImageRepository(private val specieImageDao: SpecieImageDao) {
 
@@ -9,15 +8,13 @@ class SpecieImageRepository(private val specieImageDao: SpecieImageDao) {
         specieImageDao.insertImage(specieImageEntity)
     }
 
-    suspend fun deleteImage(specieImgId: Long) {
-        specieImageDao.deleteImage(specieImgId)
+    suspend fun deleteImage(specieImageEntity: SpecieImageEntity) {
+        val myFile = File(specieImageEntity.path)
+        if (myFile.exists()) myFile.delete()
+        specieImageDao.deleteImage(specieImageEntity)
     }
 
-    fun getImageForSpecie(specieId: Long): Flow<SpecieImageEntity> {
+    suspend fun getImageForSpecie(specieId: String): SpecieImageEntity? {
         return specieImageDao.getImageForSpecie(specieId)
-    }
-
-    suspend fun getSpecieImages(unixTime: Long): List<SpecieImageSync> {
-        return specieImageDao.getSpecieImages(unixTime)
     }
 }

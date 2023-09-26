@@ -1,236 +1,226 @@
 package com.example.datatrap.specie.presentation.specie_add_edit
 
-import android.app.AlertDialog
-import android.widget.Toast
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import com.example.datatrap.R
-import com.example.datatrap.specie.data.specie_image.SpecieImageEntity
+import androidx.lifecycle.viewModelScope
+import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.specie.data.SpecieEntity
-import java.util.Calendar
+import com.example.datatrap.specie.data.SpecieRepository
+import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
+import com.example.datatrap.specie.navigation.SpecieScreens
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
+import javax.inject.Inject
 
-class SpecieViewModel: ViewModel() {
+@HiltViewModel
+class SpecieViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val specieRepository: SpecieRepository,
+    private val specieImageRepository: SpecieImageRepository,
+): ViewModel() {
 
-    private var upperFingers: Int? = null
-    private var specieId: Long = 0
-    // private val specieImageViewModel: SpecieImageViewModel by viewModels()
-    private var upperFingers: Int? = null
-    private lateinit var currentSpecieEntity: SpecieEntity
-    private var specieImageEntity: SpecieImageEntity? = null
+    private val _state = MutableStateFlow(SpecieUiState())
+    val state = _state.asStateFlow()
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
     init {
-        binding.rgUpperFingers.setOnCheckedChangeListener { _, radioButtonId ->
-            when (radioButtonId) {
-                binding.rb4.id -> upperFingers = 4
-                binding.rb5.id -> upperFingers = 5
-                binding.rbFingerNull.id -> upperFingers = null
+        viewModelScope.launch(Dispatchers.IO) {
+            val specieId = savedStateHandle.get<String>(SpecieScreens.SpecieScreen.specieIdKey)
+
+            specieId?.let {
+                val specie = specieRepository.getSpecie(specieId)
+                _state.update { it.copy(
+                    specieEntity = specie,
+                    specieCode = specie.speciesCode,
+                    fullName = specie.fullName,
+                    synonym = specie.synonym ?: "",
+                    authority = specie.authority ?: "",
+                    description = specie.description ?: "",
+                    isSmall = specie.isSmallMammal,
+                    numOfFingers = specie.upperFingers,
+                    minWeight = specie.minWeight?.let { value -> "$value" } ?: "",
+                    maxWeight = specie.maxWeight?.let { value -> "$value" } ?: "",
+                    bodyLength = specie.bodyLength?.let { value -> "$value" } ?: "",
+                    tailLength = specie.tailLength?.let { value -> "$value" } ?: "",
+                    minFeetLength = specie.feetLengthMin?.let { value -> "$value" } ?: "",
+                    maxFeetLength = specie.feetLengthMax?.let { value -> "$value" } ?: "",
+                    note = specie.note ?: "",
+                ) }
             }
         }
-
-        when (item.itemId) {
-            R.id.menu_save -> insertSpecie()
-            R.id.menu_camera -> goToCamera()
-        }
-
-        // UPDATE
-        binding.rgUpperFingers.setOnCheckedChangeListener { _, radioButtonId ->
-            when (radioButtonId){
-                binding.rb4.id -> upperFingers = 4
-                binding.rb5.id -> upperFingers = 5
-                binding.rbFingerNull.id -> upperFingers = null
-            }
-        }
-
-        specieListViewModel.getSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
-            currentSpecieEntity = it
-            initSpecieValuesToView(it)
-        }
-
-        specieImageViewModel.getImageForSpecie(args.specList.specieId).observe(viewLifecycleOwner) {
-            specieImageEntity = it
-        }
-        when(item.itemId){
-            R.id.menu_save -> updateSpecie()
-            R.id.menu_camera -> goToCamera()
-            R.id.menu_delete -> deleteSpecie()
-        }
-
     }
 
-    private fun goToCamera() {
-        if (specieId <= 0) {
-            Toast.makeText(
-                requireContext(),
-                "You need to insert a specie first.",
-                Toast.LENGTH_LONG
-            )
-                .show()
-            return
+    fun onEvent(event: SpecieScreenEvent) {
+        when(event) {
+            SpecieScreenEvent.OnCameraClick -> TODO()
+            SpecieScreenEvent.OnInsertClick -> insertSpecie()
+            is SpecieScreenEvent.OnAuthorityTextChanged -> {
+                _state.update { it.copy(
+                    authority = event.text,
+                    authorityError = null,
+                ) }
+            }
+            is SpecieScreenEvent.OnBodyLenTextChanged -> {
+                _state.update { it.copy(
+                    bodyLength = event.text,
+                ) }
+            }
+            is SpecieScreenEvent.OnDescriptionTextChanged -> {
+                _state.update { it.copy(
+                    description = event.text,
+                    descriptionError = null,
+                ) }
+            }
+            is SpecieScreenEvent.OnFullNameTextChanged -> {
+                _state.update { it.copy(
+                    fullName = event.text,
+                    fullNameError = null,
+                ) }
+            }
+            is SpecieScreenEvent.OnMaxFeetLenTextChanged -> {
+                _state.update { it.copy(
+                    maxFeetLength = event.text,
+                ) }
+            }
+            is SpecieScreenEvent.OnMaxWeightTextChanged -> {
+                _state.update { it.copy(
+                    maxWeight = event.text,
+                ) }
+            }
+            is SpecieScreenEvent.OnMinFeetLenTextChanged -> {
+                _state.update { it.copy(
+                    minFeetLength = event.text,
+                ) }
+            }
+            is SpecieScreenEvent.OnMinWeightTextChanged -> {
+                _state.update { it.copy(
+                    minWeight = event.text,
+                ) }
+            }
+            is SpecieScreenEvent.OnNoteTextChanged -> {
+                _state.update { it.copy(
+                    note = event.text,
+                ) }
+            }
+            is SpecieScreenEvent.OnSpecieCodeTextChanged -> {
+                _state.update { it.copy(
+                    specieCode = event.text,
+                    specieCodeError = null,
+                ) }
+            }
+            is SpecieScreenEvent.OnSynonymTextChanged -> {
+                _state.update { it.copy(
+                    synonym = event.text,
+                    synonymError = null,
+                ) }
+            }
+            is SpecieScreenEvent.OnTailLenTextChanged -> {
+                _state.update { it.copy(
+                    tailLength = event.text,
+                ) }
+            }
+            is SpecieScreenEvent.OnNumFingersClick -> {
+                _state.update { it.copy(
+                    numOfFingers = event.numFingers,
+                ) }
+            }
+            SpecieScreenEvent.OnIsSmallClick -> {
+                _state.update { it.copy(
+                    isSmall = !state.value.isSmall,
+                ) }
+            }
         }
-
-        val action =
-            AddSpecieFragmentDirections.actionAddSpecieFragmentToGetPictureSpecieFragment(specieId)
-        findNavController().navigate(action)
     }
 
     private fun insertSpecie() {
-        if (specieId > 0) {
-            Toast.makeText(requireContext(), "Specie already inserted.", Toast.LENGTH_LONG).show()
+        val speciesCode = state.value.specieCode.ifEmpty {
+            _state.update { it.copy(
+                specieCodeError = "Specie code can not be empty.",
+            ) }
             return
         }
 
-        val speciesCode = binding.etSpeciesCode.text.toString()
-        val fullName = binding.etFullName.text.toString()
+        val fullName = state.value.fullName.ifEmpty {
+            _state.update { it.copy(
+                fullNameError = "Full name can not be empty.",
+            ) }
+            return
+        }
 
-        if (checkInput(speciesCode, fullName)) {
-            val authority = binding.etAuthority.text.toString().ifBlank { null }
-            val synonym = binding.etSynonym.text.toString().ifBlank { null }
-            val description = binding.etDescription.text.toString().ifBlank { null }
-            val isSmallMammal: Boolean = binding.cbIsSmallMammal.isChecked
-            val minWeight = giveOutPutFloat(binding.etMinWeight.text.toString())
-            val maxWeight = giveOutPutFloat(binding.etMaxWeight.text.toString())
+        val authority = state.value.authority.ifBlank { null }
+        val synonym = state.value.synonym.ifBlank { null }
+        val description = state.value.description.ifBlank { null }
+        val upperFingers = state.value.numOfFingers
+        val isSmallMammal: Boolean = state.value.isSmall
+        val minWeight = state.value.minWeight.toFloatOrNull()
+        val maxWeight = state.value.maxWeight.toFloatOrNull()
 
-            val bodyLen = giveOutPutFloat(binding.etBodyLen.text.toString())
-            val tailLen = giveOutPutFloat(binding.etTailLen.text.toString())
-            val feetMinLen = giveOutPutFloat(binding.etMinFeet.text.toString())
-            val feetMaxLen = giveOutPutFloat(binding.etMaxFeet.text.toString())
+        val bodyLen = state.value.bodyLength.toFloatOrNull()
+        val tailLen = state.value.tailLength.toFloatOrNull()
+        val feetMinLen = state.value.minFeetLength.toFloatOrNull()
+        val feetMaxLen = state.value.maxFeetLength.toFloatOrNull()
 
-            val note = binding.etNote.text.toString().ifBlank { null }
+        val note = state.value.note.ifBlank { null }
 
-            val specieEntity = SpecieEntity(
-                0,
-                speciesCode,
-                fullName,
-                synonym,
-                authority,
-                description,
-                isSmallMammal,
-                upperFingers,
-                minWeight,
-                maxWeight,
-                bodyLen,
-                tailLen,
-                feetMinLen,
-                feetMaxLen,
-                note,
-                Calendar.getInstance().time,
-                null
+        val currentSpecie = state.value.specieEntity
+        val specieEntity: SpecieEntity = if (currentSpecie == null) {
+            SpecieEntity(
+                speciesCode = speciesCode,
+                fullName = fullName,
+                authority = authority,
+                synonym = synonym,
+                description = description,
+                isSmallMammal = isSmallMammal,
+                upperFingers = upperFingers,
+                minWeight = minWeight,
+                maxWeight = maxWeight,
+
+                bodyLength = bodyLen,
+                tailLength = tailLen,
+                feetLengthMin = feetMinLen,
+                feetLengthMax = feetMaxLen,
+
+                note = note,
+                specieDateTimeCreated = ZonedDateTime.now(),
+                specieDateTimeUpdated = null,
             )
-
-            specieListViewModel.insertSpecie(specieEntity)
-
-            Toast.makeText(requireContext(), "Specie Added.", Toast.LENGTH_SHORT).show()
-
-            specieListViewModel.specieId.observe(viewLifecycleOwner) {
-                specieId = it
-            }
         } else {
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG)
-                .show()
+            SpecieEntity(
+                specieId = currentSpecie.specieId,
+                speciesCode = speciesCode,
+                fullName = fullName,
+                authority = authority,
+                synonym = synonym,
+                description = description,
+                isSmallMammal = isSmallMammal,
+                upperFingers = upperFingers,
+                minWeight = minWeight,
+                maxWeight = maxWeight,
+
+                bodyLength = bodyLen,
+                tailLength = tailLen,
+                feetLengthMin = feetMinLen,
+                feetLengthMax = feetMaxLen,
+
+                note = note,
+                specieDateTimeCreated = currentSpecie.specieDateTimeCreated,
+                specieDateTimeUpdated = ZonedDateTime.now(),
+            )
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            specieRepository.insertSpecie(specieEntity)
+            _eventFlow.emit(UiEvent.NavigateBack)
         }
     }
 
-    private fun checkInput(speciesCode: String, fullName: String): Boolean {
-        return speciesCode.isNotEmpty() && fullName.isNotEmpty()
-    }
-
-    private fun giveOutPutFloat(input: String?): Float? {
-        return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
-    }
-
-    private fun goToCamera() {
-        val action = UpdateSpecieFragmentDirections.actionUpdateSpecieFragmentToGetPictureSpecieFragment(
-            args.specList.specieId
-        )
-        findNavController().navigate(action)
-    }
-
-    private fun initSpecieValuesToView(specieEntity: SpecieEntity) {
-        binding.etSpeciesCode.setText(specieEntity.speciesCode)
-        binding.etFullName.setText(specieEntity.fullName)
-        binding.etAuthority.setText(specieEntity.authority.toString())
-        binding.etDescription.setText(specieEntity.description.toString())
-        binding.etSynonym.setText(specieEntity.synonym.toString())
-
-        when(specieEntity.upperFingers){
-            4 -> binding.rb4.isChecked = true
-            5 -> binding.rb5.isChecked = true
-        }
-
-        binding.etMaxWeight.setText(specieEntity.maxWeight.toString())
-        binding.etMinWeight.setText(specieEntity.maxWeight.toString())
-
-        binding.etUpBodyLen.setText(specieEntity.bodyLength.toString())
-        binding.etUpTailLen.setText(specieEntity.tailLength.toString())
-        binding.etUpMinFeet.setText(specieEntity.feetLengthMin.toString())
-        binding.etUpFeetMax.setText(specieEntity.feetLengthMax.toString())
-
-        binding.cbIsSmallMammal.isChecked = specieEntity.isSmallMammal
-        binding.etNote.setText(specieEntity.note.toString())
-    }
-
-    private fun deleteSpecie() {
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setPositiveButton("Yes"){_, _ ->
-
-            specieListViewModel.deleteSpecie(args.specList.specieId, specieImageEntity?.path)
-
-            Toast.makeText(requireContext(),"Specie deleted.", Toast.LENGTH_LONG).show()
-
-            findNavController().navigateUp()
-        }
-            .setNegativeButton("No"){_, _ -> }
-            .setTitle("Delete Specie?")
-            .setMessage("Are you sure you want to delete this specie?")
-            .create().show()
-    }
-
-    private fun updateSpecie() {
-        val speciesCode = binding.etSpeciesCode.text.toString()
-        val fullName = binding.etFullName.text.toString()
-
-        if (checkInput(speciesCode, fullName)){
-
-            val specieEntity: SpecieEntity = currentSpecieEntity.copy()
-            specieEntity.speciesCode = speciesCode
-            specieEntity.fullName = fullName
-            specieEntity.authority = if (isTextNull(binding.etAuthority.text.toString())) null else binding.etAuthority.text.toString()
-            specieEntity.synonym = if (isTextNull(binding.etSynonym.text.toString())) null else binding.etSynonym.text.toString()
-            specieEntity.description = if (isTextNull(binding.etDescription.text.toString())) null else binding.etDescription.text.toString()
-            specieEntity.isSmallMammal = binding.cbIsSmallMammal.isChecked
-            specieEntity.upperFingers = upperFingers
-            specieEntity.minWeight = giveOutPutFloat(binding.etMinWeight.text.toString())
-            specieEntity.maxWeight = giveOutPutFloat(binding.etMaxWeight.text.toString())
-
-            specieEntity.bodyLength = giveOutPutFloat(binding.etUpBodyLen.text.toString())
-            specieEntity.tailLength = giveOutPutFloat(binding.etUpTailLen.text.toString())
-            specieEntity.feetLengthMin = giveOutPutFloat(binding.etUpMinFeet.text.toString())
-            specieEntity.feetLengthMax = giveOutPutFloat(binding.etUpFeetMax.text.toString())
-
-            specieEntity.note = if (isTextNull(binding.etNote.text.toString())) null else binding.etNote.text.toString()
-            specieEntity.specieDateTimeUpdated = Calendar.getInstance().time
-
-            specieListViewModel.updateSpecie(specieEntity)
-
-            Toast.makeText(requireContext(), "Specie Updated.", Toast.LENGTH_SHORT).show()
-
-            findNavController().navigateUp()
-        }else{
-            Toast.makeText(requireContext(), getString(R.string.emptyFields), Toast.LENGTH_LONG).show()
-        }
-    }
-
-    private fun isTextNull(string: String): Boolean {
-        return string == "null" || string.isBlank()
-    }
-
-    private fun checkInput(
-        speciesCode: String,
-        fullName: String,
-    ): Boolean {
-        return speciesCode.isNotEmpty() && fullName.isNotEmpty()
-    }
-
-    private fun giveOutPutFloat(input: String?): Float?{
-        return if (input.isNullOrBlank() || input == "null") null else input.toFloat()
-    }
 }

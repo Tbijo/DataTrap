@@ -1,6 +1,5 @@
 package com.example.datatrap.specie.presentation.specie_detail
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,11 +10,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.datatrap.R
 import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.LabeledText
+import com.example.datatrap.core.presentation.components.MyImage
 import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
@@ -37,6 +35,8 @@ private fun ScreenContent(
     onEvent: (SpecieDetailScreenEvent) -> Unit,
     state: SpecieDetailUiState,
 ) {
+    val scrollState = rememberScrollState()
+
     MyScaffold(
         title = "Specie Detail",
         errorState = state.error,
@@ -45,52 +45,54 @@ private fun ScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .verticalScroll(rememberScrollState()),
+                .verticalScroll(scrollState),
         ) {
-            Image(painter = painterResource(id = R.drawable.empty), contentDescription = "Specie Image")
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row {
-                LabeledText(label = "Specie Code", text = "AAG")
-                LabeledText(label = "Full Name", text = "Agrelus Gussu")
+            MyImage(imagePath = state.imagePath, contentDescription = "Specie Image") {
+                onEvent(SpecieDetailScreenEvent.OnImageClick)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
-                LabeledText(label = "Authority", text = "Author")
-                LabeledText(label = "Synonymum", text = "Mouse Name")
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LabeledText(label = "Description", text = "Description... more and more")
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row {
-                LabeledText(label = "Min. Weight (g)", text = "5")
-                LabeledText(label = "Max. Weight (g)", text = "60")
+                LabeledText(label = "Specie Code", text = "${state.specieEntity?.speciesCode}")
+                LabeledText(label = "Full Name", text = "${state.specieEntity?.fullName}")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
-                LabeledText(label = "Body Length (mm)", text = "1")
-                LabeledText(label = "Tail Length (mm)", text = "12")
+                LabeledText(label = "Authority", text = "${state.specieEntity?.authority}")
+                LabeledText(label = "Synonymum", text = "${state.specieEntity?.synonym}")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LabeledText(label = "Description", text = "${state.specieEntity?.description}")
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row {
+                LabeledText(label = "Min. Weight (g)", text = "${state.specieEntity?.minWeight}")
+                LabeledText(label = "Max. Weight (g)", text = "${state.specieEntity?.maxWeight}")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Row {
-                LabeledText(label = "Min. Feet Length (mm)", text = "10")
-                LabeledText(label = "Max. Feet Length (mm)", text = "11")
+                LabeledText(label = "Body Length (mm)", text = "${state.specieEntity?.bodyLength}")
+                LabeledText(label = "Tail Length (mm)", text = "${state.specieEntity?.tailLength}")
             }
 
-            LabeledText(label = "Number of fingers on upper limb", text = "4")
+            Spacer(modifier = Modifier.height(16.dp))
 
-            LabeledText(label = "Note", text = "Note... note note note note.")
+            Row {
+                LabeledText(label = "Min. Feet Length (mm)", text = "${state.specieEntity?.feetLengthMin}")
+                LabeledText(label = "Max. Feet Length (mm)", text = "${state.specieEntity?.feetLengthMax}")
+            }
+
+            LabeledText(label = "Number of fingers on upper limb", text = "${state.specieEntity?.upperFingers}")
+
+            LabeledText(label = "Note", text = "${state.specieEntity?.note}")
         }
     }
 }
