@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.KeyType
 import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
@@ -193,6 +194,7 @@ private fun ScreenContent(
                 placeholder = "11",
                 error = state.numberOfTrapsError,
                 label = "Number of traps*",
+                keyType = KeyType.NUMBER,
                 onValueChanged = { text ->
                     onEvent(OccasionScreenEvent.OnNumberOfTrapsChanged(text))
                 }
@@ -203,6 +205,7 @@ private fun ScreenContent(
                 placeholder = "22",
                 error = state.numberOfMiceError,
                 label = "Number of mice",
+                keyType = KeyType.NUMBER,
                 onValueChanged = { text ->
                     onEvent(OccasionScreenEvent.OnNumberOfMiceChanged(text))
                 }
@@ -223,6 +226,7 @@ private fun ScreenContent(
                 placeholder = "12",
                 error = state.temperatureError,
                 label = "Temperature",
+                keyType = KeyType.DECIMAL,
                 onValueChanged = { text ->
                     onEvent(OccasionScreenEvent.OnTemperatureChanged(text))
                 }

@@ -1,3 +1,9 @@
 package com.example.datatrap.camera.presentation
 
-sealed interface CameraScreenEvent
+import android.graphics.Bitmap
+
+sealed interface CameraScreenEvent {
+    object OnInsertClick: CameraScreenEvent
+    data class OnImageReceived(val bitmap: Bitmap): CameraScreenEvent
+    data class OnNoteTextChanged(val text: String): CameraScreenEvent
+}

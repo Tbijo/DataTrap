@@ -119,9 +119,9 @@ class OccasionDetailViewModel @Inject constructor(
     fun onEvent(event: OccasionDetailScreenEvent) {
         when(event) {
             OccasionDetailScreenEvent.OnImageClick -> {
-                path?.let {
-                    // TODO Display the big picture, Dialog maybe?
-                }
+                _state.update { it.copy(
+                    isSheetExpanded = !state.value.isSheetExpanded
+                ) }
             }
         }
     }

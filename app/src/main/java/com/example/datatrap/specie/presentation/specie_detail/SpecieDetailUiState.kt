@@ -8,4 +8,5 @@ data class SpecieDetailUiState(
     val specieEntity: SpecieEntity? = null,
 
     val imagePath: String? = null,
+    val isSheetExpanded: Boolean = false,
 )

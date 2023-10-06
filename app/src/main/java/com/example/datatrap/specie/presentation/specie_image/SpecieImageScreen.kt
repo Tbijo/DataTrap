@@ -56,9 +56,10 @@ private fun ScreenContent(
 
             Spacer(modifier = Modifier.height(292.dp))
 
-            Button(onClick = {
-                onEvent(SpecieImageScreenEvent.OnGetImageClick)
-            }) {
+            Button(
+                onClick = {
+                    onEvent(SpecieImageScreenEvent.OnGetImageClick)
+                }) {
                 Text(text = "Get Image")
             }
 
@@ -68,7 +69,7 @@ private fun ScreenContent(
 
             Spacer(modifier = Modifier.height(56.dp))
 
-            MyTextField(value = "${state.note}", placeholder = "Note...", error = null, label = "Note",
+            MyTextField(value = state.note ?: "", placeholder = "Note...", error = null, label = "Note",
                 onValueChanged = { text ->
                     onEvent(SpecieImageScreenEvent.OnNoteTextChanged(text))
                 }

@@ -3,6 +3,7 @@ package com.example.datatrap.mouse.presentation.mouse_detail
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,8 +12,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.LabeledText
+import com.example.datatrap.core.presentation.components.MyBottomSheetScaffold
 import com.example.datatrap.core.presentation.components.MyImage
-import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun MouseDetailScreen(
@@ -33,12 +34,23 @@ private fun ScreenContent(
     onEvent: (MouseDetailScreenEvent) -> Unit,
     state: MouseDetailUiState,
 ) {
-    MyScaffold(
+    MyBottomSheetScaffold(
         title = "Individual Code: ${state.mouseView?.code ?: "NONE"}",
         errorState = state.error,
+        sheetContent = {
+            MyImage(
+                modifier = Modifier.fillMaxWidth(),
+                imagePath = state.mouseImagePath,
+                contentDescription = "Mouse image",
+                onClick = {
+                    onEvent(MouseDetailScreenEvent.OnImageClick)
+                },
+            )
+        }
     ) {
-        Column(modifier = Modifier.fillMaxSize().padding(it)) {
-
+        Column(
+            modifier = Modifier.fillMaxSize().padding(it)
+        ) {
             MyImage(
                 imagePath = state.mouseImagePath,
                 contentDescription = "Mouse image",

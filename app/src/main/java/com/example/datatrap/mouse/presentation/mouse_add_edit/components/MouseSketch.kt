@@ -3,11 +3,15 @@ package com.example.datatrap.mouse.presentation.mouse_add_edit.components
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material.AlertDialog
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
@@ -44,27 +48,31 @@ val JedLeftBottomID: List<Int> = listOf(
 )
 
 @Composable
-fun MouseSketchDialog(
+fun MouseSketch(
     uniCode: Int,
     fingers: Int,
-    onDismiss: () -> Unit,
 ) {
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text(text = "Code: $uniCode") },
-        text = {
-            Box(
-                contentAlignment = Alignment.Center,
-            ) {
-                if (fingers == 5) {
-                    Image(bitmap = drawAndView5(uniCode).asImageBitmap(), contentDescription = "mouse sketch")
-                } else {
-                    Image(bitmap = drawAndView4(uniCode).asImageBitmap(), contentDescription = "mouse sketch")
-                }
+    Column {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = Color.White),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            Text(text = "Code: $uniCode")
+        }
+
+        Box(
+            modifier = Modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center,
+        ) {
+            if (fingers == 5) {
+                Image(bitmap = drawAndView5(uniCode).asImageBitmap(), contentDescription = "mouse sketch")
+            } else {
+                Image(bitmap = drawAndView4(uniCode).asImageBitmap(), contentDescription = "mouse sketch")
             }
-        },
-        buttons = {}
-    )
+        }
+    }
 }
 
 @Composable

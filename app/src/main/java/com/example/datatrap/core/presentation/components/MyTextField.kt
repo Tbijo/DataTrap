@@ -13,7 +13,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 
 enum class KeyType {
-    NUMBER, DEFAULT
+    NUMBER, DEFAULT, DECIMAL,
 }
 
 @Composable
@@ -39,15 +39,16 @@ fun MyTextField(
             keyboardOptions = when(keyType) {
                 KeyType.NUMBER -> KeyboardOptions(keyboardType = KeyboardType.Number)
                 KeyType.DEFAULT -> KeyboardOptions.Default
+                KeyType.DECIMAL -> KeyboardOptions(keyboardType = KeyboardType.Decimal)
             },
             onValueChange = onValueChanged,
             shape = RoundedCornerShape(20.dp),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
         )
         error?.let {
             Text(
                 text = error,
-                color = Color.Red
+                color = Color.Red,
             )
         }
     }

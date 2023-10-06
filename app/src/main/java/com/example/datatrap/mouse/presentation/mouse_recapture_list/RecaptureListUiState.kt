@@ -11,8 +11,9 @@ data class RecaptureListUiState(
     val error: String? = null,
     val mouseList: List<MouseRecapList> = emptyList(),
 
+    val isSheetExpanded: Boolean = false,
+
     val specieList: List<SpecieEntity> = emptyList(),
-    val isSearchSectionVisible: Boolean = false,
 
     val codeText: String = "",
     val isSpecieDropDownExpanded: Boolean = false,

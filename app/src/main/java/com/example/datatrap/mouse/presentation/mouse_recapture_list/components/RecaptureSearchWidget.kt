@@ -11,6 +11,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.components.DateTimeWidget
+import com.example.datatrap.core.presentation.components.KeyType
 import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
 import com.example.datatrap.core.util.EnumMouseAge
@@ -51,8 +52,10 @@ fun RecaptureSearchHeader(
         modifier = Modifier.fillMaxWidth(),
     ) {
         Row {
-            MyTextField(value = codeText, placeholder = "301", error = null, label = "Individual Code",
-                onValueChanged = onCodeTextChanged
+            MyTextField(
+                value = codeText, placeholder = "301", error = null, label = "Individual Code",
+                keyType = KeyType.NUMBER,
+                onValueChanged = onCodeTextChanged,
             )
 
             DropdownMenu(

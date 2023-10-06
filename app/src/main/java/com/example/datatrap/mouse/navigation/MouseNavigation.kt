@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseScreen
+import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseScreenEvent
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseViewModel
 import com.example.datatrap.mouse.presentation.mouse_add_multi.MouseMultiScreen
 import com.example.datatrap.mouse.presentation.mouse_add_multi.MouseMultiViewModel
@@ -20,6 +21,7 @@ import com.example.datatrap.mouse.presentation.mouse_list.MouseListScreen
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListScreenEvent
 import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListScreen
+import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListScreenEvent
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListViewModel
 import com.example.datatrap.project.navigation.ProjectScreens
 import kotlinx.coroutines.flow.collectLatest
@@ -81,7 +83,12 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         }
 
         MouseScreen(
-            onEvent = {},
+            onEvent = { event ->
+                when(event) {
+                    MouseScreenEvent.OnCameraClick -> TODO()
+                    else -> viewModel.onEvent(event)
+                }
+            },
             state = state,
         )
     }
@@ -93,7 +100,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         MouseDetailScreen(
-            onEvent = {},
+            onEvent = viewModel::onEvent,
             state = state,
         )
     }
@@ -116,7 +123,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         }
 
         MouseMultiScreen(
-            onEvent = {},
+            onEvent = viewModel::onEvent,
             state = state,
         )
     }
@@ -128,7 +135,12 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         RecaptureListScreen(
-            onEvent = {},
+            onEvent = { event ->
+                when(event) {
+                    is RecaptureListScreenEvent.OnItemClick -> TODO("Navigate")
+                    else -> viewModel.onEvent(event)
+                }
+            },
             state = state,
         )
     }

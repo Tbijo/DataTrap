@@ -39,15 +39,14 @@ class RecaptureListViewModel @Inject constructor(
 
     fun onEvent(event: RecaptureListScreenEvent) {
         when(event) {
-            is RecaptureListScreenEvent.OnItemClick -> TODO("Navigate")
             RecaptureListScreenEvent.OnSearchButtonClick -> {
                 _state.update { it.copy(
-                    isSearchSectionVisible = !state.value.isSearchSectionVisible,
+                    isSheetExpanded = !state.value.isSheetExpanded,
                 ) }
             }
             RecaptureListScreenEvent.OnConfirmClick -> {
                 _state.update { it.copy(
-                    isSearchSectionVisible = false,
+                    isSheetExpanded = !state.value.isSheetExpanded,
                 ) }
                 searchForMice()
             }
@@ -107,6 +106,8 @@ class RecaptureListViewModel @Inject constructor(
                     isSpecieDropDownExpanded = !state.value.isSpecieDropDownExpanded,
                 ) }
             }
+
+            else -> Unit
         }
     }
 

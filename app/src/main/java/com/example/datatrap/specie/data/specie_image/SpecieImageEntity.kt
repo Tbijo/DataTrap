@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import com.example.datatrap.specie.data.SpecieEntity
+import java.time.ZonedDateTime
 import java.util.UUID
 
 @Entity(foreignKeys = [
@@ -25,5 +26,7 @@ data class SpecieImageEntity(
     @ColumnInfo(index = true)
     var specieID: String,
 
-    var uniqueCode: Long
+    var dateTimeCreated: ZonedDateTime,
+
+    var dateTimeUpdated: ZonedDateTime?,
 )

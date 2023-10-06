@@ -75,7 +75,9 @@ class MouseDetailViewModel @Inject constructor(
     fun onEvent(event: MouseDetailScreenEvent) {
         when(event) {
             MouseDetailScreenEvent.OnImageClick -> {
-                // TODO Display the big picture, Dialog maybe?
+                _state.update { it.copy(
+                    isSheetExpanded = !state.value.isSheetExpanded,
+                ) }
             }
         }
     }

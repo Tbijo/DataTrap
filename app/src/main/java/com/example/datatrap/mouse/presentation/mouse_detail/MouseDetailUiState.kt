@@ -9,4 +9,5 @@ data class MouseDetailUiState(
 
     val mouseImagePath: String? = null,
     val logList: List<String> = emptyList(),
+    val isSheetExpanded: Boolean = false,
 )

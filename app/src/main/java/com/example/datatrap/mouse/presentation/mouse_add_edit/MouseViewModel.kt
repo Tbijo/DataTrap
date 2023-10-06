@@ -100,7 +100,6 @@ class MouseViewModel @Inject constructor(
 
     fun onEvent(event: MouseScreenEvent) {
         when(event) {
-            MouseScreenEvent.OnCameraClick -> TODO()
             MouseScreenEvent.OnInsertClick -> insertMouse()
             MouseScreenEvent.OnGenerateButtonClick -> generateCode()
             MouseScreenEvent.OnMouseClick -> showDrawnRat()
@@ -193,7 +192,6 @@ class MouseViewModel @Inject constructor(
                     weightError = null,
                 ) }
             }
-
             MouseScreenEvent.OnProtocolDropDownClick -> {
                 _state.update { it.copy(
                     isProtocolExpanded = !state.value.isProtocolExpanded,
@@ -209,7 +207,6 @@ class MouseViewModel @Inject constructor(
                     protocolEntity = event.protocol,
                 ) }
             }
-
             MouseScreenEvent.OnSpecieDropDownClick -> {
                 _state.update { it.copy(
                     isSpecieExpanded = !state.value.isSpecieExpanded,
@@ -225,7 +222,6 @@ class MouseViewModel @Inject constructor(
                     specieEntity = event.specieEntity,
                 ) }
             }
-
             MouseScreenEvent.OnTrapIDDropDownClick -> {
                 _state.update { it.copy(
                     isTrapIDExpanded = !state.value.isTrapIDExpanded,
@@ -241,7 +237,6 @@ class MouseViewModel @Inject constructor(
                     trapID = event.trapID,
                 ) }
             }
-
             MouseScreenEvent.OnGravidityClick -> {
                 _state.update { it.copy(
                     gravidity = !state.value.gravidity,
@@ -272,7 +267,6 @@ class MouseViewModel @Inject constructor(
                     sex = event.sex,
                 ) }
             }
-
             MouseScreenEvent.OnDialogCancelClick -> {
                 _state.update { it.copy(
                     isDialogShowing = false,
@@ -291,12 +285,7 @@ class MouseViewModel @Inject constructor(
                     isMouseOkay = true
                 ) }
             }
-
-            MouseScreenEvent.OnSketchDismiss -> {
-                _state.update { it.copy(
-                    isSketchShowing = false,
-                ) }
-            }
+            else -> Unit
         }
     }
 
@@ -336,14 +325,20 @@ class MouseViewModel @Inject constructor(
             ) }
             return
         }
-        if (code == null || code <= 0 || state.value.code.length >= 5) {
+        if (specie.upperFingers == null) {
+            _state.update { it.copy(
+                error = "Selected specie does not have upper fingers specified.",
+            ) }
+            return
+        }
+        if (code == null || code <= 0 || code.toString().length >= 5) {
             _state.update { it.copy(
                 error = "Generate a valid code.",
             ) }
             return
         }
         _state.update { it.copy(
-            isSketchShowing = true,
+            isSheetExpanded = !state.value.isSheetExpanded,
         ) }
     }
 

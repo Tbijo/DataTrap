@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -13,8 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.LabeledText
+import com.example.datatrap.core.presentation.components.MyBottomSheetScaffold
 import com.example.datatrap.core.presentation.components.MyImage
-import com.example.datatrap.core.presentation.components.MyScaffold
 
 @Composable
 fun SpecieDetailScreen(
@@ -37,9 +38,19 @@ private fun ScreenContent(
 ) {
     val scrollState = rememberScrollState()
 
-    MyScaffold(
+    MyBottomSheetScaffold(
         title = "Specie Detail",
         errorState = state.error,
+        isSheetExpanded = state.isSheetExpanded,
+        sheetContent = {
+            MyImage(
+                modifier = Modifier.fillMaxWidth(),
+                imagePath = state.imagePath,
+                contentDescription = "Specie Image",
+            ) {
+                onEvent(SpecieDetailScreenEvent.OnImageClick)
+            }
+        },
     ) {
         Column(
             modifier = Modifier

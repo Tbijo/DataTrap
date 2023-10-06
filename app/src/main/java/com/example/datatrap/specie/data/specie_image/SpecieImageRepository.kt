@@ -1,7 +1,5 @@
 package com.example.datatrap.specie.data.specie_image
 
-import java.io.File
-
 class SpecieImageRepository(private val specieImageDao: SpecieImageDao) {
 
     suspend fun insertImage(specieImageEntity: SpecieImageEntity) {
@@ -9,8 +7,7 @@ class SpecieImageRepository(private val specieImageDao: SpecieImageDao) {
     }
 
     suspend fun deleteImage(specieImageEntity: SpecieImageEntity) {
-        val myFile = File(specieImageEntity.path)
-        if (myFile.exists()) myFile.delete()
+        // no deleting of images in gallery
         specieImageDao.deleteImage(specieImageEntity)
     }
 

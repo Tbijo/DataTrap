@@ -3,6 +3,7 @@ package com.example.datatrap.occasion.presentation.occasion_detail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,8 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.datatrap.core.presentation.LoadingScreen
 import com.example.datatrap.core.presentation.components.LabeledText
+import com.example.datatrap.core.presentation.components.MyBottomSheetScaffold
 import com.example.datatrap.core.presentation.components.MyImage
-import com.example.datatrap.core.presentation.components.MyScaffold
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -35,9 +36,21 @@ private fun ScreenContent(
     onEvent: (OccasionDetailScreenEvent) -> Unit,
     state: OccasionDetailUiState,
 ) {
-    MyScaffold(
+    MyBottomSheetScaffold(
         title = "Occasion Detail",
         errorState = state.error,
+        sheetContent = {
+            MyImage(
+                modifier = Modifier.fillMaxWidth(),
+                imagePath = state.imagePath,
+                contentDescription = "Occasion Image",
+                onClick = {
+                    onEvent(
+                        OccasionDetailScreenEvent.OnImageClick
+                    )
+                }
+            )
+        },
     ) {
         Column(
             modifier = Modifier
@@ -47,7 +60,6 @@ private fun ScreenContent(
         ) {
 
             MyImage(
-                modifier = Modifier, // TODO Set size
                 imagePath = state.imagePath,
                 contentDescription = "Occasion Image",
                 onClick = {
@@ -75,7 +87,8 @@ private fun ScreenContent(
             Row {
                 LabeledText(label = "VegType", text = state.vegTypeName)
                 LabeledText(label = "Occasion Created DateTime",
-                    text = "${state.occasionEntity?.occasionDateTimeCreated?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
+                    text = "${state.occasionEntity?.occasionDateTimeCreated?.format(
+                        DateTimeFormatter.ISO_LOCAL_DATE_TIME)}"
                 )
             }
 

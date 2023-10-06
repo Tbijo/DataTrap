@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.KeyType
 import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.ToggleButton
@@ -107,10 +108,12 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.minWeight, placeholder = "3.7", error = null, label = "Minimal Weight",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(SpecieScreenEvent.OnMinWeightTextChanged(text))
                     })
                 MyTextField(value = state.maxWeight, placeholder = "3.7", error = null, label = "Maximal Weight",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(SpecieScreenEvent.OnMaxWeightTextChanged(text))
                     })
@@ -118,10 +121,12 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.bodyLength, placeholder = "3.7", error = null, label = "Body Length",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(SpecieScreenEvent.OnBodyLenTextChanged(text))
                     })
                 MyTextField(value = state.tailLength, placeholder = "3.7", error = null, label = "Tail Length",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(SpecieScreenEvent.OnTailLenTextChanged(text))
                     })
@@ -129,10 +134,12 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.minFeetLength, placeholder = "3.7", error = null, label = "Minimal Feet Length",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(SpecieScreenEvent.OnMinFeetLenTextChanged(text))
                     })
                 MyTextField(value = state.maxFeetLength, placeholder = "3.7", error = null, label = "Maximal Feet Length",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(SpecieScreenEvent.OnMaxFeetLenTextChanged(text))
                     })

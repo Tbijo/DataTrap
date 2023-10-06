@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.KeyType
 import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 
@@ -67,6 +68,7 @@ private fun ScreenContent(
             Spacer(modifier = Modifier.height(16.dp))
 
             MyTextField(value = state.numSessions, placeholder = "12", error = null, label = "Session Count*",
+                keyType = KeyType.NUMBER,
                 onValueChanged = { text ->
                     onEvent(
                         LocalityScreenEvent.OnNumSessionsChange(text)
@@ -78,6 +80,7 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.latitudeA, placeholder = "12.12", error = null, label = "Latitude A",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(
                             LocalityScreenEvent.OnLatitudeAChange(text)
@@ -86,6 +89,7 @@ private fun ScreenContent(
                 )
 
                 MyTextField(value = state.longitudeA, placeholder = "12.11", error = null, label = "Longitude A",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(
                             LocalityScreenEvent.OnLongitudeAChange(text)
@@ -108,6 +112,7 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.latitudeB, placeholder = "12.12", error = null, label = "Latitude B",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(
                             LocalityScreenEvent.OnLatitudeBChange(text)
@@ -116,6 +121,7 @@ private fun ScreenContent(
                 )
 
                 MyTextField(value = state.longitudeB, placeholder = "12.11", error = null, label = "Longitude B",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(
                             LocalityScreenEvent.OnLongitudeBChange(text)

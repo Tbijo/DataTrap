@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">DataTrap</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="emptyFields">Fill required fields.</string>
     <string name="noPicture">No Picture</string>

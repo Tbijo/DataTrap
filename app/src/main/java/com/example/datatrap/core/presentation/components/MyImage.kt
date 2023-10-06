@@ -43,3 +43,23 @@ fun MyImage(
         contentDescription = contentDescription,
     )
 }
+
+@Composable
+fun MyImage(
+    modifier: Modifier = Modifier,
+    imgBitmap: Bitmap?,
+    contentDescription: String,
+    onClick: () -> Unit,
+) {
+    imgBitmap?.let {
+        Image(
+            modifier = modifier.clickable { onClick() },
+            bitmap = imgBitmap.asImageBitmap(),
+            contentDescription = contentDescription,
+        )
+    } ?: Image(
+        modifier = modifier,
+        painter = painterResource(id = R.drawable.empty),
+        contentDescription = contentDescription,
+    )
+}

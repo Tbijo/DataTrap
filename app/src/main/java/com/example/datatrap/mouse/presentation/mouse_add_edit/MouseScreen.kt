@@ -21,14 +21,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import com.example.datatrap.R
 import com.example.datatrap.core.presentation.LoadingScreen
-import com.example.datatrap.core.presentation.components.MyScaffold
+import com.example.datatrap.core.presentation.components.KeyType
+import com.example.datatrap.core.presentation.components.MyBottomSheetScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 import com.example.datatrap.core.presentation.components.SuspendDialog
 import com.example.datatrap.core.presentation.components.ToggleButton
 import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumMouseAge
 import com.example.datatrap.core.util.EnumSex
-import com.example.datatrap.mouse.presentation.mouse_add_edit.components.MouseSketchDialog
+import com.example.datatrap.mouse.presentation.mouse_add_edit.components.MouseSketch
 
 @Composable
 fun MouseScreen(
@@ -49,9 +50,10 @@ private fun ScreenContent(
     onEvent: (MouseScreenEvent) -> Unit,
     state: MouseUiState,
 ) {
-    MyScaffold(
+    MyBottomSheetScaffold(
         title = "Mouse",
         errorState = state.error,
+        isSheetExpanded = state.isSheetExpanded,
         actions = {
             IconButton(onClick = {
                 onEvent(MouseScreenEvent.OnInsertClick)
@@ -59,16 +61,24 @@ private fun ScreenContent(
                 Icon(imageVector = Icons.Default.Save, contentDescription = "save icon")
             }
             IconButton(onClick = {
-                onEvent(MouseScreenEvent.OnMouseClick)
-            }) {
-                Icon(painter = painterResource(id = R.drawable.ic_rat), contentDescription = "rat icon")
-            }
-            IconButton(onClick = {
                 onEvent(MouseScreenEvent.OnCameraClick)
             }) {
                 Icon(imageVector = Icons.Default.Camera, contentDescription = "camera icon")
             }
-        }
+            IconButton(onClick = {
+                onEvent(MouseScreenEvent.OnMouseClick)
+            }) {
+                Icon(painter = painterResource(id = R.drawable.ic_rat), contentDescription = "rat icon")
+            }
+        },
+        sheetContent = {
+            state.specieEntity?.upperFingers?.let { fingers ->
+                MouseSketch(
+                    uniCode = state.code.toInt(),
+                    fingers = fingers,
+                )
+            }
+        },
     ) {
         Column(
             modifier = Modifier
@@ -78,6 +88,7 @@ private fun ScreenContent(
         ) {
             Row {
                 MyTextField(value = state.code, placeholder = "301", error = state.codeError, label = "Mouse Code",
+                    keyType = KeyType.NUMBER,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnCodeTextChanged(text))
                     }
@@ -230,21 +241,25 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.body, placeholder = "11.3", error = state.bodyError, label = "Body",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnBodyTextChanged(text))
                     }
                 )
                 MyTextField(value = state.tail, placeholder = "11.3", error = state.tailError, label = "Tail",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnTailTextChanged(text))
                     }
                 )
                 MyTextField(value = state.feet, placeholder = "11.3", error = state.feetError, label = "Feet",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnFeetTextChanged(text))
                     }
                 )
                 MyTextField(value = state.ear, placeholder = "11.3", error = state.earError, label = "Ear",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnEarTextChanged(text))
                     }
@@ -253,16 +268,19 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.weight, placeholder = "11.3", error = state.weightError, label = "Weight",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnWeightTextChanged(text))
                     }
                 )
                 MyTextField(value = state.testesLength, placeholder = "11.3", error = state.testesLengthError, label = "Testes Length",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnTestesLengthTextChanged(text))
                     }
                 )
                 MyTextField(value = state.testesWidth, placeholder = "11.3", error = state.testesWidthError, label = "Testes Width",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnTestesWidthTextChanged(text))
                     }
@@ -271,16 +289,20 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.rightEmbryo, placeholder = "11", error = state.rightEmbryoError, label = "Right Embryo",
+                    keyType = KeyType.NUMBER,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnRightEmbryoTextChanged(text))
                     }
                 )
                 MyTextField(value = state.leftEmbryo, placeholder = "11", error = state.leftEmbryoError, label = "Left Embryo",
+                    keyType = KeyType.NUMBER,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnLeftEmbryoTextChanged(text))
                     }
                 )
-                MyTextField(value = state.embryoDiameter, placeholder = "11.3", error = state.embryoDiameterError, label = "Embryo Diameter",
+                MyTextField(value = state.embryoDiameter, placeholder = "11.3", error = state.embryoDiameterError,
+                    label = "Embryo Diameter",
+                    keyType = KeyType.DECIMAL,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnEmbryoDiameterTextChanged(text))
                     }
@@ -289,11 +311,13 @@ private fun ScreenContent(
 
             Row {
                 MyTextField(value = state.mcRight, placeholder = "11", error = state.mcRightError, label = "MC Right",
+                    keyType = KeyType.NUMBER,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnMcRightTextChanged(text))
                     }
                 )
                 MyTextField(value = state.mcLeft, placeholder = "11", error = state.mcLeftError, label = "MC Left",
+                    keyType = KeyType.NUMBER,
                     onValueChanged = { text ->
                         onEvent(MouseScreenEvent.OnMcLeftTextChanged(text))
                     }
@@ -318,16 +342,6 @@ private fun ScreenContent(
                 onCancelClick = { onEvent(MouseScreenEvent.OnDialogCancelClick) },
                 onDismiss = { onEvent(MouseScreenEvent.OnDialogDismiss) },
             )
-        }
-
-        if (state.isSketchShowing) {
-            state.specieEntity?.upperFingers?.let { fingers ->
-                MouseSketchDialog(
-                    uniCode = state.code.toInt(),
-                    fingers = fingers,
-                    onDismiss = { onEvent(MouseScreenEvent.OnSketchDismiss) },
-                )
-            }
         }
     }
 }

@@ -7,6 +7,8 @@ data class OccasionDetailUiState(
     val error: String? = null,
     val occasionEntity: OccasionEntity? = null,
 
+    val isSheetExpanded: Boolean = false,
+
     val errorNum: Int = 0,
     val closeNum: Int = 0,
     val predatorNum: Int = 0,

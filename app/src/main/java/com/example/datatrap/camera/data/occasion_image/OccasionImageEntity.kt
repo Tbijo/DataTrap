@@ -6,6 +6,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
+import java.time.ZonedDateTime
 import java.util.UUID
 
 @Entity(foreignKeys = [
@@ -18,10 +19,12 @@ data class OccasionImageEntity(
 
     var imgName: String,
 
-    var path: String,
-
     var note: String?,
 
     @ColumnInfo(index = true)
     var occasionID: String,
+
+    var dateTimeCreated: ZonedDateTime,
+
+    var dateTimeUpdated: ZonedDateTime?,
 )
