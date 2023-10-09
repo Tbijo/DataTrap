@@ -1,5 +1,7 @@
 package com.example.datatrap.specie.presentation.specie_image
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,8 +14,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.example.datatrap.core.presentation.LoadingScreen
-import com.example.datatrap.core.presentation.components.MyImage
 import com.example.datatrap.core.presentation.components.MyScaffold
 import com.example.datatrap.core.presentation.components.MyTextField
 
@@ -36,6 +38,16 @@ private fun ScreenContent(
     onEvent: (SpecieImageScreenEvent) -> Unit,
     state: SpecieImageUiState,
 ) {
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            onEvent(
+                SpecieImageScreenEvent.OnImageResult(uri = uri)
+            )
+        }
+    }
+
     MyScaffold(
         title = "Specie Image",
         errorState = state.error,
@@ -47,18 +59,17 @@ private fun ScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
-            MyImage(
-                modifier = Modifier.size(350.dp),
-                imagePath = state.specieImageEntity?.path,
+            AsyncImage(
+                model = state.imageUri,
                 contentDescription = "specie image",
-                onClick = {},
+                modifier = Modifier.size(350.dp),
             )
 
             Spacer(modifier = Modifier.height(292.dp))
 
             Button(
                 onClick = {
-                    onEvent(SpecieImageScreenEvent.OnGetImageClick)
+                     launcher.launch("image/*")
                 }) {
                 Text(text = "Get Image")
             }

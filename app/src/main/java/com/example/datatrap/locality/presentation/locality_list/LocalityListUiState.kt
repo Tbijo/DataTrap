@@ -12,9 +12,4 @@ data class LocalityListUiState(
     val searchTextFieldValue: String = "",
     val searchTextFieldHint: String = "Enter locality name...",
     val isSearchTextFieldHintVisible: Boolean = true,
-
-    // We want to show multiple dialogs (one after the other) because the user may decline all of the permissions
-    // We need to queue these dialogs, queue data structure
-    // String will be the permission
-    val visiblePermissionDialogQueue: MutableList<String> = mutableListOf(),
 )

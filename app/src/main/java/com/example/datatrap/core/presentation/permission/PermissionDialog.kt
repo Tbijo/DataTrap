@@ -27,7 +27,7 @@ fun PermissionDialog(
     // listener if the user needs to navigate to the settings if he declined a permission twice
     onGoToAppSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
-) {
+){
     AlertDialog(
         onDismissRequest = onDismiss,
         buttons = {
@@ -79,19 +79,19 @@ interface PermissionTextProvider {
     fun getDescription(isPermanentlyDeclined: Boolean): String
 }
 
-class CameraPermissionTextProvider: PermissionTextProvider {
+class ReadExtStoragePermissionTextProvider: PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
-            "It seems you permanently declined camera permission. " +
+            "It seems you permanently declined read external storage permission. " +
                     "You can go to the app settings to grant it."
         } else {
-            "This app needs access to your camera so that your friends " +
-                    "can see you in a call."
+            "This app needs access to external storage " +
+                    "to work properly."
         }
     }
 }
 
-class LocalityPermissionTextProvider: PermissionTextProvider {
+class GPSPermissionTextProvider: PermissionTextProvider {
     override fun getDescription(isPermanentlyDeclined: Boolean): String {
         return if(isPermanentlyDeclined) {
             "It seems you permanently declined GPS permission. " +

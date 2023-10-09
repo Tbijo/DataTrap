@@ -55,6 +55,12 @@ class LoginViewModel @Inject constructor(
                     userNameError = null,
                 ) }
             }
+            LoginScreenEvent.OnDismissDialog -> onDismissDialog()
+
+            is LoginScreenEvent.OnPermissionResult -> onPermissionResult(
+                isGranted = event.isGranted,
+                permission = event.permission,
+            )
         }
     }
 
@@ -112,4 +118,31 @@ class LoginViewModel @Inject constructor(
             }
         }
     }
+
+    private fun onPermissionResult(isGranted: Boolean, permission: String) {
+        // call this function when we get permission results
+
+        // if the permission was not granted we want to put it into our queue on the first index
+        // And the permission should not be duplicated in our queue
+        if(!isGranted && !state.value.visiblePermissionDialogQueue.contains(permission)) {
+            val newList = state.value.visiblePermissionDialogQueue
+            newList.add(permission)
+
+            _state.update { it.copy(
+                visiblePermissionDialogQueue = newList,
+            ) }
+        }
+    }
+
+    private fun onDismissDialog() {
+        // for dismissing a dialog by clicking OK or outside the dialog
+        // We want to pop the entry of our queue
+        val newList = state.value.visiblePermissionDialogQueue
+        newList.removeFirst()
+
+        _state.update { it.copy(
+            visiblePermissionDialogQueue = newList
+        ) }
+    }
+
 }

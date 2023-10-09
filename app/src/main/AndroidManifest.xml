@@ -20,6 +20,8 @@
         android:maxSdkVersion="28"/>
     <!--vyhoda ScopedStorage od API 29 WRITE_EXTERNAL_STORAGE neni treba  -->
 
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

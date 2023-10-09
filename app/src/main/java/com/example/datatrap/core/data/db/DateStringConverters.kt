@@ -4,14 +4,14 @@ import androidx.room.TypeConverter
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-class DateLongConverters {
+class DateStringConverters {
     @TypeConverter
-    fun fromDateToLong(date: ZonedDateTime?): String?{
+    fun fromDateToString(date: ZonedDateTime?): String?{
         return date?.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     }
 
     @TypeConverter
-    fun fromLongToDate(date: String?): ZonedDateTime?{
+    fun fromStringToDate(date: String?): ZonedDateTime?{
         return if (date == null) null else ZonedDateTime.parse(date)
     }
 }

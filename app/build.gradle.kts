@@ -125,4 +125,6 @@ dependencies {
     // needed because min sdk is lower than 26 - to use java LocalDateTime
     coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:1.1.6")
 
+    // coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

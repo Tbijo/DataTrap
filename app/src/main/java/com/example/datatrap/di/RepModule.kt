@@ -1,8 +1,11 @@
 package com.example.datatrap.di
 
+import android.content.Context
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.db.TrapDatabase
+import com.example.datatrap.core.data.storage.ExternalStorageRepository
+import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
@@ -90,5 +93,13 @@ object RepModule {
     @ActivityRetainedScoped
     @Provides
     fun provideSpecieImageRep(db: TrapDatabase) = SpecieImageRepository(db.specieImageDao())
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideInternalRep(context: Context) = InternalStorageRepository(context)
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideExternalRep(context: Context) = ExternalStorageRepository(context)
 
 }

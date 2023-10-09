@@ -7,12 +7,13 @@ import androidx.activity.ComponentActivity
 import com.example.datatrap.core.data.storage.model.InternalStoragePhoto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.io.IOException
 
 class InternalStorageRepository(
     private val context: Context,
 ) {
-    suspend fun saveImage(fileName: String, bmp: Bitmap): Boolean {
+    suspend fun saveImage(fileName: String, bmp: Bitmap): File? {
         return withContext(Dispatchers.IO) {
             try {
                 context.openFileOutput("$fileName.jpg", ComponentActivity.MODE_PRIVATE).use { stream->
@@ -20,11 +21,11 @@ class InternalStorageRepository(
                         throw IOException("Could not compress bitmap")
                     }
                 }
-                //val a = context.getFileStreamPath(fileName)
-                true
+                val file = context.getFileStreamPath("$fileName.jpg")
+                file
             } catch (e: IOException) {
                 e.printStackTrace()
-                false
+                null
             }
         }
     }

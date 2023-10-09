@@ -13,7 +13,4 @@ sealed interface LocalityListScreenEvent {
 
     data class OnSearchTextChange(val text: String): LocalityListScreenEvent
     data class ChangeTitleFocus(val focusState: FocusState): LocalityListScreenEvent
-
-    data class OnPermissionResult(val permission: String, val isGranted: Boolean): LocalityListScreenEvent
-    object OnDismissDialog: LocalityListScreenEvent
 }

@@ -105,7 +105,6 @@ class CameraViewModel @Inject constructor(
     }
 
     private suspend fun saveImageFile(bitmap: Bitmap) {
-
         val imageNamePart = when (entity) {
             mouse -> mouse
             occasion -> occasion
@@ -115,14 +114,15 @@ class CameraViewModel @Inject constructor(
 
         val newName = "${imageNamePart}_${dateTime}"
 
-        val isImageSaved = internalStorageRepository.saveImage(
+        val newImage = internalStorageRepository.saveImage(
             fileName = newName,
             bmp = bitmap,
         )
-        if (isImageSaved) {
+
+        newImage?.let {
             _state.update { it.copy(
                 oldImageName = state.value.imageName,
-                imageName = newName,
+                imageName = newImage.name,
             ) }
         }
     }

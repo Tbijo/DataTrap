@@ -4,5 +4,5 @@ import android.graphics.Bitmap
 
 data class InternalStoragePhoto(
     val name: String,
-    val bmp: Bitmap
+    val bmp: Bitmap,
 )

@@ -3,6 +3,7 @@ package com.example.datatrap.specie.presentation.specie_image
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.core.util.ifNullOrBlank
 import com.example.datatrap.specie.data.specie_image.SpecieImageEntity
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import com.example.datatrap.specie.navigation.SpecieScreens
@@ -24,14 +25,19 @@ class SpecieImageViewModel @Inject constructor(
     private val _state = MutableStateFlow(SpecieImageUiState())
     val state = _state.asStateFlow()
 
+    private var specieId: String? = null
+    private var imageName: String? = null
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val specieImageId = savedStateHandle.get<String>(SpecieScreens.SpecieImageScreen.specieIdKey)
+            specieId = savedStateHandle.get<String>(SpecieScreens.SpecieImageScreen.specieIdKey)
 
-            specieImageId?.let {
-                val specieImage = specieImageRepository.getImageForSpecie(specieImageId)
+            specieId?.let { specId ->
+                val specieImage = specieImageRepository.getImageForSpecie(specId)
 
                 specieImage?.let {
+                    imageName = specieImage.imgName
+
                     _state.update { it.copy(
                         specieImageEntity = specieImage,
                         imageStateText = "Image added",
@@ -48,10 +54,6 @@ class SpecieImageViewModel @Inject constructor(
 
     fun onEvent(event: SpecieImageScreenEvent) {
         when(event) {
-            SpecieImageScreenEvent.OnGetImageClick -> {
-                // check permissions
-                // then getPicture() from gallery
-            }
             SpecieImageScreenEvent.OnInsertClick -> {
                 // ak je vsetko v poriadku treba
                 // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze aj fyzicky
@@ -59,7 +61,6 @@ class SpecieImageViewModel @Inject constructor(
                     _state.update { it.copy(
                         error = "No image was found.",
                     ) }
-
                 } else {
                     saveImage()
                 }
@@ -69,51 +70,65 @@ class SpecieImageViewModel @Inject constructor(
                     note = event.text,
                 ) }
             }
+
+            is SpecieImageScreenEvent.OnImageResult -> {
+                _state.update { it.copy(
+                    imageUri = event.uri,
+                ) }
+            }
         }
     }
 
     private fun saveImage() {
+        val id = specieId ?: kotlin.run {
+            _state.update { it.copy(
+                error = "This should not happen",
+            ) }
+            return
+        }
+        val name = imageName.ifNullOrBlank {
+            _state.update { it.copy(
+                error = "No Image",
+            ) }
+            return
+        }!!
+        val uri = state.value.imageUri ?: kotlin.run {
+            _state.update { it.copy(
+                error = "No Image",
+            ) }
+            return
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             // vytvara sa nova fotka, stara nebola
             val currentImageMouse = state.value.specieImageEntity
             if (currentImageMouse == null) {
                 val specieImageEntity = SpecieImageEntity(
-                    imgName = "imgName",
-                    path = "imageUri",
+                    imgName = name,
+                    imageUri = uri,
                     note = state.value.note,
-                    specieID = "",
+                    specieID = id,
                     dateTimeCreated = ZonedDateTime.now(),
                     dateTimeUpdated = null,
                 )
                 specieImageRepository.insertImage(specieImageEntity)
-
-                // stara fotka existuje
             } else {
+                // vymazat zaznam starej fotky v databaze
+                specieImageRepository.deleteImage(currentImageMouse)
 
-                // ostava stara fotka
-                if ("imageName" == null) {
-                    currentImageMouse.note = state.value.note
-                    specieImageRepository.insertImage(currentImageMouse)
-
-                    // nahradi sa stara fotka novou fotkou
-                } else {
-
-                    // vymazat zaznam starej fotky v databaze
-                    specieImageRepository.deleteImage(currentImageMouse)
-
-                    // pridat zaznam novej fotky do databazy subor uz existuje
-                    val specieImageEntity = SpecieImageEntity(
-                            imgName = "imageName",
-                            path = "imageUri",
-                            note = state.value.note,
-                            specieID = "",
-                            dateTimeCreated = ZonedDateTime.now(),
-                            dateTimeUpdated = null,
-
-                            )
-                    specieImageRepository.insertImage(specieImageEntity)
-                }
+                // pridat zaznam novej fotky do databazy subor uz existuje
+                val specieImageEntity = SpecieImageEntity(
+                    specieImgId = currentImageMouse.specieImgId,
+                    imgName = name,
+                    imageUri = uri,
+                    note = state.value.note,
+                    specieID = currentImageMouse.specieID,
+                    dateTimeCreated = currentImageMouse.dateTimeCreated,
+                    dateTimeUpdated = ZonedDateTime.now(),
+                )
+                specieImageRepository.insertImage(specieImageEntity)
             }
+        }
         }
     }
 

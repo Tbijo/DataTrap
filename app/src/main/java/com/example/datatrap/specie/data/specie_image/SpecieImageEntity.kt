@@ -1,5 +1,6 @@
 package com.example.datatrap.specie.data.specie_image
 
+import android.net.Uri
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -19,7 +20,7 @@ data class SpecieImageEntity(
 
     var imgName: String,
 
-    var path: String,
+    var imageUri: Uri,
 
     var note: String?,
 
