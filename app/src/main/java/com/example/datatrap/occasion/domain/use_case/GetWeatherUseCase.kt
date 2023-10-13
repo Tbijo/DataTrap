@@ -35,7 +35,7 @@ class GetWeatherUseCase(
             val weather = getHistoryWeather(
                 latitude = latitude,
                 longitude = longitude,
-                unixTime = occasionEntity.occasionStart
+                unixTime = occasionEntity.occasionStart.toEpochSecond()
             )
             emit(weather)
         }

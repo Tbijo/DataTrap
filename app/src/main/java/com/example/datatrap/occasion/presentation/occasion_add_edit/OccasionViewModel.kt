@@ -67,16 +67,16 @@ class OccasionViewModel @Inject constructor(
     init {
         savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionScreen.occasionIdKey, null).onEach { occId ->
             occId?.let { occasionId ->
-                occasionRepository.getOccasion(occasionId).onEach { occasion ->
+                with(occasionRepository.getOccasion(occasionId)) {
                     _state.update { it.copy(
-                        occasionEntity = occasion,
-                        gotCaught = occasion.gotCaught ?: false,
-                        numberOfTrapsText = occasion.numTraps.toString(),
-                        numberOfMiceText = occasion.numMice?.toString() ?: "",
-                        weatherText = occasion.weather ?: "",
-                        temperatureText = occasion.temperature?.toString() ?: "",
-                        legitimationText = occasion.leg,
-                        noteText = occasion.note ?: ""
+                        occasionEntity = this,
+                        gotCaught = gotCaught ?: false,
+                        numberOfTrapsText = numTraps.toString(),
+                        numberOfMiceText = numMice?.toString() ?: "",
+                        weatherText = weather ?: "",
+                        temperatureText = temperature?.toString() ?: "",
+                        legitimationText = leg,
+                        noteText = note ?: "",
                     ) }
                 }
             }
@@ -330,11 +330,11 @@ class OccasionViewModel @Inject constructor(
 
     private fun getWeather() {
         viewModelScope.launch {
-            localityRepository.getLocality(localityID!!).collectLatest { locality ->
+            with(localityRepository.getLocality(localityID!!)) {
                 getWeatherUseCase(
                     occasionEntity = state.value.occasionEntity,
-                    latitude = locality.xA?.toDouble(),
-                    longitude = locality.yA?.toDouble(),
+                    latitude = xA?.toDouble(),
+                    longitude = yA?.toDouble(),
                 ).collect { result ->
                     when(result) {
                         is Resource.Error -> {

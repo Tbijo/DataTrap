@@ -45,61 +45,62 @@ class OccasionDetailViewModel @Inject constructor(
     init {
         savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionDetailScreen.occasionIdKey, null).onEach { occasionId ->
             occasionId?.let {
-                mouseRepository.getMiceForOccasion(occasionId).collect { miceList ->
+                with(mouseRepository.getMiceForOccasion(occasionId)) {
                     val specieCodeStr = EnumSpecie.values().map { it.name }
 
+                    // TODO create use case
                     _state.update { it.copy(
-                        errorNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.TRE.name },
-                        closeNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.C.name },
-                        predatorNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.P.name },
-                        pvpNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.PVP.name },
-                        otherNum = miceList.count { mouse -> mouse.specieCode == EnumSpecie.Other.name },
-                        specieNum = miceList.count { mouse -> mouse.specieCode !in specieCodeStr },
+//                        errorNum = count { mouse -> mouse.specieCode == EnumSpecie.TRE.name },
+//                        closeNum = count { mouse -> mouse.specieCode == EnumSpecie.C.name },
+//                        predatorNum = count { mouse -> mouse.specieCode == EnumSpecie.P.name },
+//                        pvpNum = count { mouse -> mouse.specieCode == EnumSpecie.PVP.name },
+//                        otherNum = count { mouse -> mouse.specieCode == EnumSpecie.Other.name },
+//                        specieNum = count { mouse -> mouse.specieCode !in specieCodeStr },
                     ) }
                 }
 
-                occasionRepository.getOccasion(occasionId).collect { occasion ->
+                with(occasionRepository.getOccasion(occasionId)) {
                     _state.update { it.copy(
-                        occasionEntity = occasion,
+                        occasionEntity = this,
                     ) }
 
-                    methodRepository.getMethod(occasion.methodID).collect { method ->
+                    methodRepository.getMethod(methodID).collect { method ->
                         _state.update { it.copy(
                             methodName = method.methodName,
                         ) }
                     }
-                    methodTypeRepository.getMethodType(occasion.methodTypeID).collect { methodType ->
+                    methodTypeRepository.getMethodType(methodTypeID).collect { methodType ->
                         _state.update { it.copy(
                             methodName = methodType.methodTypeName,
                         ) }
                     }
-                    occasion.envTypeID?.let { envTypeID ->
+                    envTypeID?.let { envTypeID ->
                         envTypeRepository.getEnvType(envTypeID).collect { envType ->
                             _state.update { it.copy(
                                 envTypeName = envType.envTypeName,
                             ) }
                         }
                     }
-                    occasion.vegetTypeID?.let { vegetTypeID ->
+                    vegetTypeID?.let { vegetTypeID ->
                         vegetTypeRepository.getVegetType(vegetTypeID).collect { vegType ->
                             _state.update { it.copy(
                                 vegTypeName = vegType.vegetTypeName,
                             ) }
                         }
                     }
-                    trapTypeRepository.getTrapType(occasion.trapTypeID).collect { trapType ->
+                    trapTypeRepository.getTrapType(trapTypeID).collect { trapType ->
                         _state.update { it.copy(
                             trapTypeName = trapType.trapTypeName,
                         ) }
                     }
                 }
 
-                occasionImageRepository.getImageForOccasion(occasionId).collect { occImage ->
-                    occImage?.let {
+                with(occasionImageRepository.getImageForOccasion(occasionId)) {
+                    this?.let {
                         _state.update { it.copy(
-                            imagePath = occImage.path.toUri().path
+                            imagePath = path.toUri().path
                         ) }
-                        path = occImage.path
+                        path = path
                     }
                 }
             }
@@ -107,9 +108,9 @@ class OccasionDetailViewModel @Inject constructor(
 
         savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionDetailScreen.localityIdKey, null).onEach { locId ->
             locId?.let {
-                localityRepository.getLocality(locId).collect { locality ->
+                with(localityRepository.getLocality(locId)) {
                     _state.update { it.copy(
-                        localityName = locality.localityName,
+                        localityName = localityName,
                     ) }
                 }
             }

@@ -7,7 +7,6 @@ import java.util.UUID
 
 @Entity
 data class SpecieEntity(
-
     @PrimaryKey
     var specieId: String = UUID.randomUUID().toString(),
 

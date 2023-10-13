@@ -1,7 +1,6 @@
 package com.example.datatrap.session.data
 
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SessionDao {
@@ -16,7 +15,7 @@ interface SessionDao {
     suspend fun getSession(sessionId: String): SessionEntity
 
     @Query("SELECT * FROM SessionEntity WHERE projectID = :projectId")
-    fun getSessionsForProject(projectId: String): Flow<List<SessionEntity>>
+    suspend fun getSessionsForProject(projectId: String): List<SessionEntity>
 
     @Query("SELECT * FROM SessionEntity WHERE sessionId IN (:sessionIds)")
     suspend fun getSessionForSync(sessionIds: List<String>): List<SessionEntity>

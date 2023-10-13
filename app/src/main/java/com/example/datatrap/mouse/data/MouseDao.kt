@@ -6,7 +6,7 @@ import androidx.room.*
 interface MouseDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertMouse(mouseEntity: MouseEntity): String
+    suspend fun insertMouse(mouseEntity: MouseEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMice(mice: List<MouseEntity>)

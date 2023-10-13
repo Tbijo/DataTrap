@@ -2,8 +2,8 @@ package com.example.datatrap.mouse.data
 
 class MouseRepository(private val mouseDao: MouseDao) {
 
-    suspend fun insertMouse(mouseEntity: MouseEntity): String {
-        return mouseDao.insertMouse(mouseEntity)
+    suspend fun insertMouse(mouseEntity: MouseEntity) {
+        mouseDao.insertMouse(mouseEntity)
     }
 
     suspend fun insertMice(mice: List<MouseEntity>) {

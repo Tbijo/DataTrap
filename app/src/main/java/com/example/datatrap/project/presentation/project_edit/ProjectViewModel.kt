@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
@@ -39,11 +38,11 @@ class ProjectViewModel @Inject constructor(
         ) }
         savedStateHandle.get<String>(ProjectScreens.ProjectScreen.projectIdKey)?.let { id ->
             viewModelScope.launch {
-                projectRepository.getProjectById(id).onEach { project ->
-                    currentProject = project
+                with(projectRepository.getProjectById(id)) {
+                    currentProject = this
                     _state.update { it.copy(
                         isLoading = false,
-                        selectedProject = project,
+                        selectedProject = this,
                     ) }
                 }
             }

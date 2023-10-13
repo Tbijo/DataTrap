@@ -1,6 +1,6 @@
 package com.example.datatrap.sync.data.remote
 
-import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
@@ -29,7 +29,7 @@ class DataTrapRepository @Inject constructor(
                 MultipartBody.Part.createFormData(
                     "image", // identifikacia pre server
                     it.name,
-                    RequestBody.create(MediaType.parse("image/*"), it)
+                    RequestBody.create("image/*".toMediaTypeOrNull(), it)
                 )
             }
         )
@@ -42,7 +42,7 @@ class DataTrapRepository @Inject constructor(
                 MultipartBody.Part.createFormData(
                     "image", // identifikacia pre server
                     it.name,
-                    RequestBody.create(MediaType.parse("image/*"), it)
+                    RequestBody.create("image/*".toMediaTypeOrNull(), it)
                 )
             }
         )
@@ -55,7 +55,7 @@ class DataTrapRepository @Inject constructor(
                 MultipartBody.Part.createFormData(
                     "image", // identifikacia pre server
                     it.name,
-                    RequestBody.create(MediaType.parse("image/*"), it)
+                    RequestBody.create("image/*".toMediaTypeOrNull(), it)
                 )
             }
         )

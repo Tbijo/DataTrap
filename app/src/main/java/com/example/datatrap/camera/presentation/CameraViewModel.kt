@@ -114,15 +114,15 @@ class CameraViewModel @Inject constructor(
 
         val newName = "${imageNamePart}_${dateTime}"
 
-        val newImage = internalStorageRepository.saveImage(
+        val newImageFile = internalStorageRepository.saveImage(
             fileName = newName,
             bmp = bitmap,
         )
 
-        newImage?.let {
+        newImageFile?.let {
             _state.update { it.copy(
                 oldImageName = state.value.imageName,
-                imageName = newImage.name,
+                imageName = newImageFile.name,
             ) }
         }
     }
@@ -149,6 +149,7 @@ class CameraViewModel @Inject constructor(
             OccasionImageEntity(
                 imgName = imageName,
                 occasionID = id,
+                path = "",
                 note = note,
                 dateTimeCreated = ZonedDateTime.now(),
                 dateTimeUpdated = null,
@@ -159,6 +160,7 @@ class CameraViewModel @Inject constructor(
                 occasionImgId = currentOccasionImage.occasionImgId,
                 imgName = imageName,
                 occasionID = currentOccasionImage.occasionID,
+                path = "",
                 note = note,
                 dateTimeCreated = currentOccasionImage.dateTimeCreated,
                 dateTimeUpdated = ZonedDateTime.now(),
@@ -197,6 +199,7 @@ class CameraViewModel @Inject constructor(
             MouseImageEntity(
                 imgName = imageName,
                 mouseID = id,
+                path = "",
                 note = note,
                 dateTimeCreated = ZonedDateTime.now(),
                 dateTimeUpdated = null,
@@ -206,6 +209,7 @@ class CameraViewModel @Inject constructor(
                 mouseImgId = currentMouseImage.mouseImgId,
                 imgName = imageName,
                 mouseID = currentMouseImage.mouseID,
+                path = "",
                 note = note,
                 dateTimeCreated = currentMouseImage.dateTimeCreated,
                 dateTimeUpdated = ZonedDateTime.now(),

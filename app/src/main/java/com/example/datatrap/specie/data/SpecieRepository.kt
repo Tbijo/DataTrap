@@ -9,8 +9,8 @@ class SpecieRepository(private val specieDao: SpecieDao) {
         return specieDao.getSpecies()
     }
 
-    suspend fun insertSpecie(specieEntity: SpecieEntity): String {
-        return specieDao.insertSpecie(specieEntity)
+    suspend fun insertSpecie(specieEntity: SpecieEntity) {
+        specieDao.insertSpecie(specieEntity)
     }
 
     suspend fun deleteSpecie(specieEntity: SpecieEntity) {

@@ -11,11 +11,13 @@ import com.example.datatrap.occasion.navigation.OccasionScreens
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -41,9 +43,9 @@ class OccasionListViewModel @Inject constructor(
                         occasionList = occasionList,
                     ) }
                 }
-                sessionRepository.getSession(sessionId).onEach { session ->
+                with(sessionRepository.getSession(sessionId)) {
                     _state.update { it.copy(
-                        sessionNum = session.session.toString()
+                        sessionNum = session.toString(),
                     ) }
                 }
             }
@@ -51,9 +53,9 @@ class OccasionListViewModel @Inject constructor(
 
         savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionListScreen.localityIdKey, null).onEach { locId ->
             locId?.let { localityId ->
-                localityRepository.getLocality(localityId).onEach { locality ->
+                with(localityRepository.getLocality(localityId)) {
                     _state.update { it.copy(
-                        localityName = locality.localityName
+                        localityName = localityName,
                     ) }
                 }
             }
@@ -61,9 +63,9 @@ class OccasionListViewModel @Inject constructor(
 
         savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionListScreen.projectIdKey, null).onEach { prjId ->
             prjId?.let { projectId ->
-                projectRepository.getProjectById(projectId).onEach { project ->
+                with(projectRepository.getProjectById(projectId)) {
                     _state.update { it.copy(
-                        projectName = project.projectName,
+                        projectName = projectName,
                     ) }
                 }
             }
@@ -78,15 +80,16 @@ class OccasionListViewModel @Inject constructor(
     }
 
     private fun deleteOccasion(occasionEntity: OccasionEntity) {
-        val imagePath = ""
-        occasionImageRepository.getImageForOccasion(occasionEntity.occasionId).onEach { imageEntity ->
-            imageEntity?.let {
-                // delete image file
-                val myFile = File(it.path)
-                if (myFile.exists()) myFile.delete()
+        viewModelScope.launch(Dispatchers.IO) {
+            with(occasionImageRepository.getImageForOccasion(occasionEntity.occasionId)) {
+                this?.let {
+                    // delete image file
+                    val myFile = File(it.path)
+                    if (myFile.exists()) myFile.delete()
+                }
+                occasionRepository.deleteOccasion(occasionEntity)
             }
-            occasionRepository.deleteOccasion(occasionEntity, imagePath)
-        }.launchIn(viewModelScope)
+        }
     }
 
 }

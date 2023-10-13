@@ -42,17 +42,17 @@ class LocalityViewModel @Inject constructor(
         ) }
         savedStateHandle.getStateFlow<String?>(LocalityScreens.LocalityScreen.localityIdKey, null).onEach { locId ->
             locId?.let {
-                localityRepository.getLocality(locId).onEach { localEntity ->
+                with(localityRepository.getLocality(locId)) {
                     _state.update { it.copy(
                         isLoading = false,
-                        localityEntity = localEntity,
-                        localityName = localEntity.localityName,
-                        numSessions = localEntity.numSessions.toString(),
-                        note = localEntity.note ?: "",
-                        latitudeA = if (localEntity.xA == null) "" else localEntity.xA.toString(),
-                        longitudeA = if (localEntity.yA == null) "" else localEntity.yA.toString(),
-                        latitudeB = if (localEntity.xB == null) "" else localEntity.xB.toString(),
-                        longitudeB = if (localEntity.yB == null) "" else localEntity.yB.toString(),
+                        localityEntity = this,
+                        localityName = localityName,
+                        numSessions = numSessions.toString(),
+                        note = note ?: "",
+                        latitudeA = if (xA == null) "" else xA.toString(),
+                        longitudeA = if (yA == null) "" else yA.toString(),
+                        latitudeB = if (xB == null) "" else xB.toString(),
+                        longitudeB = if (yB == null) "" else yB.toString(),
                     ) }
                 }
             }

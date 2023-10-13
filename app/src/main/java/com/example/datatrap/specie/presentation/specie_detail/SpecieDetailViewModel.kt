@@ -37,8 +37,9 @@ class SpecieDetailViewModel @Inject constructor(
                 val specieImage = specieImageRepository.getImageForSpecie(specieId)
 
                 specieImage?.let {
+                    // TODO this should be handled with AsyncImage not toString
                     _state.update { it.copy(
-                        imagePath = specieImage.path,
+                        imagePath = specieImage.imageUri.toString(),
                     ) }
                 }
             }

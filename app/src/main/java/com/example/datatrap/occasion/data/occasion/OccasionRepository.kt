@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.Flow
 
 class OccasionRepository(private val occasionDao: OccasionDao) {
 
-    suspend fun insertOccasion(occasionEntity: OccasionEntity): String {
-        return occasionDao.insertOccasion(occasionEntity)
+    suspend fun insertOccasion(occasionEntity: OccasionEntity) {
+        occasionDao.insertOccasion(occasionEntity)
     }
 
     suspend fun deleteOccasion(occasionEntity: OccasionEntity) {

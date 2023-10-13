@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface OccasionDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertOccasion(occasionEntity: OccasionEntity): String
+    suspend fun insertOccasion(occasionEntity: OccasionEntity)
 
     @Delete
     suspend fun deleteOccasion(occasionEntity: OccasionEntity)

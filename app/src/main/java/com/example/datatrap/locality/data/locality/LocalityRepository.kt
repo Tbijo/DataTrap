@@ -30,10 +30,6 @@ class LocalityRepository(
         return localityDao.getLocalityForSync(localityIds)
     }
 
-    suspend fun insertSyncLocality(localityEntity: LocalityEntity): String {
-        return localityDao.insertSyncLocality(localityEntity)
-    }
-
     suspend fun getLocalityByName(localityName: String): LocalityEntity? {
         return localityDao.getLocalityByName(localityName)
     }

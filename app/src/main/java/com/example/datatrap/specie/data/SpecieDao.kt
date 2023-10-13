@@ -8,7 +8,7 @@ import com.example.datatrap.specie.domain.model.SpecSelectList
 interface SpecieDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSpecie(specieEntity: SpecieEntity): String
+    suspend fun insertSpecie(specieEntity: SpecieEntity)
 
     @Delete
     suspend fun deleteSpecie(specieEntity: SpecieEntity)

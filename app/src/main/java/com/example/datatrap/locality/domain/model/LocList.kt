@@ -14,5 +14,5 @@ data class LocList(
 
     var yA: Float?,
 
-    var numSessions: Int
+    var numSessions: Int,
 )

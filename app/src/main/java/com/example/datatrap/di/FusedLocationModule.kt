@@ -9,6 +9,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ActivityRetainedComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ActivityRetainedScoped
 
 @Module
@@ -17,11 +18,11 @@ object FusedLocationModule {
 
     @ActivityRetainedScoped
     @Provides
-    fun provideFusedLocation(context: Context) = LocationServices.getFusedLocationProviderClient(context)
+    fun provideFusedLocation(@ApplicationContext context: Context) = LocationServices.getFusedLocationProviderClient(context)
 
     @ActivityRetainedScoped
     @Provides
-    fun provideLocationClient(context: Context, client: FusedLocationProviderClient): LocationClient {
+    fun provideLocationClient(@ApplicationContext context: Context, client: FusedLocationProviderClient): LocationClient {
         return LocationClientImpl(context, client)
     }
 }

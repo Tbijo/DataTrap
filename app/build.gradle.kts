@@ -2,12 +2,18 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("kotlin-android")
-    // kotlin annotation processing
-    id("kotlin-kapt")
-    // na mapu
+
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-    // na dagger hilt
-    id("dagger.hilt.android.plugin")
+
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
+}
+
+// kapt - is fucked up switch for ksp, this is a workaround
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs::class.java).configureEach {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
 }
 
 android {
@@ -64,7 +70,6 @@ android {
 dependencies {
     // core
     implementation("androidx.core:core-ktx:1.9.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -88,16 +93,15 @@ dependencies {
     // Optional - Integration with ViewModels
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     // navigation
-    implementation("androidx.navigation:navigation-compose:2.7.0")
+    implementation("androidx.navigation:navigation-compose:2.6.0")
     // lifecycle aware state
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
 
-    //Room dependencies
-    val room_version = "2.4.2"
-    implementation("androidx.room:room-runtime:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    testImplementation("androidx.room:room-testing:$room_version")
+    //Room
+    implementation("androidx.room:room-runtime:2.5.2")
+    annotationProcessor("androidx.room:room-compiler:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
 
     // fused location provider
     implementation("com.google.android.gms:play-services-location:19.0.1")
@@ -106,9 +110,11 @@ dependencies {
     // compose map
     implementation("com.google.maps.android:maps-compose:2.14.0")
 
-    // na dagger hilt
-    implementation("com.google.dagger:hilt-android:2.42")
-    kapt("com.google.dagger:hilt-compiler:2.42")
+    // dagger hilt
+    implementation("com.google.dagger:hilt-android:2.44")
+    kapt("com.google.dagger:hilt-android-compiler:2.44")
+    // hilt viewModel
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Preferences DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")

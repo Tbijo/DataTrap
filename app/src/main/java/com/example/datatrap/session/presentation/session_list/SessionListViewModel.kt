@@ -12,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.zip
@@ -46,21 +45,19 @@ class SessionListViewModel @Inject constructor(
         )
 
         projectId.zip(localityId) { projId, locId ->
-            if (!projId.isNullOrEmpty() && !locId.isNullOrEmpty())
-                combine(
-                    sessionRepository.getSessionsForProject(projId),
-                    projectRepository.getProjectById(projId),
-                    localityRepository.getLocality(locId),
-                ) { sessionList, project, locality ->
-                    _state.update { it.copy(
-                        sessionList = sessionList,
-                        isLoading = false,
-                        projectName = project.projectName,
-                        projectId = project.projectId,
-                        localityName = locality.localityName,
-                        localityId = locality.localityId
-                    ) }
-                }
+            if (!projId.isNullOrEmpty() && !locId.isNullOrEmpty()) {
+                val project = projectRepository.getProjectById(projId)
+                val locality = localityRepository.getLocality(locId)
+
+                _state.update { it.copy(
+                    sessionList = sessionRepository.getSessionsForProject(projId),
+                    isLoading = false,
+                    projectName = project.projectName,
+                    projectId = project.projectId,
+                    localityName = locality.localityName,
+                    localityId = locality.localityId
+                ) }
+            }
         }.launchIn(viewModelScope)
     }
 

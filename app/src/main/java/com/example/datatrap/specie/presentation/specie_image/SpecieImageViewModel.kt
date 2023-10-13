@@ -102,8 +102,8 @@ class SpecieImageViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             // vytvara sa nova fotka, stara nebola
             val currentImageMouse = state.value.specieImageEntity
-            if (currentImageMouse == null) {
-                val specieImageEntity = SpecieImageEntity(
+            val specieImageEntity = if (currentImageMouse == null) {
+                SpecieImageEntity(
                     imgName = name,
                     imageUri = uri,
                     note = state.value.note,
@@ -111,13 +111,12 @@ class SpecieImageViewModel @Inject constructor(
                     dateTimeCreated = ZonedDateTime.now(),
                     dateTimeUpdated = null,
                 )
-                specieImageRepository.insertImage(specieImageEntity)
             } else {
                 // vymazat zaznam starej fotky v databaze
                 specieImageRepository.deleteImage(currentImageMouse)
 
                 // pridat zaznam novej fotky do databazy subor uz existuje
-                val specieImageEntity = SpecieImageEntity(
+                SpecieImageEntity(
                     specieImgId = currentImageMouse.specieImgId,
                     imgName = name,
                     imageUri = uri,
@@ -126,9 +125,8 @@ class SpecieImageViewModel @Inject constructor(
                     dateTimeCreated = currentImageMouse.dateTimeCreated,
                     dateTimeUpdated = ZonedDateTime.now(),
                 )
-                specieImageRepository.insertImage(specieImageEntity)
             }
-        }
+            specieImageRepository.insertImage(specieImageEntity)
         }
     }
 

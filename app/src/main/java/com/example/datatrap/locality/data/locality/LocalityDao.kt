@@ -25,9 +25,6 @@ interface LocalityDao {
     @Query("SELECT * FROM LocalityEntity WHERE localityId IN (:localityIds)")
     suspend fun getLocalityForSync(localityIds: List<String>): List<LocalityEntity>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertSyncLocality(localityEntity: LocalityEntity): String
-
     @Query("SELECT * FROM LocalityEntity WHERE localityName = :localityName")
     suspend fun getLocalityByName(localityName: String): LocalityEntity?
 

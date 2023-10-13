@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -42,12 +41,12 @@ class SessionViewModel @Inject constructor(
             initialValue = null,
         ).onEach { sessionId ->
             sessionId?.let { sesId ->
-                sessionRepository.getSession(sesId).collectLatest { session ->
+                with(sessionRepository.getSession(sesId)) {
                     _state.update { it.copy(
                         isLoading = false,
-                        session = session,
-                        sessionNum = session.session.toString(),
-                        numOcc = session.numOcc.toString(),
+                        session = this,
+                        sessionNum = session.toString(),
+                        numOcc = numOcc.toString(),
                     ) }
                 }
             }
