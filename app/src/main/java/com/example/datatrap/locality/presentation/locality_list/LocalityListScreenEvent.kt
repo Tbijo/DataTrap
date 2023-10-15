@@ -13,4 +13,6 @@ sealed interface LocalityListScreenEvent {
 
     data class OnSearchTextChange(val text: String): LocalityListScreenEvent
     data class ChangeTitleFocus(val focusState: FocusState): LocalityListScreenEvent
+
+    data class SetNumLocalOfProject(val localityId: String): LocalityListScreenEvent
 }

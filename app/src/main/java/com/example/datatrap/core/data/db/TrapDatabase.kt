@@ -7,6 +7,10 @@ import com.example.datatrap.camera.data.mouse_image.MouseImageDao
 import com.example.datatrap.camera.data.mouse_image.MouseImageEntity
 import com.example.datatrap.camera.data.occasion_image.OccasionImageDao
 import com.example.datatrap.camera.data.occasion_image.OccasionImageEntity
+import com.example.datatrap.core.data.locality_session.LocalitySessionCrossRef
+import com.example.datatrap.core.data.locality_session.LocalitySessionDao
+import com.example.datatrap.core.data.project_locality.ProjectLocalityCrossRef
+import com.example.datatrap.core.data.project_locality.ProjectLocalityDao
 import com.example.datatrap.locality.data.locality.LocalityDao
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.mouse.data.MouseDao
@@ -40,7 +44,8 @@ import com.example.datatrap.specie.data.specie_image.SpecieImageEntity
     EnvTypeEntity::class, LocalityEntity::class, MethodEntity::class, MethodTypeEntity::class,
     OccasionEntity::class, ProjectEntity::class, ProtocolEntity::class, SessionEntity::class,
     SpecieEntity::class, TrapTypeEntity::class, VegetTypeEntity::class, MouseEntity::class,
-    UserEntity::class, MouseImageEntity::class, OccasionImageEntity::class, SpecieImageEntity::class
+    UserEntity::class, MouseImageEntity::class, OccasionImageEntity::class, SpecieImageEntity::class,
+    LocalitySessionCrossRef::class, ProjectLocalityCrossRef::class
                      ], version = 1, exportSchema = false
 )
 @TypeConverters(DateStringConverters::class, UriStringConverters::class)
@@ -62,5 +67,7 @@ abstract class TrapDatabase: RoomDatabase() {
     abstract fun mouseImageDao(): MouseImageDao
     abstract fun occasionImageDao(): OccasionImageDao
     abstract fun specieImageDao(): SpecieImageDao
+    abstract fun localitySessionDao(): LocalitySessionDao
+    abstract fun projectLocalityDao(): ProjectLocalityDao
 
 }

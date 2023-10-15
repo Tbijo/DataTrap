@@ -3,6 +3,7 @@ package com.example.datatrap.session.presentation.session_list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.core.domain.use_case.InsertLocalitySessionUseCase
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionEntity
@@ -12,9 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.zip
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import javax.inject.Inject
@@ -24,33 +23,28 @@ class SessionListViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val localityRepository: LocalityRepository,
     private val projectRepository: ProjectRepository,
+    private val localitySessionUseCase: InsertLocalitySessionUseCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SessionListUiState())
     val state = _state.asStateFlow()
 
+    val localityID = savedStateHandle.get<String>(SessionScreens.SessionListScreen.localityIdKey)
+    val projectID = savedStateHandle.get<String>(SessionScreens.SessionListScreen.projectIdKey)
+
     init {
-        _state.update { it.copy(
-            isLoading = true,
-        ) }
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.update { it.copy(
+                isLoading = true,
+            ) }
 
-        val projectId = savedStateHandle.getStateFlow<String?>(
-            key = SessionScreens.SessionListScreen.projectIdKey,
-            initialValue = null,
-        )
-        val localityId = savedStateHandle.getStateFlow<String?>(
-            key = SessionScreens.SessionListScreen.localityIdKey,
-            initialValue = null,
-        )
-
-        projectId.zip(localityId) { projId, locId ->
-            if (!projId.isNullOrEmpty() && !locId.isNullOrEmpty()) {
-                val project = projectRepository.getProjectById(projId)
-                val locality = localityRepository.getLocality(locId)
+            if (!projectID.isNullOrEmpty() && !localityID.isNullOrEmpty()) {
+                val project = projectRepository.getProjectById(projectID)
+                val locality = localityRepository.getLocality(localityID)
 
                 _state.update { it.copy(
-                    sessionList = sessionRepository.getSessionsForProject(projId),
+                    sessionList = sessionRepository.getSessionsForProject(projectID),
                     isLoading = false,
                     projectName = project.projectName,
                     projectId = project.projectId,
@@ -58,14 +52,31 @@ class SessionListViewModel @Inject constructor(
                     localityId = locality.localityId
                 ) }
             }
-        }.launchIn(viewModelScope)
+        }
     }
 
     fun onEvent(event: SessionListScreenEvent) {
         when(event) {
             is SessionListScreenEvent.OnAddButtonClick -> insertSession()
             is SessionListScreenEvent.OnDeleteClick -> deleteSession(event.sessionEntity)
+            is SessionListScreenEvent.SetSesNumInLocality -> setSesNumInLocality(event.sessionId)
             else -> Unit
+        }
+    }
+
+    private fun setSesNumInLocality(sessionId: String) {
+        if (localityID == null) {
+            _state.update { it.copy(
+                error = "This should not happen."
+            ) }
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            localitySessionUseCase(
+                localityId = localityID,
+                sessionId = sessionId,
+            )
         }
     }
 

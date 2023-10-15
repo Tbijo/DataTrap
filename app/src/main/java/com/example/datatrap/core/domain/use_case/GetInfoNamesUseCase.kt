@@ -1,4 +1,4 @@
-package com.example.datatrap.core.domain
+package com.example.datatrap.core.domain.use_case
 
 import com.example.datatrap.core.domain.model.InfoNames
 import com.example.datatrap.locality.data.locality.LocalityRepository

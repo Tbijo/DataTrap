@@ -1,8 +1,14 @@
 package com.example.datatrap.di
 
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
+import com.example.datatrap.core.data.locality_session.LocalitySessionRepository
 import com.example.datatrap.core.data.pref.PrefRepository
-import com.example.datatrap.core.domain.GetInfoNamesUseCase
+import com.example.datatrap.core.data.project_locality.ProjectLocalityRepository
+import com.example.datatrap.core.domain.use_case.DeleteLocalitySessionUseCase
+import com.example.datatrap.core.domain.use_case.DeleteProjectLocalityUseCase
+import com.example.datatrap.core.domain.use_case.GetInfoNamesUseCase
+import com.example.datatrap.core.domain.use_case.InsertLocalitySessionUseCase
+import com.example.datatrap.core.domain.use_case.InsertProjectLocalityUseCase
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.DeleteMouseUseCase
@@ -219,6 +225,54 @@ object UseCaseModule {
         return DeleteSessionUseCase(
             projectRepository,
             occasionRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideDeleteProjectLocalityUseCase(
+        projectLocalityRepository: ProjectLocalityRepository,
+        projectRepository: ProjectRepository,
+    ): DeleteProjectLocalityUseCase {
+        return DeleteProjectLocalityUseCase(
+            projectLocalityRepository,
+            projectRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideInsertProjectLocalityUseCase(
+        projectLocalityRepository: ProjectLocalityRepository,
+        projectRepository: ProjectRepository,
+    ): InsertProjectLocalityUseCase {
+        return InsertProjectLocalityUseCase(
+            projectLocalityRepository,
+            projectRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideDeleteLocalitySessionUseCase(
+        localitySessionRepository: LocalitySessionRepository,
+        localityRepository: LocalityRepository,
+    ): DeleteLocalitySessionUseCase {
+        return DeleteLocalitySessionUseCase(
+            localitySessionRepository,
+            localityRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideInsertLocalitySessionUseCase(
+        localitySessionRepository: LocalitySessionRepository,
+        localityRepository: LocalityRepository,
+    ): InsertLocalitySessionUseCase {
+        return InsertLocalitySessionUseCase(
+            localitySessionRepository,
+            localityRepository,
         )
     }
 }

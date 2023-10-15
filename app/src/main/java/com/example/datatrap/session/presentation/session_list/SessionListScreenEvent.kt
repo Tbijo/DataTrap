@@ -9,4 +9,6 @@ sealed interface SessionListScreenEvent {
     data class OnDeleteClick(val sessionEntity: SessionEntity): SessionListScreenEvent
 
     object OnAddButtonClick: SessionListScreenEvent
+
+    data class SetSesNumInLocality(val sessionId: String): SessionListScreenEvent
 }

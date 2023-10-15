@@ -44,6 +44,8 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
                             )
                         )
                     is LocalityListScreenEvent.OnItemClick -> {
+                        // set numLocal
+                        viewModel.onEvent(LocalityListScreenEvent.SetNumLocalOfProject(event.localityEntity.localityId))
                         // To session screen needs projectId
                         navController.navigate(
                             SessionScreens.SessionListScreen.passParams(

@@ -39,6 +39,9 @@ fun NavGraphBuilder.sessionNavigation(navController: NavHostController) {
             onEvent = { event ->
                 when(event) {
                     is SessionListScreenEvent.OnItemClick -> {
+                        // set num session in locality
+                        viewModel.onEvent(SessionListScreenEvent.SetSesNumInLocality(event.sessionEntity.sessionId))
+                        // navigate to occasion
                         navController.navigate(OccasionScreens.OccasionListScreen.passParams(
                             projectIdVal = event.sessionEntity.projectID,
                             localityIdVal = event.localityId,

@@ -4,6 +4,8 @@ import android.content.Context
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.db.TrapDatabase
+import com.example.datatrap.core.data.locality_session.LocalitySessionRepository
+import com.example.datatrap.core.data.project_locality.ProjectLocalityRepository
 import com.example.datatrap.core.data.storage.ExternalStorageRepository
 import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.locality.data.locality.LocalityRepository
@@ -30,6 +32,14 @@ import dagger.hilt.android.scopes.ActivityRetainedScoped
 @Module
 @InstallIn(ActivityRetainedComponent::class)
 object RepModule {
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideLocalSessionRep(db: TrapDatabase) = LocalitySessionRepository(db.localitySessionDao())
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideProjectLocalRep(db: TrapDatabase) = ProjectLocalityRepository(db.projectLocalityDao())
 
     @ActivityRetainedScoped
     @Provides
@@ -101,6 +111,6 @@ object RepModule {
 
     @ActivityRetainedScoped
     @Provides
-    fun provideExternalRep(context: Context) = ExternalStorageRepository(context)
+    fun provideExternalRep(@ApplicationContext context: Context) = ExternalStorageRepository(context)
 
 }

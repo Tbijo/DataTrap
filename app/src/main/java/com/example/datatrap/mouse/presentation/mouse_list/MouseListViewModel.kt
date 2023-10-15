@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
-import com.example.datatrap.core.domain.GetInfoNamesUseCase
+import com.example.datatrap.core.domain.use_case.GetInfoNamesUseCase
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.DeleteMouseUseCase

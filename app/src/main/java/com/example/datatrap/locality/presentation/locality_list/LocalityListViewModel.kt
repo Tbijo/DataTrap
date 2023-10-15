@@ -3,8 +3,10 @@ package com.example.datatrap.locality.presentation.locality_list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.core.domain.use_case.InsertProjectLocalityUseCase
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.locality.data.locality.LocalityRepository
+import com.example.datatrap.locality.navigation.LocalityScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,15 +20,18 @@ import javax.inject.Inject
 @HiltViewModel
 class LocalityListViewModel @Inject constructor (
     private val localityRepository: LocalityRepository,
+    private val projectLocalityUseCase: InsertProjectLocalityUseCase,
     savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LocalityListUiState())
     val state = _state.asStateFlow()
 
+    val projectID = savedStateHandle.get<String>(LocalityScreens.LocalityListScreen.projectIdKey)
+
     init {
         _state.update { it.copy(
-            isLoading = true
+            isLoading = true,
         ) }
 
         localityRepository.getLocalities().onEach { locList ->
@@ -47,8 +52,25 @@ class LocalityListViewModel @Inject constructor (
                 ) }
             }
             is LocalityListScreenEvent.OnDeleteClick -> deleteLocality(event.localityEntity)
+            is LocalityListScreenEvent.SetNumLocalOfProject -> setNumLocalOfProject(event.localityId)
 
             else -> Unit
+        }
+    }
+
+    private fun setNumLocalOfProject(localityId: String) {
+        if (projectID == null) {
+            _state.update { it.copy(
+                error = "This should not happen."
+            ) }
+            return
+        }
+
+        viewModelScope.launch(Dispatchers.IO) {
+            projectLocalityUseCase(
+                localityId = localityId,
+                projectId = projectID,
+            )
         }
     }
 
