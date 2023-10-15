@@ -2,8 +2,8 @@ package com.example.datatrap.project.navigation
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -28,7 +28,7 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
     composable(
         route = ProjectScreens.ProjectListScreen.route
     ) {
-        val viewModel: ProjectListViewModel = viewModel()
+        val viewModel: ProjectListViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         ProjectListScreen(
@@ -84,7 +84,7 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
             },
         ),
     ) {
-        val viewModel: ProjectViewModel = viewModel()
+        val viewModel: ProjectViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {

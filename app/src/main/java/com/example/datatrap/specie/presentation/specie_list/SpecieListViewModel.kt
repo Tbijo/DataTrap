@@ -1,5 +1,6 @@
 package com.example.datatrap.specie.presentation.specie_list
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.specie.data.SpecieRepository
@@ -17,10 +18,8 @@ import javax.inject.Inject
 class SpecieListViewModel @Inject constructor(
     private val specieRepository: SpecieRepository,
     private val specieImageRepository: SpecieImageRepository,
-    private val deleteSpecieUseCase: DeleteSpecieUseCase = DeleteSpecieUseCase(
-        specieRepository = specieRepository,
-        specieImageRepository = specieImageRepository,
-    ),
+    private val deleteSpecieUseCase: DeleteSpecieUseCase,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(SpecieListUiState())

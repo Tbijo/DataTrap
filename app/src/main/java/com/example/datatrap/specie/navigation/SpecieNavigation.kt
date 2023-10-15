@@ -1,8 +1,8 @@
 package com.example.datatrap.specie.navigation
 
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -14,7 +14,6 @@ import com.example.datatrap.specie.presentation.specie_add_edit.SpecieScreen
 import com.example.datatrap.specie.presentation.specie_add_edit.SpecieScreenEvent
 import com.example.datatrap.specie.presentation.specie_add_edit.SpecieViewModel
 import com.example.datatrap.specie.presentation.specie_detail.SpecieDetailScreen
-import com.example.datatrap.specie.presentation.specie_detail.SpecieDetailScreenEvent
 import com.example.datatrap.specie.presentation.specie_detail.SpecieDetailViewModel
 import com.example.datatrap.specie.presentation.specie_image.SpecieImageScreen
 import com.example.datatrap.specie.presentation.specie_image.SpecieImageViewModel
@@ -28,7 +27,7 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
     composable(
         route = SpecieScreens.SpecieListScreen.route
     ) {
-        val viewModel: SpecieListViewModel = viewModel()
+        val viewModel: SpecieListViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieListScreen(
@@ -63,7 +62,7 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
     composable(
         route = SpecieScreens.SpecieScreen.route
     ) {
-        val viewModel: SpecieViewModel = viewModel()
+        val viewModel: SpecieViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieScreen(
@@ -80,7 +79,7 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
     composable(
         route = SpecieScreens.SpecieImageScreen.route
     ) {
-        val viewModel: SpecieImageViewModel = viewModel()
+        val viewModel: SpecieImageViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieImageScreen(
@@ -92,7 +91,7 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
     composable(
         route = SpecieScreens.SpecieDetailScreen.route
     ) {
-        val viewModel: SpecieDetailViewModel = viewModel()
+        val viewModel: SpecieDetailViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieDetailScreen(

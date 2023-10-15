@@ -35,12 +35,12 @@ import javax.inject.Inject
 class MouseViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val mouseRepository: MouseRepository,
-    private val getOccupiedTrapIdsInOccasion: GetOccupiedTrapIdsInOccasion = GetOccupiedTrapIdsInOccasion(mouseRepository),
+    private val getOccupiedTrapIdsInOccasion: GetOccupiedTrapIdsInOccasion,
     private val protocolRepository: ProtocolRepository,
     private val mouseImageRepository: MouseImageRepository,
     private val specieRepository: SpecieRepository,
     private val prefRepository: PrefRepository,
-    private val generateCodeUseCase: GenerateCodeUseCase = GenerateCodeUseCase(mouseRepository, prefRepository),
+    private val generateCodeUseCase: GenerateCodeUseCase,
     private val occasionRepository: OccasionRepository,
 ): ViewModel() {
 
@@ -387,12 +387,12 @@ class MouseViewModel @Inject constructor(
 
                 } else {
                     _state.update { it.copy(
-                        isMouseOkay = true
+                        isMouseOkay = true,
                     ) }
                 }
             } else {
                 _state.update { it.copy(
-                    isMouseOkay = true
+                    isMouseOkay = true,
                 ) }
             }
 
@@ -414,7 +414,7 @@ class MouseViewModel @Inject constructor(
 
             } else {
                 _state.update { it.copy(
-                    isMouseOkay = true
+                    isMouseOkay = true,
                 ) }
             }
 

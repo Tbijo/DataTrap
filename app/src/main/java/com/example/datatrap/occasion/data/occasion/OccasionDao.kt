@@ -1,7 +1,6 @@
 package com.example.datatrap.occasion.data.occasion
 
 import androidx.room.*
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OccasionDao {
@@ -16,5 +15,5 @@ interface OccasionDao {
     suspend fun getOccasion(occasionId: String): OccasionEntity
 
     @Query("SELECT * FROM OccasionEntity WHERE sessionID = :sessionID")
-    fun getOccasionsForSession(sessionID: String): Flow<List<OccasionEntity>>
+    fun getOccasionsForSession(sessionID: String): List<OccasionEntity>
 }

@@ -1,5 +1,6 @@
 package com.example.datatrap.locality.presentation.locality_list
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.locality.data.locality.LocalityEntity
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocalityListViewModel @Inject constructor (
-    private val localityRepository: LocalityRepository
+    private val localityRepository: LocalityRepository,
+    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LocalityListUiState())

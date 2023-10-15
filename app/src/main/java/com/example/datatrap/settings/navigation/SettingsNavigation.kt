@@ -1,8 +1,8 @@
 package com.example.datatrap.settings.navigation
 
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -63,7 +63,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
     composable(
         route = SettingsScreens.EnvListScreen.route
     ) {
-        val viewModel: EnvTypeViewModel = viewModel()
+        val viewModel: EnvTypeViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         EnvTypeListScreen(
@@ -75,7 +75,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
     composable(
         route = SettingsScreens.MethodListScreen.route
     ) {
-        val viewModel: MethodViewModel = viewModel()
+        val viewModel: MethodViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         MethodListScreen(
@@ -87,7 +87,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
     composable(
         route = SettingsScreens.MethodTypeListScreen.route
     ) {
-        val viewModel: MethodTypeViewModel = viewModel()
+        val viewModel: MethodTypeViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         MethodTypeListScreen(
@@ -99,7 +99,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
     composable(
         route = SettingsScreens.ProtocolListScreen.route
     ) {
-        val viewModel: ProtocolViewModel = viewModel()
+        val viewModel: ProtocolViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         ProtocolListScreen(
@@ -111,7 +111,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
     composable(
         route = SettingsScreens.TrapTypeListScreen.route
     ) {
-        val viewModel: TrapTypeViewModel = viewModel()
+        val viewModel: TrapTypeViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         TrapTypeListScreen(
@@ -123,7 +123,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
     composable(
         route = SettingsScreens.VegTypeListScreen.route
     ) {
-        val viewModel: VegetTypeViewModel = viewModel()
+        val viewModel: VegetTypeViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         VegetTypeListScreen(
@@ -135,7 +135,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
     composable(
         route = SettingsScreens.UserListScreen.route
     ) {
-        val viewModel: UserViewModel = viewModel()
+        val viewModel: UserViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         UserListScreen(

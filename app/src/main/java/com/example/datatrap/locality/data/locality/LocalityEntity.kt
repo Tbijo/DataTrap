@@ -9,23 +9,23 @@ import java.util.UUID
 data class LocalityEntity(
 
     @PrimaryKey
-    var localityId: String = UUID.randomUUID().toString(),
+    val localityId: String = UUID.randomUUID().toString(),
 
-    var localityName: String,
+    val localityName: String,
 
-    var localityDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
+    val localityDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
-    var localityDateTimeUpdated: ZonedDateTime?,
+    val localityDateTimeUpdated: ZonedDateTime?,
 
-    var xA: Float?, // latitudeA
+    val xA: Float?, // latitudeA
 
-    var yA: Float?, // longitudeA
+    val yA: Float?, // longitudeA
 
-    var xB: Float?, // latitudeB
+    val xB: Float?, // latitudeB
 
-    var yB: Float?, // longitudeB
+    val yB: Float?, // longitudeB
 
-    var numSessions: Int,
+    val numSessions: Int,
 
-    var note: String?
+    val note: String?
 )

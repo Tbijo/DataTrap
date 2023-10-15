@@ -1,8 +1,8 @@
 package com.example.datatrap.camera.navigation
 
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -14,7 +14,7 @@ fun NavGraphBuilder.cameraNavigation(navController: NavHostController) {
     composable(
         route = CameraScreens.CameraScreen.route
     ) {
-        val viewModel: CameraViewModel = viewModel()
+        val viewModel: CameraViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         CameraScreen(

@@ -21,72 +21,72 @@ import java.util.UUID
 data class MouseEntity(
 
     @PrimaryKey
-    var mouseId: String = UUID.randomUUID().toString(),
+    val mouseId: String = UUID.randomUUID().toString(),
 
-    var code: Int?, //claws
+    val code: Int?, //claws
 
-    var primeMouseID: String?,
+    val primeMouseID: String?,
 
     // FE
     @ColumnInfo(index = true)
-    var speciesID: String,
+    val speciesID: String,
 
     @ColumnInfo(index = true)
-    var protocolID: String?,
+    val protocolID: String?,
 
     @ColumnInfo(index = true)
-    var occasionID: String,
+    val occasionID: String,
 
     @ColumnInfo(index = true)
-    var localityID: String,
+    val localityID: String,
 
-    var trapID: Int?,
+    val trapID: Int?,
 
-    var mouseDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
+    val mouseDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
-    var mouseDateTimeUpdated: ZonedDateTime?,
+    val mouseDateTimeUpdated: ZonedDateTime?,
 
-    var sex: String?, //enum
+    val sex: String?, //enum
 
-    var age: String?, //enum
+    val age: String?, //enum
 
-    var gravidity: Boolean?,
+    val gravidity: Boolean?,
 
-    var lactating: Boolean?,
+    val lactating: Boolean?,
 
-    var sexActive: Boolean?,
+    val sexActive: Boolean?,
 
-    var weight: Float?,
+    val weight: Float?,
 
-    var recapture: Boolean?,
+    val recapture: Boolean?,
 
-    var captureID: String?, //enum
+    val captureID: String?, //enum
 
-    var body: Float?,
+    val body: Float?,
 
-    var tail: Float?,
+    val tail: Float?,
 
-    var feet: Float?,
+    val feet: Float?,
 
-    var ear: Float?,
+    val ear: Float?,
 
-    var testesLength: Float?,
+    val testesLength: Float?,
 
-    var testesWidth: Float?,
+    val testesWidth: Float?,
 
-    var embryoRight: Int?,
+    val embryoRight: Int?,
 
-    var embryoLeft: Int?,
+    val embryoLeft: Int?,
 
-    var embryoDiameter: Float?,
+    val embryoDiameter: Float?,
 
-    var MC: Boolean?,
+    val MC: Boolean?,
 
-    var MCright: Int?,
+    val MCright: Int?,
 
-    var MCleft: Int?,
+    val MCleft: Int?,
 
-    var note: String?,
+    val note: String?,
 
-    var mouseCaught: ZonedDateTime = ZonedDateTime.now(),
+    val mouseCaught: ZonedDateTime = ZonedDateTime.now(),
 )

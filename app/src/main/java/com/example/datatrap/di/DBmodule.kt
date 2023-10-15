@@ -13,7 +13,7 @@ import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent::class) // zivotnost v ramci aplikacie
+@InstallIn(SingletonComponent::class)
 object DBmodule {
 
     @Singleton

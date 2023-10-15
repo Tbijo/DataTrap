@@ -31,17 +31,8 @@ class MouseDetailViewModel @Inject constructor(
     private val projectRepository: ProjectRepository,
     private val localityRepository: LocalityRepository,
     private val mouseImageRepository: MouseImageRepository,
-    private val getMouseDetail: GetMouseDetail = GetMouseDetail(
-        mouseRepository = mouseRepository,
-        specieRepository = specieRepository,
-        occasionRepository = occasionRepository,
-        sessionRepository = sessionRepository,
-        projectRepository = projectRepository,
-    ),
-    private val getPreviousLogsOfMouse: GetPreviousLogsOfMouse = GetPreviousLogsOfMouse(
-        mouseRepository = mouseRepository,
-        localityRepository = localityRepository,
-    ),
+    private val getMouseDetail: GetMouseDetail,
+    private val getPreviousLogsOfMouse: GetPreviousLogsOfMouse,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(MouseDetailUiState())

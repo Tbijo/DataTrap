@@ -12,11 +12,15 @@ import com.example.datatrap.mouse.domain.use_case.GetMiceForRecapture
 import com.example.datatrap.mouse.domain.use_case.GetMouseDetail
 import com.example.datatrap.mouse.domain.use_case.GetOccupiedTrapIdsInOccasion
 import com.example.datatrap.mouse.domain.use_case.GetPreviousLogsOfMouse
+import com.example.datatrap.mouse.domain.use_case.InsertMouseUseCase
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.occasion.data.weather.WeatherRepository
+import com.example.datatrap.occasion.domain.use_case.DeleteOccasionUseCase
 import com.example.datatrap.occasion.domain.use_case.GetWeatherUseCase
+import com.example.datatrap.occasion.domain.use_case.InsertOccasionUseCase
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionRepository
+import com.example.datatrap.session.domain.DeleteSessionUseCase
 import com.example.datatrap.specie.data.SpecieRepository
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import com.example.datatrap.specie.domain.use_case.DeleteSpecieUseCase
@@ -113,10 +117,16 @@ object UseCaseModule {
     fun provideDeleteMouseUseCase(
         mouseRepository: MouseRepository,
         mouseImageRepository: MouseImageRepository,
+        projectRepository: ProjectRepository,
+        sessionRepository: SessionRepository,
+        occasionRepository: OccasionRepository,
     ): DeleteMouseUseCase {
         return DeleteMouseUseCase(
             mouseRepository,
             mouseImageRepository,
+            projectRepository,
+            sessionRepository,
+            occasionRepository,
         )
     }
 
@@ -155,6 +165,60 @@ object UseCaseModule {
         return GenerateCodeUseCase(
             mouseRepository,
             prefRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideInsertMouseUseCase(
+        mouseRepository: MouseRepository,
+        projectRepository: ProjectRepository,
+        sessionRepository: SessionRepository,
+        occasionRepository: OccasionRepository,
+        specieRepository: SpecieRepository,
+    ): InsertMouseUseCase {
+        return InsertMouseUseCase(
+            mouseRepository,
+            projectRepository,
+            sessionRepository,
+            occasionRepository,
+            specieRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideDeleteOccasionUseCase(
+        occasionRepository: OccasionRepository,
+        sessionRepository: SessionRepository,
+        projectRepository: ProjectRepository,
+    ): DeleteOccasionUseCase {
+        return DeleteOccasionUseCase(
+            occasionRepository,
+            sessionRepository,
+            projectRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideInsertOccasionUseCase(
+        sessionRepository: SessionRepository,
+    ): InsertOccasionUseCase {
+        return InsertOccasionUseCase(
+            sessionRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideDeleteSessionUseCase(
+        projectRepository: ProjectRepository,
+        occasionRepository: OccasionRepository,
+    ): DeleteSessionUseCase {
+        return DeleteSessionUseCase(
+            projectRepository,
+            occasionRepository,
         )
     }
 }

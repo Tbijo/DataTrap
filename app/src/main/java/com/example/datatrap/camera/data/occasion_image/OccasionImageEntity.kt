@@ -15,18 +15,18 @@ import java.util.UUID
 data class OccasionImageEntity(
 
     @PrimaryKey
-    var occasionImgId: String = UUID.randomUUID().toString(),
+    val occasionImgId: String = UUID.randomUUID().toString(),
 
-    var imgName: String,
+    val imgName: String,
 
-    var path: String,
+    val path: String,
 
-    var note: String?,
+    val note: String?,
 
     @ColumnInfo(index = true)
-    var occasionID: String,
+    val occasionID: String,
 
-    var dateTimeCreated: ZonedDateTime,
+    val dateTimeCreated: ZonedDateTime,
 
-    var dateTimeUpdated: ZonedDateTime?,
+    val dateTimeUpdated: ZonedDateTime?,
 )

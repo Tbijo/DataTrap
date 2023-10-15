@@ -15,19 +15,19 @@ import java.util.UUID
 data class SessionEntity(
 
     @PrimaryKey
-    var sessionId: String = UUID.randomUUID().toString(),
+    val sessionId: String = UUID.randomUUID().toString(),
 
-    var session: Int,
+    val session: Int,
     
     // foreign key
     @ColumnInfo(index = true)
-    var projectID: String,
+    val projectID: String,
 
-    var numOcc: Int,
+    val numOcc: Int,
 
-    var sessionDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
+    val sessionDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
-    var sessionDateTimeUpdated: ZonedDateTime?,
+    val sessionDateTimeUpdated: ZonedDateTime?,
 
-    var sessionStart: ZonedDateTime = ZonedDateTime.now(),
+    val sessionStart: ZonedDateTime = ZonedDateTime.now(),
 )

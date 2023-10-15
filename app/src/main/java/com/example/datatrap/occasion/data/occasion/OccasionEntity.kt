@@ -27,55 +27,55 @@ import java.util.UUID
 data class OccasionEntity(
 
     @PrimaryKey
-    var occasionId: String = UUID.randomUUID().toString(),
+    val occasionId: String = UUID.randomUUID().toString(),
 
-    var occasion: Int,
-
-    // cudzi kluc
-    @ColumnInfo(index = true)
-    var localityID: String,
+    val occasion: Int,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var sessionID: String,
+    val localityID: String,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var methodID: String,
+    val sessionID: String,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var methodTypeID: String,
+    val methodID: String,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var trapTypeID: String,
+    val methodTypeID: String,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var envTypeID: String?,
+    val trapTypeID: String,
 
     // cudzi kluc
     @ColumnInfo(index = true)
-    var vegetTypeID: String?,
+    val envTypeID: String?,
 
-    var occasionDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
+    // cudzi kluc
+    @ColumnInfo(index = true)
+    val vegetTypeID: String?,
 
-    var occasionDateTimeUpdated: ZonedDateTime?,
+    val occasionDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
-    var gotCaught: Boolean?,
+    val occasionDateTimeUpdated: ZonedDateTime?,
 
-    var numTraps: Int,
+    val gotCaught: Boolean?,
 
-    var numMice: Int?,
+    val numTraps: Int,
 
-    var temperature: Float?,
+    val numMice: Int?,
 
-    var weather: String?,
+    val temperature: Float?,
 
-    var leg: String,
+    val weather: String?,
 
-    var note: String?,
+    val leg: String,
 
-    var occasionStart: ZonedDateTime = ZonedDateTime.now(),
+    val note: String?,
+
+    val occasionStart: ZonedDateTime = ZonedDateTime.now(),
 )

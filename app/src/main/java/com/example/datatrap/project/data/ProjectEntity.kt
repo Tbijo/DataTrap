@@ -9,17 +9,17 @@ import java.util.UUID
 data class ProjectEntity(
 
     @PrimaryKey
-    var projectId: String = UUID.randomUUID().toString(),
+    val projectId: String = UUID.randomUUID().toString(),
 
-    var projectName: String,
+    val projectName: String,
 
-    var numLocal: Int,
+    val numLocal: Int,
 
-    var numMice: Int,
+    val numMice: Int,
 
-    var projectDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
+    val projectDateTimeCreated: ZonedDateTime = ZonedDateTime.now(),
 
-    var projectDateTimeUpdated: ZonedDateTime?,
+    val projectDateTimeUpdated: ZonedDateTime?,
 
-    var projectStart: ZonedDateTime = ZonedDateTime.now(),
+    val projectStart: ZonedDateTime = ZonedDateTime.now(),
 )

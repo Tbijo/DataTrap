@@ -19,11 +19,7 @@ class RecaptureListViewModel @Inject constructor(
     private val mouseRepository: MouseRepository,
     private val specieRepository: SpecieRepository,
     private val localityRepository: LocalityRepository,
-    private val getMiceForRecapture: GetMiceForRecapture = GetMiceForRecapture(
-        mouseRepository = mouseRepository,
-        localityRepository = localityRepository,
-        specieRepository = specieRepository,
-    ),
+    private val getMiceForRecapture: GetMiceForRecapture,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(RecaptureListUiState())

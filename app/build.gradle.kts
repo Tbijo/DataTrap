@@ -1,15 +1,13 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+    kotlin("android")
     id("kotlin-android")
-
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
-
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
 }
 
-// kapt - is fucked up switch for ksp, this is a workaround
+// kapt is fucked up switch to ksp, this is a workaround
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs::class.java).configureEach {
     kotlinOptions {
         jvmTarget = "1.8"

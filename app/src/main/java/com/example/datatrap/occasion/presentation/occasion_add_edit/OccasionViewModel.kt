@@ -40,7 +40,7 @@ class OccasionViewModel @Inject constructor(
     private val occasionRepository: OccasionRepository,
     private val occasionImageRepository: OccasionImageRepository,
     private val weatherRepository: WeatherRepository,
-    private val getWeatherUseCase: GetWeatherUseCase = GetWeatherUseCase(weatherRepository),
+    private val getWeatherUseCase: GetWeatherUseCase,
     private val localityRepository: LocalityRepository,
     private val envTypeRepository: EnvTypeRepository,
     private val methodRepository: MethodRepository,

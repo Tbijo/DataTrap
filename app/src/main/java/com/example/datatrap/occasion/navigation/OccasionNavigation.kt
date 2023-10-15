@@ -2,8 +2,8 @@ package com.example.datatrap.occasion.navigation
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -39,7 +39,7 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
             },
         )
     ) {
-        val viewModel: OccasionListViewModel = viewModel()
+        val viewModel: OccasionListViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         OccasionListScreen(
@@ -99,7 +99,7 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
     composable(
         route = OccasionScreens.OccasionScreen.route
     ) {
-        val viewModel: OccasionViewModel = viewModel()
+        val viewModel: OccasionViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
@@ -139,7 +139,7 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
     composable(
         route = OccasionScreens.OccasionDetailScreen.route
     ) {
-        val viewModel: OccasionDetailViewModel = viewModel()
+        val viewModel: OccasionDetailViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         OccasionDetailScreen(

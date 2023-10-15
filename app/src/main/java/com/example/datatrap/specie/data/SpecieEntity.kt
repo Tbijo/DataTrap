@@ -8,37 +8,37 @@ import java.util.UUID
 @Entity
 data class SpecieEntity(
     @PrimaryKey
-    var specieId: String = UUID.randomUUID().toString(),
+    val specieId: String = UUID.randomUUID().toString(),
 
-    var speciesCode: String,
+    val speciesCode: String,
 
-    var fullName: String,
+    val fullName: String,
 
-    var synonym: String?,
+    val synonym: String?,
 
-    var authority: String?,
+    val authority: String?,
 
-    var description: String?,
+    val description: String?,
 
-    var isSmallMammal: Boolean,
+    val isSmallMammal: Boolean,
 
-    var upperFingers: Int?,
+    val upperFingers: Int?,
 
-    var minWeight: Float?, //kontrloly pri vstupoch
+    val minWeight: Float?, //kontrloly pri vstupoch
 
-    var maxWeight: Float?, //kontrloly pri vstupoch
+    val maxWeight: Float?, //kontrloly pri vstupoch
 
-    var bodyLength: Float?,
+    val bodyLength: Float?,
 
-    var tailLength: Float?,
+    val tailLength: Float?,
 
-    var feetLengthMin: Float?,
+    val feetLengthMin: Float?,
 
-    var feetLengthMax: Float?,
+    val feetLengthMax: Float?,
 
-    var note: String?,
+    val note: String?,
 
-    var specieDateTimeCreated: ZonedDateTime,
+    val specieDateTimeCreated: ZonedDateTime,
 
-    var specieDateTimeUpdated: ZonedDateTime?
+    val specieDateTimeUpdated: ZonedDateTime?
 )

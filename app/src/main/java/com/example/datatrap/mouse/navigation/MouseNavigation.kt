@@ -2,8 +2,8 @@ package com.example.datatrap.mouse.navigation
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -37,7 +37,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
             },
         )
     ) {
-        val viewModel: MouseListViewModel = viewModel()
+        val viewModel: MouseListViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         MouseListScreen(
@@ -68,7 +68,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
     composable(
         route = MouseScreens.MouseScreen.route,
     ) {
-        val viewModel: MouseViewModel = viewModel()
+        val viewModel: MouseViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
@@ -96,7 +96,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
     composable(
         route = MouseScreens.MouseDetailScreen.route,
     ) {
-        val viewModel: MouseDetailViewModel = viewModel()
+        val viewModel: MouseDetailViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         MouseDetailScreen(
@@ -108,7 +108,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
     composable(
         route = MouseScreens.MouseMultiScreen.route,
     ) {
-        val viewModel: MouseMultiViewModel = viewModel()
+        val viewModel: MouseMultiViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
@@ -131,7 +131,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
     composable(
         route = MouseScreens.MouseRecaptureListScreen.route,
     ) {
-        val viewModel: RecaptureListViewModel = viewModel()
+        val viewModel: RecaptureListViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         RecaptureListScreen(

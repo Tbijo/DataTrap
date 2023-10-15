@@ -28,18 +28,13 @@ class MouseListViewModel @Inject constructor(
     private val mouseRepository: MouseRepository,
     private val mouseImageRepository: MouseImageRepository,
     private val specieRepository: SpecieRepository,
-    private val getMiceByOccasion: GetMiceByOccasion = GetMiceByOccasion(mouseRepository, specieRepository),
-    private val deleteMouseUseCase: DeleteMouseUseCase = DeleteMouseUseCase(mouseRepository, mouseImageRepository),
+    private val getMiceByOccasion: GetMiceByOccasion,
+    private val deleteMouseUseCase: DeleteMouseUseCase,
     private val projectRepository: ProjectRepository,
     private val localityRepository: LocalityRepository,
     private val sessionRepository: SessionRepository,
     private val occasionRepository: OccasionRepository,
-    private val getInfoNamesUseCase: GetInfoNamesUseCase = GetInfoNamesUseCase(
-        projectRepository,
-        localityRepository,
-        sessionRepository,
-        occasionRepository,
-    ),
+    private val getInfoNamesUseCase: GetInfoNamesUseCase,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(MouseListUiState())

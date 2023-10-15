@@ -24,7 +24,6 @@ fun NavGraphBuilder.loginNavigation(navController: NavHostController) {
                     UiEvent.NavigateBack -> {
                         navController.navigateUp()
                     }
-                    else -> Unit
                 }
             }
         }

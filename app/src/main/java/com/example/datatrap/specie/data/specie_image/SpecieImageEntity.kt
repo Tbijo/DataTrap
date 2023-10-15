@@ -16,18 +16,18 @@ import java.util.UUID
 data class SpecieImageEntity(
 
     @PrimaryKey
-    var specieImgId: String = UUID.randomUUID().toString(),
+    val specieImgId: String = UUID.randomUUID().toString(),
 
-    var imgName: String,
+    val imgName: String,
 
-    var imageUri: Uri,
+    val imageUri: Uri,
 
-    var note: String?,
+    val note: String?,
 
     @ColumnInfo(index = true)
-    var specieID: String,
+    val specieID: String,
 
-    var dateTimeCreated: ZonedDateTime,
+    val dateTimeCreated: ZonedDateTime,
 
-    var dateTimeUpdated: ZonedDateTime?,
+    val dateTimeUpdated: ZonedDateTime?,
 )

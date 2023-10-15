@@ -2,8 +2,8 @@ package com.example.datatrap.session.navigation
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -32,7 +32,7 @@ fun NavGraphBuilder.sessionNavigation(navController: NavHostController) {
             },
         ),
     ) {
-        val viewModel: SessionListViewModel = viewModel()
+        val viewModel: SessionListViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SessionListScreen(
@@ -66,7 +66,7 @@ fun NavGraphBuilder.sessionNavigation(navController: NavHostController) {
             },
         ),
     ) {
-        val viewModel: SessionViewModel = viewModel()
+        val viewModel: SessionViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {

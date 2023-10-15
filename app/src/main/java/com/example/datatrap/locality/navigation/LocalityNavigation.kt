@@ -2,8 +2,8 @@ package com.example.datatrap.locality.navigation
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -31,7 +31,7 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
             },
         ),
     ) {
-        val viewModel: LocalityListViewModel = viewModel()
+        val viewModel: LocalityListViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LocalityListScreen(
@@ -82,7 +82,7 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
             },
         )
     ) {
-        val viewModel: LocalityViewModel = viewModel()
+        val viewModel: LocalityViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(key1 = Unit) {
@@ -105,7 +105,7 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
     composable(
         route = LocalityScreens.LocalityMapScreen.route
     ) {
-        val viewModel: LocalityMapViewModel = viewModel()
+        val viewModel: LocalityMapViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LocalityMapScreen(
