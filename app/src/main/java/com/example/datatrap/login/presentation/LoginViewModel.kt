@@ -96,7 +96,7 @@ class LoginViewModel @Inject constructor(
                     // save selected team
                     prefRepository.saveUserTeam(team.numTeam)
                     // navigate to project screen
-                    _eventFlow.emit(UiEvent.NavigateBack)
+                    _eventFlow.emit(UiEvent.NavigateNext)
                 }
                 // error message
                     ?: _state.update { it.copy(
@@ -141,7 +141,7 @@ class LoginViewModel @Inject constructor(
         newList.removeFirst()
 
         _state.update { it.copy(
-            visiblePermissionDialogQueue = newList
+            visiblePermissionDialogQueue = newList,
         ) }
     }
 

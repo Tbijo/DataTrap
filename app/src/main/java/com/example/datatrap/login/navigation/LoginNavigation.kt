@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.login.presentation.LoginScreen
 import com.example.datatrap.login.presentation.LoginViewModel
+import com.example.datatrap.project.navigation.ProjectScreens
 
 fun NavGraphBuilder.loginNavigation(navController: NavHostController) {
     composable(
@@ -18,12 +19,13 @@ fun NavGraphBuilder.loginNavigation(navController: NavHostController) {
         val viewModel: LoginViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
-        LaunchedEffect(key1 = Unit) {
+        LaunchedEffect(Unit) {
             viewModel.eventFlow.collect { event ->
                 when(event) {
-                    UiEvent.NavigateBack -> {
-                        navController.navigateUp()
+                    UiEvent.NavigateNext -> {
+                        navController.navigate(ProjectScreens.ProjectListScreen.route)
                     }
+                    else -> Unit
                 }
             }
         }

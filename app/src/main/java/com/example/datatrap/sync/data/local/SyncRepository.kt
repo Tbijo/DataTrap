@@ -3,6 +3,7 @@ package com.example.datatrap.sync.data.local
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
+import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.sync.data.remote.MouseImageSync
 import com.example.datatrap.sync.data.remote.OccasionImageSync
 
@@ -47,5 +48,13 @@ class SyncRepository(
 
     suspend fun insertSyncLocality(localityEntity: LocalityEntity) {
         return syncDao.insertSyncLocality(localityEntity)
+    }
+
+    suspend fun insertSyncProject(projectEntity: ProjectEntity) {
+        syncDao.insertSyncProject(projectEntity)
+    }
+
+    suspend fun getProjectForSync(projectIds: List<Long>): List<ProjectEntity> {
+        return syncDao.getProjectForSync(projectIds)
     }
 }

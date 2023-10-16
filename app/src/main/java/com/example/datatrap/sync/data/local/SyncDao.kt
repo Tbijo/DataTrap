@@ -7,6 +7,7 @@ import androidx.room.Query
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
+import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.sync.data.remote.MouseImageSync
 import com.example.datatrap.sync.data.remote.OccasionImageSync
 
@@ -43,4 +44,11 @@ interface SyncDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSyncLocality(localityEntity: LocalityEntity)
+
+    // Sync
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSyncProject(projectEntity: ProjectEntity)
+
+    @Query("SELECT * FROM ProjectEntity WHERE projectId IN (:projectIds)")
+    suspend fun getProjectForSync(projectIds: List<Long>): List<ProjectEntity>
 }

@@ -24,14 +24,6 @@ class ProjectRepository(private val projectDao: ProjectDao) {
         return projectDao.searchProjects(projectName)
     }
 
-    suspend fun getProjectForSync(projectIds: List<Long>): List<ProjectEntity> {
-        return projectDao.getProjectForSync(projectIds)
-    }
-
-    suspend fun insertSyncProject(projectEntity: ProjectEntity): Long {
-        return projectDao.insertSyncProject(projectEntity)
-    }
-
     suspend fun getProjectByName(projectName: String): ProjectEntity? {
         return projectDao.getProjectByName(projectName)
     }

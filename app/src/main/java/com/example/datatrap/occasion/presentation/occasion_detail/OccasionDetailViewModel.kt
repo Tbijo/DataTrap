@@ -37,7 +37,7 @@ class OccasionDetailViewModel @Inject constructor(
     private val trapTypeRepository: TrapTypeRepository,
 ): ViewModel() {
 
-    private var path: String? = null
+    private var imagePath: String? = null
 
     private val _state = MutableStateFlow(OccasionDetailUiState())
     val state = _state.asStateFlow()
@@ -100,7 +100,7 @@ class OccasionDetailViewModel @Inject constructor(
                         _state.update { it.copy(
                             imagePath = path.toUri().path
                         ) }
-                        path = path
+                        imagePath = path
                     }
                 }
             }

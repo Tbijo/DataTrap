@@ -51,14 +51,14 @@ private fun ScreenContent(
     state: LoginUiState,
 ) {
     val context = LocalContext.current
-    val permissionsToRequest = arrayListOf(
-        Manifest.permission.ACCESS_FINE_LOCATION,
-    )
-    // Same permission but different name according to API LEVEL
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
-    } else {
-        permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+    val permissionsToRequest = buildList {
+        add(Manifest.permission.ACCESS_FINE_LOCATION)
+        // Same permission but different name according to API LEVEL
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            add(Manifest.permission.READ_MEDIA_IMAGES)
+        } else {
+            add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
     }
 
     val multiplePermissionResultLauncher = rememberLauncherForActivityResult(

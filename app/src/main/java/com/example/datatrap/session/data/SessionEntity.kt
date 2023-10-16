@@ -18,8 +18,7 @@ data class SessionEntity(
     val sessionId: String = UUID.randomUUID().toString(),
 
     val session: Int,
-    
-    // foreign key
+
     @ColumnInfo(index = true)
     val projectID: String,
 
