@@ -29,6 +29,7 @@ class SpecieListViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             _state.update { it.copy(
                 specieList = specieRepository.getSpecies(),
+                isLoading = false,
             ) }
         }
     }
@@ -36,13 +37,16 @@ class SpecieListViewModel @Inject constructor(
     fun onEvent(event: SpecieListScreenEvent) {
         when(event) {
             is SpecieListScreenEvent.OnDeleteClick -> deleteSpecie(event.specieEntity.specieId)
+
             is SpecieListScreenEvent.OnSearchTextChange -> searchSpecies(event.text)
+
             is SpecieListScreenEvent.ChangeTitleFocus -> {
                 _state.update { it.copy(
                     isSearchTextFieldHintVisible = !event.focusState.isFocused
                             && state.value.searchTextFieldValue.isBlank(),
                 ) }
             }
+
             else -> Unit
         }
     }

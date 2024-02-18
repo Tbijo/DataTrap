@@ -4,6 +4,7 @@ import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.project.data.ProjectEntity
+import com.example.datatrap.session.data.SessionEntity
 import com.example.datatrap.sync.data.remote.MouseImageSync
 import com.example.datatrap.sync.data.remote.OccasionImageSync
 
@@ -57,4 +58,21 @@ class SyncRepository(
     suspend fun getProjectForSync(projectIds: List<Long>): List<ProjectEntity> {
         return syncDao.getProjectForSync(projectIds)
     }
+
+    suspend fun getLocalityForSync(localityIds: List<String>): List<LocalityEntity> {
+        return syncDao.getLocalityForSync(localityIds)
+    }
+
+    suspend fun insertSyncSession(sessionEntity: SessionEntity): Long {
+        return syncDao.insertSyncSession(sessionEntity)
+    }
+
+    suspend fun getSessionForSync(sessionIds: List<String>): List<SessionEntity> {
+        return syncDao.getSessionForSync(sessionIds)
+    }
+
+    // 604 800 dlzka tyzdna v sekundach treba v milisekundach 604 800 000
+//    suspend fun getNearSession(projectID: Long, sessionStart: Long): SessionEntity? {
+//        return syncDao.getNearSession(projectID, sessionStart)
+//    }
 }

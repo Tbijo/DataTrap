@@ -48,8 +48,8 @@ private fun ScreenContent(
     ) {
         Column(modifier = Modifier
             .fillMaxSize()
-            .padding(it)) {
-
+            .padding(it)
+        ) {
             MyTextField(
                 value = state.sessionNum,
                 keyType = KeyType.NUMBER,

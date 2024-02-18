@@ -56,7 +56,7 @@ private fun ScreenContent(
                     onEvent(
                         ProjectScreenEvent.OnProjectNameChange(text)
                     )
-                }
+                },
             )
 
             MyTextField(
@@ -69,7 +69,7 @@ private fun ScreenContent(
                     onEvent(
                         ProjectScreenEvent.OnNumberLocalChange(text)
                     )
-                }
+                },
             )
 
             MyTextField(
@@ -82,7 +82,7 @@ private fun ScreenContent(
                     onEvent(
                         ProjectScreenEvent.OnNumberMiceChange(text)
                     )
-                }
+                },
             )
         }
     }

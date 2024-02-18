@@ -4,9 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.domain.use_case.InsertProjectLocalityUseCase
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.locality.data.locality.LocalityRepository
-import com.example.datatrap.locality.navigation.LocalityScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,18 +20,18 @@ import javax.inject.Inject
 @HiltViewModel
 class LocalityListViewModel @Inject constructor (
     private val localityRepository: LocalityRepository,
-    private val projectLocalityUseCase: InsertProjectLocalityUseCase,
+    private val insertProjectLocalityUseCase: InsertProjectLocalityUseCase,
     savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LocalityListUiState())
     val state = _state.asStateFlow()
 
-    val projectID = savedStateHandle.get<String>(LocalityScreens.LocalityListScreen.projectIdKey)
+    val projectID = savedStateHandle.getMainScreenNavArgs()?.projectId
 
     init {
         _state.update { it.copy(
-            isLoading = true,
+            projectId = projectID,
         ) }
 
         localityRepository.getLocalities().onEach { locList ->
@@ -61,13 +61,13 @@ class LocalityListViewModel @Inject constructor (
     private fun setNumLocalOfProject(localityId: String) {
         if (projectID == null) {
             _state.update { it.copy(
-                error = "This should not happen."
+                error = "This should not happen.",
             ) }
             return
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            projectLocalityUseCase(
+            insertProjectLocalityUseCase(
                 localityId = localityId,
                 projectId = projectID,
             )

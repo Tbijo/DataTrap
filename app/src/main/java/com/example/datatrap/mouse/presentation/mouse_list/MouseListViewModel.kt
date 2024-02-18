@@ -5,11 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.core.domain.use_case.GetInfoNamesUseCase
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.DeleteMouseUseCase
 import com.example.datatrap.mouse.domain.use_case.GetMiceByOccasion
-import com.example.datatrap.mouse.navigation.MouseScreens
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionRepository
@@ -42,10 +42,10 @@ class MouseListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val projectId = savedStateHandle.get<String>(MouseScreens.MouseListScreen.projectIdKey)
-            val localityId = savedStateHandle.get<String>(MouseScreens.MouseListScreen.localityIdKey)
-            val sessionId = savedStateHandle.get<String>(MouseScreens.MouseListScreen.sessionIdKey)
-            val occasionId = savedStateHandle.get<String>(MouseScreens.MouseListScreen.occasionIdKey)
+            val projectId = savedStateHandle.getMainScreenNavArgs()?.projectId
+            val localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
+            val sessionId = savedStateHandle.getMainScreenNavArgs()?.sessionId
+            val occasionId = savedStateHandle.getMainScreenNavArgs()?.occasionId
 
             occasionId?.let {
                 getMiceByOccasion(occasionId).collect { mouseList ->
@@ -71,6 +71,9 @@ class MouseListViewModel @Inject constructor(
                 }
             }
 
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
     }
 

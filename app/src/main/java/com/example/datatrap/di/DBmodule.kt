@@ -20,9 +20,9 @@ object DBmodule {
         @ApplicationContext context: Context
     ): TrapDatabase {
         return Room.databaseBuilder(
-            context,
-            TrapDatabase::class.java,
-            "trap_database"
+            context = context,
+            klass = TrapDatabase::class.java,
+            name = "trap_database",
         )
             .createFromAsset("database/init_database.db")
             .build()

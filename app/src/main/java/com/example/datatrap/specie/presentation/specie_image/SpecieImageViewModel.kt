@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.util.ifNullOrBlank
 import com.example.datatrap.specie.data.specie_image.SpecieImageEntity
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
-import com.example.datatrap.specie.navigation.SpecieScreens
+import com.example.datatrap.specie.getSpecieIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,7 @@ class SpecieImageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            specieId = savedStateHandle.get<String>(SpecieScreens.SpecieImageScreen.specieIdKey)
+            specieId = savedStateHandle.getSpecieIdArg()
 
             specieId?.let { specId ->
                 val specieImage = specieImageRepository.getImageForSpecie(specId)
@@ -49,6 +49,10 @@ class SpecieImageViewModel @Inject constructor(
                     imageStateText = "No Image",
                 ) }
             }
+
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
     }
 
@@ -127,6 +131,7 @@ class SpecieImageViewModel @Inject constructor(
                 )
             }
             specieImageRepository.insertImage(specieImageEntity)
+            // TODO add image to Gallery
         }
     }
 

@@ -4,7 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
-import com.example.datatrap.core.data.pref.PrefRepository
+import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ifNullOrBlank
@@ -15,9 +16,8 @@ import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.GenerateCodeUseCase
 import com.example.datatrap.mouse.domain.use_case.GetOccupiedTrapIdsInOccasion
-import com.example.datatrap.mouse.navigation.MouseScreens
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
-import com.example.datatrap.settings.protocol.data.ProtocolRepository
+import com.example.datatrap.settings.data.protocol.ProtocolRepository
 import com.example.datatrap.specie.data.SpecieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -39,7 +39,7 @@ class MouseViewModel @Inject constructor(
     private val protocolRepository: ProtocolRepository,
     private val mouseImageRepository: MouseImageRepository,
     private val specieRepository: SpecieRepository,
-    private val prefRepository: PrefRepository,
+    private val navArgsStorage: NavArgsStorage,
     private val generateCodeUseCase: GenerateCodeUseCase,
     private val occasionRepository: OccasionRepository,
 ): ViewModel() {
@@ -58,10 +58,10 @@ class MouseViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val mouseId = savedStateHandle.get<String>(MouseScreens.MouseScreen.mouseIdKey)
-            occasionId = savedStateHandle.get<String>(MouseScreens.MouseScreen.occasionIdKey)
-            localityId = savedStateHandle.get<String>(MouseScreens.MouseScreen.localityIdKey)
-            isRecapture = savedStateHandle.get<Boolean>(MouseScreens.MouseScreen.isRecaptureKey)
+            val mouseId = savedStateHandle.getMainScreenNavArgs()?.mouseId
+            occasionId = savedStateHandle.getMainScreenNavArgs()?.occasionId
+            localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
+            isRecapture = savedStateHandle.getMainScreenNavArgs()?.isRecapture
 
             protocolRepository.getProtocolEntityList().collect { proList ->
                 _state.update { it.copy(
@@ -95,14 +95,21 @@ class MouseViewModel @Inject constructor(
                     trapIDList = (1..numberOfTrapsInOccasion).toList(),
                 ) }
             }
+
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
     }
 
     fun onEvent(event: MouseScreenEvent) {
         when(event) {
             MouseScreenEvent.OnInsertClick -> insertMouse()
+
             MouseScreenEvent.OnGenerateButtonClick -> generateCode()
+
             MouseScreenEvent.OnMouseClick -> showDrawnRat()
+
             is MouseScreenEvent.OnCaptureIdClick -> {
                 _state.update { it.copy(
                     captureID = event.captureID
@@ -285,6 +292,7 @@ class MouseViewModel @Inject constructor(
                     isMouseOkay = true
                 ) }
             }
+
             else -> Unit
         }
     }
@@ -345,6 +353,7 @@ class MouseViewModel @Inject constructor(
     private fun insertMouse() {
         val specie = state.value.specieEntity
         val specieID = specie?.specieId
+
         if (specieID == null) {
             _state.update { it.copy(
                 error = "Fill required fields.",

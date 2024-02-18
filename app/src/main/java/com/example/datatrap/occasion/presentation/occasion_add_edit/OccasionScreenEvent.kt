@@ -1,10 +1,10 @@
 package com.example.datatrap.occasion.presentation.occasion_add_edit
 
-import com.example.datatrap.settings.envtype.data.EnvTypeEntity
-import com.example.datatrap.settings.method.data.MethodEntity
-import com.example.datatrap.settings.methodtype.data.MethodTypeEntity
-import com.example.datatrap.settings.traptype.data.TrapTypeEntity
-import com.example.datatrap.settings.vegettype.data.VegetTypeEntity
+import com.example.datatrap.settings.data.env_type.EnvTypeEntity
+import com.example.datatrap.settings.data.method.MethodEntity
+import com.example.datatrap.settings.data.methodtype.MethodTypeEntity
+import com.example.datatrap.settings.data.traptype.TrapTypeEntity
+import com.example.datatrap.settings.data.veg_type.VegetTypeEntity
 
 sealed interface OccasionScreenEvent {
     object OnInsertClick: OccasionScreenEvent

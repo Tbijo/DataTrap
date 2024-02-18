@@ -14,7 +14,7 @@ class OccasionRepository(private val occasionDao: OccasionDao) {
         return occasionDao.getOccasion(occasionId)
     }
 
-    fun getOccasionsForSession(idSession: String): List<OccasionEntity> {
+    suspend fun getOccasionsForSession(idSession: String): List<OccasionEntity> {
         return occasionDao.getOccasionsForSession(idSession)
     }
 

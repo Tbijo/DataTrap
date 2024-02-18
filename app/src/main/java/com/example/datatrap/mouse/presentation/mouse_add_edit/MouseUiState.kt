@@ -4,7 +4,7 @@ import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumMouseAge
 import com.example.datatrap.core.util.EnumSex
 import com.example.datatrap.mouse.data.MouseEntity
-import com.example.datatrap.settings.protocol.data.ProtocolEntity
+import com.example.datatrap.settings.data.protocol.ProtocolEntity
 import com.example.datatrap.specie.data.SpecieEntity
 
 data class MouseUiState(

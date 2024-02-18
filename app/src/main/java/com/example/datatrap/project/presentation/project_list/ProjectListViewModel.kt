@@ -16,24 +16,19 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ProjectListViewModel @Inject constructor(
-    private val projectRepository: ProjectRepository
+    private val projectRepository: ProjectRepository,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(ProjectListUiState())
     val state = _state.asStateFlow()
 
     init {
-        _state.update { it.copy(
-            isLoading = true
-        ) }
-        viewModelScope.launch(Dispatchers.IO) {
-            projectRepository.projectEntityList().onEach { projectList ->
-                _state.update { it.copy(
-                    isLoading = false,
-                    projectList = projectList,
-                ) }
-            }.launchIn(viewModelScope)
-        }
+        projectRepository.projectEntityList().onEach { projectList ->
+            _state.update { it.copy(
+                isLoading = false,
+                projectList = projectList,
+            ) }
+        }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: ProjectListScreenEvent) {

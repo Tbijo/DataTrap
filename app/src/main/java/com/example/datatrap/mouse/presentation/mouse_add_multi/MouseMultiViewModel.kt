@@ -3,12 +3,12 @@ package com.example.datatrap.mouse.presentation.mouse_add_multi
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.EnumSpecie
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.model.MultiMouse
-import com.example.datatrap.mouse.navigation.MouseScreens
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.specie.data.SpecieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,10 +41,10 @@ class MouseMultiViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            savedStateHandle.get<String>(MouseScreens.MouseMultiScreen.occasionIdKey)?.let {
+            savedStateHandle.getMainScreenNavArgs()?.occasionId?.let {
                 occasionId = it
             }
-            savedStateHandle.get<String>(MouseScreens.MouseMultiScreen.localityIdKey)?.let {
+            savedStateHandle.getMainScreenNavArgs()?.localityId?.let {
                 localityId = it
             }
 
@@ -60,13 +60,19 @@ class MouseMultiViewModel @Inject constructor(
             _state.update { it.copy(
                 trapIdList = (1..occasion.numTraps).toList()
             ) }
+
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
     }
 
     fun onEvent(event: MouseMultiScreenEvent) {
         when(event) {
             MouseMultiScreenEvent.OnInsertClick -> insertMultiMouse()
+
             MouseMultiScreenEvent.OnAddRowClick -> addRow()
+
             MouseMultiScreenEvent.OnRemoveRowClick -> removeRow()
 
             is MouseMultiScreenEvent.OnSpecieClick -> {
@@ -114,6 +120,7 @@ class MouseMultiViewModel @Inject constructor(
 
     private fun addRow() {
         val list = state.value.mouseList.toMutableList()
+
         list.add(
             MultiMouse()
         )
@@ -124,6 +131,7 @@ class MouseMultiViewModel @Inject constructor(
 
     private fun removeRow() {
         val list = state.value.mouseList.toMutableList()
+
         list.removeLastOrNull()
         _state.update { it.copy(
             mouseList = list,

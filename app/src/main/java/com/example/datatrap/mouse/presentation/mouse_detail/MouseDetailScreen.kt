@@ -49,7 +49,7 @@ private fun ScreenContent(
         }
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(it)
+            modifier = Modifier.fillMaxSize().padding(it),
         ) {
             MyImage(
                 imagePath = state.mouseImagePath,

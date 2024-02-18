@@ -28,7 +28,8 @@ class RecaptureListViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             _state.update { it.copy(
-                specieList = specieRepository.getSpecies()
+                specieList = specieRepository.getSpecies(),
+                isLoading = false,
             ) }
         }
     }
@@ -110,6 +111,7 @@ class RecaptureListViewModel @Inject constructor(
     private fun searchForMice() {
         viewModelScope.launch(Dispatchers.IO) {
             val stateValue = state.value
+
             with(stateValue) {
                 getMiceForRecapture(
                     code = codeText.toIntOrNull(),

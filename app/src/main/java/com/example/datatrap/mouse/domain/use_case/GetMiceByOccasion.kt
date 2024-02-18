@@ -23,6 +23,7 @@ class GetMiceByOccasion(
                 sex = it.sex,
             )
         }
+
         emit(mappedData)
     }
 }

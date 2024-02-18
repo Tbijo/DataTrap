@@ -1,6 +1,5 @@
 package com.example.datatrap.locality.presentation.locality_map
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.locality.data.locality.LocalityRepository
@@ -14,8 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LocalityMapViewModel @Inject constructor(
-    private val localityRepository: LocalityRepository,
-    savedStateHandle: SavedStateHandle,
+    localityRepository: LocalityRepository,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LocalityMapUiState())

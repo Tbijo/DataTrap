@@ -90,9 +90,14 @@ private fun ScreenContent(
                     LocalityListItem(
                         localityEntity = locality,
                         onItemClick = {
-                            onEvent(
-                                LocalityListScreenEvent.OnItemClick(locality)
-                            )
+                            state.projectId?.let {
+                                onEvent(
+                                    LocalityListScreenEvent.OnItemClick(
+                                        localityId = locality.localityId,
+                                        projectId = state.projectId,
+                                    )
+                                )
+                            }
                         },
                         onUpdateClick = {
                             onEvent(

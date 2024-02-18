@@ -53,12 +53,10 @@ private fun ScreenContent(
         },
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
+            modifier = Modifier.fillMaxSize().padding(it),
         ) {
-            MyTextField(value = state.localityName, placeholder = "Topolcany", error = state.localityNameError, label = "Locality Name*",
-                onValueChanged = { text ->
+            MyTextField(value = state.localityName, placeholder = "Topolcany", error = state.localityNameError,
+                label = "Locality Name*", onValueChanged = { text ->
                     onEvent(
                         LocalityScreenEvent.OnLocalityNameChange(text)
                     )

@@ -1,9 +1,12 @@
 package com.example.datatrap.di
 
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
+import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
+import com.example.datatrap.camera.domain.DeleteImageUseCase
 import com.example.datatrap.core.data.locality_session.LocalitySessionRepository
-import com.example.datatrap.core.data.pref.PrefRepository
 import com.example.datatrap.core.data.project_locality.ProjectLocalityRepository
+import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
+import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.core.domain.use_case.DeleteLocalitySessionUseCase
 import com.example.datatrap.core.domain.use_case.DeleteProjectLocalityUseCase
 import com.example.datatrap.core.domain.use_case.GetInfoNamesUseCase
@@ -21,6 +24,7 @@ import com.example.datatrap.mouse.domain.use_case.GetPreviousLogsOfMouse
 import com.example.datatrap.mouse.domain.use_case.InsertMouseUseCase
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.occasion.data.weather.WeatherRepository
+import com.example.datatrap.occasion.domain.use_case.CountSpecialCasesUseCase
 import com.example.datatrap.occasion.domain.use_case.DeleteOccasionUseCase
 import com.example.datatrap.occasion.domain.use_case.GetWeatherUseCase
 import com.example.datatrap.occasion.domain.use_case.InsertOccasionUseCase
@@ -166,11 +170,11 @@ object UseCaseModule {
     @Provides
     fun provideGenerateCodeUseCase(
         mouseRepository: MouseRepository,
-        prefRepository: PrefRepository,
+        navArgsStorage: NavArgsStorage,
     ): GenerateCodeUseCase {
         return GenerateCodeUseCase(
             mouseRepository,
-            prefRepository,
+            navArgsStorage,
         )
     }
 
@@ -273,6 +277,31 @@ object UseCaseModule {
         return InsertLocalitySessionUseCase(
             localitySessionRepository,
             localityRepository,
+        )
+    }
+    @ActivityRetainedScoped
+    @Provides
+    fun provideDeleteImageUseCase(
+        internalStorageRepository: InternalStorageRepository,
+        occasionImageRepository: OccasionImageRepository,
+        mouseImageRepository: MouseImageRepository,
+    ): DeleteImageUseCase {
+        return DeleteImageUseCase(
+            internalStorageRepository,
+            occasionImageRepository,
+            mouseImageRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideCountSpecialCasesUseCase(
+        mouseRepository: MouseRepository,
+        specieRepository: SpecieRepository,
+    ): CountSpecialCasesUseCase {
+        return CountSpecialCasesUseCase(
+            mouseRepository = mouseRepository,
+            specieRepository = specieRepository,
         )
     }
 }

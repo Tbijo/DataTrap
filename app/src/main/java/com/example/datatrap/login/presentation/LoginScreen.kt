@@ -68,7 +68,7 @@ private fun ScreenContent(
                 onEvent(
                     LoginScreenEvent.OnPermissionResult(
                         permission = permission,
-                        isGranted = perms[permission] == true
+                        isGranted = perms[permission] == true,
                     )
                 )
             }
@@ -84,11 +84,12 @@ private fun ScreenContent(
                 .fillMaxSize()
                 .padding(it),
             verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            LaunchedEffect(key1 = Unit) {
+            LaunchedEffect(Unit) {
                 multiplePermissionResultLauncher.launch(permissionsToRequest.toTypedArray())
             }
+
             MyTextField(
                 value = state.userName,
                 placeholder = "Palo",
@@ -98,7 +99,7 @@ private fun ScreenContent(
                     onEvent(
                         LoginScreenEvent.OnUserNameChanged(text)
                     )
-                }
+                },
             )
 
             MyTextField(
@@ -110,7 +111,7 @@ private fun ScreenContent(
                     onEvent(
                         LoginScreenEvent.OnPasswordChanged(text)
                     )
-                }
+                },
             )
 
             Row(

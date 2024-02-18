@@ -4,11 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.GetMouseDetail
 import com.example.datatrap.mouse.domain.use_case.GetPreviousLogsOfMouse
-import com.example.datatrap.mouse.navigation.MouseScreens
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionRepository
@@ -40,7 +40,7 @@ class MouseDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val mouseId = savedStateHandle.get<String>(MouseScreens.MouseDetailScreen.mouseIdKey)
+            val mouseId = savedStateHandle.getMainScreenNavArgs()?.mouseId
 
             mouseId?.let {
                 getMouseDetail(mouseId).collect { mouseView ->
@@ -49,6 +49,7 @@ class MouseDetailViewModel @Inject constructor(
                     ) }
 
                     val id = mouseView.primeMouseId ?: mouseView.mouseId
+
                     getPreviousLogsOfMouse(id).collect { mouseLogList ->
                         _state.update { it.copy(
                             logList = mouseLogList,
@@ -60,6 +61,10 @@ class MouseDetailViewModel @Inject constructor(
                     mouseImagePath = mouseImageRepository.getImageForMouse(mouseId)?.path,
                 ) }
             }
+
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
     }
 

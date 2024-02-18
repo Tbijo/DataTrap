@@ -5,6 +5,8 @@ plugins {
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
+    id("kotlin-parcelize")
+    kotlin("plugin.serialization") version "1.8.10"
 }
 
 // kapt is fucked up switch to ksp, this is a workaround
@@ -131,4 +133,7 @@ dependencies {
 
     // coil
     implementation("io.coil-kt:coil-compose:2.4.0")
+
+    // kotlin serial
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
 }

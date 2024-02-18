@@ -3,12 +3,12 @@ package com.example.datatrap.locality.presentation.locality_add_edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.locality.domain.LocationClient
-import com.example.datatrap.locality.navigation.LocalityScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -20,7 +20,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,27 +35,28 @@ class LocalityViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    val localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
+
     init {
-        _state.update { it.copy(
-            isLoading = true,
-        ) }
-        savedStateHandle.getStateFlow<String?>(LocalityScreens.LocalityScreen.localityIdKey, null).onEach { locId ->
-            locId?.let {
-                with(localityRepository.getLocality(locId)) {
+        viewModelScope.launch(Dispatchers.IO) {
+            localityId?.let {
+                with(localityRepository.getLocality(localityId)) {
                     _state.update { it.copy(
-                        isLoading = false,
                         localityEntity = this,
                         localityName = localityName,
                         numSessions = numSessions.toString(),
                         note = note ?: "",
-                        latitudeA = if (xA == null) "" else xA.toString(),
-                        longitudeA = if (yA == null) "" else yA.toString(),
-                        latitudeB = if (xB == null) "" else xB.toString(),
-                        longitudeB = if (yB == null) "" else yB.toString(),
+                        latitudeA = latitudeA?.toString() ?: "",
+                        longitudeA = longitudeA?.toString() ?: "",
+                        latitudeB = latitudeB?.toString() ?: "",
+                        longitudeB = longitudeB?.toString() ?: "",
                     ) }
                 }
             }
-        }.launchIn(viewModelScope)
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
+        }
     }
 
     fun onEvent(event: LocalityScreenEvent) {
@@ -94,7 +94,7 @@ class LocalityViewModel @Inject constructor(
             }
             is LocalityScreenEvent.OnNoteChange -> {
                 _state.update { it.copy(
-                    note = event.text
+                    note = event.text,
                 ) }
             }
             is LocalityScreenEvent.OnNumSessionsChange -> {
@@ -108,7 +108,7 @@ class LocalityViewModel @Inject constructor(
     private fun insertLocality() {
         val localityName = state.value.localityName.ifEmpty {
             _state.update { it.copy(
-                localityNameError = "Locality must have a name"
+                localityNameError = "Locality must have a name",
             ) }
             return
         }
@@ -119,29 +119,29 @@ class LocalityViewModel @Inject constructor(
         val longitudeB = state.value.longitudeB.ifEmpty { null }
         val note = state.value.note.ifEmpty { null }
 
-        val localityEntity = if (state.value.localityEntity == null) {
+        val currentLocality = state.value.localityEntity
+        val localityEntity = if (currentLocality == null) {
             LocalityEntity(
-                localityId = UUID.randomUUID().toString(),
                 localityName = localityName,
                 numSessions = numSessions,
-                xA = latitudeA?.toFloat(),
-                yA = longitudeA?.toFloat(),
-                xB = latitudeB?.toFloat(),
-                yB = longitudeB?.toFloat(),
+                latitudeA = latitudeA?.toFloat(),
+                longitudeA = longitudeA?.toFloat(),
+                latitudeB = latitudeB?.toFloat(),
+                longitudeB = longitudeB?.toFloat(),
                 localityDateTimeCreated = ZonedDateTime.now(),
                 localityDateTimeUpdated = null,
                 note = note,
             )
         } else {
             LocalityEntity(
-                localityId = state.value.localityEntity?.localityId ?: UUID.randomUUID().toString(),
+                localityId = currentLocality.localityId,
                 localityName = localityName,
                 numSessions = numSessions,
-                xA = latitudeA?.toFloat(),
-                yA = longitudeA?.toFloat(),
-                xB = latitudeB?.toFloat(),
-                yB = longitudeB?.toFloat(),
-                localityDateTimeCreated = state.value.localityEntity?.localityDateTimeUpdated ?: ZonedDateTime.now(),
+                latitudeA = latitudeA?.toFloat(),
+                longitudeA = longitudeA?.toFloat(),
+                latitudeB = latitudeB?.toFloat(),
+                longitudeB = longitudeB?.toFloat(),
+                localityDateTimeCreated = currentLocality.localityDateTimeCreated,
                 localityDateTimeUpdated = ZonedDateTime.now(),
                 note = note,
             )
@@ -158,7 +158,7 @@ class LocalityViewModel @Inject constructor(
             when(result) {
                 is Resource.Error -> {
                     _state.update { it.copy(
-                        error = result.throwable?.message.toString()
+                        error = result.throwable?.message.toString(),
                     ) }
                 }
                 is Resource.Success -> {
@@ -176,7 +176,7 @@ class LocalityViewModel @Inject constructor(
             when(result) {
                 is Resource.Error -> {
                     _state.update { it.copy(
-                        error = result.throwable?.message.toString()
+                        error = result.throwable?.message.toString(),
                     ) }
                 }
                 is Resource.Success -> {

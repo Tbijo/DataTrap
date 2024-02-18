@@ -11,7 +11,6 @@ class DeleteOccasionUseCase(
     private val projectRepository: ProjectRepository,
 ) {
     // Delete Occasion, po vymazani update Session numOcc - 1
-
     // Delete Occasion, po vymazani update Project zniz o pocet mysi v Occasion
 
     suspend operator fun invoke(occasionId: String, sessionID: String) {
@@ -33,5 +32,8 @@ class DeleteOccasionUseCase(
                 projectDateTimeUpdated = ZonedDateTime.now(),
             )
         )
+
+        // Delete Occasion
+        occasionRepository.deleteOccasion(occasion)
     }
 }

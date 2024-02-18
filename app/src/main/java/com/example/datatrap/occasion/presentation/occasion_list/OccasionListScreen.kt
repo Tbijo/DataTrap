@@ -24,7 +24,10 @@ fun OccasionListScreen(
 ) {
     when(state.isLoading) {
         true -> LoadingScreen()
-        false -> ScreenContent(onEvent = onEvent, state = state)
+        false -> ScreenContent(
+            onEvent = onEvent,
+            state = state,
+        )
     }
 }
 

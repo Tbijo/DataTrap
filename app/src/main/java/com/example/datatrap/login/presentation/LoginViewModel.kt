@@ -2,7 +2,7 @@ package com.example.datatrap.login.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.core.data.pref.PrefRepository
+import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.ScienceTeam
 import com.example.datatrap.settings.user.data.UserRepository
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val prefRepository: PrefRepository,
+    private val navArgsStorage: NavArgsStorage,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LoginUiState())
@@ -33,28 +33,35 @@ class LoginViewModel @Inject constructor(
 
     init {
         syncDateOnFirstUse()
+        _state.update { it.copy(
+            isLoading = false,
+        ) }
     }
 
     fun onEvent(event: LoginScreenEvent) {
         when(event) {
             LoginScreenEvent.LogIn -> logIn()
+
             is LoginScreenEvent.OnPasswordChanged -> {
                 _state.update { it.copy(
                     password = event.text.trim(),
                     passwordError = null,
                 ) }
             }
+
             is LoginScreenEvent.OnSelectTeam -> {
                 _state.update { it.copy(
                     selectedTeam = event.team
                 ) }
             }
+
             is LoginScreenEvent.OnUserNameChanged -> {
                 _state.update { it.copy(
                     userName = event.text.trim(),
                     userNameError = null,
                 ) }
             }
+
             LoginScreenEvent.OnDismissDialog -> onDismissDialog()
 
             is LoginScreenEvent.OnPermissionResult -> onPermissionResult(
@@ -65,23 +72,23 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun logIn() {
-
         val userName = state.value.userName.ifEmpty {
             _state.update { it.copy(
-                userNameError = "Type a name"
+                userNameError = "Type a name",
             ) }
             return
         }
+
         val pass = state.value.password.ifEmpty {
             _state.update { it.copy(
-                passwordError = "Type a password"
+                passwordError = "Type a password",
             ) }
             return
         }
 
         val team: ScienceTeam = if (state.value.selectedTeam == null) {
             _state.update { it.copy(
-                error = "Select a team."
+                error = "Select a team.",
             ) }
             return
         } else {
@@ -92,15 +99,15 @@ class LoginViewModel @Inject constructor(
             userRepository.checkUser(userName, pass).collectLatest { userId ->
                 userId?.let {
                     // save active user
-                    prefRepository.saveUserId(it)
+                    navArgsStorage.saveUserId(it)
                     // save selected team
-                    prefRepository.saveUserTeam(team.numTeam)
+                    navArgsStorage.saveUserTeam(team.numTeam)
                     // navigate to project screen
                     _eventFlow.emit(UiEvent.NavigateNext)
                 }
                 // error message
                     ?: _state.update { it.copy(
-                        error = "Wrong name or password."
+                        error = "Wrong name or password.",
                     ) }
             }
         }
@@ -109,12 +116,10 @@ class LoginViewModel @Inject constructor(
     private fun syncDateOnFirstUse() {
         viewModelScope.launch(Dispatchers.IO) {
             // If the user starts app first time - create timestamp for sync
-            prefRepository.readLastSyncDate().collectLatest {
-                it?.let {
-                    prefRepository.saveLastSyncDate(
-                        ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
-                    )
-                }
+            if (navArgsStorage.readLastSyncDate() == null) {
+                navArgsStorage.saveLastSyncDate(
+                    ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+                )
             }
         }
     }

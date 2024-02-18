@@ -7,6 +7,7 @@ data class LocalityListUiState(
     val error: String? = null,
     val localityList: List<LocalityEntity> = emptyList(),
 
+    val projectId: String? = null,
     val projectName: String = "",
 
     val searchTextFieldValue: String = "",

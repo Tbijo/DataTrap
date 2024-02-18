@@ -7,11 +7,11 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.session.data.SessionEntity
-import com.example.datatrap.settings.envtype.data.EnvTypeEntity
-import com.example.datatrap.settings.method.data.MethodEntity
-import com.example.datatrap.settings.methodtype.data.MethodTypeEntity
-import com.example.datatrap.settings.traptype.data.TrapTypeEntity
-import com.example.datatrap.settings.vegettype.data.VegetTypeEntity
+import com.example.datatrap.settings.data.env_type.EnvTypeEntity
+import com.example.datatrap.settings.data.method.MethodEntity
+import com.example.datatrap.settings.data.methodtype.MethodTypeEntity
+import com.example.datatrap.settings.data.traptype.TrapTypeEntity
+import com.example.datatrap.settings.data.veg_type.VegetTypeEntity
 import java.time.ZonedDateTime
 import java.util.UUID
 
@@ -31,31 +31,24 @@ data class OccasionEntity(
 
     val occasion: Int,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     val localityID: String,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     val sessionID: String,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     val methodID: String,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     val methodTypeID: String,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     val trapTypeID: String,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     val envTypeID: String?,
 
-    // cudzi kluc
     @ColumnInfo(index = true)
     val vegetTypeID: String?,
 

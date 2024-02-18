@@ -1,6 +1,10 @@
 package com.example.datatrap.locality.data.locality
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,12 +24,5 @@ interface LocalityDao {
 
     @Query("SELECT * FROM LocalityEntity WHERE localityName LIKE :localityName")
     fun searchLocalities(localityName: String): Flow<List<LocalityEntity>>
-
-    // SYNC
-    @Query("SELECT * FROM LocalityEntity WHERE localityId IN (:localityIds)")
-    suspend fun getLocalityForSync(localityIds: List<String>): List<LocalityEntity>
-
-    @Query("SELECT * FROM LocalityEntity WHERE localityName = :localityName")
-    suspend fun getLocalityByName(localityName: String): LocalityEntity?
 
 }

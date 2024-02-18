@@ -26,12 +26,4 @@ class LocalityRepository(
         return localityDao.searchLocalities(localityName)
     }
 
-    suspend fun getLocalityForSync(localityIds: List<String>): List<LocalityEntity> {
-        return localityDao.getLocalityForSync(localityIds)
-    }
-
-    suspend fun getLocalityByName(localityName: String): LocalityEntity? {
-        return localityDao.getLocalityByName(localityName)
-    }
-
 }

@@ -23,6 +23,7 @@ class LocationClientImpl(
 ): LocationClient {
 
     private val cancellationTokenSource: CancellationTokenSource = CancellationTokenSource()
+
     override fun cancelLocationProvider() {
         // Destroy
         cancellationTokenSource.cancel()

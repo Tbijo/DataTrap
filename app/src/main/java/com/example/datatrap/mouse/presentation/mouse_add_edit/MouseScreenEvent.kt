@@ -3,7 +3,7 @@ package com.example.datatrap.mouse.presentation.mouse_add_edit
 import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumMouseAge
 import com.example.datatrap.core.util.EnumSex
-import com.example.datatrap.settings.protocol.data.ProtocolEntity
+import com.example.datatrap.settings.data.protocol.ProtocolEntity
 import com.example.datatrap.specie.data.SpecieEntity
 
 sealed interface MouseScreenEvent {

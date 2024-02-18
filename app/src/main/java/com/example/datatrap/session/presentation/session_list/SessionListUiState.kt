@@ -8,7 +8,7 @@ data class SessionListUiState(
     val sessionList: List<SessionEntity> = emptyList(),
 
     val projectName: String = "",
-    val projectId: String = "",
+
     val localityName: String = "",
     val localityId: String = "",
 )

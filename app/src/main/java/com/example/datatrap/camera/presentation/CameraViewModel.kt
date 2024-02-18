@@ -4,11 +4,13 @@ import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.camera.EntityType
 import com.example.datatrap.camera.data.mouse_image.MouseImageEntity
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageEntity
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
-import com.example.datatrap.camera.navigation.CameraScreens
+import com.example.datatrap.camera.getEntityIdNavArg
+import com.example.datatrap.camera.getEntityTypeNavArg
 import com.example.datatrap.core.data.storage.InternalStorageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,22 +30,19 @@ class CameraViewModel @Inject constructor(
     private val internalStorageRepository: InternalStorageRepository,
 ) : ViewModel() {
 
-    private val occasion = "Occasion"
-    private val mouse = "Mouse"
-
-    private val entity: String?
+    private val entity: EntityType?
     private val id: String?
 
     private val _state = MutableStateFlow(CameraUiState())
     val state = _state.asStateFlow()
 
     init {
-        entity = savedStateHandle.get<String>(CameraScreens.CameraScreen.entityTypeKey)
-        id = savedStateHandle.get<String>(CameraScreens.CameraScreen.entityIdKey)
+        entity = savedStateHandle.getEntityTypeNavArg()
+        id = savedStateHandle.getEntityIdNavArg()
 
         viewModelScope.launch(Dispatchers.IO) {
             when(entity) {
-                mouse -> {
+                EntityType.MOUSE -> {
                     id?.let {
                         val mouseImage = mouseImageRepository.getImageForMouse(id)
                         _state.update { it.copy(
@@ -53,7 +52,8 @@ class CameraViewModel @Inject constructor(
                         ) }
                     }
                 }
-                occasion -> {
+
+                EntityType.OCCASION -> {
                     id?.let {
                         val occasionImage = occasionImageRepository.getImageForOccasion(id)
                         _state.update { it.copy(
@@ -63,6 +63,7 @@ class CameraViewModel @Inject constructor(
                         ) }
                     }
                 }
+
                 else -> Unit
             }
 
@@ -82,12 +83,15 @@ class CameraViewModel @Inject constructor(
             CameraScreenEvent.OnInsertClick -> {
                 viewModelScope.launch(Dispatchers.IO) {
                     when(entity) {
-                        mouse -> {
+                        EntityType.MOUSE -> {
                             insertMouseImage()
                         }
-                        occasion -> {
+
+                        EntityType.OCCASION -> {
                             insertOccasionImage()
                         }
+
+                        else -> Unit
                     }
                 }
             }
@@ -106,8 +110,8 @@ class CameraViewModel @Inject constructor(
 
     private suspend fun saveImageFile(bitmap: Bitmap) {
         val imageNamePart = when (entity) {
-            mouse -> mouse
-            occasion -> occasion
+            EntityType.MOUSE -> "mouse"
+            EntityType.OCCASION -> "occasion"
             else -> ""
         }
         val dateTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)

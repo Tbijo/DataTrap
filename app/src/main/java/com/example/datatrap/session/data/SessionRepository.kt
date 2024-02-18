@@ -18,17 +18,4 @@ class SessionRepository(private val sessionDao: SessionDao) {
         return sessionDao.getSessionsForProject(projectId)
     }
 
-    suspend fun getSessionForSync(sessionIds: List<String>): List<SessionEntity> {
-        return sessionDao.getSessionForSync(sessionIds)
-    }
-
-    suspend fun insertSyncSession(sessionEntity: SessionEntity): Long {
-        return sessionDao.insertSyncSession(sessionEntity)
-    }
-
-    // 604 800 dlzka tyzdna v sekundach treba v milisekundach 604 800 000
-//    suspend fun getNearSession(projectID: Long, sessionStart: Long): SessionEntity? {
-//        return sessionDao.getNearSession(projectID, sessionStart)
-//    }
-
 }

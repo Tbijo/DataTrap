@@ -1,5 +1,6 @@
 package com.example.datatrap.specie.data
 
+import com.example.datatrap.core.util.EnumSpecie
 import com.example.datatrap.specie.domain.model.SpecList
 import com.example.datatrap.specie.domain.model.SpecSelectList
 
@@ -29,8 +30,10 @@ class SpecieRepository(private val specieDao: SpecieDao) {
         return specieDao.searchSpecies(specieCode)
     }
 
-    suspend fun getNonSpecie(spCode: List<String>): List<SpecList> {
-        return specieDao.getNonSpecie(spCode)
+    suspend fun getNonSpecie(): List<SpecList> {
+        val specieCodeStr = EnumSpecie.values().map { it.name }
+
+        return specieDao.getNonSpecie(specieCodeStr)
     }
 
 }

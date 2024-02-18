@@ -45,28 +45,22 @@ private fun ScreenContent(
                 imagePath = state.imagePath,
                 contentDescription = "Occasion Image",
                 onClick = {
-                    onEvent(
-                        OccasionDetailScreenEvent.OnImageClick
-                    )
-                }
+                    onEvent(OccasionDetailScreenEvent.OnImageClick)
+                },
             )
         },
     ) {
         Column(
-            modifier = Modifier
-                .padding(it)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = Alignment.Top)
+            modifier = Modifier.padding(it).verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(space = 16.dp, alignment = Alignment.Top),
         ) {
 
             MyImage(
                 imagePath = state.imagePath,
                 contentDescription = "Occasion Image",
                 onClick = {
-                    onEvent(
-                        OccasionDetailScreenEvent.OnImageClick
-                    )
-                }
+                    onEvent(OccasionDetailScreenEvent.OnImageClick)
+                },
             )
 
             Row {

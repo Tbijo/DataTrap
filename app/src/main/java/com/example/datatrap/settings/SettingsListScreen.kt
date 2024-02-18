@@ -13,35 +13,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.components.DrawerScreens
 import com.example.datatrap.core.presentation.components.NavigationScaffold
-import com.example.datatrap.settings.navigation.SettingsScreens
 
-enum class SettingsScreenNames(val route: String, val properName: String) {
+enum class SettingsScreenNames(val properName: String) {
     ENVIRONMENT(
-        route = SettingsScreens.EnvListScreen.route,
         properName = "Environment Type",
     ),
     METHOD(
-        route = SettingsScreens.MethodListScreen.route,
         properName = "Method",
     ),
     METHODTYPE(
-        route = SettingsScreens.MethodTypeListScreen.route,
         properName = "Method Type",
     ),
     PROTOCOL(
-        route = SettingsScreens.ProtocolListScreen.route,
         properName = "Protocol",
     ),
     TRAPTYPE(
-        route = SettingsScreens.TrapTypeListScreen.route,
         properName = "Trap Type",
     ),
     USER(
-        route = SettingsScreens.UserListScreen.route,
         properName = "Vegetation Type",
     ),
     VEGETTYPE(
-        route = SettingsScreens.VegTypeListScreen.route,
         properName = "User",
     )
 }
@@ -62,7 +54,7 @@ fun SettingsListScreen(
             onEvent(
                 SettingsListEvent.OnDrawerClick(it)
             )
-        }
+        },
     ) {
         LazyColumn(
             modifier = Modifier

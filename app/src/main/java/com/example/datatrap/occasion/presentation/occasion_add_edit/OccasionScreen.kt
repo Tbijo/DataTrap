@@ -68,9 +68,7 @@ private fun ScreenContent(
         }
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
+            modifier = Modifier.fillMaxSize().padding(it)
         ) {
             DropdownMenu(
                 modifier = Modifier.clickable { onEvent(OccasionScreenEvent.OnEnvTypeDropDownClick) },

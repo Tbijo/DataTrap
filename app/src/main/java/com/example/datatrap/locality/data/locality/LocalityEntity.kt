@@ -17,13 +17,13 @@ data class LocalityEntity(
 
     val localityDateTimeUpdated: ZonedDateTime?,
 
-    val xA: Float?, // latitudeA
+    val latitudeA: Float?,
 
-    val yA: Float?, // longitudeA
+    val longitudeA: Float?,
 
-    val xB: Float?, // latitudeB
+    val latitudeB: Float?,
 
-    val yB: Float?, // longitudeB
+    val longitudeB: Float?,
 
     val numSessions: Int,
 

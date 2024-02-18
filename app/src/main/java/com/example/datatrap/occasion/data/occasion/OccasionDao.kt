@@ -1,6 +1,10 @@
 package com.example.datatrap.occasion.data.occasion
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 
 @Dao
 interface OccasionDao {
@@ -15,5 +19,5 @@ interface OccasionDao {
     suspend fun getOccasion(occasionId: String): OccasionEntity
 
     @Query("SELECT * FROM OccasionEntity WHERE sessionID = :sessionID")
-    fun getOccasionsForSession(sessionID: String): List<OccasionEntity>
+    suspend fun getOccasionsForSession(sessionID: String): List<OccasionEntity>
 }

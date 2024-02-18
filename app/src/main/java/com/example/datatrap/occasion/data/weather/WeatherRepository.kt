@@ -5,7 +5,7 @@ import com.example.datatrap.occasion.data.weather.model.history_weather.HistoryW
 
 class WeatherRepository(
     private val api: WeatherAPI
-)  {
+) {
 
     // https://api.openweathermap.org/data/2.5/weather?lat=41.85&lon=-87.65&units=metric&appid=ba1d923dba4826c58fda121fb5e7a9de
 

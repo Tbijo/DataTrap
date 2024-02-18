@@ -7,7 +7,7 @@ import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
-import com.example.datatrap.settings.protocol.data.ProtocolEntity
+import com.example.datatrap.settings.data.protocol.ProtocolEntity
 import com.example.datatrap.specie.data.SpecieEntity
 import java.time.ZonedDateTime
 import java.util.UUID
@@ -27,7 +27,6 @@ data class MouseEntity(
 
     val primeMouseID: String?,
 
-    // FE
     @ColumnInfo(index = true)
     val speciesID: String,
 

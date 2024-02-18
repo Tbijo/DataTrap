@@ -9,11 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.LoadingScreen
+import com.example.datatrap.core.presentation.components.DrawerScreens
 import com.example.datatrap.core.presentation.components.NavigationScaffold
 
 @Composable
 fun AboutScreen(
-    onEvent: () -> Unit,
+    onEvent: (DrawerScreens) -> Unit,
     state: AboutUiState,
 ) {
     when(state.isLoading) {
@@ -27,15 +28,15 @@ fun AboutScreen(
 
 @Composable
 private fun ScreenContent(
-    onEvent: () -> Unit,
+    onEvent: (DrawerScreens) -> Unit,
     state: AboutUiState,
 ) {
     NavigationScaffold(
         title = "About",
         errorState = state.error,
         onDrawerItemClick = {
-            onEvent()
-        }
+            onEvent(it)
+        },
     ) {
         Column(
             modifier = Modifier.fillMaxSize().padding(it),

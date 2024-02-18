@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.specie.data.SpecieRepository
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
-import com.example.datatrap.specie.navigation.SpecieScreens
+import com.example.datatrap.specie.getSpecieIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,7 +26,8 @@ class SpecieDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val specieId = savedStateHandle.get<String>(SpecieScreens.SpecieDetailScreen.specieIdKey)
+            val specieId = savedStateHandle.getSpecieIdArg()
+
             specieId?.let {
                 val specie = specieRepository.getSpecie(specieId)
 
@@ -43,6 +44,10 @@ class SpecieDetailViewModel @Inject constructor(
                     ) }
                 }
             }
+
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
     }
 

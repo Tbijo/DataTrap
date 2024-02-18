@@ -3,31 +3,30 @@ package com.example.datatrap.occasion.presentation.occasion_list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
+import com.example.datatrap.camera.domain.DeleteImageUseCase
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
-import com.example.datatrap.occasion.navigation.OccasionScreens
+import com.example.datatrap.occasion.domain.use_case.DeleteOccasionUseCase
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class OccasionListViewModel @Inject constructor(
     private val occasionRepository: OccasionRepository,
     private val projectRepository: ProjectRepository,
-    private val occasionImageRepository: OccasionImageRepository,
     private val sessionRepository: SessionRepository,
     private val localityRepository: LocalityRepository,
+    private val deleteOccasionUseCase: DeleteOccasionUseCase,
+    private val deleteImageUseCase: DeleteImageUseCase,
     savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
@@ -35,41 +34,29 @@ class OccasionListViewModel @Inject constructor(
     val state = _state.asStateFlow()
 
     init {
-        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionListScreen.sessionIdKey, null).onEach { sesId ->
-            sesId?.let { sessionId ->
-                occasionRepository.getOccasionsForSession(sessionId).onEach { occasionList ->
-                    _state.update { it.copy(
-                        isLoading = false,
-                        occasionList = occasionList,
-                    ) }
-                }
-                with(sessionRepository.getSession(sessionId)) {
-                    _state.update { it.copy(
-                        sessionNum = session.toString(),
-                    ) }
-                }
-            }
-        }.launchIn(viewModelScope)
+        viewModelScope.launch(Dispatchers.IO) {
+            savedStateHandle.getMainScreenNavArgs()?.sessionId?.let { sessionId ->
+                val session = sessionRepository.getSession(sessionId)
 
-        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionListScreen.localityIdKey, null).onEach { locId ->
-            locId?.let { localityId ->
+                _state.update { it.copy(
+                    occasionList = occasionRepository.getOccasionsForSession(sessionId),
+                    projectName = projectRepository.getProjectById(session.projectID).projectName,
+                    sessionNum = session.toString(),
+                ) }
+            }
+
+            savedStateHandle.getMainScreenNavArgs()?.localityId?.let { localityId ->
                 with(localityRepository.getLocality(localityId)) {
                     _state.update { it.copy(
                         localityName = localityName,
                     ) }
                 }
             }
-        }.launchIn(viewModelScope)
 
-        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionListScreen.projectIdKey, null).onEach { prjId ->
-            prjId?.let { projectId ->
-                with(projectRepository.getProjectById(projectId)) {
-                    _state.update { it.copy(
-                        projectName = projectName,
-                    ) }
-                }
-            }
-        }.launchIn(viewModelScope)
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
+        }
     }
 
     fun onEvent(event: OccasionListScreenEvent) {
@@ -81,14 +68,13 @@ class OccasionListViewModel @Inject constructor(
 
     private fun deleteOccasion(occasionEntity: OccasionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            with(occasionImageRepository.getImageForOccasion(occasionEntity.occasionId)) {
-                this?.let {
-                    // delete image file
-                    val myFile = File(it.path)
-                    if (myFile.exists()) myFile.delete()
-                }
-                occasionRepository.deleteOccasion(occasionEntity)
-            }
+            deleteImageUseCase(
+                occasionEntity = occasionEntity,
+            )
+            deleteOccasionUseCase(
+                occasionId = occasionEntity.occasionId,
+                sessionID = occasionEntity.sessionID,
+            )
         }
     }
 

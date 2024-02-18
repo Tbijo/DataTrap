@@ -3,10 +3,10 @@ package com.example.datatrap.project.presentation.project_edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.project.data.ProjectRepository
-import com.example.datatrap.project.navigation.ProjectScreens
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -30,22 +30,21 @@ class ProjectViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private var currentProject: ProjectEntity? = null
-
     init {
-        _state.update { it.copy(
-            isLoading = true,
-        ) }
-        savedStateHandle.get<String>(ProjectScreens.ProjectScreen.projectIdKey)?.let { id ->
-            viewModelScope.launch {
-                with(projectRepository.getProjectById(id)) {
-                    currentProject = this
-                    _state.update { it.copy(
-                        isLoading = false,
-                        selectedProject = this,
-                    ) }
+        savedStateHandle.getMainScreenNavArgs()?.let { navArgs ->
+            navArgs.projectId?.let { projectId ->
+                viewModelScope.launch {
+                    with(projectRepository.getProjectById(projectId)) {
+                        _state.update { it.copy(
+                            selectedProject = this,
+                        ) }
+                    }
                 }
             }
+
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
 
     }
@@ -76,27 +75,42 @@ class ProjectViewModel @Inject constructor(
     }
 
     private fun insertProject() {
+        val projectName = state.value.projectName.ifEmpty {
+            _state.update { it.copy(
+                projectNameError = "Project must have a name.",
+            ) }
+            return
+        }
+        val numLocal = state.value.numLocal.run {
+            val value = this.ifEmpty { "0" }
+            Integer.parseInt(value)
+        }
+        val numMice = state.value.numMice.run {
+            val value = this.ifEmpty { "0" }
+            Integer.parseInt(value)
+        }
 
-        val projectEntity: ProjectEntity = ProjectEntity(
-            projectName = state.value.projectName.run {
-                this.ifEmpty {
-                    _state.update { it.copy(
-                        projectNameError = "Project must have a name."
-                    ) }
-                    return
-                }
-            },
-            numLocal = state.value.numLocal.run {
-                val value = this.ifEmpty { "0" }
-                Integer.parseInt(value)
-            },
-            numMice = state.value.numMice.run {
-                val value = this.ifEmpty { "0" }
-                Integer.parseInt(value)
-            },
-            projectDateTimeCreated = currentProject?.projectDateTimeCreated ?: ZonedDateTime.now(),
-            projectDateTimeUpdated = if(currentProject == null) null else ZonedDateTime.now(),
-        )
+        val currentProject = state.value.selectedProject
+        val projectEntity = if (currentProject == null) {
+            ProjectEntity(
+                projectName = projectName,
+                numLocal = numLocal,
+                numMice = numMice,
+                projectStart = ZonedDateTime.now(),
+                projectDateTimeCreated = ZonedDateTime.now(),
+                projectDateTimeUpdated = null,
+            )
+        } else {
+            ProjectEntity(
+                projectId = currentProject.projectId,
+                projectName = projectName,
+                numLocal = numLocal,
+                numMice = numMice,
+                projectStart = currentProject.projectStart,
+                projectDateTimeCreated = currentProject.projectDateTimeCreated,
+                projectDateTimeUpdated = ZonedDateTime.now(),
+            )
+        }
 
         viewModelScope.launch(Dispatchers.IO) {
             projectRepository.insertProject(projectEntity)

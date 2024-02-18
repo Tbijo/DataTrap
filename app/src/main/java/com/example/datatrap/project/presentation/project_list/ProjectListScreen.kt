@@ -62,10 +62,10 @@ private fun ScreenContent(
                     contentDescription = "logout button",
                 )
             }
-        }
+        },
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(it)
+            modifier = Modifier.fillMaxSize().padding(it),
         ) {
             SearchTextField(
                 text = state.searchTextFieldValue,

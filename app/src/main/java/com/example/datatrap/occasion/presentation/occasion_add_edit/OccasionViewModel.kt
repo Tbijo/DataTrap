@@ -4,29 +4,28 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
-import com.example.datatrap.core.data.pref.PrefRepository
+import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
+import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ifNullOrBlank
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
-import com.example.datatrap.occasion.data.weather.WeatherRepository
 import com.example.datatrap.occasion.domain.use_case.GetWeatherUseCase
-import com.example.datatrap.occasion.navigation.OccasionScreens
-import com.example.datatrap.settings.envtype.data.EnvTypeRepository
-import com.example.datatrap.settings.method.data.MethodRepository
-import com.example.datatrap.settings.methodtype.data.MethodTypeRepository
-import com.example.datatrap.settings.traptype.data.TrapTypeRepository
+import com.example.datatrap.occasion.domain.use_case.InsertOccasionUseCase
+import com.example.datatrap.settings.data.env_type.EnvTypeRepository
+import com.example.datatrap.settings.data.method.MethodRepository
+import com.example.datatrap.settings.data.methodtype.MethodTypeRepository
+import com.example.datatrap.settings.data.traptype.TrapTypeRepository
+import com.example.datatrap.settings.data.veg_type.VegetTypeRepository
 import com.example.datatrap.settings.user.data.UserRepository
-import com.example.datatrap.settings.vegettype.data.VegetTypeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
@@ -39,7 +38,6 @@ class OccasionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val occasionRepository: OccasionRepository,
     private val occasionImageRepository: OccasionImageRepository,
-    private val weatherRepository: WeatherRepository,
     private val getWeatherUseCase: GetWeatherUseCase,
     private val localityRepository: LocalityRepository,
     private val envTypeRepository: EnvTypeRepository,
@@ -48,15 +46,11 @@ class OccasionViewModel @Inject constructor(
     private val trapTypeRepository: TrapTypeRepository,
     private val vegetTypeRepository: VegetTypeRepository,
     private val userRepository: UserRepository,
-    private val prefRepository: PrefRepository,
+    private val navArgsStorage: NavArgsStorage,
+    private val insertOccasionUseCase: InsertOccasionUseCase,
 ): ViewModel() {
 
     // private var occasionImageEntity: OccasionImageEntity? = null
-
-    // number of occasions in a session to calculate occasionNum of a new OccasionEntity
-    private var occasionCount: Int = 0
-    private var sessionID: String? = null
-    private var localityID: String? = null
 
     private val _state = MutableStateFlow(OccasionUiState())
     val state = _state.asStateFlow()
@@ -64,9 +58,16 @@ class OccasionViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    // number of occasions in a session to calculate occasionNum of a new OccasionEntity
+    private var occasionCount: Int = 0
+
+    private val occasionId = savedStateHandle.getMainScreenNavArgs()?.occasionId
+    private val localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
+    private val sessionId = savedStateHandle.getMainScreenNavArgs()?.sessionId
+
     init {
-        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionScreen.occasionIdKey, null).onEach { occId ->
-            occId?.let { occasionId ->
+        viewModelScope.launch(Dispatchers.IO) {
+            occasionId?.let {
                 with(occasionRepository.getOccasion(occasionId)) {
                     _state.update { it.copy(
                         occasionEntity = this,
@@ -80,40 +81,32 @@ class OccasionViewModel @Inject constructor(
                     ) }
                 }
             }
-        }.launchIn(viewModelScope)
 
-        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionScreen.localityIdKey, null).onEach { locId ->
-            locId?.let { localityId ->
-                localityID = localityId
+            // for generating next occasion number
+            sessionId?.let {
+                occasionCount = occasionRepository.getOccasionsForSession(sessionId).size
             }
-        }.launchIn(viewModelScope)
 
-        savedStateHandle.getStateFlow<String?>(OccasionScreens.OccasionScreen.sessionIdKey, null).onEach { sesId ->
-            sesId?.let { sessionId ->
-                sessionID = sessionId
-                occasionRepository.getOccasionsForSession(sessionId).collectLatest {
-                    occasionCount = it.size
-                }
-            }
-        }.launchIn(viewModelScope)
+            fillDropDowns()
 
-        fillDropDowns()
-
-        prefRepository.readUserId().onEach { userId ->
-            userId?.let {
-                userRepository.getActiveUser(userId).onEach { userEntity ->
+            navArgsStorage.readUserId()?.let { userId ->
+                userRepository.getActiveUser(userId).collect { userEntity ->
                     _state.update { it.copy(
-                        legitimationText = userEntity.userName
+                        legitimationText = userEntity.userName,
                     ) }
                 }
             }
-        }.launchIn(viewModelScope)
 
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
+        }
     }
 
     fun onEvent(event: OccasionScreenEvent) {
         when(event) {
             is OccasionScreenEvent.OnInsertClick -> insertOccasion()
+
             is OccasionScreenEvent.OnCloudClick -> getWeather()
 
             OccasionScreenEvent.OnEnvTypeDropDownClick -> {
@@ -166,7 +159,6 @@ class OccasionViewModel @Inject constructor(
                     isVegTypeExpanded = false,
                 ) }
             }
-
             is OccasionScreenEvent.OnSelectEnvType -> {
                 _state.update { it.copy(
                     envTypeEntity = event.envType,
@@ -192,7 +184,6 @@ class OccasionViewModel @Inject constructor(
                     vegTypeEntity = event.vegType,
                 ) }
             }
-
             OccasionScreenEvent.OnGotCaughtClick -> {
                 _state.update { it.copy(
                     gotCaught = !state.value.gotCaught,
@@ -234,7 +225,6 @@ class OccasionViewModel @Inject constructor(
                     temperatureError = null,
                 ) }
             }
-
             else -> Unit
         }
     }
@@ -275,11 +265,20 @@ class OccasionViewModel @Inject constructor(
             return
         })
 
-        val occasionEntity = if (state.value.occasionEntity == null) {
+        if (sessionId == null) {
+            _state.update { it.copy(
+                error = "This should not happen."
+            ) }
+            return
+        }
+
+        val currentOccasionEntity = state.value.occasionEntity
+
+        val occasionEntity = if (currentOccasionEntity == null) {
             OccasionEntity(
                 occasion = (occasionCount + 1),
-                localityID = localityID ?: return,
-                sessionID = sessionID ?: return,
+                localityID = localityId ?: return,
+                sessionID = sessionId,
                 occasionStart = ZonedDateTime.now(),
                 occasionDateTimeCreated = ZonedDateTime.now(),
                 occasionDateTimeUpdated = null,
@@ -299,12 +298,12 @@ class OccasionViewModel @Inject constructor(
             )
         } else {
             OccasionEntity(
-                occasionId = state.value.occasionEntity?.occasionId ?: return,
-                occasion = state.value.occasionEntity?.occasion ?: return,
-                localityID = state.value.occasionEntity?.localityID ?: return,
-                sessionID = state.value.occasionEntity?.sessionID ?: return,
-                occasionStart = state.value.occasionEntity?.occasionStart ?: return,
-                occasionDateTimeCreated = state.value.occasionEntity?.occasionDateTimeCreated ?: return,
+                occasionId = currentOccasionEntity.occasionId,
+                occasion = currentOccasionEntity.occasion,
+                localityID = currentOccasionEntity.localityID,
+                sessionID = currentOccasionEntity.sessionID,
+                occasionStart = currentOccasionEntity.occasionStart,
+                occasionDateTimeCreated = currentOccasionEntity.occasionDateTimeCreated,
                 occasionDateTimeUpdated = ZonedDateTime.now(),
 
                 numMice = state.value.numberOfMiceText.toIntOrNull(),
@@ -323,30 +322,33 @@ class OccasionViewModel @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
+            insertOccasionUseCase(sessionId)
             occasionRepository.insertOccasion(occasionEntity)
             _eventFlow.emit(UiEvent.NavigateBack)
         }
     }
 
     private fun getWeather() {
-        viewModelScope.launch {
-            with(localityRepository.getLocality(localityID!!)) {
-                getWeatherUseCase(
-                    occasionEntity = state.value.occasionEntity,
-                    latitude = xA?.toDouble(),
-                    longitude = yA?.toDouble(),
-                ).collect { result ->
-                    when(result) {
-                        is Resource.Error -> {
-                            _state.update { it.copy(
-                                error = result.throwable?.message.toString()
-                            ) }
-                        }
-                        is Resource.Success -> {
-                            _state.update { it.copy(
-                                weatherText = result.data?.weather ?: "",
-                                temperatureText = result.data?.temp?.toString() ?: ""
-                            ) }
+        localityId?.let {
+            viewModelScope.launch {
+                with(localityRepository.getLocality(localityId)) {
+                    getWeatherUseCase(
+                        occasionEntity = state.value.occasionEntity,
+                        latitude = latitudeA?.toDouble(),
+                        longitude = longitudeA?.toDouble(),
+                    ).collect { result ->
+                        when(result) {
+                            is Resource.Error -> {
+                                _state.update { it.copy(
+                                    error = result.throwable?.message.toString(),
+                                ) }
+                            }
+                            is Resource.Success -> {
+                                _state.update { it.copy(
+                                    weatherText = result.data?.weather ?: "",
+                                    temperatureText = result.data?.temp?.toString() ?: "",
+                                ) }
+                            }
                         }
                     }
                 }

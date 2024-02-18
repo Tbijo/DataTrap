@@ -5,7 +5,12 @@ import com.example.datatrap.locality.data.locality.LocalityEntity
 
 sealed interface LocalityListScreenEvent {
     data class OnDeleteClick(val localityEntity: LocalityEntity): LocalityListScreenEvent
-    data class OnItemClick(val localityEntity: LocalityEntity): LocalityListScreenEvent
+
+    data class OnItemClick(
+        val localityId: String,
+        val projectId: String,
+    ): LocalityListScreenEvent
+
     data class OnUpdateButtonClick(val localityEntity: LocalityEntity): LocalityListScreenEvent
     object OnAddButtonClick: LocalityListScreenEvent
 

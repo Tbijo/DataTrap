@@ -11,7 +11,6 @@ package com.example.datatrap.sync.presentation
 //    private val occasionImageRepository: OccasionImageRepository,
 //    private val specieImageRepository: SpecieImageRepository,
 //    private val dataTrapRepo: DataTrapRepository,
-//    savedStateHandle: SavedStateHandle,
 //) : ViewModel() {
 //
 //    private val currentOpperation = MutableLiveData<String>()

@@ -7,7 +7,7 @@ import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.specie.data.SpecieEntity
 import com.example.datatrap.specie.data.SpecieRepository
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
-import com.example.datatrap.specie.navigation.SpecieScreens
+import com.example.datatrap.specie.getSpecieIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -34,10 +34,11 @@ class SpecieViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val specieId = savedStateHandle.get<String>(SpecieScreens.SpecieScreen.specieIdKey)
+            val specieId = savedStateHandle.getSpecieIdArg()
 
             specieId?.let {
                 val specie = specieRepository.getSpecie(specieId)
+
                 _state.update { it.copy(
                     specieEntity = specie,
                     specieCode = specie.speciesCode,
@@ -56,13 +57,19 @@ class SpecieViewModel @Inject constructor(
                     note = specie.note ?: "",
                 ) }
             }
+
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
     }
 
     fun onEvent(event: SpecieScreenEvent) {
         when(event) {
             SpecieScreenEvent.OnCameraClick -> TODO()
+
             SpecieScreenEvent.OnInsertClick -> insertSpecie()
+
             is SpecieScreenEvent.OnAuthorityTextChanged -> {
                 _state.update { it.copy(
                     authority = event.text,

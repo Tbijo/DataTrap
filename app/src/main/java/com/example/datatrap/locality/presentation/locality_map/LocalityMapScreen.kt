@@ -44,8 +44,8 @@ private fun ScreenContent(
     ) {
         val cameraPositionState = rememberCameraPositionState {
             if (state.localityList.isNotEmpty()) {
-                val lastLat = state.localityList.last().xA
-                val lastlon = state.localityList.last().yA
+                val lastLat = state.localityList.last().latitudeA
+                val lastlon = state.localityList.last().longitudeA
                 if (lastLat != null && lastlon != null) {
                     val lastLatLon = LatLng(lastLat.toDouble(), lastlon.toDouble())
                     // set to newest position
@@ -70,8 +70,8 @@ private fun ScreenContent(
                 uiSettings = uiSettings,
             ) {
                 state.localityList.forEach { localEnt ->
-                    val latitudeA = localEnt.xA
-                    val longitudeA = localEnt.yA
+                    val latitudeA = localEnt.latitudeA
+                    val longitudeA = localEnt.longitudeA
 
                     if (latitudeA != null && longitudeA != null) {
                         val lastLatLon = LatLng(latitudeA.toDouble(), longitudeA.toDouble())
