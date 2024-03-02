@@ -61,7 +61,7 @@ private fun ScreenContent(
                 Icon(imageVector = Icons.Default.Save, contentDescription = "save icon")
             }
             IconButton(onClick = {
-                onEvent(MouseScreenEvent.OnCameraClick)
+                onEvent(MouseScreenEvent.OnCameraClick(null)) // TODO pass imageId?
             }) {
                 Icon(imageVector = Icons.Default.Camera, contentDescription = "camera icon")
             }

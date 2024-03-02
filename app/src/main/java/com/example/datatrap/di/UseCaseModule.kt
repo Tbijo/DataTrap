@@ -24,7 +24,7 @@ import com.example.datatrap.mouse.domain.use_case.GetPreviousLogsOfMouse
 import com.example.datatrap.mouse.domain.use_case.InsertMouseUseCase
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.occasion.data.weather.WeatherRepository
-import com.example.datatrap.occasion.domain.use_case.CountSpecialCasesUseCase
+import com.example.datatrap.occasion.domain.use_case.CountSpecialSpeciesUseCase
 import com.example.datatrap.occasion.domain.use_case.DeleteOccasionUseCase
 import com.example.datatrap.occasion.domain.use_case.GetWeatherUseCase
 import com.example.datatrap.occasion.domain.use_case.InsertOccasionUseCase
@@ -298,8 +298,8 @@ object UseCaseModule {
     fun provideCountSpecialCasesUseCase(
         mouseRepository: MouseRepository,
         specieRepository: SpecieRepository,
-    ): CountSpecialCasesUseCase {
-        return CountSpecialCasesUseCase(
+    ): CountSpecialSpeciesUseCase {
+        return CountSpecialSpeciesUseCase(
             mouseRepository = mouseRepository,
             specieRepository = specieRepository,
         )

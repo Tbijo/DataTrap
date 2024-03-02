@@ -4,13 +4,11 @@ import android.graphics.Bitmap
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.camera.EntityType
-import com.example.datatrap.camera.data.mouse_image.MouseImageEntity
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
-import com.example.datatrap.camera.data.occasion_image.OccasionImageEntity
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
-import com.example.datatrap.camera.getEntityIdNavArg
 import com.example.datatrap.camera.getEntityTypeNavArg
+import com.example.datatrap.camera.getImageIdNavArg
+import com.example.datatrap.camera.util.EntityType
 import com.example.datatrap.core.data.storage.InternalStorageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -30,36 +28,39 @@ class CameraViewModel @Inject constructor(
     private val internalStorageRepository: InternalStorageRepository,
 ) : ViewModel() {
 
-    private val entity: EntityType?
-    private val id: String?
+    private val entity: EntityType? = savedStateHandle.getEntityTypeNavArg()
+    private val imageId: String? = savedStateHandle.getImageIdNavArg()
 
     private val _state = MutableStateFlow(CameraUiState())
     val state = _state.asStateFlow()
 
     init {
-        entity = savedStateHandle.getEntityTypeNavArg()
-        id = savedStateHandle.getEntityIdNavArg()
-
         viewModelScope.launch(Dispatchers.IO) {
             when(entity) {
                 EntityType.MOUSE -> {
-                    id?.let {
-                        val mouseImage = mouseImageRepository.getImageForMouse(id)
+                    imageId?.let {
+                        val mouseImage = mouseImageRepository.getImageForMouse(imageId)
+                        val imageName = mouseImage?.imgName
+
                         _state.update { it.copy(
-                            mouseImageEntity = mouseImage,
-                            imageName = mouseImage?.imgName,
+                            imageName = imageName,
                             note = mouseImage?.note,
+                            contentDescription = "mouse image",
+                            path = mouseImage?.path,
                         ) }
                     }
                 }
 
                 EntityType.OCCASION -> {
-                    id?.let {
-                        val occasionImage = occasionImageRepository.getImageForOccasion(id)
+                    imageId?.let {
+                        val occasionImage = occasionImageRepository.getImageForOccasion(imageId)
+                        val imageName = occasionImage?.imgName
+
                         _state.update { it.copy(
-                            occasionImageEntity = occasionImage,
-                            imageName = occasionImage?.imgName,
+                            imageName = imageName,
                             note = occasionImage?.note,
+                            contentDescription = "occasion image",
+                            path = occasionImage?.path,
                         ) }
                     }
                 }
@@ -67,34 +68,14 @@ class CameraViewModel @Inject constructor(
                 else -> Unit
             }
 
-            state.value.imageName?.let { imageName ->
-                val image = internalStorageRepository.getImages().find {
-                    it.name == imageName
-                }
-                _state.update { it.copy(
-                    bitmap = image?.bmp,
-                ) }
-            }
+            _state.update { it.copy(
+                isLoading = false,
+            ) }
         }
     }
 
     fun onEvent(event: CameraScreenEvent) {
         when(event) {
-            CameraScreenEvent.OnInsertClick -> {
-                viewModelScope.launch(Dispatchers.IO) {
-                    when(entity) {
-                        EntityType.MOUSE -> {
-                            insertMouseImage()
-                        }
-
-                        EntityType.OCCASION -> {
-                            insertOccasionImage()
-                        }
-
-                        else -> Unit
-                    }
-                }
-            }
             is CameraScreenEvent.OnNoteTextChanged -> {
                 _state.update { it.copy(
                     note = event.text,
@@ -105,15 +86,16 @@ class CameraViewModel @Inject constructor(
                     saveImageFile(event.bitmap)
                 }
             }
+
+            CameraScreenEvent.OnDeleteImage -> deleteImageFile()
+
+            else -> Unit
         }
     }
 
     private suspend fun saveImageFile(bitmap: Bitmap) {
-        val imageNamePart = when (entity) {
-            EntityType.MOUSE -> "mouse"
-            EntityType.OCCASION -> "occasion"
-            else -> ""
-        }
+        val imageNamePart = entity?.name ?: "N/A"
+
         val dateTime = ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
 
         val newName = "${imageNamePart}_${dateTime}"
@@ -123,108 +105,23 @@ class CameraViewModel @Inject constructor(
             bmp = bitmap,
         )
 
-        newImageFile?.let {
-            _state.update { it.copy(
-                oldImageName = state.value.imageName,
-                imageName = newImageFile.name,
-            ) }
-        }
+        _state.update { it.copy(
+            path = newImageFile?.path,
+            imageName = newImageFile?.name,
+        ) }
     }
 
-    private suspend fun insertOccasionImage() {
-        val currentOccasionImage = state.value.occasionImageEntity
-        val imageName = state.value.imageName
-        val note = state.value.note
+    private fun deleteImageFile() {
+        viewModelScope.launch {
+            state.value.imageName?.let { imageName ->
+                internalStorageRepository.deleteImage(imageName)
 
-        if (id == null) {
-            _state.update { it.copy(
-                error = "This should not happen.",
-            ) }
-            return
-        }
-        if (imageName == null) {
-            _state.update { it.copy(
-                error = "Error no image.",
-            ) }
-            return
-        }
-
-        val occasionImage = if (currentOccasionImage == null) {
-            OccasionImageEntity(
-                imgName = imageName,
-                occasionID = id,
-                path = "",
-                note = note,
-                dateTimeCreated = ZonedDateTime.now(),
-                dateTimeUpdated = null,
-            )
-        }
-        else {
-            OccasionImageEntity(
-                occasionImgId = currentOccasionImage.occasionImgId,
-                imgName = imageName,
-                occasionID = currentOccasionImage.occasionID,
-                path = "",
-                note = note,
-                dateTimeCreated = currentOccasionImage.dateTimeCreated,
-                dateTimeUpdated = ZonedDateTime.now(),
-            )
-        }
-
-        occasionImageRepository.insertImage(occasionImage)
-
-        // delete previous one if there was one
-        // TODO walk through saving process with new image
-        state.value.oldImageName?.let { imName ->
-            internalStorageRepository.deleteImage(imName)
-        }
-    }
-
-    private suspend fun insertMouseImage() {
-        val currentMouseImage = state.value.mouseImageEntity
-        val imageName = state.value.imageName
-        val note = state.value.note
-
-        if (id == null) {
-            _state.update { it.copy(
-                error = "This should not happen.",
-            ) }
-            return
-        }
-
-        if (imageName == null) {
-            _state.update { it.copy(
-                error = "No image.",
-            ) }
-            return
-        }
-
-        val mouseImageEntity = if (currentMouseImage == null) {
-            MouseImageEntity(
-                imgName = imageName,
-                mouseID = id,
-                path = "",
-                note = note,
-                dateTimeCreated = ZonedDateTime.now(),
-                dateTimeUpdated = null,
-            )
-        } else {
-            MouseImageEntity(
-                mouseImgId = currentMouseImage.mouseImgId,
-                imgName = imageName,
-                mouseID = currentMouseImage.mouseID,
-                path = "",
-                note = note,
-                dateTimeCreated = currentMouseImage.dateTimeCreated,
-                dateTimeUpdated = ZonedDateTime.now(),
-            )
-        }
-
-        mouseImageRepository.insertImage(mouseImageEntity)
-
-        // delete previous one if there was one
-        state.value.oldImageName?.let { imName ->
-            internalStorageRepository.deleteImage(imName)
+                _state.update { it.copy(
+                    imageName = null,
+                    path = null,
+                    note = null,
+                ) }
+            }
         }
     }
 }

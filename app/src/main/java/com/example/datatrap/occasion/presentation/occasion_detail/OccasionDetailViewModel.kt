@@ -7,9 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityRepository
-import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
-import com.example.datatrap.occasion.domain.use_case.CountSpecialCasesUseCase
+import com.example.datatrap.occasion.domain.use_case.CountSpecialSpeciesUseCase
 import com.example.datatrap.settings.data.env_type.EnvTypeRepository
 import com.example.datatrap.settings.data.method.MethodRepository
 import com.example.datatrap.settings.data.methodtype.MethodTypeRepository
@@ -27,14 +26,13 @@ import javax.inject.Inject
 class OccasionDetailViewModel @Inject constructor(
     private val occasionRepository: OccasionRepository,
     private val occasionImageRepository: OccasionImageRepository,
-    private val mouseRepository: MouseRepository,
     private val localityRepository: LocalityRepository,
     private val methodRepository: MethodRepository,
     private val methodTypeRepository: MethodTypeRepository,
     private val envTypeRepository: EnvTypeRepository,
     private val vegetTypeRepository: VegetTypeRepository,
     private val trapTypeRepository: TrapTypeRepository,
-    private val countSpecialCasesUseCase: CountSpecialCasesUseCase,
+    private val countSpecialSpeciesUseCase: CountSpecialSpeciesUseCase,
     savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
@@ -49,7 +47,7 @@ class OccasionDetailViewModel @Inject constructor(
     init {
         viewModelScope.launch(Dispatchers.IO) {
             occasionId?.let {
-                countSpecialCasesUseCase(occasionId).collect {
+                countSpecialSpeciesUseCase(occasionId).collect {
                     _state.update { it.copy(
                         errorNum = it.errorNum,
                         closeNum = it.closeNum,

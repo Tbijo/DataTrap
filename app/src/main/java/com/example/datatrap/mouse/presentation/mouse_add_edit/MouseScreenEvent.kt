@@ -8,9 +8,11 @@ import com.example.datatrap.specie.data.SpecieEntity
 
 sealed interface MouseScreenEvent {
     object OnInsertClick: MouseScreenEvent
-    object OnCameraClick: MouseScreenEvent
+    data class OnCameraClick(val imageId: String?): MouseScreenEvent
     object OnMouseClick: MouseScreenEvent
     object OnGenerateButtonClick: MouseScreenEvent
+
+    data class OnReceiveImageName(val imageName: String?, val imageNote: String?): MouseScreenEvent
 
     // verify dialog
     object OnDialogOkClick: MouseScreenEvent

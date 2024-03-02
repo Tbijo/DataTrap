@@ -30,16 +30,33 @@ class InternalStorageRepository(
         }
     }
 
-    suspend fun getImages(): List<InternalStoragePhoto> {
+    suspend fun getImage(imageName: String): InternalStoragePhoto? {
         return withContext(Dispatchers.IO) {
             val files = context.filesDir.listFiles()
 
-            files?.filter { it.canRead() && it.isFile && it.name.endsWith(".jpg") }
+            files
+                ?.filter {
+                    it.canRead() && it.isFile && it.name.endsWith(".jpg") && it.name.equals(imageName)
+                }
                 ?.map {
                     val bytes = it.readBytes()
                     val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                     InternalStoragePhoto(it.name, bmp)
-                } ?: listOf()
+                }
+                ?.first()
+        }
+    }
+
+    suspend fun getImagePath(imageName: String): String? {
+        return withContext(Dispatchers.IO) {
+            val files = context.filesDir.listFiles()
+
+            files
+                ?.first {
+                    it.canRead() && it.isFile && it.name.endsWith(".jpg") && it.name.equals(imageName)
+                }
+                ?.path
+
         }
     }
 

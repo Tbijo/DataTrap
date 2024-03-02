@@ -3,17 +3,12 @@ package com.example.datatrap.mouse.presentation.mouse_list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
+import com.example.datatrap.camera.domain.DeleteImageUseCase
 import com.example.datatrap.core.domain.use_case.GetInfoNamesUseCase
 import com.example.datatrap.core.getMainScreenNavArgs
-import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.DeleteMouseUseCase
 import com.example.datatrap.mouse.domain.use_case.GetMiceByOccasion
-import com.example.datatrap.occasion.data.occasion.OccasionRepository
-import com.example.datatrap.project.data.ProjectRepository
-import com.example.datatrap.session.data.SessionRepository
-import com.example.datatrap.specie.data.SpecieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,15 +21,10 @@ import javax.inject.Inject
 class MouseListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val mouseRepository: MouseRepository,
-    private val mouseImageRepository: MouseImageRepository,
-    private val specieRepository: SpecieRepository,
     private val getMiceByOccasion: GetMiceByOccasion,
     private val deleteMouseUseCase: DeleteMouseUseCase,
-    private val projectRepository: ProjectRepository,
-    private val localityRepository: LocalityRepository,
-    private val sessionRepository: SessionRepository,
-    private val occasionRepository: OccasionRepository,
     private val getInfoNamesUseCase: GetInfoNamesUseCase,
+    private val deleteImageUseCase: DeleteImageUseCase,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(MouseListUiState())
@@ -86,6 +76,9 @@ class MouseListViewModel @Inject constructor(
 
     private fun deleteMouse(mouseId: String) {
         viewModelScope.launch(Dispatchers.IO) {
+            deleteImageUseCase(
+                mouseEntity = mouseRepository.getMouse(mouseId),
+            )
             deleteMouseUseCase(mouseId)
         }
     }

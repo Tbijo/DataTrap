@@ -3,7 +3,6 @@ package com.example.datatrap.occasion.presentation.occasion_add_edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
 import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
@@ -37,7 +36,6 @@ import javax.inject.Inject
 class OccasionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val occasionRepository: OccasionRepository,
-    private val occasionImageRepository: OccasionImageRepository,
     private val getWeatherUseCase: GetWeatherUseCase,
     private val localityRepository: LocalityRepository,
     private val envTypeRepository: EnvTypeRepository,
@@ -49,8 +47,6 @@ class OccasionViewModel @Inject constructor(
     private val navArgsStorage: NavArgsStorage,
     private val insertOccasionUseCase: InsertOccasionUseCase,
 ): ViewModel() {
-
-    // private var occasionImageEntity: OccasionImageEntity? = null
 
     private val _state = MutableStateFlow(OccasionUiState())
     val state = _state.asStateFlow()
@@ -225,6 +221,14 @@ class OccasionViewModel @Inject constructor(
                     temperatureError = null,
                 ) }
             }
+
+            is OccasionScreenEvent.OnReceiveImageName -> {
+                setImageId(
+                    imageName = event.imageName,
+                    imageNote = event.imageNote,
+                )
+            }
+
             else -> Unit
         }
     }
@@ -232,42 +236,42 @@ class OccasionViewModel @Inject constructor(
     private fun insertOccasion() {
         val methodID: String = state.value.methodEntity?.methodId.ifNullOrBlank {
             _state.update { it.copy(
-                error = "Method has to be selected."
+                error = "Method has to be selected.",
             ) }
             return
         }!!
 
         val methodTypeID: String = state.value.methodTypeEntity?.methodTypeId.ifNullOrBlank {
             _state.update { it.copy(
-                error = "Method Type has to be selected."
+                error = "Method Type has to be selected.",
             ) }
             return
         }!!
 
         val trapTypeID: String = state.value.trapTypeEntity?.trapTypeId.ifNullOrBlank {
             _state.update { it.copy(
-                error = "Trap Type has to be selected."
+                error = "Trap Type has to be selected.",
             ) }
             return
         }!!
 
         val leg: String = state.value.legitimationText.ifEmpty {
             _state.update { it.copy(
-                legitimationError = "A person needs to sign here."
+                legitimationError = "A person needs to sign here.",
             ) }
             return
         }
 
         val numTraps: Int = Integer.parseInt(state.value.numberOfTrapsText.ifEmpty {
             _state.update { it.copy(
-                numberOfTrapsError = "At least one trap needs to exist."
+                numberOfTrapsError = "At least one trap needs to exist.",
             ) }
             return
         })
 
         if (sessionId == null) {
             _state.update { it.copy(
-                error = "This should not happen."
+                error = "This should not happen.",
             ) }
             return
         }
@@ -386,6 +390,16 @@ class OccasionViewModel @Inject constructor(
                 vegTypeList = vegTypeList,
             ) }
         }.launchIn(viewModelScope)
+    }
+
+    private fun setImageId(
+        imageName: String?,
+        imageNote: String?,
+    ) {
+        // TODO create imageID val in state class
+        _state.update { it.copy(
+
+        ) }
     }
 
 }

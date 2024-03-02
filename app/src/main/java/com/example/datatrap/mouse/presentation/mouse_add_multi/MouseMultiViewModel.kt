@@ -58,7 +58,7 @@ class MouseMultiViewModel @Inject constructor(
 
             val occasion = occasionRepository.getOccasion(occasionId)
             _state.update { it.copy(
-                trapIdList = (1..occasion.numTraps).toList()
+                trapIdList = (1..occasion.numTraps).toList(),
             ) }
 
             _state.update { it.copy(

@@ -17,20 +17,24 @@ class DeleteImageUseCase(
     ) {
         mouseEntity?.let {
             val mouseImageEntity = mouseImageRepository.getImageForMouse(mouseEntity.mouseId)
+
             mouseImageEntity?.let {
                 // Delete file image
                 internalStorageRepository.deleteImage(mouseImageEntity.imgName)
                 // Delete data image
+                // TODO not necessary since CASCADE is on this entity
                 mouseImageRepository.deleteImage(mouseImageEntity)
             }
         }
 
         occasionEntity?.let {
             val occasionImageEntity = occasionImageRepository.getImageForOccasion(occasionEntity.occasionId)
+
             occasionImageEntity?.let {
                 // Delete file image
                 internalStorageRepository.deleteImage(occasionImageEntity.imgName)
                 // Delete data image
+                // TODO not necessary since CASCADE is on this entity
                 occasionImageRepository.deleteImage(occasionImageEntity)
             }
         }

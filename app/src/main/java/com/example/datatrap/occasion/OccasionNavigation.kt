@@ -8,8 +8,12 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.datatrap.camera.EntityType
+import com.example.datatrap.camera.clearImageChange
+import com.example.datatrap.camera.getImageChange
+import com.example.datatrap.camera.getImageName
+import com.example.datatrap.camera.getImageNote
 import com.example.datatrap.camera.navigateToCameraScreen
+import com.example.datatrap.camera.util.EntityType
 import com.example.datatrap.core.ScreenNavArgs
 import com.example.datatrap.core.getMainScreenArguments
 import com.example.datatrap.core.getMainScreenNavArgs
@@ -96,6 +100,9 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
     ) {
         val viewModel: OccasionViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
+        val imageName = navController.getImageName()
+        val imageNote = navController.getImageNote()
+        val makeChange = navController.getImageChange()
 
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collect { event ->
@@ -108,19 +115,30 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
             }
         }
 
+        LaunchedEffect(key1 = imageName, key2 = imageNote, key3 = makeChange) {
+            if (makeChange == true) {
+                viewModel.onEvent(
+                    OccasionScreenEvent.OnReceiveImageName(
+                        imageName = imageName,
+                        imageNote = imageNote,
+                    )
+                )
+                // clear for config change
+                navController.clearImageChange()
+            }
+        }
+
         OccasionScreen(
             onEvent = { event ->
                 when(event) {
-                    OccasionScreenEvent.OnCameraClick -> {
-                        // TODO Create Image, Return ID, Get the Image, Update its Parent ID when Occasion inserted
-
-                        // "Occasion", args.occList.occasionId, ""
-                        navController.navigateToCameraScreen(  // TODO add occasionId
-                            entityId = "",
+                    is OccasionScreenEvent.OnCameraClick -> {
+                        navController.navigateToCameraScreen(
                             entityType = EntityType.OCCASION,
+                            imageId = event.imageId,
                         )
                     }
-                    else -> Unit
+
+                    else -> viewModel.onEvent(event)
                 }
             },
             state = state,

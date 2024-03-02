@@ -7,9 +7,9 @@ import com.example.datatrap.specie.data.SpecieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class CountSpecialCasesUseCase(
-    private val mouseRepository: MouseRepository,
+class CountSpecialSpeciesUseCase(
     private val specieRepository: SpecieRepository,
+    private val mouseRepository: MouseRepository,
 ) {
     operator fun invoke(occasionId: String): Flow<OccasionStats> = flow {
         val nonSpecies = specieRepository.getNonSpecie()

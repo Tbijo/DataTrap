@@ -23,6 +23,7 @@ fun MyScaffold(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     content: @Composable (PaddingValues) -> Unit,
 ) {
+    // TODO If user makes the same error it will not show
     LaunchedEffect(key1 = errorState) {
         errorState?.let {
             scaffoldState.snackbarHostState.showSnackbar(

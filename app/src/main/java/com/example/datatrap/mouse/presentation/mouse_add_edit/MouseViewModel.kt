@@ -3,8 +3,6 @@ package com.example.datatrap.mouse.presentation.mouse_add_edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
-import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
 import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
@@ -37,9 +35,7 @@ class MouseViewModel @Inject constructor(
     private val mouseRepository: MouseRepository,
     private val getOccupiedTrapIdsInOccasion: GetOccupiedTrapIdsInOccasion,
     private val protocolRepository: ProtocolRepository,
-    private val mouseImageRepository: MouseImageRepository,
     private val specieRepository: SpecieRepository,
-    private val navArgsStorage: NavArgsStorage,
     private val generateCodeUseCase: GenerateCodeUseCase,
     private val occasionRepository: OccasionRepository,
 ): ViewModel() {
@@ -75,6 +71,7 @@ class MouseViewModel @Inject constructor(
 
             mouseId?.let {
                 val mouse = mouseRepository.getMouse(mouseId)
+
                 _state.update { it.copy(
                     mouseEntity = mouse,
                 ) }
@@ -91,6 +88,7 @@ class MouseViewModel @Inject constructor(
 
                 // get max number of traps in occasion
                 val numberOfTrapsInOccasion = occasionRepository.getOccasion(occId).numTraps
+
                 _state.update { it.copy(
                     trapIDList = (1..numberOfTrapsInOccasion).toList(),
                 ) }
@@ -112,7 +110,7 @@ class MouseViewModel @Inject constructor(
 
             is MouseScreenEvent.OnCaptureIdClick -> {
                 _state.update { it.copy(
-                    captureID = event.captureID
+                    captureID = event.captureID,
                 ) }
             }
             is MouseScreenEvent.OnCodeTextChanged -> {
@@ -289,8 +287,14 @@ class MouseViewModel @Inject constructor(
             MouseScreenEvent.OnDialogOkClick -> {
                 _state.update { it.copy(
                     isDialogShowing = false,
-                    isMouseOkay = true
+                    isMouseOkay = true,
                 ) }
+            }
+            is MouseScreenEvent.OnReceiveImageName -> {
+                setImageId(
+                    imageName = event.imageName,
+                    imageNote = event.imageNote,
+                )
             }
 
             else -> Unit
@@ -308,13 +312,13 @@ class MouseViewModel @Inject constructor(
                 when(result) {
                     is Resource.Error -> {
                         _state.update { it.copy(
-                            error = result.throwable?.message
+                            error = result.throwable?.message,
                         ) }
                     }
                     is Resource.Success -> {
                         result.data?.let { code ->
                             _state.update { it.copy(
-                                code = "$code"
+                                code = "$code",
                             ) }
                         }
                     }
@@ -599,6 +603,16 @@ class MouseViewModel @Inject constructor(
             sex = toEnumSex(mouseEntity.sex),
             age = toEnumMouseAge(mouseEntity.age),
             captureID = toEnumCaptureID(mouseEntity.captureID),
+        ) }
+    }
+
+    private fun setImageId(
+        imageName: String?,
+        imageNote: String?,
+    ) {
+        // TODO create imageId in state class
+        _state.update { it.copy(
+
         ) }
     }
 

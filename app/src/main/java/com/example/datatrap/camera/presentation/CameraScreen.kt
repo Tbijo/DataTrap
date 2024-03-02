@@ -1,5 +1,6 @@
 package com.example.datatrap.camera.presentation
 
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
@@ -46,6 +47,10 @@ private fun ScreenContent(
         },
     )
 
+    BackHandler {
+        onEvent(CameraScreenEvent.OnLeave(makeChange = false))
+    }
+
     MyScaffold(
         title = "Camera",
         errorState = state.error,
@@ -54,15 +59,8 @@ private fun ScreenContent(
 
             MyImage(
                 modifier = Modifier.size(370.dp),
-                imgBitmap = state.bitmap,
-                contentDescription = "${
-                    state.mouseImageEntity?.let { 
-                        "mouse image"
-                    } ?: state.occasionImageEntity?.let {
-                        "occasion image"
-                    }
-                }",
-                onClick = {},
+                contentDescription = state.contentDescription,
+                imagePath = state.path,
             )
 
             Spacer(modifier = Modifier.height(300.dp))
@@ -72,12 +70,8 @@ private fun ScreenContent(
                     takePhoto.launch()
                 },
             ) {
-                Text(text = "Take Image")
+                Text(text = "Capture Image")
             }
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            Text(text = state.imageStateText)
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -92,10 +86,19 @@ private fun ScreenContent(
 
             Button(
                 onClick = {
-                    onEvent(CameraScreenEvent.OnInsertClick)
+                    onEvent(CameraScreenEvent.OnLeave(makeChange = true))
                 },
             ) {
-                Text(text = "Save Image")
+                Text(text = "Save")
+            }
+
+            Button(
+                enabled = state.path != null,
+                onClick = {
+                    onEvent(CameraScreenEvent.OnDeleteImage)
+                },
+            ) {
+                Text(text = "Delete Image")
             }
         }
     }

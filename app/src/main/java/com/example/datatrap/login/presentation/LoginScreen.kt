@@ -197,7 +197,7 @@ private fun ScreenContent(
                 },
                 onGoToAppSettingsClick = {
                     // declined twice
-                    (context as Activity).openAppSettings()
+                    context.openAppSettings()
                     onEvent(LoginScreenEvent.OnDismissDialog)
                 }
             )
