@@ -1,6 +1,11 @@
 package com.example.datatrap.mouse.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MouseDao {
@@ -21,7 +26,7 @@ interface MouseDao {
     suspend fun getMice(): List<MouseEntity>
 
     @Query("SELECT * FROM MouseEntity WHERE occasionID = :occasionID")
-    suspend fun getMiceForOccasion(occasionID: String): List<MouseEntity>
+    fun getMiceForOccasion(occasionID: String): Flow<List<MouseEntity>>
 
     @Query("SELECT * FROM MouseEntity WHERE primeMouseID = :primeMouseID")
     suspend fun getMiceByPrimeMouseID(primeMouseID: String): List<MouseEntity>

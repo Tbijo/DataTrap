@@ -25,6 +25,7 @@ class DeleteMouseUseCase(
         mouse.primeMouseID?.let {
             // update Occasion
             val occasion = occasionRepository.getOccasion(mouse.occasionID)
+
             occasionRepository.insertOccasion(
                 occasion.copy(
                     numMice = occasion.numMice?.minus(1),
@@ -35,6 +36,7 @@ class DeleteMouseUseCase(
             // update Project
             val session = sessionRepository.getSession(occasion.sessionID)
             val project = projectRepository.getProjectById(session.projectID)
+
             projectRepository.insertProject(
                 project.copy(
                     numMice = project.numMice - 1,

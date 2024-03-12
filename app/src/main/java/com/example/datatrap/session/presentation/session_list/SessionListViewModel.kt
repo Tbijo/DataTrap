@@ -41,8 +41,13 @@ class SessionListViewModel @Inject constructor(
                 val locality = localityRepository.getLocality(localityID)
                 val project = projectRepository.getProjectById(projectID)
 
+                sessionRepository.getSessionsForProject(projectID).collect { sessionList ->
+                    _state.update { it.copy(
+                        sessionList = sessionList,
+                    ) }
+                }
+
                 _state.update { it.copy(
-                    sessionList = sessionRepository.getSessionsForProject(projectID),
                     projectName = project.projectName,
                     localityName = locality.localityName,
                     localityId = localityID,

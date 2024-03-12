@@ -14,6 +14,7 @@ import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.GenerateCodeUseCase
 import com.example.datatrap.mouse.domain.use_case.GetOccupiedTrapIdsInOccasion
+import com.example.datatrap.mouse.domain.use_case.InsertMouseUseCase
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.settings.data.protocol.ProtocolRepository
 import com.example.datatrap.specie.data.SpecieRepository
@@ -33,11 +34,12 @@ import javax.inject.Inject
 class MouseViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val mouseRepository: MouseRepository,
-    private val getOccupiedTrapIdsInOccasion: GetOccupiedTrapIdsInOccasion,
     private val protocolRepository: ProtocolRepository,
     private val specieRepository: SpecieRepository,
-    private val generateCodeUseCase: GenerateCodeUseCase,
     private val occasionRepository: OccasionRepository,
+    private val getOccupiedTrapIdsInOccasion: GetOccupiedTrapIdsInOccasion,
+    private val generateCodeUseCase: GenerateCodeUseCase,
+    private val insertMouseUseCase: InsertMouseUseCase,
 ): ViewModel() {
 
     private var occasionId: String? = null
@@ -49,8 +51,6 @@ class MouseViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-
-    //private val mouseImageEntity: MouseImageEntity? = null
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -65,9 +65,11 @@ class MouseViewModel @Inject constructor(
                 ) }
             }
 
-            _state.update { it.copy(
-                specieList = specieRepository.getSpecies(),
-            ) }
+            specieRepository.getSpecies().collect { species ->
+                _state.update { it.copy(
+                    specieList = species,
+                ) }
+            }
 
             mouseId?.let {
                 val mouse = mouseRepository.getMouse(mouseId)
@@ -291,10 +293,10 @@ class MouseViewModel @Inject constructor(
                 ) }
             }
             is MouseScreenEvent.OnReceiveImageName -> {
-                setImageId(
+                _state.update { it.copy(
                     imageName = event.imageName,
                     imageNote = event.imageNote,
-                )
+                ) }
             }
 
             else -> Unit
@@ -328,70 +330,100 @@ class MouseViewModel @Inject constructor(
     }
 
     private fun showDrawnRat() {
-        val specie = state.value.specieEntity
-        val code = state.value.code.toIntOrNull()
+        with(state.value) {
+            val specie = specieEntity
+            val code = code.toIntOrNull()
 
-        if (specie == null) {
+            if (specie == null) {
+                _state.update { it.copy(
+                    error = "Select a Specie",
+                ) }
+                return
+            }
+            if (specie.upperFingers == null) {
+                _state.update { it.copy(
+                    error = "Selected specie does not have upper fingers specified.",
+                ) }
+                return
+            }
+            if (code == null || code <= 0 || code.toString().length >= 5) {
+                _state.update { it.copy(
+                    error = "Generate a valid code.",
+                ) }
+                return
+            }
             _state.update { it.copy(
-                error = "Select a Specie",
+                isSheetExpanded = !isSheetExpanded,
             ) }
-            return
         }
-        if (specie.upperFingers == null) {
-            _state.update { it.copy(
-                error = "Selected specie does not have upper fingers specified.",
-            ) }
-            return
-        }
-        if (code == null || code <= 0 || code.toString().length >= 5) {
-            _state.update { it.copy(
-                error = "Generate a valid code.",
-            ) }
-            return
-        }
-        _state.update { it.copy(
-            isSheetExpanded = !state.value.isSheetExpanded,
-        ) }
     }
 
     private fun insertMouse() {
-        val specie = state.value.specieEntity
-        val specieID = specie?.specieId
+        with(state.value) {
+            val specie = specieEntity
+            val specieID = specie?.specieId
 
-        if (specieID == null) {
-            _state.update { it.copy(
-                error = "Fill required fields.",
-            ) }
-            return
-        }
+            if (specieID == null) {
+                _state.update { it.copy(
+                    error = "Fill required fields.",
+                ) }
+                return
+            }
 
-        val occasionID: String = occasionId.ifNullOrBlank {
-            _state.update { it.copy(
-                error = "This should not happen with occasionID."
-            ) }
-            return
-        }!!
+            val occasionID: String = occasionId.ifNullOrBlank {
+                _state.update { it.copy(
+                    error = "This should not happen with occasionID."
+                ) }
+                return
+            }!!
 
-        val localityID: String = localityId.ifNullOrBlank {
-            _state.update { it.copy(
-                error = "This should not happen with localityID."
-            ) }
-            return
-        }!!
+            val localityID: String = localityId.ifNullOrBlank {
+                _state.update { it.copy(
+                    error = "This should not happen with localityID."
+                ) }
+                return
+            }!!
 
-        viewModelScope.launch(Dispatchers.IO) {
+            viewModelScope.launch(Dispatchers.IO) {
 
-            val code = state.value.code.toIntOrNull()
+                val code = state.value.code.toIntOrNull()
 
-            val weight: Float? = state.value.weight.toFloatOrNull()
-            val minWeightOfSpecie = state.value.specieEntity?.minWeight
-            val maxWeightOfSpecie = state.value.specieEntity?.maxWeight
-            if (weight != null && minWeightOfSpecie != null && maxWeightOfSpecie != null) {
-                if (weight > maxWeightOfSpecie || weight < minWeightOfSpecie) {
+                val weight: Float? = weight.toFloatOrNull()
+                val minWeightOfSpecie = specieEntity?.minWeight
+                val maxWeightOfSpecie = specieEntity?.maxWeight
+                if (weight != null && minWeightOfSpecie != null && maxWeightOfSpecie != null) {
+                    if (weight > maxWeightOfSpecie || weight < minWeightOfSpecie) {
+                        // TODO other way to make function wait for modal Window?
+                        _state.update { it.copy(
+                            dialogTitle = "Warning: Mouse Weight",
+                            dialogMessage = "Mouse weight out of bounds, save anyway?",
+                            isDialogShowing = true,
+                        ) }
+                        // wait fo user to interact with dialog
+                        // possible ensureActive?
+                        launch { while (state.value.isDialogShowing) {} }.join()
+
+                    } else {
+                        _state.update { it.copy(
+                            isMouseOkay = true,
+                        ) }
+                    }
+                } else {
+                    _state.update { it.copy(
+                        isMouseOkay = true,
+                    ) }
+                }
+
+                if (!state.value.isMouseOkay) {
+                    return@launch
+                }
+
+                val trapID: Int? = state.value.trapID
+                if (trapID != null && trapID in state.value.occupiedTrapIdList) {
                     // TODO other way to make function wait for modal Window?
                     _state.update { it.copy(
-                        dialogTitle = "Warning: Mouse Weight",
-                        dialogMessage = "Mouse weight out of bounds, save anyway?",
+                        dialogTitle = "Warning: Trap In Use",
+                        dialogMessage = "Selected trap is in use, save anyway?",
                         isDialogShowing = true,
                     ) }
                     // wait fo user to interact with dialog
@@ -403,110 +435,47 @@ class MouseViewModel @Inject constructor(
                         isMouseOkay = true,
                     ) }
                 }
-            } else {
-                _state.update { it.copy(
-                    isMouseOkay = true,
-                ) }
-            }
 
-            if (!state.value.isMouseOkay) {
-                return@launch
-            }
+                if (!state.value.isMouseOkay) {
+                    return@launch
+                }
 
-            val trapID: Int? = state.value.trapID
-            if (trapID != null && trapID in state.value.occupiedTrapIdList) {
-                // TODO other way to make function wait for modal Window?
-                _state.update { it.copy(
-                    dialogTitle = "Warning: Trap In Use",
-                    dialogMessage = "Selected trap is in use, save anyway?",
-                    isDialogShowing = true,
-                ) }
-                // wait fo user to interact with dialog
-                // possible ensureActive?
-                launch { while (state.value.isDialogShowing) {} }.join()
+                val captureID = captureID?.myName
 
-            } else {
-                _state.update { it.copy(
-                    isMouseOkay = true,
-                ) }
-            }
+                val sexActive: Boolean = sexActive
 
-            if (!state.value.isMouseOkay) {
-                return@launch
-            }
+                val body = body.toFloatOrNull()
+                val tail = tail.toFloatOrNull()
+                val feet = feet.toFloatOrNull()
+                val ear = ear.toFloatOrNull()
 
-            val captureID = state.value.captureID?.myName
+                val sex = sex?.myName
+                val age = state.value.age?.myName
 
-            val sexActive: Boolean = state.value.sexActive
+                val testesLength: Float? = testesLength.toFloatOrNull()
+                val testesWidth: Float? = testesWidth.toFloatOrNull()
 
-            val body = state.value.body.toFloatOrNull()
-            val tail = state.value.tail.toFloatOrNull()
-            val feet = state.value.feet.toFloatOrNull()
-            val ear = state.value.ear.toFloatOrNull()
+                val gravidity = gravidity
+                val lactating = lactating
 
-            val sex = state.value.sex?.myName
-            val age = state.value.age?.myName
+                // počet embryí v oboch rohoch maternice a ich priemer
+                val embryoRight = rightEmbryo.toIntOrNull()
+                val embryoLeft = leftEmbryo.toIntOrNull()
+                val embryoDiameter = embryoDiameter.toFloatOrNull()
 
-            val testesLength: Float? = state.value.testesLength.toFloatOrNull()
-            val testesWidth: Float? = state.value.testesWidth.toFloatOrNull()
+                // počet placentálnych polypov
+                val MC = mc
+                val MCright = mcRight.toIntOrNull()
+                val MCleft = mcLeft.toIntOrNull()
 
-            val gravidity = state.value.gravidity
-            val lactating = state.value.lactating
+                val note: String? = note.ifEmpty { null }
 
-            // počet embryí v oboch rohoch maternice a ich priemer
-            val embryoRight = state.value.rightEmbryo.toIntOrNull()
-            val embryoLeft = state.value.leftEmbryo.toIntOrNull()
-            val embryoDiameter = state.value.embryoDiameter.toFloatOrNull()
+                val currentMouse = mouseEntity
 
-            // počet placentálnych polypov
-            val MC = state.value.mc
-            val MCright = state.value.mcRight.toIntOrNull()
-            val MCleft = state.value.mcLeft.toIntOrNull()
-
-            val note: String? = state.value.note.ifEmpty { null }
-
-            val currentMouse = state.value.mouseEntity
-
-            val mouseEntity: MouseEntity = if (currentMouse == null) {
-                MouseEntity(
-                    code = code,
-                    primeMouseID = null,
-                    speciesID = specieID,
-                    protocolID = state.value.protocolEntity?.protocolId,
-                    occasionID = occasionID,
-                    localityID = localityID,
-                    trapID = trapID,
-                    mouseDateTimeCreated = ZonedDateTime.now(),
-                    mouseDateTimeUpdated = null,
-                    sex = sex,
-                    age = age,
-                    gravidity = gravidity,
-                    lactating = lactating,
-                    sexActive = sexActive,
-                    weight = weight,
-                    recapture = false,
-                    captureID = captureID,
-                    body = body,
-                    tail = tail,
-                    feet = feet,
-                    ear = ear,
-                    testesLength = testesLength,
-                    testesWidth = testesWidth,
-                    embryoRight = embryoRight,
-                    embryoLeft = embryoLeft,
-                    embryoDiameter = embryoDiameter,
-                    MC = MC,
-                    MCright = MCright,
-                    MCleft = MCleft,
-                    note = note,
-                    mouseCaught = ZonedDateTime.now(),
-                )
-            } else {
-                if (isRecapture == true) {
+                val mouseEntity: MouseEntity = if (currentMouse == null) {
                     MouseEntity(
-                        mouseId = UUID.randomUUID().toString(),
                         code = code,
-                        primeMouseID = currentMouse.primeMouseID ?: currentMouse.mouseId,
+                        primeMouseID = null,
                         speciesID = specieID,
                         protocolID = state.value.protocolEntity?.protocolId,
                         occasionID = occasionID,
@@ -520,7 +489,7 @@ class MouseViewModel @Inject constructor(
                         lactating = lactating,
                         sexActive = sexActive,
                         weight = weight,
-                        recapture = true,
+                        recapture = false,
                         captureID = captureID,
                         body = body,
                         tail = tail,
@@ -538,82 +507,112 @@ class MouseViewModel @Inject constructor(
                         mouseCaught = ZonedDateTime.now(),
                     )
                 } else {
-                    MouseEntity(
-                        mouseId = currentMouse.mouseId,
-                        code = code,
-                        primeMouseID = currentMouse.primeMouseID,
-                        speciesID = specieID,
-                        protocolID = state.value.protocolEntity?.protocolId,
-                        occasionID = currentMouse.occasionID,
-                        localityID = currentMouse.localityID,
-                        trapID = trapID,
-                        mouseDateTimeCreated = currentMouse.mouseDateTimeCreated,
-                        mouseDateTimeUpdated = ZonedDateTime.now(),
-                        sex = sex,
-                        age = age,
-                        gravidity = gravidity,
-                        lactating = lactating,
-                        sexActive = sexActive,
-                        weight = weight,
-                        recapture = currentMouse.recapture,
-                        captureID = captureID,
-                        body = body,
-                        tail = tail,
-                        feet = feet,
-                        ear = ear,
-                        testesLength = testesLength,
-                        testesWidth = testesWidth,
-                        embryoRight = embryoRight,
-                        embryoLeft = embryoLeft,
-                        embryoDiameter = embryoDiameter,
-                        MC = MC,
-                        MCright = MCright,
-                        MCleft = MCleft,
-                        note = note,
-                        mouseCaught = currentMouse.mouseCaught,
-                    )
+                    if (isRecapture == true) {
+                        MouseEntity(
+                            mouseId = UUID.randomUUID().toString(),
+                            code = code,
+                            primeMouseID = currentMouse.primeMouseID ?: currentMouse.mouseId,
+                            speciesID = specieID,
+                            protocolID = state.value.protocolEntity?.protocolId,
+                            occasionID = occasionID,
+                            localityID = localityID,
+                            trapID = trapID,
+                            mouseDateTimeCreated = ZonedDateTime.now(),
+                            mouseDateTimeUpdated = null,
+                            sex = sex,
+                            age = age,
+                            gravidity = gravidity,
+                            lactating = lactating,
+                            sexActive = sexActive,
+                            weight = weight,
+                            recapture = true,
+                            captureID = captureID,
+                            body = body,
+                            tail = tail,
+                            feet = feet,
+                            ear = ear,
+                            testesLength = testesLength,
+                            testesWidth = testesWidth,
+                            embryoRight = embryoRight,
+                            embryoLeft = embryoLeft,
+                            embryoDiameter = embryoDiameter,
+                            MC = MC,
+                            MCright = MCright,
+                            MCleft = MCleft,
+                            note = note,
+                            mouseCaught = ZonedDateTime.now(),
+                        )
+                    } else {
+                        MouseEntity(
+                            mouseId = currentMouse.mouseId,
+                            code = code,
+                            primeMouseID = currentMouse.primeMouseID,
+                            speciesID = specieID,
+                            protocolID = state.value.protocolEntity?.protocolId,
+                            occasionID = currentMouse.occasionID,
+                            localityID = currentMouse.localityID,
+                            trapID = trapID,
+                            mouseDateTimeCreated = currentMouse.mouseDateTimeCreated,
+                            mouseDateTimeUpdated = ZonedDateTime.now(),
+                            sex = sex,
+                            age = age,
+                            gravidity = gravidity,
+                            lactating = lactating,
+                            sexActive = sexActive,
+                            weight = weight,
+                            recapture = currentMouse.recapture,
+                            captureID = captureID,
+                            body = body,
+                            tail = tail,
+                            feet = feet,
+                            ear = ear,
+                            testesLength = testesLength,
+                            testesWidth = testesWidth,
+                            embryoRight = embryoRight,
+                            embryoLeft = embryoLeft,
+                            embryoDiameter = embryoDiameter,
+                            MC = MC,
+                            MCright = MCright,
+                            MCleft = MCleft,
+                            note = note,
+                            mouseCaught = currentMouse.mouseCaught,
+                        )
+                    }
                 }
-            }
 
-            mouseRepository.insertMouse(mouseEntity)
-            _eventFlow.emit(UiEvent.NavigateBack)
+                insertMouseUseCase(occasionID, mouseEntity, imageName, imageNote)
+
+                _eventFlow.emit(UiEvent.NavigateBack)
+            }
         }
     }
 
     private fun initMouseValuesToView(mouseEntity: MouseEntity) {
-        _state.update { it.copy(
-            gravidity = mouseEntity.gravidity == true,
-            lactating = mouseEntity.lactating == true,
-            sexActive = mouseEntity.sexActive == true,
-            mc = mouseEntity.MC == true,
-            code = "${mouseEntity.code}",
-            weight = "${mouseEntity.weight}",
-            testesLength = "${mouseEntity.testesLength}",
-            testesWidth = "${mouseEntity.testesWidth}",
-            note = "${mouseEntity.note}",
-            body = "${mouseEntity.body}",
-            tail = "${mouseEntity.tail}",
-            feet = "${mouseEntity.feet}",
-            ear = "${mouseEntity.ear}",
-            rightEmbryo = "${mouseEntity.embryoRight}",
-            leftEmbryo = "${mouseEntity.embryoLeft}",
-            embryoDiameter = "${mouseEntity.embryoDiameter}",
-            mcRight = "${mouseEntity.MCright}",
-            mcLeft = "${mouseEntity.MCleft}",
-            sex = toEnumSex(mouseEntity.sex),
-            age = toEnumMouseAge(mouseEntity.age),
-            captureID = toEnumCaptureID(mouseEntity.captureID),
-        ) }
-    }
-
-    private fun setImageId(
-        imageName: String?,
-        imageNote: String?,
-    ) {
-        // TODO create imageId in state class
-        _state.update { it.copy(
-
-        ) }
+        with(mouseEntity) {
+            _state.update { it.copy(
+                gravidity = gravidity == true,
+                lactating = lactating == true,
+                sexActive = sexActive == true,
+                mc = MC == true,
+                code = "$code",
+                weight = "$weight",
+                testesLength = "$testesLength",
+                testesWidth = "$testesWidth",
+                note = "$note",
+                body = "$body",
+                tail = "$tail",
+                feet = "$feet",
+                ear = "$ear",
+                rightEmbryo = "$embryoRight",
+                leftEmbryo = "$embryoLeft",
+                embryoDiameter = "$embryoDiameter",
+                mcRight = "$MCright",
+                mcLeft = "$MCleft",
+                sex = toEnumSex(sex),
+                age = toEnumMouseAge(age),
+                captureID = toEnumCaptureID(captureID),
+            ) }
+        }
     }
 
 }

@@ -1,5 +1,7 @@
 package com.example.datatrap.mouse.data
 
+import kotlinx.coroutines.flow.Flow
+
 class MouseRepository(private val mouseDao: MouseDao) {
 
     suspend fun insertMouse(mouseEntity: MouseEntity) {
@@ -22,7 +24,7 @@ class MouseRepository(private val mouseDao: MouseDao) {
         return mouseDao.getMice()
     }
 
-    suspend fun getMiceForOccasion(occasionID: String): List<MouseEntity> {
+    fun getMiceForOccasion(occasionID: String): Flow<List<MouseEntity>> {
         return mouseDao.getMiceForOccasion(occasionID)
     }
 

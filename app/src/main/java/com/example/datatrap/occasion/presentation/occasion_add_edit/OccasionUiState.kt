@@ -51,4 +51,7 @@ data class OccasionUiState(
 
     val noteText: String = "",
     val noteError: String? = null,
+
+    val imageName: String? = null,
+    val imageNote: String? = null,
 )

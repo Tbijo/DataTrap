@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface OccasionDao {
@@ -19,5 +20,5 @@ interface OccasionDao {
     suspend fun getOccasion(occasionId: String): OccasionEntity
 
     @Query("SELECT * FROM OccasionEntity WHERE sessionID = :sessionID")
-    suspend fun getOccasionsForSession(sessionID: String): List<OccasionEntity>
+    fun getOccasionsForSession(sessionID: String): Flow<List<OccasionEntity>>
 }

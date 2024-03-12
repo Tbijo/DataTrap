@@ -1,8 +1,13 @@
 package com.example.datatrap.specie.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import com.example.datatrap.specie.domain.model.SpecList
 import com.example.datatrap.specie.domain.model.SpecSelectList
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SpecieDao {
@@ -17,13 +22,13 @@ interface SpecieDao {
     suspend fun getSpecie(specieId: String): SpecieEntity
 
     @Query("SELECT * FROM SpecieEntity")
-    suspend fun getSpecies(): List<SpecieEntity>
+    fun getSpecies(): Flow<List<SpecieEntity>>
 
     @Query("SELECT specieId, speciesCode, upperFingers, minWeight, maxWeight FROM SpecieEntity")
     suspend fun getSpeciesForSelect(): List<SpecSelectList>
 
     @Query("SELECT * FROM SpecieEntity WHERE speciesCode LIKE :specieCode")
-    suspend fun searchSpecies(specieCode: String): List<SpecieEntity>
+    fun searchSpecies(specieCode: String): Flow<List<SpecieEntity>>
 
     @Query("SELECT specieId, speciesCode, fullName FROM SpecieEntity WHERE speciesCode IN (:spCode)")
     suspend fun getNonSpecie(spCode: List<String>): List<SpecList>

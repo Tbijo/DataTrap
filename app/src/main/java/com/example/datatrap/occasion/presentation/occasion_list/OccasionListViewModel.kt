@@ -38,8 +38,13 @@ class OccasionListViewModel @Inject constructor(
             savedStateHandle.getMainScreenNavArgs()?.sessionId?.let { sessionId ->
                 val session = sessionRepository.getSession(sessionId)
 
+                occasionRepository.getOccasionsForSession(sessionId).collect { occasionList ->
+                    _state.update { it.copy(
+                        occasionList = occasionList,
+                    ) }
+                }
+
                 _state.update { it.copy(
-                    occasionList = occasionRepository.getOccasionsForSession(sessionId),
                     projectName = projectRepository.getProjectById(session.projectID).projectName,
                     sessionNum = session.toString(),
                 ) }

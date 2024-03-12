@@ -80,7 +80,9 @@ class OccasionViewModel @Inject constructor(
 
             // for generating next occasion number
             sessionId?.let {
-                occasionCount = occasionRepository.getOccasionsForSession(sessionId).size
+                occasionRepository.getOccasionsForSession(sessionId).collect { occasions ->
+                    occasionCount = occasions.size
+                }
             }
 
             fillDropDowns()
@@ -221,12 +223,11 @@ class OccasionViewModel @Inject constructor(
                     temperatureError = null,
                 ) }
             }
-
             is OccasionScreenEvent.OnReceiveImageName -> {
-                setImageId(
+                _state.update { it.copy(
                     imageName = event.imageName,
                     imageNote = event.imageNote,
-                )
+                ) }
             }
 
             else -> Unit
@@ -234,101 +235,104 @@ class OccasionViewModel @Inject constructor(
     }
 
     private fun insertOccasion() {
-        val methodID: String = state.value.methodEntity?.methodId.ifNullOrBlank {
-            _state.update { it.copy(
-                error = "Method has to be selected.",
-            ) }
-            return
-        }!!
+        with(state.value) {
+            val methodID: String = methodEntity?.methodId.ifNullOrBlank {
+                _state.update { it.copy(
+                    error = "Method has to be selected.",
+                ) }
+                return
+            }!!
 
-        val methodTypeID: String = state.value.methodTypeEntity?.methodTypeId.ifNullOrBlank {
-            _state.update { it.copy(
-                error = "Method Type has to be selected.",
-            ) }
-            return
-        }!!
+            val methodTypeID: String = methodTypeEntity?.methodTypeId.ifNullOrBlank {
+                _state.update { it.copy(
+                    error = "Method Type has to be selected.",
+                ) }
+                return
+            }!!
 
-        val trapTypeID: String = state.value.trapTypeEntity?.trapTypeId.ifNullOrBlank {
-            _state.update { it.copy(
-                error = "Trap Type has to be selected.",
-            ) }
-            return
-        }!!
+            val trapTypeID: String = trapTypeEntity?.trapTypeId.ifNullOrBlank {
+                _state.update { it.copy(
+                    error = "Trap Type has to be selected.",
+                ) }
+                return
+            }!!
 
-        val leg: String = state.value.legitimationText.ifEmpty {
-            _state.update { it.copy(
-                legitimationError = "A person needs to sign here.",
-            ) }
-            return
-        }
+            val leg: String = legitimationText.ifEmpty {
+                _state.update { it.copy(
+                    legitimationError = "A person needs to sign here.",
+                ) }
+                return
+            }
 
-        val numTraps: Int = Integer.parseInt(state.value.numberOfTrapsText.ifEmpty {
-            _state.update { it.copy(
-                numberOfTrapsError = "At least one trap needs to exist.",
-            ) }
-            return
-        })
-
-        if (sessionId == null) {
-            _state.update { it.copy(
-                error = "This should not happen.",
-            ) }
-            return
-        }
-
-        val currentOccasionEntity = state.value.occasionEntity
-
-        val occasionEntity = if (currentOccasionEntity == null) {
-            OccasionEntity(
-                occasion = (occasionCount + 1),
-                localityID = localityId ?: return,
-                sessionID = sessionId,
-                occasionStart = ZonedDateTime.now(),
-                occasionDateTimeCreated = ZonedDateTime.now(),
-                occasionDateTimeUpdated = null,
-
-                numMice = state.value.numberOfMiceText.toIntOrNull(),
-                methodID = methodID,
-                methodTypeID = methodTypeID,
-                trapTypeID = trapTypeID,
-                envTypeID = state.value.envTypeEntity?.envTypeId,
-                vegetTypeID = state.value.vegTypeEntity?.vegetTypeId,
-                leg = leg,
-                gotCaught = state.value.gotCaught,
-                numTraps = numTraps,
-                temperature = state.value.temperatureText.toFloatOrNull(),
-                weather = state.value.weatherText.ifEmpty { null },
-                note = state.value.noteText.ifEmpty { null },
+            val numTraps: Int = Integer.parseInt(
+                numberOfTrapsText.ifEmpty {
+                    _state.update { it.copy(
+                        numberOfTrapsError = "At least one trap needs to exist.",
+                    ) }
+                    return
+                }
             )
-        } else {
-            OccasionEntity(
-                occasionId = currentOccasionEntity.occasionId,
-                occasion = currentOccasionEntity.occasion,
-                localityID = currentOccasionEntity.localityID,
-                sessionID = currentOccasionEntity.sessionID,
-                occasionStart = currentOccasionEntity.occasionStart,
-                occasionDateTimeCreated = currentOccasionEntity.occasionDateTimeCreated,
-                occasionDateTimeUpdated = ZonedDateTime.now(),
 
-                numMice = state.value.numberOfMiceText.toIntOrNull(),
-                methodID = methodID,
-                methodTypeID = methodTypeID,
-                trapTypeID = trapTypeID,
-                envTypeID = state.value.envTypeEntity?.envTypeId,
-                vegetTypeID = state.value.vegTypeEntity?.vegetTypeId,
-                leg = leg,
-                gotCaught = state.value.gotCaught,
-                numTraps = numTraps,
-                temperature = state.value.temperatureText.toFloatOrNull(),
-                weather = state.value.weatherText.ifEmpty { null },
-                note = state.value.noteText.ifEmpty { null },
-            )
-        }
+            if (sessionId == null) {
+                _state.update { it.copy(
+                    error = "This should not happen.",
+                ) }
+                return
+            }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            insertOccasionUseCase(sessionId)
-            occasionRepository.insertOccasion(occasionEntity)
-            _eventFlow.emit(UiEvent.NavigateBack)
+            val currentOccasionEntity = occasionEntity
+
+            val occasionEntity = if (currentOccasionEntity == null) {
+                OccasionEntity(
+                    occasion = (occasionCount + 1),
+                    localityID = localityId ?: return,
+                    sessionID = sessionId,
+                    occasionStart = ZonedDateTime.now(),
+                    occasionDateTimeCreated = ZonedDateTime.now(),
+                    occasionDateTimeUpdated = null,
+
+                    numMice = numberOfMiceText.toIntOrNull(),
+                    methodID = methodID,
+                    methodTypeID = methodTypeID,
+                    trapTypeID = trapTypeID,
+                    envTypeID = envTypeEntity?.envTypeId,
+                    vegetTypeID = vegTypeEntity?.vegetTypeId,
+                    leg = leg,
+                    gotCaught = gotCaught,
+                    numTraps = numTraps,
+                    temperature = temperatureText.toFloatOrNull(),
+                    weather = weatherText.ifEmpty { null },
+                    note = noteText.ifEmpty { null },
+                )
+            } else {
+                OccasionEntity(
+                    occasionId = currentOccasionEntity.occasionId,
+                    occasion = currentOccasionEntity.occasion,
+                    localityID = currentOccasionEntity.localityID,
+                    sessionID = currentOccasionEntity.sessionID,
+                    occasionStart = currentOccasionEntity.occasionStart,
+                    occasionDateTimeCreated = currentOccasionEntity.occasionDateTimeCreated,
+                    occasionDateTimeUpdated = ZonedDateTime.now(),
+
+                    numMice = numberOfMiceText.toIntOrNull(),
+                    methodID = methodID,
+                    methodTypeID = methodTypeID,
+                    trapTypeID = trapTypeID,
+                    envTypeID = envTypeEntity?.envTypeId,
+                    vegetTypeID = vegTypeEntity?.vegetTypeId,
+                    leg = leg,
+                    gotCaught = gotCaught,
+                    numTraps = numTraps,
+                    temperature = temperatureText.toFloatOrNull(),
+                    weather = weatherText.ifEmpty { null },
+                    note = noteText.ifEmpty { null },
+                )
+            }
+
+            viewModelScope.launch(Dispatchers.IO) {
+                insertOccasionUseCase(sessionId, occasionEntity, imageName, imageNote)
+                _eventFlow.emit(UiEvent.NavigateBack)
+            }
         }
     }
 
@@ -390,16 +394,6 @@ class OccasionViewModel @Inject constructor(
                 vegTypeList = vegTypeList,
             ) }
         }.launchIn(viewModelScope)
-    }
-
-    private fun setImageId(
-        imageName: String?,
-        imageNote: String?,
-    ) {
-        // TODO create imageID val in state class
-        _state.update { it.copy(
-
-        ) }
     }
 
 }

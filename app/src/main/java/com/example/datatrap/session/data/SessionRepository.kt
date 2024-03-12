@@ -1,5 +1,7 @@
 package com.example.datatrap.session.data
 
+import kotlinx.coroutines.flow.Flow
+
 class SessionRepository(private val sessionDao: SessionDao) {
 
     suspend fun insertSession(sessionEntity: SessionEntity) {
@@ -14,7 +16,7 @@ class SessionRepository(private val sessionDao: SessionDao) {
         return sessionDao.getSession(sessionId)
     }
 
-    suspend fun getSessionsForProject(projectId: String): List<SessionEntity> {
+    fun getSessionsForProject(projectId: String): Flow<List<SessionEntity>> {
         return sessionDao.getSessionsForProject(projectId)
     }
 

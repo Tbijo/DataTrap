@@ -27,10 +27,12 @@ class RecaptureListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update { it.copy(
-                specieList = specieRepository.getSpecies(),
-                isLoading = false,
-            ) }
+            specieRepository.getSpecies().collect { species ->
+                _state.update { it.copy(
+                    specieList = species,
+                    isLoading = false,
+                ) }
+            }
         }
     }
 

@@ -12,10 +12,12 @@ class DeleteSessionUseCase(
 
     suspend operator fun invoke(sessionId: String, projectID: String) {
         val project = projectRepository.getProjectById(projectID)
-        val occasions = occasionRepository.getOccasionsForSession(sessionId)
+        var numMiceOfOccasions = 0
 
-        val numMiceOfOccasions = occasions.sumOf {
-            it.numMice ?: 0
+        occasionRepository.getOccasionsForSession(sessionId).collect { occasions ->
+            numMiceOfOccasions = occasions.sumOf {
+                it.numMice ?: 0
+            }
         }
 
         projectRepository.insertProject(

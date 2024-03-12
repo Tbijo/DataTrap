@@ -48,15 +48,19 @@ class MouseMultiViewModel @Inject constructor(
                 localityId = it
             }
 
+            // TODO Use getNonSpecie function change object in State class
             val nonSpecies = EnumSpecie.values().map { it.name }
-            val filteredSpecies = specieRepository.getSpecies().filter {
-                it.speciesCode in nonSpecies
+
+            specieRepository.getSpecies().collect { species ->
+                val filteredSpecies = species.filter { it.speciesCode in nonSpecies }
+
+                _state.update { it.copy(
+                    specieList = filteredSpecies,
+                ) }
             }
-            _state.update { it.copy(
-                specieList = filteredSpecies,
-            ) }
 
             val occasion = occasionRepository.getOccasion(occasionId)
+
             _state.update { it.copy(
                 trapIdList = (1..occasion.numTraps).toList(),
             ) }

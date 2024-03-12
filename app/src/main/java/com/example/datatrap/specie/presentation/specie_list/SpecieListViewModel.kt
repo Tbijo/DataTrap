@@ -27,10 +27,12 @@ class SpecieListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            _state.update { it.copy(
-                specieList = specieRepository.getSpecies(),
-                isLoading = false,
-            ) }
+            specieRepository.getSpecies().collect { species ->
+                _state.update { it.copy(
+                    specieList = species,
+                    isLoading = false,
+                ) }
+            }
         }
     }
 
@@ -60,9 +62,12 @@ class SpecieListViewModel @Inject constructor(
     private fun searchSpecies(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val searchQuery = "%$query%"
-            _state.update { it.copy(
-                specieList = specieRepository.searchSpecies(searchQuery),
-            ) }
+
+            specieRepository.searchSpecies(searchQuery).collect { species ->
+                _state.update { it.copy(
+                    specieList = species,
+                ) }
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface SessionDao {
@@ -19,6 +20,6 @@ interface SessionDao {
     suspend fun getSession(sessionId: String): SessionEntity
 
     @Query("SELECT * FROM SessionEntity WHERE projectID = :projectId")
-    suspend fun getSessionsForProject(projectId: String): List<SessionEntity>
+    fun getSessionsForProject(projectId: String): Flow<List<SessionEntity>>
 
 }

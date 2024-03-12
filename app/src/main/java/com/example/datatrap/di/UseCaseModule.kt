@@ -186,6 +186,8 @@ object UseCaseModule {
         sessionRepository: SessionRepository,
         occasionRepository: OccasionRepository,
         specieRepository: SpecieRepository,
+        mouseImageRepository: MouseImageRepository,
+        internalStorageRepository: InternalStorageRepository
     ): InsertMouseUseCase {
         return InsertMouseUseCase(
             mouseRepository,
@@ -193,6 +195,8 @@ object UseCaseModule {
             sessionRepository,
             occasionRepository,
             specieRepository,
+            mouseImageRepository,
+            internalStorageRepository,
         )
     }
 
@@ -200,11 +204,13 @@ object UseCaseModule {
     @Provides
     fun provideDeleteOccasionUseCase(
         occasionRepository: OccasionRepository,
+        occasionImageRepository: OccasionImageRepository,
         sessionRepository: SessionRepository,
         projectRepository: ProjectRepository,
     ): DeleteOccasionUseCase {
         return DeleteOccasionUseCase(
             occasionRepository,
+            occasionImageRepository,
             sessionRepository,
             projectRepository,
         )
@@ -214,9 +220,15 @@ object UseCaseModule {
     @Provides
     fun provideInsertOccasionUseCase(
         sessionRepository: SessionRepository,
+        occasionRepository: OccasionRepository,
+        occasionImageRepository: OccasionImageRepository,
+        internalStorageRepository: InternalStorageRepository,
     ): InsertOccasionUseCase {
         return InsertOccasionUseCase(
+            occasionRepository,
             sessionRepository,
+            occasionImageRepository,
+            internalStorageRepository,
         )
     }
 

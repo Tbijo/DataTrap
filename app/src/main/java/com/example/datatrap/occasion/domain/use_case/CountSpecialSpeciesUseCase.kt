@@ -5,13 +5,13 @@ import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.occasion.domain.model.OccasionStats
 import com.example.datatrap.specie.data.SpecieRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 
 class CountSpecialSpeciesUseCase(
     private val specieRepository: SpecieRepository,
     private val mouseRepository: MouseRepository,
 ) {
-    operator fun invoke(occasionId: String): Flow<OccasionStats> = flow {
+    suspend operator fun invoke(occasionId: String): Flow<OccasionStats> {
         val nonSpecies = specieRepository.getNonSpecie()
         val nonSpeciesId = nonSpecies.map { it.specieId }
 
@@ -21,16 +21,14 @@ class CountSpecialSpeciesUseCase(
         val pvpNonSpecieId = nonSpecies.find { it.speciesCode == EnumSpecie.PVP.name }?.specieId
         val otherNonSpecieId = nonSpecies.find { it.speciesCode == EnumSpecie.Other.name }?.specieId
 
-        with(mouseRepository.getMiceForOccasion(occasionId)) {
-            emit(
-                OccasionStats(
-                    errorNum = count { mouse -> mouse.speciesID == errorNonSpecieId },
-                    closeNum = count { mouse -> mouse.speciesID == closeNonSpecieId },
-                    predatorNum = count { mouse -> mouse.speciesID == predatorNonSpecieId },
-                    pvpNum = count { mouse -> mouse.speciesID == pvpNonSpecieId },
-                    otherNum = count { mouse -> mouse.speciesID == otherNonSpecieId },
-                    specieNum = count { mouse -> mouse.speciesID !in nonSpeciesId },
-                )
+        return mouseRepository.getMiceForOccasion(occasionId).map {
+            OccasionStats(
+                errorNum = it.count { mouse -> mouse.speciesID == errorNonSpecieId },
+                closeNum = it.count { mouse -> mouse.speciesID == closeNonSpecieId },
+                predatorNum = it.count { mouse -> mouse.speciesID == predatorNonSpecieId },
+                pvpNum = it.count { mouse -> mouse.speciesID == pvpNonSpecieId },
+                otherNum = it.count { mouse -> mouse.speciesID == otherNonSpecieId },
+                specieNum = it.count { mouse -> mouse.speciesID !in nonSpeciesId },
             )
         }
     }
