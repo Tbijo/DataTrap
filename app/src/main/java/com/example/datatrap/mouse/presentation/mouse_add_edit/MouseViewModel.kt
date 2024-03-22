@@ -3,6 +3,8 @@ package com.example.datatrap.mouse.presentation.mouse_add_edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
+import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
@@ -16,6 +18,7 @@ import com.example.datatrap.mouse.domain.use_case.GenerateCodeUseCase
 import com.example.datatrap.mouse.domain.use_case.GetOccupiedTrapIdsInOccasion
 import com.example.datatrap.mouse.domain.use_case.InsertMouseUseCase
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
+import com.example.datatrap.settings.data.protocol.ProtocolEntity
 import com.example.datatrap.settings.data.protocol.ProtocolRepository
 import com.example.datatrap.specie.data.SpecieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +37,8 @@ import javax.inject.Inject
 class MouseViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val mouseRepository: MouseRepository,
+    private val mouseImageRepository: MouseImageRepository,
+    private val internalStorageRepository: InternalStorageRepository,
     private val protocolRepository: ProtocolRepository,
     private val specieRepository: SpecieRepository,
     private val occasionRepository: OccasionRepository,
@@ -59,9 +64,9 @@ class MouseViewModel @Inject constructor(
             localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
             isRecapture = savedStateHandle.getMainScreenNavArgs()?.isRecapture
 
-            protocolRepository.getProtocolEntityList().collect { proList ->
+            protocolRepository.getSettingsEntityList().collect { proList ->
                 _state.update { it.copy(
-                    protocolList = proList,
+                    protocolList = proList.filterIsInstance<ProtocolEntity>(),
                 ) }
             }
 
@@ -73,10 +78,15 @@ class MouseViewModel @Inject constructor(
 
             mouseId?.let {
                 val mouse = mouseRepository.getMouse(mouseId)
+                val image = mouseImageRepository.getImageForMouse(mouseId)
 
                 _state.update { it.copy(
                     mouseEntity = mouse,
+                    imageId = image?.mouseImgId,
+                    imageName = image?.imgName,
+                    imageNote = image?.note,
                 ) }
+
                 initMouseValuesToView(mouse)
             }
 
@@ -298,6 +308,9 @@ class MouseViewModel @Inject constructor(
                     imageNote = event.imageNote,
                 ) }
             }
+            is MouseScreenEvent.OnLeave -> {
+                deleteImageOnLeave()
+            }
 
             else -> Unit
         }
@@ -358,6 +371,8 @@ class MouseViewModel @Inject constructor(
         }
     }
 
+    // TODO if lengths or weight not good, show all in one dialog then user decides whether is okay or change
+    // Continue and Cancel buttons in Dialog Window
     private fun insertMouse() {
         with(state.value) {
             val specie = specieEntity
@@ -581,7 +596,6 @@ class MouseViewModel @Inject constructor(
                 }
 
                 insertMouseUseCase(occasionID, mouseEntity, imageName, imageNote)
-
                 _eventFlow.emit(UiEvent.NavigateBack)
             }
         }
@@ -612,6 +626,17 @@ class MouseViewModel @Inject constructor(
                 age = toEnumMouseAge(age),
                 captureID = toEnumCaptureID(captureID),
             ) }
+        }
+    }
+
+    private fun deleteImageOnLeave() {
+        // if user leaves, physical image should be deleted if it is not saved in DB
+        viewModelScope.launch(Dispatchers.IO) {
+            if (state.value.imageId == null) {
+                state.value.imageName?.let {
+                    internalStorageRepository.deleteImage(it)
+                }
+            }
         }
     }
 

@@ -54,7 +54,7 @@ private fun ScreenContent(
             IconButton(onClick = { onEvent(SpecieScreenEvent.OnCameraClick) }) {
                 Icon(imageVector = Icons.Default.Camera, contentDescription = "cam icon")
             }
-        }
+        },
     ) {
         Column(
             modifier = Modifier

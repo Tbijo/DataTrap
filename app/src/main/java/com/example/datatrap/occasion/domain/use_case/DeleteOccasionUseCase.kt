@@ -1,6 +1,7 @@
 package com.example.datatrap.occasion.domain.use_case
 
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
+import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionRepository
@@ -9,6 +10,7 @@ import java.time.ZonedDateTime
 class DeleteOccasionUseCase(
     private val occasionRepository: OccasionRepository,
     private val occasionImageRepository: OccasionImageRepository,
+    private val internalStorageRepository: InternalStorageRepository,
     private val sessionRepository: SessionRepository,
     private val projectRepository: ProjectRepository,
 ) {
@@ -16,8 +18,13 @@ class DeleteOccasionUseCase(
     // Delete Occasion, po vymazani update Project zniz o pocet mysi v Occasion
 
     suspend operator fun invoke(occasionId: String, sessionID: String) {
+        // delete image
         val occasionImage = occasionImageRepository.getImageForOccasion(occasionId)
         occasionImage?.let {
+            // Delete file image
+            internalStorageRepository.deleteImage(occasionImage.imgName)
+            // Delete data image
+            // TODO not necessary since CASCADE is on this entity
             occasionImageRepository.deleteImage(occasionImage)
         }
 

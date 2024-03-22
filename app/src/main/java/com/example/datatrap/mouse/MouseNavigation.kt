@@ -153,8 +153,12 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
                     is MouseScreenEvent.OnCameraClick -> {
                         navController.navigateToCameraScreen(
                             entityType = EntityType.MOUSE,
-                            imageId = event.imageId,
+                            entityId = event.mouseId,
                         )
+                    }
+                    is MouseScreenEvent.OnLeave -> {
+                        viewModel.onEvent(MouseScreenEvent.OnLeave)
+                        navController.navigateUp()
                     }
 
                     else -> viewModel.onEvent(event)

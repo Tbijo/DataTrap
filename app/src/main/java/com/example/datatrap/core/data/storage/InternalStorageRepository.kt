@@ -2,9 +2,7 @@ package com.example.datatrap.core.data.storage
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import androidx.activity.ComponentActivity
-import com.example.datatrap.core.data.storage.model.InternalStoragePhoto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -27,23 +25,6 @@ class InternalStorageRepository(
                 e.printStackTrace()
                 null
             }
-        }
-    }
-
-    suspend fun getImage(imageName: String): InternalStoragePhoto? {
-        return withContext(Dispatchers.IO) {
-            val files = context.filesDir.listFiles()
-
-            files
-                ?.filter {
-                    it.canRead() && it.isFile && it.name.endsWith(".jpg") && it.name.equals(imageName)
-                }
-                ?.map {
-                    val bytes = it.readBytes()
-                    val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-                    InternalStoragePhoto(it.name, bmp)
-                }
-                ?.first()
         }
     }
 

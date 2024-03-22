@@ -2,7 +2,6 @@ package com.example.datatrap.specie.data
 
 import com.example.datatrap.core.util.EnumSpecie
 import com.example.datatrap.specie.domain.model.SpecList
-import com.example.datatrap.specie.domain.model.SpecSelectList
 import kotlinx.coroutines.flow.Flow
 
 class SpecieRepository(private val specieDao: SpecieDao) {
@@ -23,12 +22,9 @@ class SpecieRepository(private val specieDao: SpecieDao) {
         return specieDao.getSpecie(specieId)
     }
 
-    suspend fun getSpeciesForSelect(): List<SpecSelectList> {
-        return specieDao.getSpeciesForSelect()
-    }
-
     fun searchSpecies(specieCode: String): Flow<List<SpecieEntity>> {
-        return specieDao.searchSpecies(specieCode)
+        val searchQuery = "%$specieCode%"
+        return specieDao.searchSpecies(searchQuery)
     }
 
     suspend fun getNonSpecie(): List<SpecList> {

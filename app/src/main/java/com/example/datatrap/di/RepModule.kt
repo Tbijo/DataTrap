@@ -6,7 +6,6 @@ import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.db.TrapDatabase
 import com.example.datatrap.core.data.locality_session.LocalitySessionRepository
 import com.example.datatrap.core.data.project_locality.ProjectLocalityRepository
-import com.example.datatrap.core.data.storage.ExternalStorageRepository
 import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.mouse.data.MouseRepository
@@ -108,9 +107,5 @@ object RepModule {
     @ActivityRetainedScoped
     @Provides
     fun provideInternalRep(@ApplicationContext context: Context) = InternalStorageRepository(context)
-
-    @ActivityRetainedScoped
-    @Provides
-    fun provideExternalRep(@ApplicationContext context: Context) = ExternalStorageRepository(context)
 
 }

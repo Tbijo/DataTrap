@@ -7,19 +7,12 @@ import kotlinx.coroutines.flow.Flow
 class EnvTypeRepository(
     private val envTypeDao: EnvTypeDao
 ): SettingsEntityRepository {
-    fun getEnvTypeEntityList(): Flow<List<EnvTypeEntity>> {
-        return envTypeDao.getEnvTypes()
-    }
-
-    fun getEnvType(envTypeId: String): Flow<EnvTypeEntity> {
-        return envTypeDao.getEnvType(envTypeId)
-    }
 
     override fun getSettingsEntityList(): Flow<List<SettingsEntity>> {
         return envTypeDao.getEnvTypes()
     }
 
-    override fun getSettingsEntity(settingsEntityId: String): Flow<SettingsEntity> {
+    override suspend fun getSettingsEntity(settingsEntityId: String): SettingsEntity {
         return envTypeDao.getEnvType(settingsEntityId)
     }
 

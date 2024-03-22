@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
-import com.example.datatrap.core.util.EnumSpecie
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.model.MultiMouse
@@ -48,16 +47,9 @@ class MouseMultiViewModel @Inject constructor(
                 localityId = it
             }
 
-            // TODO Use getNonSpecie function change object in State class
-            val nonSpecies = EnumSpecie.values().map { it.name }
-
-            specieRepository.getSpecies().collect { species ->
-                val filteredSpecies = species.filter { it.speciesCode in nonSpecies }
-
-                _state.update { it.copy(
-                    specieList = filteredSpecies,
-                ) }
-            }
+            _state.update { it.copy(
+                specieList = specieRepository.getNonSpecie(),
+            ) }
 
             val occasion = occasionRepository.getOccasion(occasionId)
 

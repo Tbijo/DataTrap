@@ -8,19 +8,11 @@ class TrapTypeRepository(
     private val trapTypeDao: TrapTypeDao
 ): SettingsEntityRepository {
 
-    fun getTrapTypeEntityList(): Flow<List<TrapTypeEntity>> {
-        return trapTypeDao.getTrapTypes()
-    }
-
-    fun getTrapType(trapTypeId: String): Flow<TrapTypeEntity> {
-        return trapTypeDao.getTrapType(trapTypeId)
-    }
-
     override fun getSettingsEntityList(): Flow<List<SettingsEntity>> {
         return trapTypeDao.getTrapTypes()
     }
 
-    override fun getSettingsEntity(settingsEntityId: String): Flow<SettingsEntity> {
+    override suspend fun getSettingsEntity(settingsEntityId: String): SettingsEntity {
         return trapTypeDao.getTrapType(settingsEntityId)
     }
 

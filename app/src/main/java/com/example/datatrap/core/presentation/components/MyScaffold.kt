@@ -10,11 +10,15 @@ import androidx.compose.material.TopAppBar
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun MyScaffold(
     title: String,
-    errorState: String?,
+    errorState: String? = null,
     floatingActionButton: @Composable () -> Unit = {},
     drawerContent: @Composable (ColumnScope.() -> Unit)? = null,
     drawerGesturesEnabled: Boolean = true,
@@ -23,12 +27,14 @@ fun MyScaffold(
     scaffoldState: ScaffoldState = rememberScaffoldState(),
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    // TODO If user makes the same error it will not show
-    LaunchedEffect(key1 = errorState) {
-        errorState?.let {
-            scaffoldState.snackbarHostState.showSnackbar(
-                message = it
-            )
+    var myErrorState by remember {
+        mutableStateOf(errorState)
+    }
+
+    LaunchedEffect(myErrorState) {
+        myErrorState?.let {
+            scaffoldState.snackbarHostState.showSnackbar(message = it)
+            myErrorState = null
         }
     }
 
@@ -41,7 +47,7 @@ fun MyScaffold(
                     Text(text = title)
                 },
                 navigationIcon = navigationIcon,
-                actions = actions
+                actions = actions,
             )
         },
         drawerGesturesEnabled = drawerGesturesEnabled,

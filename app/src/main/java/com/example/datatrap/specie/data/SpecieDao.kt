@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.datatrap.specie.domain.model.SpecList
-import com.example.datatrap.specie.domain.model.SpecSelectList
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -23,9 +22,6 @@ interface SpecieDao {
 
     @Query("SELECT * FROM SpecieEntity")
     fun getSpecies(): Flow<List<SpecieEntity>>
-
-    @Query("SELECT specieId, speciesCode, upperFingers, minWeight, maxWeight FROM SpecieEntity")
-    suspend fun getSpeciesForSelect(): List<SpecSelectList>
 
     @Query("SELECT * FROM SpecieEntity WHERE speciesCode LIKE :specieCode")
     fun searchSpecies(specieCode: String): Flow<List<SpecieEntity>>

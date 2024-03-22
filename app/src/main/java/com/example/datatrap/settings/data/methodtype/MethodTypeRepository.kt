@@ -8,19 +8,11 @@ class MethodTypeRepository(
     private val methodTypeDao: MethodTypeDao
 ): SettingsEntityRepository {
 
-    fun methodTypeEntityList(): Flow<List<MethodTypeEntity>> {
-        return methodTypeDao.getMethodTypes()
-    }
-
-    fun getMethodType(methodTypeId: String): Flow<MethodTypeEntity> {
-        return methodTypeDao.getMethodType(methodTypeId)
-    }
-
     override fun getSettingsEntityList(): Flow<List<SettingsEntity>> {
         return methodTypeDao.getMethodTypes()
     }
 
-    override fun getSettingsEntity(settingsEntityId: String): Flow<SettingsEntity> {
+    override suspend fun getSettingsEntity(settingsEntityId: String): SettingsEntity {
         return methodTypeDao.getMethodType(settingsEntityId)
     }
 

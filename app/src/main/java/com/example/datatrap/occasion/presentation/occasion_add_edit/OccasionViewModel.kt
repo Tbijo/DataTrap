@@ -3,7 +3,9 @@ package com.example.datatrap.occasion.presentation.occasion_add_edit
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
+import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
@@ -13,10 +15,15 @@ import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.occasion.domain.use_case.GetWeatherUseCase
 import com.example.datatrap.occasion.domain.use_case.InsertOccasionUseCase
+import com.example.datatrap.settings.data.env_type.EnvTypeEntity
 import com.example.datatrap.settings.data.env_type.EnvTypeRepository
+import com.example.datatrap.settings.data.method.MethodEntity
 import com.example.datatrap.settings.data.method.MethodRepository
+import com.example.datatrap.settings.data.methodtype.MethodTypeEntity
 import com.example.datatrap.settings.data.methodtype.MethodTypeRepository
+import com.example.datatrap.settings.data.traptype.TrapTypeEntity
 import com.example.datatrap.settings.data.traptype.TrapTypeRepository
+import com.example.datatrap.settings.data.veg_type.VegetTypeEntity
 import com.example.datatrap.settings.data.veg_type.VegetTypeRepository
 import com.example.datatrap.settings.user.data.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,8 +32,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
@@ -36,6 +41,8 @@ import javax.inject.Inject
 class OccasionViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val occasionRepository: OccasionRepository,
+    private val occasionImageRepository: OccasionImageRepository,
+    private val internalStorageRepository: InternalStorageRepository,
     private val getWeatherUseCase: GetWeatherUseCase,
     private val localityRepository: LocalityRepository,
     private val envTypeRepository: EnvTypeRepository,
@@ -48,6 +55,7 @@ class OccasionViewModel @Inject constructor(
     private val insertOccasionUseCase: InsertOccasionUseCase,
 ): ViewModel() {
 
+    // TODO remove non UI state var from state class, some vars do not change UI
     private val _state = MutableStateFlow(OccasionUiState())
     val state = _state.asStateFlow()
 
@@ -63,7 +71,17 @@ class OccasionViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
+            navArgsStorage.readUserId()?.let { userId ->
+                with(userRepository.getActiveUser(userId)) {
+                    _state.update { it.copy(
+                        legitimationText = userName,
+                    ) }
+                }
+            }
+
             occasionId?.let {
+                val image = occasionImageRepository.getImageForOccasion(occasionId)
+
                 with(occasionRepository.getOccasion(occasionId)) {
                     _state.update { it.copy(
                         occasionEntity = this,
@@ -74,6 +92,9 @@ class OccasionViewModel @Inject constructor(
                         temperatureText = temperature?.toString() ?: "",
                         legitimationText = leg,
                         noteText = note ?: "",
+                        imageId = image?.occasionImgId,
+                        imageName = image?.imgName,
+                        imageNote = image?.note,
                     ) }
                 }
             }
@@ -86,14 +107,6 @@ class OccasionViewModel @Inject constructor(
             }
 
             fillDropDowns()
-
-            navArgsStorage.readUserId()?.let { userId ->
-                userRepository.getActiveUser(userId).collect { userEntity ->
-                    _state.update { it.copy(
-                        legitimationText = userEntity.userName,
-                    ) }
-                }
-            }
 
             _state.update { it.copy(
                 isLoading = false,
@@ -228,6 +241,9 @@ class OccasionViewModel @Inject constructor(
                     imageName = event.imageName,
                     imageNote = event.imageNote,
                 ) }
+            }
+            is OccasionScreenEvent.OnLeave -> {
+                deleteImageOnLeave()
             }
 
             else -> Unit
@@ -364,36 +380,47 @@ class OccasionViewModel @Inject constructor(
         }
     }
 
-    private fun fillDropDowns() {
-        envTypeRepository.getEnvTypeEntityList().onEach { envList ->
+    private suspend fun fillDropDowns() {
+        envTypeRepository.getSettingsEntityList().collect { envList ->
             _state.update { it.copy(
-                envTypeList = envList,
+                envTypeList = envList.filterIsInstance<EnvTypeEntity>(),
             ) }
-        }.launchIn(viewModelScope)
+        }
 
-        methodRepository.methodEntityList().onEach { methodList ->
+        methodRepository.getSettingsEntityList().collect { methodList ->
             _state.update { it.copy(
-                methodList = methodList,
+                methodList = methodList.filterIsInstance<MethodEntity>(),
             ) }
-        }.launchIn(viewModelScope)
+        }
 
-        methodTypeRepository.methodTypeEntityList().onEach { methodTypeList ->
+        methodTypeRepository.getSettingsEntityList().collect { methodTypeList ->
             _state.update { it.copy(
-                methodTypeList = methodTypeList,
+                methodTypeList = methodTypeList.filterIsInstance<MethodTypeEntity>(),
             ) }
-        }.launchIn(viewModelScope)
+        }
 
-        trapTypeRepository.getTrapTypeEntityList().onEach { trapTypeList ->
+        trapTypeRepository.getSettingsEntityList().collect { trapTypeList ->
             _state.update { it.copy(
-                trapTypeList = trapTypeList,
+                trapTypeList = trapTypeList.filterIsInstance<TrapTypeEntity>(),
             ) }
-        }.launchIn(viewModelScope)
+        }
 
-        vegetTypeRepository.getVegetTypeEntityList().onEach { vegTypeList ->
+        vegetTypeRepository.getSettingsEntityList().collect { vegTypeList ->
             _state.update { it.copy(
-                vegTypeList = vegTypeList,
+                vegTypeList = vegTypeList.filterIsInstance<VegetTypeEntity>(),
             ) }
-        }.launchIn(viewModelScope)
+        }
+    }
+
+    private fun deleteImageOnLeave() {
+        // if user leaves, physical image should be deleted if it is not saved in DB
+        viewModelScope.launch(Dispatchers.IO) {
+            if (state.value.imageId == null) {
+                state.value.imageName?.let {
+                    internalStorageRepository.deleteImage(it)
+                }
+            }
+        }
     }
 
 }

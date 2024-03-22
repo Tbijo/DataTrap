@@ -111,6 +111,14 @@ class InsertMouseUseCase(
             return
         }
 
+        // if data is the same do not execute just return
+        if (
+            currentMouseImage?.imgName == imageName &&
+            currentMouseImage.note == note
+        ) {
+            return
+        }
+
         val mouseImageEntity = if (currentMouseImage == null) {
             // Create a new image
             MouseImageEntity(

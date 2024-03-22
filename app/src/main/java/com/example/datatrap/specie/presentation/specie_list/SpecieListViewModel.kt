@@ -1,10 +1,8 @@
 package com.example.datatrap.specie.presentation.specie_list
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.specie.data.SpecieRepository
-import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import com.example.datatrap.specie.domain.use_case.DeleteSpecieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -17,9 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class SpecieListViewModel @Inject constructor(
     private val specieRepository: SpecieRepository,
-    private val specieImageRepository: SpecieImageRepository,
     private val deleteSpecieUseCase: DeleteSpecieUseCase,
-    savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(SpecieListUiState())
@@ -61,9 +57,7 @@ class SpecieListViewModel @Inject constructor(
 
     private fun searchSpecies(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val searchQuery = "%$query%"
-
-            specieRepository.searchSpecies(searchQuery).collect { species ->
+            specieRepository.searchSpecies(query).collect { species ->
                 _state.update { it.copy(
                     specieList = species,
                 ) }

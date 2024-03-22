@@ -1,6 +1,10 @@
 package com.example.datatrap.settings.user.data
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,9 +20,9 @@ interface UserDao {
     fun getUsers(): Flow<List<UserEntity>>
 
     @Query("SELECT * FROM UserEntity WHERE userId = :userId")
-    fun getActiveUser(userId: String): Flow<UserEntity>
+    suspend fun getActiveUser(userId: String): UserEntity
 
     @Query("SELECT userId FROM UserEntity WHERE userName = :userName AND password = :password")
-    fun checkUser(userName: String, password: String): Flow<String?>
+    suspend fun checkUser(userName: String, password: String): String?
 
 }

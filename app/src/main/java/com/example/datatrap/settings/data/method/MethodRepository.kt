@@ -7,19 +7,12 @@ import kotlinx.coroutines.flow.Flow
 class MethodRepository(
     private val methodDao: MethodDao
 ): SettingsEntityRepository {
-    fun methodEntityList(): Flow<List<MethodEntity>> {
-        return methodDao.getMethods()
-    }
-
-    fun getMethod(methodId: String): Flow<MethodEntity> {
-        return methodDao.getMethod(methodId)
-    }
 
     override fun getSettingsEntityList(): Flow<List<SettingsEntity>> {
         return methodDao.getMethods()
     }
 
-    override fun getSettingsEntity(settingsEntityId: String): Flow<SettingsEntity> {
+    override suspend fun getSettingsEntity(settingsEntityId: String): SettingsEntity {
         return methodDao.getMethod(settingsEntityId)
     }
 

@@ -2,8 +2,6 @@ package com.example.datatrap.mouse.presentation.mouse_recapture_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.locality.data.locality.LocalityRepository
-import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.GetMiceForRecapture
 import com.example.datatrap.specie.data.SpecieRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,9 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RecaptureListViewModel @Inject constructor(
-    private val mouseRepository: MouseRepository,
     private val specieRepository: SpecieRepository,
-    private val localityRepository: LocalityRepository,
     private val getMiceForRecapture: GetMiceForRecapture,
 ): ViewModel() {
 
@@ -112,9 +108,7 @@ class RecaptureListViewModel @Inject constructor(
 
     private fun searchForMice() {
         viewModelScope.launch(Dispatchers.IO) {
-            val stateValue = state.value
-
-            with(stateValue) {
+            with(state.value) {
                 getMiceForRecapture(
                     code = codeText.toIntOrNull(),
                     specieID = selectedSpecie?.specieId,

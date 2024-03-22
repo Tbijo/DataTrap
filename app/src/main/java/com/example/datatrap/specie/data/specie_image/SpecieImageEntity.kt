@@ -18,8 +18,6 @@ data class SpecieImageEntity(
     @PrimaryKey
     val specieImgId: String = UUID.randomUUID().toString(),
 
-    val imgName: String,
-
     val imageUri: Uri,
 
     val note: String?,

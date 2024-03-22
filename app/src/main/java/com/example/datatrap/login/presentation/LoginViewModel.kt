@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
@@ -96,8 +95,8 @@ class LoginViewModel @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            userRepository.checkUser(userName, pass).collectLatest { userId ->
-                userId?.let {
+            with(userRepository.checkUser(userName, pass)) {
+                this?.let {
                     // save active user
                     navArgsStorage.saveUserId(it)
                     // save selected team

@@ -63,35 +63,29 @@ class OccasionDetailViewModel @Inject constructor(
                         occasionEntity = this,
                     ) }
 
-                    methodRepository.getMethod(methodID).collect { method ->
-                        _state.update { it.copy(
-                            methodName = method.methodName,
-                        ) }
-                    }
-                    methodTypeRepository.getMethodType(methodTypeID).collect { methodType ->
-                        _state.update { it.copy(
-                            methodName = methodType.methodTypeName,
-                        ) }
-                    }
+                    _state.update { it.copy(
+                        methodName = methodRepository.getSettingsEntity(methodID).entityName,
+                    ) }
+
+                    _state.update { it.copy(
+                        methodTypeName = methodTypeRepository.getSettingsEntity(methodTypeID).entityName,
+                    ) }
+
                     envTypeID?.let { envTypeID ->
-                        envTypeRepository.getEnvType(envTypeID).collect { envType ->
-                            _state.update { it.copy(
-                                envTypeName = envType.envTypeName,
-                            ) }
-                        }
-                    }
-                    vegetTypeID?.let { vegetTypeID ->
-                        vegetTypeRepository.getVegetType(vegetTypeID).collect { vegType ->
-                            _state.update { it.copy(
-                                vegTypeName = vegType.vegetTypeName,
-                            ) }
-                        }
-                    }
-                    trapTypeRepository.getTrapType(trapTypeID).collect { trapType ->
                         _state.update { it.copy(
-                            trapTypeName = trapType.trapTypeName,
+                            envTypeName = envTypeRepository.getSettingsEntity(envTypeID).entityName,
                         ) }
                     }
+
+                    vegetTypeID?.let { vegetTypeID ->
+                        _state.update { it.copy(
+                            vegTypeName = vegetTypeRepository.getSettingsEntity(vegetTypeID).entityName,
+                        ) }
+                    }
+
+                    _state.update { it.copy(
+                        trapTypeName = trapTypeRepository.getSettingsEntity(trapTypeID).entityName,
+                    ) }
                 }
 
                 with(occasionImageRepository.getImageForOccasion(occasionId)) {

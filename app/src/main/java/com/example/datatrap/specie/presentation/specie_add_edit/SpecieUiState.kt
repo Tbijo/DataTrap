@@ -1,5 +1,6 @@
 package com.example.datatrap.specie.presentation.specie_add_edit
 
+import android.net.Uri
 import com.example.datatrap.specie.data.SpecieEntity
 
 data class SpecieUiState(
@@ -28,4 +29,8 @@ data class SpecieUiState(
     val minFeetLength: String = "",
     val maxFeetLength: String = "",
     val note: String = "",
+
+    val imageId: String? = null,
+    val imageUri: Uri? = null,
+    val imageNote: String? = null,
 )

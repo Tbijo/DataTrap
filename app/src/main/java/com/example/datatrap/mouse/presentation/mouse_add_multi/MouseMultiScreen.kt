@@ -74,11 +74,13 @@ private fun ScreenContent(
                         isTrapIdExpanded = mouse.isTrapIdExpanded,
                         isSpecieExpanded = mouse.isSpecieExpanded,
                         onTrapIDClick = {
+                            // TODO do we receive correct trapID
                             onEvent(
                                 MouseMultiScreenEvent.OnTrapIdClick(index, mouse.trapID)
                             )
                         },
                         onSpecieClick = {
+                            // TODO do we receive correct specie
                             mouse.specie?.let { specie ->
                                 onEvent(
                                     MouseMultiScreenEvent.OnSpecieClick(index, specie)

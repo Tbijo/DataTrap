@@ -6,7 +6,7 @@ interface SettingsEntityRepository {
 
     fun getSettingsEntityList(): Flow<List<SettingsEntity>>
 
-    fun getSettingsEntity(settingsEntityId: String): Flow<SettingsEntity>
+    suspend fun getSettingsEntity(settingsEntityId: String): SettingsEntity
 
     suspend fun insertSettingsEntity(settingsEntity: SettingsEntity)
 

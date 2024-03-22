@@ -49,6 +49,14 @@ class InsertOccasionUseCase(
             return
         }
 
+        // if data is the same do not execute just return
+        if (
+            currentOccasionImage?.imgName == imageName &&
+            currentOccasionImage.note == note
+        ) {
+            return
+        }
+
         val occasionImage = if (currentOccasionImage == null) {
             // Create a new image
             OccasionImageEntity(

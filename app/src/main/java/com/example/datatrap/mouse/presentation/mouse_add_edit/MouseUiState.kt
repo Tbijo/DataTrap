@@ -76,6 +76,7 @@ data class MouseUiState(
     val note: String = "",
     val noteError: String? = null,
 
+    val imageId: String? = null,
     val imageName: String? = null,
     val imageNote: String? = null,
 )

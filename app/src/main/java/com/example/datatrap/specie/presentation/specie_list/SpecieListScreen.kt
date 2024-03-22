@@ -56,7 +56,7 @@ private fun ScreenContent(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(it)
+                .padding(it),
         ) {
             SearchTextField(
                 text = state.searchTextFieldValue,

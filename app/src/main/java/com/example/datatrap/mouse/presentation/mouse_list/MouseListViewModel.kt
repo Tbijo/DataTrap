@@ -3,10 +3,8 @@ package com.example.datatrap.mouse.presentation.mouse_list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.camera.domain.DeleteImageUseCase
 import com.example.datatrap.core.domain.use_case.GetInfoNamesUseCase
 import com.example.datatrap.core.getMainScreenNavArgs
-import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.use_case.DeleteMouseUseCase
 import com.example.datatrap.mouse.domain.use_case.GetMiceByOccasion
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,11 +18,9 @@ import javax.inject.Inject
 @HiltViewModel
 class MouseListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val mouseRepository: MouseRepository,
     private val getMiceByOccasion: GetMiceByOccasion,
     private val deleteMouseUseCase: DeleteMouseUseCase,
     private val getInfoNamesUseCase: GetInfoNamesUseCase,
-    private val deleteImageUseCase: DeleteImageUseCase,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(MouseListUiState())
@@ -76,9 +72,6 @@ class MouseListViewModel @Inject constructor(
 
     private fun deleteMouse(mouseId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteImageUseCase(
-                mouseEntity = mouseRepository.getMouse(mouseId),
-            )
             deleteMouseUseCase(mouseId)
         }
     }

@@ -1,5 +1,6 @@
 package com.example.datatrap.specie
 
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.SavedStateHandle
@@ -22,6 +23,7 @@ import com.example.datatrap.specie.presentation.specie_add_edit.SpecieViewModel
 import com.example.datatrap.specie.presentation.specie_detail.SpecieDetailScreen
 import com.example.datatrap.specie.presentation.specie_detail.SpecieDetailViewModel
 import com.example.datatrap.specie.presentation.specie_image.SpecieImageScreen
+import com.example.datatrap.specie.presentation.specie_image.SpecieImageScreenEvent
 import com.example.datatrap.specie.presentation.specie_image.SpecieImageViewModel
 import com.example.datatrap.specie.presentation.specie_list.SpecieListScreen
 import com.example.datatrap.specie.presentation.specie_list.SpecieListScreenEvent
@@ -34,6 +36,10 @@ private const val SPECIE_IMAGE_SCREEN_ROUTE = "specie_image_screen"
 private const val SPECIE_DETAIL_SCREEN_ROUTE = "specie_detail_screen"
 
 private const val SPECIE_ID_KEY = "specieIdKey"
+// to send to previous screen
+private const val IMAGE_URI_KEY = "imageUriKey"
+private const val IMAGE_NOTE_KEY = "imageNoteKey"
+private const val IMAGE_CHANGE_KEY = "imageChangeKey"
 
 fun NavController.navigateToSpecieListScreen() = navigate(SPECIE_LIST_SCREEN_ROUTE)
 private fun getSpecieScreenArguments(): List<NamedNavArgument> {
@@ -62,6 +68,26 @@ private fun NavController.navigateToSpecieDetailScreen(specieId: String) {
     navigateToAnySpecieScreen(SPECIE_DETAIL_SCREEN_ROUTE, specieId)
 }
 
+// set imageName and note for previous screen
+private fun NavHostController.setImageName(imageUri: String?, imageNote: String?, makeChange: Boolean) {
+    previousBackStackEntry?.savedStateHandle?.set(IMAGE_URI_KEY, imageUri)
+    previousBackStackEntry?.savedStateHandle?.set(IMAGE_NOTE_KEY, imageNote)
+    previousBackStackEntry?.savedStateHandle?.set(IMAGE_CHANGE_KEY, makeChange)
+}
+// get imageName and note from camera screen
+private fun NavHostController.getImageName(): String? {
+    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_URI_KEY)
+}
+private fun NavHostController.getImageNote(): String? {
+    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_NOTE_KEY)
+}
+private fun NavHostController.getImageChange(): Boolean? {
+    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_CHANGE_KEY)
+}
+private fun NavHostController.clearImageChange() {
+    currentBackStackEntry?.savedStateHandle?.set(IMAGE_CHANGE_KEY, null)
+}
+
 fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
 
     composable(route = SPECIE_LIST_SCREEN_ROUTE) {
@@ -69,8 +95,8 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieListScreen(
-            onEvent = {
-                when(it) {
+            onEvent = { event ->
+                when(event) {
                     SpecieListScreenEvent.OnAddButtonClick -> {
                         navController.navigateToSpecieScreen(
                             specieId = null,
@@ -79,12 +105,12 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
 
                     is SpecieListScreenEvent.OnItemClick -> {
                         navController.navigateToSpecieDetailScreen(
-                            specieId = it.specieEntity.specieId,
+                            specieId = event.specieEntity.specieId,
                         )
                     }
 
                     is SpecieListScreenEvent.OnDrawerItemClick -> {
-                        when(it.drawerScreen) {
+                        when(event.drawerScreen) {
                             DrawerScreens.PROJECTS -> {
                                 navController.navigateToProjectListScreen()
                             }
@@ -101,7 +127,7 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
                         }
                     }
 
-                    else -> viewModel.onEvent(it)
+                    else -> viewModel.onEvent(event)
                 }
             },
             state = state,
@@ -114,8 +140,24 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
     ) {
         val viewModel: SpecieViewModel = hiltViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
+        val imageName = navController.getImageName()
+        val imageNote = navController.getImageNote()
+        val makeChange = navController.getImageChange()
 
         val specieId = it.getSpecieIdArg()
+
+        LaunchedEffect(key1 = imageName, key2 = imageNote, key3 = makeChange) {
+            if (makeChange == true) {
+                viewModel.onEvent(
+                    SpecieScreenEvent.OnReceiveImageName(
+                        imageName = imageName,
+                        imageNote = imageNote,
+                    )
+                )
+                // clear for config change
+                navController.clearImageChange()
+            }
+        }
 
         SpecieScreen(
             onEvent = { event ->
@@ -141,7 +183,19 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieImageScreen(
-            onEvent = viewModel::onEvent,
+            onEvent = { event ->
+                when(event) {
+                    is SpecieImageScreenEvent.OnLeave -> {
+                        navController.setImageName(
+                            imageUri = state.imageUri.toString(),
+                            imageNote = state.note,
+                            makeChange = event.makeChange,
+                        )
+                        navController.navigateUp()
+                    }
+                    else -> viewModel.onEvent(event)
+                }
+            },
             state = state,
         )
     }

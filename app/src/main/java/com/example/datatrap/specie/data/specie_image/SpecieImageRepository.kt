@@ -7,7 +7,6 @@ class SpecieImageRepository(private val specieImageDao: SpecieImageDao) {
     }
 
     suspend fun deleteImage(specieImageEntity: SpecieImageEntity) {
-        // no deleting of images in gallery
         specieImageDao.deleteImage(specieImageEntity)
     }
 

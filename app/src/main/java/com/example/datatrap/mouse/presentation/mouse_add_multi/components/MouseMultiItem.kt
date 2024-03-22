@@ -7,16 +7,16 @@ import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.example.datatrap.specie.data.SpecieEntity
+import com.example.datatrap.specie.domain.model.SpecList
 
 @Composable
 fun MouseMultiItem(
     trapIdList: List<Int>,
-    specieList: List<SpecieEntity>,
+    specieList: List<SpecList>,
     isTrapIdExpanded: Boolean,
     isSpecieExpanded: Boolean,
-    onTrapIDClick: (trapID: Int) -> Unit,
-    onSpecieClick: (specie: SpecieEntity) -> Unit,
+    onTrapIDClick: () -> Unit,
+    onSpecieClick: () -> Unit,
     onTrapIdDismissClick: () -> Unit,
     onSpecieDismissClick: () -> Unit,
 ) {
@@ -28,7 +28,7 @@ fun MouseMultiItem(
                 Text(text = "TrapID*")
             }
             trapIdList.forEach {
-                DropdownMenuItem(onClick = { onTrapIDClick(it) }) {
+                DropdownMenuItem(onClick = onTrapIDClick) {
                     Text(text = "$it")
                 }
             }
@@ -39,7 +39,7 @@ fun MouseMultiItem(
                 Text(text = "Specie*")
             }
             specieList.forEach {
-                DropdownMenuItem(onClick = { onSpecieClick(it) }) {
+                DropdownMenuItem(onClick = onSpecieClick) {
                     Text(text = it.speciesCode)
                 }
             }

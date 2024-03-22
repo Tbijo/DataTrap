@@ -17,7 +17,7 @@ interface MethodDao {
     suspend fun deleteMethod(methodEntity: MethodEntity)
 
     @Query("SELECT * FROM MethodEntity WHERE methodId = :methodId")
-    fun getMethod(methodId: String): Flow<MethodEntity>
+    suspend fun getMethod(methodId: String): MethodEntity
 
     @Query("SELECT * FROM MethodEntity")
     fun getMethods(): Flow<List<MethodEntity>>

@@ -3,7 +3,6 @@ package com.example.datatrap.occasion.presentation.occasion_list
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.camera.domain.DeleteImageUseCase
 import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
@@ -26,7 +25,6 @@ class OccasionListViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val localityRepository: LocalityRepository,
     private val deleteOccasionUseCase: DeleteOccasionUseCase,
-    private val deleteImageUseCase: DeleteImageUseCase,
     savedStateHandle: SavedStateHandle,
 ): ViewModel() {
 
@@ -73,9 +71,6 @@ class OccasionListViewModel @Inject constructor(
 
     private fun deleteOccasion(occasionEntity: OccasionEntity) {
         viewModelScope.launch(Dispatchers.IO) {
-            deleteImageUseCase(
-                occasionEntity = occasionEntity,
-            )
             deleteOccasionUseCase(
                 occasionId = occasionEntity.occasionId,
                 sessionID = occasionEntity.sessionID,

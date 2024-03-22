@@ -17,7 +17,7 @@ interface TrapTypeDao {
     suspend fun deleteTrapType(trapTypeEntity: TrapTypeEntity)
 
     @Query("SELECT * FROM TrapTypeEntity WHERE trapTypeId = :trapTypeId")
-    fun getTrapType(trapTypeId: String): Flow<TrapTypeEntity>
+    suspend fun getTrapType(trapTypeId: String): TrapTypeEntity
 
     @Query("SELECT * FROM TrapTypeEntity")
     fun getTrapTypes(): Flow<List<TrapTypeEntity>>

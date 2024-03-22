@@ -16,11 +16,11 @@ class UserRepository(private val userDao: UserDao) {
         userDao.deleteUser(userEntity)
     }
 
-    fun getActiveUser(userId: String): Flow<UserEntity> {
+    suspend fun getActiveUser(userId: String): UserEntity {
         return userDao.getActiveUser(userId)
     }
 
-    fun checkUser(userName: String, password: String): Flow<String?> {
+    suspend fun checkUser(userName: String, password: String): String? {
         return userDao.checkUser(userName, password)
     }
 

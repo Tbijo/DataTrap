@@ -8,19 +8,11 @@ class VegetTypeRepository(
     private val vegetTypeDao: VegetTypeDao
 ): SettingsEntityRepository {
 
-    fun getVegetTypeEntityList(): Flow<List<VegetTypeEntity>> {
-        return vegetTypeDao.getVegetTypes()
-    }
-
-    fun getVegetType(vegetTypeId: String): Flow<VegetTypeEntity> {
-        return vegetTypeDao.getVegetType(vegetTypeId)
-    }
-
     override fun getSettingsEntityList(): Flow<List<SettingsEntity>> {
         return vegetTypeDao.getVegetTypes()
     }
 
-    override fun getSettingsEntity(settingsEntityId: String): Flow<SettingsEntity> {
+    override suspend fun getSettingsEntity(settingsEntityId: String): SettingsEntity {
         return vegetTypeDao.getVegetType(settingsEntityId)
     }
 

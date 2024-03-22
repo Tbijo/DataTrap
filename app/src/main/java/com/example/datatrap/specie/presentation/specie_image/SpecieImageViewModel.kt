@@ -3,8 +3,6 @@ package com.example.datatrap.specie.presentation.specie_image
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.core.util.ifNullOrBlank
-import com.example.datatrap.specie.data.specie_image.SpecieImageEntity
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import com.example.datatrap.specie.getSpecieIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.ZonedDateTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,19 +22,14 @@ class SpecieImageViewModel @Inject constructor(
     private val _state = MutableStateFlow(SpecieImageUiState())
     val state = _state.asStateFlow()
 
-    private var specieId: String? = null
-    private var imageName: String? = null
+    private val specieId = savedStateHandle.getSpecieIdArg()
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            specieId = savedStateHandle.getSpecieIdArg()
-
-            specieId?.let { specId ->
-                val specieImage = specieImageRepository.getImageForSpecie(specId)
+            specieId?.let {
+                val specieImage = specieImageRepository.getImageForSpecie(specieId)
 
                 specieImage?.let {
-                    imageName = specieImage.imgName
-
                     _state.update { it.copy(
                         specieImageEntity = specieImage,
                         imageStateText = "Image added",
@@ -58,17 +50,6 @@ class SpecieImageViewModel @Inject constructor(
 
     fun onEvent(event: SpecieImageScreenEvent) {
         when(event) {
-            SpecieImageScreenEvent.OnInsertClick -> {
-                // ak je vsetko v poriadku treba
-                // v pripade novej fotky treba staru fotku vymazat a ulozit novu fotku v databaze aj fyzicky
-                if (state.value.specieImageEntity == null) {
-                    _state.update { it.copy(
-                        error = "No image was found.",
-                    ) }
-                } else {
-                    saveImage()
-                }
-            }
             is SpecieImageScreenEvent.OnNoteTextChanged -> {
                 _state.update { it.copy(
                     note = event.text,
@@ -80,58 +61,8 @@ class SpecieImageViewModel @Inject constructor(
                     imageUri = event.uri,
                 ) }
             }
-        }
-    }
 
-    private fun saveImage() {
-        val id = specieId ?: kotlin.run {
-            _state.update { it.copy(
-                error = "This should not happen",
-            ) }
-            return
-        }
-        val name = imageName.ifNullOrBlank {
-            _state.update { it.copy(
-                error = "No Image",
-            ) }
-            return
-        }!!
-        val uri = state.value.imageUri ?: kotlin.run {
-            _state.update { it.copy(
-                error = "No Image",
-            ) }
-            return
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
-            // vytvara sa nova fotka, stara nebola
-            val currentImageMouse = state.value.specieImageEntity
-            val specieImageEntity = if (currentImageMouse == null) {
-                SpecieImageEntity(
-                    imgName = name,
-                    imageUri = uri,
-                    note = state.value.note,
-                    specieID = id,
-                    dateTimeCreated = ZonedDateTime.now(),
-                    dateTimeUpdated = null,
-                )
-            } else {
-                // vymazat zaznam starej fotky v databaze
-                specieImageRepository.deleteImage(currentImageMouse)
-
-                // pridat zaznam novej fotky do databazy subor uz existuje
-                SpecieImageEntity(
-                    specieImgId = currentImageMouse.specieImgId,
-                    imgName = name,
-                    imageUri = uri,
-                    note = state.value.note,
-                    specieID = currentImageMouse.specieID,
-                    dateTimeCreated = currentImageMouse.dateTimeCreated,
-                    dateTimeUpdated = ZonedDateTime.now(),
-                )
-            }
-            specieImageRepository.insertImage(specieImageEntity)
-            // TODO add image to Gallery
+            else -> Unit
         }
     }
 

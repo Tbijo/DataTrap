@@ -8,8 +8,10 @@ import com.example.datatrap.settings.data.veg_type.VegetTypeEntity
 
 sealed interface OccasionScreenEvent {
     object OnInsertClick: OccasionScreenEvent
-    data class OnCameraClick(val imageId: String?): OccasionScreenEvent
+    data class OnCameraClick(val occasionId: String?): OccasionScreenEvent
     object OnCloudClick: OccasionScreenEvent
+
+    object OnLeave: OccasionScreenEvent
 
     data class OnReceiveImageName(val imageName: String?, val imageNote: String?): OccasionScreenEvent
 

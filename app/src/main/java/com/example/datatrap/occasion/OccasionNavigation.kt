@@ -134,8 +134,13 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
                     is OccasionScreenEvent.OnCameraClick -> {
                         navController.navigateToCameraScreen(
                             entityType = EntityType.OCCASION,
-                            imageId = event.imageId,
+                            entityId = event.occasionId,
                         )
+                    }
+
+                    is OccasionScreenEvent.OnLeave -> {
+                        viewModel.onEvent(OccasionScreenEvent.OnLeave)
+                        navController.navigateUp()
                     }
 
                     else -> viewModel.onEvent(event)

@@ -2,7 +2,6 @@ package com.example.datatrap.di
 
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
-import com.example.datatrap.camera.domain.DeleteImageUseCase
 import com.example.datatrap.core.data.locality_session.LocalitySessionRepository
 import com.example.datatrap.core.data.project_locality.ProjectLocalityRepository
 import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
@@ -34,6 +33,7 @@ import com.example.datatrap.session.domain.DeleteSessionUseCase
 import com.example.datatrap.specie.data.SpecieRepository
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import com.example.datatrap.specie.domain.use_case.DeleteSpecieUseCase
+import com.example.datatrap.specie.domain.use_case.InsertSpecieUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -130,10 +130,12 @@ object UseCaseModule {
         projectRepository: ProjectRepository,
         sessionRepository: SessionRepository,
         occasionRepository: OccasionRepository,
+        internalStorageRepository: InternalStorageRepository,
     ): DeleteMouseUseCase {
         return DeleteMouseUseCase(
             mouseRepository,
             mouseImageRepository,
+            internalStorageRepository,
             projectRepository,
             sessionRepository,
             occasionRepository,
@@ -207,10 +209,12 @@ object UseCaseModule {
         occasionImageRepository: OccasionImageRepository,
         sessionRepository: SessionRepository,
         projectRepository: ProjectRepository,
+        internalStorageRepository: InternalStorageRepository,
     ): DeleteOccasionUseCase {
         return DeleteOccasionUseCase(
             occasionRepository,
             occasionImageRepository,
+            internalStorageRepository,
             sessionRepository,
             projectRepository,
         )
@@ -291,19 +295,6 @@ object UseCaseModule {
             localityRepository,
         )
     }
-    @ActivityRetainedScoped
-    @Provides
-    fun provideDeleteImageUseCase(
-        internalStorageRepository: InternalStorageRepository,
-        occasionImageRepository: OccasionImageRepository,
-        mouseImageRepository: MouseImageRepository,
-    ): DeleteImageUseCase {
-        return DeleteImageUseCase(
-            internalStorageRepository,
-            occasionImageRepository,
-            mouseImageRepository,
-        )
-    }
 
     @ActivityRetainedScoped
     @Provides
@@ -314,6 +305,18 @@ object UseCaseModule {
         return CountSpecialSpeciesUseCase(
             mouseRepository = mouseRepository,
             specieRepository = specieRepository,
+        )
+    }
+
+    @ActivityRetainedScoped
+    @Provides
+    fun provideInsertSpecieUseCase(
+        specieRepository: SpecieRepository,
+        specieImageRepository: SpecieImageRepository,
+    ): InsertSpecieUseCase {
+        return InsertSpecieUseCase(
+            specieRepository = specieRepository,
+            specieImageRepository = specieImageRepository,
         )
     }
 }

@@ -20,4 +20,6 @@ sealed interface SpecieScreenEvent {
     data class OnMinFeetLenTextChanged(val text: String): SpecieScreenEvent
     data class OnMaxFeetLenTextChanged(val text: String): SpecieScreenEvent
     data class OnNoteTextChanged(val text: String): SpecieScreenEvent
+
+    data class OnReceiveImageName(val imageName: String?, val imageNote: String?): SpecieScreenEvent
 }

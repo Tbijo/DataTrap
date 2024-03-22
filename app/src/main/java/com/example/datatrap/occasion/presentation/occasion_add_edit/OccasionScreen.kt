@@ -1,5 +1,6 @@
 package com.example.datatrap.occasion.presentation.occasion_add_edit
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,6 +41,10 @@ private fun ScreenContent(
     onEvent: (OccasionScreenEvent) -> Unit,
     state: OccasionUiState,
 ) {
+    BackHandler {
+        onEvent(OccasionScreenEvent.OnLeave)
+    }
+
     MyScaffold(
         title = "Occasion",
         errorState = state.error,
@@ -52,7 +57,7 @@ private fun ScreenContent(
                 Icon(imageVector = Icons.Default.Save, contentDescription = "save icon")
             }
             IconButton(onClick = {
-                onEvent(OccasionScreenEvent.OnCameraClick(null)) // TODO pass imageId?
+                onEvent(OccasionScreenEvent.OnCameraClick(state.occasionEntity?.occasionId))
             }) {
                 Icon(imageVector = Icons.Default.CameraAlt, contentDescription = "cam icon")
             }

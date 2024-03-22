@@ -1,5 +1,6 @@
 package com.example.datatrap.specie.presentation.specie_add_edit
 
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.specie.data.SpecieEntity
 import com.example.datatrap.specie.data.SpecieRepository
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
+import com.example.datatrap.specie.domain.use_case.InsertSpecieUseCase
 import com.example.datatrap.specie.getSpecieIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,7 @@ import javax.inject.Inject
 class SpecieViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val specieRepository: SpecieRepository,
+    private val insertSpecieUseCase: InsertSpecieUseCase,
     private val specieImageRepository: SpecieImageRepository,
 ): ViewModel() {
 
@@ -37,25 +40,30 @@ class SpecieViewModel @Inject constructor(
             val specieId = savedStateHandle.getSpecieIdArg()
 
             specieId?.let {
-                val specie = specieRepository.getSpecie(specieId)
+                val image = specieImageRepository.getImageForSpecie(specieId)
 
-                _state.update { it.copy(
-                    specieEntity = specie,
-                    specieCode = specie.speciesCode,
-                    fullName = specie.fullName,
-                    synonym = specie.synonym ?: "",
-                    authority = specie.authority ?: "",
-                    description = specie.description ?: "",
-                    isSmall = specie.isSmallMammal,
-                    numOfFingers = specie.upperFingers,
-                    minWeight = specie.minWeight?.let { value -> "$value" } ?: "",
-                    maxWeight = specie.maxWeight?.let { value -> "$value" } ?: "",
-                    bodyLength = specie.bodyLength?.let { value -> "$value" } ?: "",
-                    tailLength = specie.tailLength?.let { value -> "$value" } ?: "",
-                    minFeetLength = specie.feetLengthMin?.let { value -> "$value" } ?: "",
-                    maxFeetLength = specie.feetLengthMax?.let { value -> "$value" } ?: "",
-                    note = specie.note ?: "",
-                ) }
+                with(specieRepository.getSpecie(specieId)) {
+                    _state.update { it.copy(
+                        specieEntity = this,
+                        specieCode = speciesCode,
+                        fullName = fullName,
+                        synonym = synonym ?: "",
+                        authority = authority ?: "",
+                        description = description ?: "",
+                        isSmall = isSmallMammal,
+                        numOfFingers = upperFingers,
+                        minWeight = minWeight?.let { value -> "$value" } ?: "",
+                        maxWeight = maxWeight?.let { value -> "$value" } ?: "",
+                        bodyLength = bodyLength?.let { value -> "$value" } ?: "",
+                        tailLength = tailLength?.let { value -> "$value" } ?: "",
+                        minFeetLength = feetLengthMin?.let { value -> "$value" } ?: "",
+                        maxFeetLength = feetLengthMax?.let { value -> "$value" } ?: "",
+                        note = note ?: "",
+                        imageId = image?.specieImgId,
+                        imageUri = image?.imageUri,
+                        imageNote = image?.note,
+                    ) }
+                }
             }
 
             _state.update { it.copy(
@@ -66,8 +74,6 @@ class SpecieViewModel @Inject constructor(
 
     fun onEvent(event: SpecieScreenEvent) {
         when(event) {
-            SpecieScreenEvent.OnCameraClick -> TODO()
-
             SpecieScreenEvent.OnInsertClick -> insertSpecie()
 
             is SpecieScreenEvent.OnAuthorityTextChanged -> {
@@ -145,88 +151,102 @@ class SpecieViewModel @Inject constructor(
                     isSmall = !state.value.isSmall,
                 ) }
             }
+            is SpecieScreenEvent.OnReceiveImageName -> {
+                _state.update { it.copy(
+                    imageUri = Uri.parse(event.imageName),
+                    imageNote = event.imageNote,
+                ) }
+            }
+
+            else -> Unit
         }
     }
 
     private fun insertSpecie() {
-        val speciesCode = state.value.specieCode.ifEmpty {
-            _state.update { it.copy(
-                specieCodeError = "Specie code can not be empty.",
-            ) }
-            return
-        }
+        with(state.value) {
 
-        val fullName = state.value.fullName.ifEmpty {
-            _state.update { it.copy(
-                fullNameError = "Full name can not be empty.",
-            ) }
-            return
-        }
+            val speciesCode = specieCode.ifEmpty {
+                _state.update { it.copy(
+                    specieCodeError = "Specie code can not be empty.",
+                ) }
+                return
+            }
 
-        val authority = state.value.authority.ifBlank { null }
-        val synonym = state.value.synonym.ifBlank { null }
-        val description = state.value.description.ifBlank { null }
-        val upperFingers = state.value.numOfFingers
-        val isSmallMammal: Boolean = state.value.isSmall
-        val minWeight = state.value.minWeight.toFloatOrNull()
-        val maxWeight = state.value.maxWeight.toFloatOrNull()
+            val fullName = fullName.ifEmpty {
+                _state.update { it.copy(
+                    fullNameError = "Full name can not be empty.",
+                ) }
+                return
+            }
 
-        val bodyLen = state.value.bodyLength.toFloatOrNull()
-        val tailLen = state.value.tailLength.toFloatOrNull()
-        val feetMinLen = state.value.minFeetLength.toFloatOrNull()
-        val feetMaxLen = state.value.maxFeetLength.toFloatOrNull()
+            val authority = authority.ifBlank { null }
+            val synonym = synonym.ifBlank { null }
+            val description = description.ifBlank { null }
+            val upperFingers = numOfFingers
+            val isSmallMammal: Boolean = isSmall
+            val minWeight = minWeight.toFloatOrNull()
+            val maxWeight = maxWeight.toFloatOrNull()
 
-        val note = state.value.note.ifBlank { null }
+            val bodyLen = bodyLength.toFloatOrNull()
+            val tailLen = tailLength.toFloatOrNull()
+            val feetMinLen = minFeetLength.toFloatOrNull()
+            val feetMaxLen = maxFeetLength.toFloatOrNull()
 
-        val currentSpecie = state.value.specieEntity
-        val specieEntity: SpecieEntity = if (currentSpecie == null) {
-            SpecieEntity(
-                speciesCode = speciesCode,
-                fullName = fullName,
-                authority = authority,
-                synonym = synonym,
-                description = description,
-                isSmallMammal = isSmallMammal,
-                upperFingers = upperFingers,
-                minWeight = minWeight,
-                maxWeight = maxWeight,
+            val note = note.ifBlank { null }
 
-                bodyLength = bodyLen,
-                tailLength = tailLen,
-                feetLengthMin = feetMinLen,
-                feetLengthMax = feetMaxLen,
+            val specieEntity: SpecieEntity = if (specieEntity == null) {
+                SpecieEntity(
+                    speciesCode = speciesCode,
+                    fullName = fullName,
+                    authority = authority,
+                    synonym = synonym,
+                    description = description,
+                    isSmallMammal = isSmallMammal,
+                    upperFingers = upperFingers,
+                    minWeight = minWeight,
+                    maxWeight = maxWeight,
 
-                note = note,
-                specieDateTimeCreated = ZonedDateTime.now(),
-                specieDateTimeUpdated = null,
-            )
-        } else {
-            SpecieEntity(
-                specieId = currentSpecie.specieId,
-                speciesCode = speciesCode,
-                fullName = fullName,
-                authority = authority,
-                synonym = synonym,
-                description = description,
-                isSmallMammal = isSmallMammal,
-                upperFingers = upperFingers,
-                minWeight = minWeight,
-                maxWeight = maxWeight,
+                    bodyLength = bodyLen,
+                    tailLength = tailLen,
+                    feetLengthMin = feetMinLen,
+                    feetLengthMax = feetMaxLen,
 
-                bodyLength = bodyLen,
-                tailLength = tailLen,
-                feetLengthMin = feetMinLen,
-                feetLengthMax = feetMaxLen,
+                    note = note,
+                    specieDateTimeCreated = ZonedDateTime.now(),
+                    specieDateTimeUpdated = null,
+                )
+            } else {
+                SpecieEntity(
+                    specieId = specieEntity.specieId,
+                    speciesCode = speciesCode,
+                    fullName = fullName,
+                    authority = authority,
+                    synonym = synonym,
+                    description = description,
+                    isSmallMammal = isSmallMammal,
+                    upperFingers = upperFingers,
+                    minWeight = minWeight,
+                    maxWeight = maxWeight,
 
-                note = note,
-                specieDateTimeCreated = currentSpecie.specieDateTimeCreated,
-                specieDateTimeUpdated = ZonedDateTime.now(),
-            )
-        }
+                    bodyLength = bodyLen,
+                    tailLength = tailLen,
+                    feetLengthMin = feetMinLen,
+                    feetLengthMax = feetMaxLen,
 
-        viewModelScope.launch(Dispatchers.IO) {
-            specieRepository.insertSpecie(specieEntity)
-            _eventFlow.emit(UiEvent.NavigateBack)
+                    note = note,
+                    specieDateTimeCreated = specieEntity.specieDateTimeCreated,
+                    specieDateTimeUpdated = ZonedDateTime.now(),
+                )
+            }
+
+            viewModelScope.launch(Dispatchers.IO) {
+                insertSpecieUseCase(
+                    specieEntity = specieEntity,
+                    imageUri = state.value.imageUri.toString(),
+                    imageNote = state.value.imageNote,
+                )
+                _eventFlow.emit(UiEvent.NavigateBack)
+            }
         }
     }
 

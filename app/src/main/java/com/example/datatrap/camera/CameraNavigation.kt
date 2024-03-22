@@ -18,28 +18,28 @@ import com.example.datatrap.camera.util.EntityType
 
 private const val CAMERA_SCREEN_ROUTE = "camera_screen"
 private const val ENTITY_TYPE_KEY = "entityTypeKey"
-private const val IMAGE_ID_KEY = "imageIdKey"
+private const val ENTITY_ID_KEY = "entityIdKey"
 // to send to previous screen
 private const val IMAGE_NAME_KEY = "imageNameKey"
 private const val IMAGE_NOTE_KEY = "imageNoteKey"
 private const val IMAGE_CHANGE_KEY = "imageChangeKey"
 
-fun NavController.navigateToCameraScreen(entityType: EntityType, imageId: String?) {
-    navigate("$CAMERA_SCREEN_ROUTE/$entityType/$imageId")
+fun NavController.navigateToCameraScreen(entityType: EntityType, entityId: String?) {
+    navigate("$CAMERA_SCREEN_ROUTE/$entityType/$entityId")
 }
 private fun setCameraRouteWithArgs(): String {
-    return "$CAMERA_SCREEN_ROUTE/{$ENTITY_TYPE_KEY}/{$IMAGE_ID_KEY}"
+    return "$CAMERA_SCREEN_ROUTE/{$ENTITY_TYPE_KEY}/{$ENTITY_ID_KEY}"
 }
 
 fun SavedStateHandle.getEntityTypeNavArg(): EntityType? = get<EntityType>(ENTITY_TYPE_KEY)
-fun SavedStateHandle.getImageIdNavArg(): String? = get<String>(IMAGE_ID_KEY)
+fun SavedStateHandle.getEntityIdNavArg(): String? = get<String>(ENTITY_ID_KEY)
 private fun getCameraNavArgs(): List<NamedNavArgument> {
     return listOf(
         navArgument(name = ENTITY_TYPE_KEY) {
             nullable = false
             type = NavType.EnumType(EntityType::class.java)
         },
-        navArgument(name = IMAGE_ID_KEY) {
+        navArgument(name = ENTITY_ID_KEY) {
             nullable = true
             type = NavType.StringType
         },

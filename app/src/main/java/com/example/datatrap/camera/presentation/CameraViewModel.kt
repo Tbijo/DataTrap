@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
+import com.example.datatrap.camera.getEntityIdNavArg
 import com.example.datatrap.camera.getEntityTypeNavArg
-import com.example.datatrap.camera.getImageIdNavArg
 import com.example.datatrap.camera.util.EntityType
 import com.example.datatrap.core.data.storage.InternalStorageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +29,7 @@ class CameraViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val entity: EntityType? = savedStateHandle.getEntityTypeNavArg()
-    private val imageId: String? = savedStateHandle.getImageIdNavArg()
+    private val entityId: String? = savedStateHandle.getEntityIdNavArg()
 
     private val _state = MutableStateFlow(CameraUiState())
     val state = _state.asStateFlow()
@@ -38,8 +38,8 @@ class CameraViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             when(entity) {
                 EntityType.MOUSE -> {
-                    imageId?.let {
-                        val mouseImage = mouseImageRepository.getImageForMouse(imageId)
+                    entityId?.let {
+                        val mouseImage = mouseImageRepository.getImageForMouse(entityId)
                         val imageName = mouseImage?.imgName
 
                         _state.update { it.copy(
@@ -52,8 +52,8 @@ class CameraViewModel @Inject constructor(
                 }
 
                 EntityType.OCCASION -> {
-                    imageId?.let {
-                        val occasionImage = occasionImageRepository.getImageForOccasion(imageId)
+                    entityId?.let {
+                        val occasionImage = occasionImageRepository.getImageForOccasion(entityId)
                         val imageName = occasionImage?.imgName
 
                         _state.update { it.copy(

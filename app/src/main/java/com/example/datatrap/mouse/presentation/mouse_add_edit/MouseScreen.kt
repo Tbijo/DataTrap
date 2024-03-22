@@ -1,5 +1,6 @@
 package com.example.datatrap.mouse.presentation.mouse_add_edit
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,6 +51,10 @@ private fun ScreenContent(
     onEvent: (MouseScreenEvent) -> Unit,
     state: MouseUiState,
 ) {
+    BackHandler {
+        onEvent(MouseScreenEvent.OnLeave)
+    }
+
     MyBottomSheetScaffold(
         title = "Mouse",
         errorState = state.error,
@@ -61,7 +66,7 @@ private fun ScreenContent(
                 Icon(imageVector = Icons.Default.Save, contentDescription = "save icon")
             }
             IconButton(onClick = {
-                onEvent(MouseScreenEvent.OnCameraClick(null)) // TODO pass imageId?
+                onEvent(MouseScreenEvent.OnCameraClick(state.mouseEntity?.mouseId))
             }) {
                 Icon(imageVector = Icons.Default.Camera, contentDescription = "camera icon")
             }
