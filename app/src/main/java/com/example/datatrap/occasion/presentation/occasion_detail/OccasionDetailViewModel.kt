@@ -1,11 +1,9 @@
 package com.example.datatrap.occasion.presentation.occasion_detail
 
 import androidx.core.net.toUri
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.occasion.domain.use_case.CountSpecialSpeciesUseCase
@@ -14,16 +12,13 @@ import com.example.datatrap.settings.data.method.MethodRepository
 import com.example.datatrap.settings.data.methodtype.MethodTypeRepository
 import com.example.datatrap.settings.data.traptype.TrapTypeRepository
 import com.example.datatrap.settings.data.veg_type.VegetTypeRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class OccasionDetailViewModel @Inject constructor(
+class OccasionDetailViewModel(
     private val occasionRepository: OccasionRepository,
     private val occasionImageRepository: OccasionImageRepository,
     private val localityRepository: LocalityRepository,
@@ -33,16 +28,14 @@ class OccasionDetailViewModel @Inject constructor(
     private val vegetTypeRepository: VegetTypeRepository,
     private val trapTypeRepository: TrapTypeRepository,
     private val countSpecialSpeciesUseCase: CountSpecialSpeciesUseCase,
-    savedStateHandle: SavedStateHandle,
+    private val occasionId: String?,
+    private val localityId: String?,
 ): ViewModel() {
 
     private var imagePath: String? = null
 
     private val _state = MutableStateFlow(OccasionDetailUiState())
     val state = _state.asStateFlow()
-
-    private val occasionId = savedStateHandle.getMainScreenNavArgs()?.occasionId
-    private val localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

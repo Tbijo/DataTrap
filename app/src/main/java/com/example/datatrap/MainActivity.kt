@@ -9,7 +9,7 @@ import com.example.datatrap.about.aboutNavigation
 import com.example.datatrap.camera.cameraNavigation
 import com.example.datatrap.core.theme.DataTrapTheme
 import com.example.datatrap.locality.localityNavigation
-import com.example.datatrap.login.LOGIN_SCREEN_ROUTE
+import com.example.datatrap.login.LoginScreenRoute
 import com.example.datatrap.login.loginNavigation
 import com.example.datatrap.mouse.mouseNavigation
 import com.example.datatrap.occasion.occasionNavigation
@@ -18,9 +18,7 @@ import com.example.datatrap.session.sessionNavigation
 import com.example.datatrap.settings.settingsNavigation
 import com.example.datatrap.specie.specieNavigation
 import com.example.datatrap.sync.syncNavigation
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,7 +29,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = LOGIN_SCREEN_ROUTE,
+                    startDestination = LoginScreenRoute,
                 ) {
 
                     loginNavigation(navController)

@@ -2,11 +2,10 @@ package com.example.datatrap.login.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
+import com.example.datatrap.core.data.shared_nav_args.ScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.ScienceTeam
 import com.example.datatrap.settings.user.data.UserRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,12 +15,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
-@HiltViewModel
-class LoginViewModel @Inject constructor(
+class LoginViewModel(
     private val userRepository: UserRepository,
-    private val navArgsStorage: NavArgsStorage,
+    private val screenNavArgs: ScreenNavArgs,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LoginUiState())
@@ -98,9 +95,9 @@ class LoginViewModel @Inject constructor(
             with(userRepository.checkUser(userName, pass)) {
                 this?.let {
                     // save active user
-                    navArgsStorage.saveUserId(it)
+                    screenNavArgs.saveUserId(it)
                     // save selected team
-                    navArgsStorage.saveUserTeam(team.numTeam)
+                    screenNavArgs.saveUserTeam(team.numTeam)
                     // navigate to project screen
                     _eventFlow.emit(UiEvent.NavigateNext)
                 }
@@ -115,8 +112,8 @@ class LoginViewModel @Inject constructor(
     private fun syncDateOnFirstUse() {
         viewModelScope.launch(Dispatchers.IO) {
             // If the user starts app first time - create timestamp for sync
-            if (navArgsStorage.readLastSyncDate() == null) {
-                navArgsStorage.saveLastSyncDate(
+            if (screenNavArgs.readLastSyncDate() == null) {
+                screenNavArgs.saveLastSyncDate(
                     ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
                 )
             }

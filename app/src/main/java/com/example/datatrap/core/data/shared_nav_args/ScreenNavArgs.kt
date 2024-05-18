@@ -1,13 +1,12 @@
 package com.example.datatrap.core.data.shared_nav_args
 
 import android.content.SharedPreferences
-import javax.inject.Inject
 
 private const val USER_ID_KEY = "userIdKey"
 private const val TEAM_KEY = "teamKey"
 private const val SYNC_DATE_KEY = "syncDateKey"
 
-class NavArgsStorage @Inject constructor(
+class ScreenNavArgs(
     private val sharedPreferences: SharedPreferences,
 ) {
     fun saveUserId(userId: String) {

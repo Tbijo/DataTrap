@@ -1,15 +1,12 @@
 package com.example.datatrap.locality.presentation.locality_add_edit
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.locality.domain.LocationClient
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,13 +17,11 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@HiltViewModel
-class LocalityViewModel @Inject constructor(
+class LocalityViewModel(
     private val localityRepository: LocalityRepository,
     private val locationClient: LocationClient,
-    savedStateHandle: SavedStateHandle,
+    private val localityId: String?,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LocalityUiState())
@@ -34,8 +29,6 @@ class LocalityViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-
-    val localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

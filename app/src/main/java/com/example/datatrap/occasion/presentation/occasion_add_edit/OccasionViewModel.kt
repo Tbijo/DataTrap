@@ -1,12 +1,10 @@
 package com.example.datatrap.occasion.presentation.occasion_add_edit
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
-import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
+import com.example.datatrap.core.data.shared_nav_args.ScreenNavArgs
 import com.example.datatrap.core.data.storage.InternalStorageRepository
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ifNullOrBlank
@@ -26,7 +24,6 @@ import com.example.datatrap.settings.data.traptype.TrapTypeRepository
 import com.example.datatrap.settings.data.veg_type.VegetTypeEntity
 import com.example.datatrap.settings.data.veg_type.VegetTypeRepository
 import com.example.datatrap.settings.user.data.UserRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,11 +32,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@HiltViewModel
-class OccasionViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+class OccasionViewModel(
     private val occasionRepository: OccasionRepository,
     private val occasionImageRepository: OccasionImageRepository,
     private val internalStorageRepository: InternalStorageRepository,
@@ -51,8 +45,11 @@ class OccasionViewModel @Inject constructor(
     private val trapTypeRepository: TrapTypeRepository,
     private val vegetTypeRepository: VegetTypeRepository,
     private val userRepository: UserRepository,
-    private val navArgsStorage: NavArgsStorage,
+    private val screenNavArgs: ScreenNavArgs,
     private val insertOccasionUseCase: InsertOccasionUseCase,
+    private val occasionId: String?,
+    private val localityId: String?,
+    private val sessionId: String?,
 ): ViewModel() {
 
     // TODO remove non UI state var from state class, some vars do not change UI
@@ -65,13 +62,9 @@ class OccasionViewModel @Inject constructor(
     // number of occasions in a session to calculate occasionNum of a new OccasionEntity
     private var occasionCount: Int = 0
 
-    private val occasionId = savedStateHandle.getMainScreenNavArgs()?.occasionId
-    private val localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
-    private val sessionId = savedStateHandle.getMainScreenNavArgs()?.sessionId
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            navArgsStorage.readUserId()?.let { userId ->
+            screenNavArgs.readUserId()?.let { userId ->
                 with(userRepository.getActiveUser(userId)) {
                     _state.update { it.copy(
                         legitimationText = userName,

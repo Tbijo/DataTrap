@@ -2,21 +2,15 @@ package com.example.datatrap.specie
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
-import com.example.datatrap.about.navigateToAboutScreen
+import androidx.navigation.toRoute
+import com.example.datatrap.about.AboutScreenRoute
 import com.example.datatrap.core.presentation.components.DrawerScreens
-import com.example.datatrap.project.navigateToProjectListScreen
-import com.example.datatrap.settings.navigateToSettingsScreen
+import com.example.datatrap.project.ProjectListScreenRoute
+import com.example.datatrap.settings.SettingsListScreenRoute
 import com.example.datatrap.specie.presentation.specie_add_edit.SpecieScreen
 import com.example.datatrap.specie.presentation.specie_add_edit.SpecieScreenEvent
 import com.example.datatrap.specie.presentation.specie_add_edit.SpecieViewModel
@@ -28,45 +22,30 @@ import com.example.datatrap.specie.presentation.specie_image.SpecieImageViewMode
 import com.example.datatrap.specie.presentation.specie_list.SpecieListScreen
 import com.example.datatrap.specie.presentation.specie_list.SpecieListScreenEvent
 import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
-import com.example.datatrap.sync.navigateToSyncScreen
+import com.example.datatrap.sync.SyncScreenRoute
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-private const val SPECIE_LIST_SCREEN_ROUTE = "specie_list_screen"
-private const val SPECIE_SCREEN_ROUTE = "specie_screen"
-private const val SPECIE_IMAGE_SCREEN_ROUTE = "specie_image_screen"
-private const val SPECIE_DETAIL_SCREEN_ROUTE = "specie_detail_screen"
+@Serializable
+object SpecieListScreenRoute
+@Serializable
+data class SpecieScreenRoute(
+    val specieId: String?,
+)
+@Serializable
+data class SpecieImageScreenRoute(
+    val specieId: String?,
+)
+@Serializable
+data class SpecieDetailScreenRoute(
+    val specieId: String,
+)
 
-private const val SPECIE_ID_KEY = "specieIdKey"
 // to send to previous screen
 private const val IMAGE_URI_KEY = "imageUriKey"
 private const val IMAGE_NOTE_KEY = "imageNoteKey"
 private const val IMAGE_CHANGE_KEY = "imageChangeKey"
-
-fun NavController.navigateToSpecieListScreen() = navigate(SPECIE_LIST_SCREEN_ROUTE)
-private fun getSpecieScreenArguments(): List<NamedNavArgument> {
-    return listOf(
-        navArgument(name = SPECIE_ID_KEY) {
-            nullable = true
-            type = NavType.StringType
-            defaultValue = null
-        }
-    )
-}
-fun SavedStateHandle.getSpecieIdArg(): String? = get(SPECIE_ID_KEY)
-private fun NavBackStackEntry.getSpecieIdArg(): String? = arguments?.getString(SPECIE_ID_KEY)
-private fun setSpecieRouteWithArgs(route: String) = "$route/{$SPECIE_ID_KEY}"
-
-private fun NavController.navigateToAnySpecieScreen(route: String, specieId: String?) {
-    navigate("$route/$specieId")
-}
-private fun NavController.navigateToSpecieScreen(specieId: String?) {
-    navigateToAnySpecieScreen(SPECIE_SCREEN_ROUTE, specieId)
-}
-private fun NavController.navigateToSpecieImageScreen(specieId: String?) {
-    navigateToAnySpecieScreen(SPECIE_IMAGE_SCREEN_ROUTE, specieId)
-}
-private fun NavController.navigateToSpecieDetailScreen(specieId: String) {
-    navigateToAnySpecieScreen(SPECIE_DETAIL_SCREEN_ROUTE, specieId)
-}
 
 // set imageName and note for previous screen
 private fun NavHostController.setImageName(imageUri: String?, imageNote: String?, makeChange: Boolean) {
@@ -90,38 +69,42 @@ private fun NavHostController.clearImageChange() {
 
 fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
 
-    composable(route = SPECIE_LIST_SCREEN_ROUTE) {
-        val viewModel: SpecieListViewModel = hiltViewModel()
+    composable<SpecieListScreenRoute> {
+        val viewModel: SpecieListViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieListScreen(
             onEvent = { event ->
                 when(event) {
                     SpecieListScreenEvent.OnAddButtonClick -> {
-                        navController.navigateToSpecieScreen(
-                            specieId = null,
+                        navController.navigate(
+                            SpecieScreenRoute(
+                                specieId = null,
+                            )
                         )
                     }
 
                     is SpecieListScreenEvent.OnItemClick -> {
-                        navController.navigateToSpecieDetailScreen(
-                            specieId = event.specieEntity.specieId,
+                        navController.navigate(
+                            SpecieDetailScreenRoute(
+                                specieId = event.specieEntity.specieId,
+                            )
                         )
                     }
 
                     is SpecieListScreenEvent.OnDrawerItemClick -> {
                         when(event.drawerScreen) {
                             DrawerScreens.PROJECTS -> {
-                                navController.navigateToProjectListScreen()
+                                navController.navigate(ProjectListScreenRoute)
                             }
                             DrawerScreens.SETTINGS -> {
-                                navController.navigateToSettingsScreen()
+                                navController.navigate(SettingsListScreenRoute)
                             }
                             DrawerScreens.ABOUT -> {
-                                navController.navigateToAboutScreen()
+                                navController.navigate(AboutScreenRoute)
                             }
                             DrawerScreens.SYNCHRONIZE -> {
-                                navController.navigateToSyncScreen()
+                                navController.navigate(SyncScreenRoute)
                             }
                             else -> Unit
                         }
@@ -134,17 +117,17 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setSpecieRouteWithArgs(SPECIE_SCREEN_ROUTE),
-        arguments = getSpecieScreenArguments(),
-    ) {
-        val viewModel: SpecieViewModel = hiltViewModel()
+    composable<SpecieScreenRoute> {
+        val args = it.toRoute<SpecieScreenRoute>()
+        val viewModel: SpecieViewModel = koinViewModel(
+            parameters = {
+                parametersOf(args.specieId)
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
         val imageName = navController.getImageName()
         val imageNote = navController.getImageNote()
         val makeChange = navController.getImageChange()
-
-        val specieId = it.getSpecieIdArg()
 
         LaunchedEffect(key1 = imageName, key2 = imageNote, key3 = makeChange) {
             if (makeChange == true) {
@@ -163,11 +146,12 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
             onEvent = { event ->
                 when(event) {
                     SpecieScreenEvent.OnCameraClick -> {
-                        navController.navigateToSpecieImageScreen(
-                            specieId = specieId,
+                        navController.navigate(
+                            SpecieImageScreenRoute(
+                                specieId = args.specieId,
+                            )
                         )
                     }
-
                     else -> viewModel.onEvent(event)
                 }
             },
@@ -175,11 +159,13 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setSpecieRouteWithArgs(SPECIE_IMAGE_SCREEN_ROUTE),
-        arguments = getSpecieScreenArguments(),
-    ) {
-        val viewModel: SpecieImageViewModel = hiltViewModel()
+    composable<SpecieImageScreenRoute> {
+        val args = it.toRoute<SpecieImageScreenRoute>()
+        val viewModel: SpecieImageViewModel = koinViewModel(
+            parameters = {
+                parametersOf(args.specieId)
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieImageScreen(
@@ -200,11 +186,13 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setSpecieRouteWithArgs(SPECIE_DETAIL_SCREEN_ROUTE),
-        arguments = getSpecieScreenArguments(),
-    ) {
-        val viewModel: SpecieDetailViewModel = hiltViewModel()
+    composable<SpecieDetailScreenRoute> {
+        val args = it.toRoute<SpecieDetailScreenRoute>()
+        val viewModel: SpecieDetailViewModel = koinViewModel(
+            parameters = {
+                parametersOf(args.specieId)
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         SpecieDetailScreen(

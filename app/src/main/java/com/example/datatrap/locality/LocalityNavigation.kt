@@ -2,18 +2,12 @@ package com.example.datatrap.locality
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.datatrap.core.ScreenNavArgs
-import com.example.datatrap.core.getMainScreenArguments
-import com.example.datatrap.core.getMainScreenNavArgs
-import com.example.datatrap.core.navigateToMainScreen
+import androidx.navigation.toRoute
 import com.example.datatrap.core.presentation.util.UiEvent
-import com.example.datatrap.core.setMainRouteWithArgs
 import com.example.datatrap.locality.presentation.locality_add_edit.LocalityScreen
 import com.example.datatrap.locality.presentation.locality_add_edit.LocalityViewModel
 import com.example.datatrap.locality.presentation.locality_list.LocalityListScreen
@@ -21,58 +15,67 @@ import com.example.datatrap.locality.presentation.locality_list.LocalityListScre
 import com.example.datatrap.locality.presentation.locality_list.LocalityListViewModel
 import com.example.datatrap.locality.presentation.locality_map.LocalityMapScreen
 import com.example.datatrap.locality.presentation.locality_map.LocalityMapViewModel
-import com.example.datatrap.session.navigateToSessionListScreen
+import com.example.datatrap.session.SessionListScreenRoute
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-private const val LOCALITY_LIST_SCREEN_ROUTE = "locality_list_screen"
-private const val LOCALITY_SCREEN_ROUTE = "locality_screen"
-private const val LOCALITY_MAP_SCREEN_ROUTE = "locality_map_screen"
-
-fun NavController.navigateToLocalityListScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(LOCALITY_LIST_SCREEN_ROUTE, screenNavArgs)
-}
-private fun NavController.navigateToLocalityScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(LOCALITY_SCREEN_ROUTE, screenNavArgs)
-}
-private fun NavController.navigateToLocalityMapScreen() {
-    navigate(LOCALITY_MAP_SCREEN_ROUTE)
-}
+@Serializable
+data class LocalityListScreenRoute(
+    val projectId: String? = null,
+)
+@Serializable
+data class LocalityScreenRoute(
+    val projectId: String?,
+    val localityId: String? = null,
+)
+@Serializable
+object LocalityMapScreenRoute
 
 fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
 
-    composable(
-        route = setMainRouteWithArgs(LOCALITY_LIST_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: LocalityListViewModel = hiltViewModel()
+    composable<LocalityListScreenRoute> {
+        val args = it.toRoute<LocalityListScreenRoute>()
+        val viewModel: LocalityListViewModel = koinViewModel(
+            parameters = {
+                parametersOf(args.projectId)
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
-
-        val screenNavArgs = it.getMainScreenNavArgs() ?: ScreenNavArgs()
 
         LocalityListScreen(
             onEvent = { event ->
                 when(event) {
-                    LocalityListScreenEvent.OnAddButtonClick -> navController.navigateToLocalityScreen(
-                        screenNavArgs = screenNavArgs
-                    )
+                    LocalityListScreenEvent.OnAddButtonClick ->
+                        navController.navigate(
+                            LocalityScreenRoute(
+                                projectId = args.projectId,
+                                localityId = null,
+                            )
+                        )
 
-                    is LocalityListScreenEvent.OnUpdateButtonClick -> navController.navigateToLocalityScreen(
-                        screenNavArgs = screenNavArgs.copy(
-                            localityId = event.localityEntity.localityId,
-                        ),
-                    )
+                    is LocalityListScreenEvent.OnUpdateButtonClick ->
+                        navController.navigate(
+                            LocalityScreenRoute(
+                                projectId = args.projectId,
+                                localityId = event.localityEntity.localityId,
+                            )
+                        )
 
                     is LocalityListScreenEvent.OnItemClick -> {
                         // set numLocal
                         viewModel.onEvent(LocalityListScreenEvent.SetNumLocalOfProject(event.localityId))
                         // To session screen needs projectId
-                        navController.navigateToSessionListScreen(
-                            screenNavArgs = screenNavArgs.copy(
+                        navController.navigate(
+                            SessionListScreenRoute(
+                                projectId = args.projectId,
                                 localityId = event.localityId,
-                            ),
+                            )
                         )
                     }
 
-                    LocalityListScreenEvent.OnMapButtonCLick -> navController.navigateToLocalityMapScreen()
+                    LocalityListScreenEvent.OnMapButtonCLick ->
+                        navController.navigate(LocalityMapScreenRoute)
 
                     else -> viewModel.onEvent(event)
                 }
@@ -81,11 +84,13 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setMainRouteWithArgs(LOCALITY_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: LocalityViewModel = hiltViewModel()
+    composable<LocalityScreenRoute> {
+        val args = it.toRoute<LocalityScreenRoute>()
+        val viewModel: LocalityViewModel = koinViewModel(
+            parameters = {
+                parametersOf(args.localityId)
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(Unit) {
@@ -105,8 +110,8 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
         )
     }
 
-    composable(route = LOCALITY_MAP_SCREEN_ROUTE) {
-        val viewModel: LocalityMapViewModel = hiltViewModel()
+    composable<LocalityMapScreenRoute> {
+        val viewModel: LocalityMapViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LocalityMapScreen(

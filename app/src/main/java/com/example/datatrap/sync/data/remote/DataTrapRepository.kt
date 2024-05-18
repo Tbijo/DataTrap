@@ -4,9 +4,8 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
-import javax.inject.Inject
 
-class DataTrapRepository @Inject constructor(
+class DataTrapRepository(
     private val api: DataTrapAPI
 ) {
 

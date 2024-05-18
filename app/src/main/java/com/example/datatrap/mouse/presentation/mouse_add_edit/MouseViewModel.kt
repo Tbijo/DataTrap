@@ -1,11 +1,9 @@
 package com.example.datatrap.mouse.presentation.mouse_add_edit
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.core.data.storage.InternalStorageRepository
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ifNullOrBlank
@@ -21,7 +19,6 @@ import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.settings.data.protocol.ProtocolEntity
 import com.example.datatrap.settings.data.protocol.ProtocolRepository
 import com.example.datatrap.specie.data.SpecieRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,11 +28,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import java.util.UUID
-import javax.inject.Inject
 
-@HiltViewModel
-class MouseViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+class MouseViewModel(
     private val mouseRepository: MouseRepository,
     private val mouseImageRepository: MouseImageRepository,
     private val internalStorageRepository: InternalStorageRepository,
@@ -45,11 +39,11 @@ class MouseViewModel @Inject constructor(
     private val getOccupiedTrapIdsInOccasion: GetOccupiedTrapIdsInOccasion,
     private val generateCodeUseCase: GenerateCodeUseCase,
     private val insertMouseUseCase: InsertMouseUseCase,
+    private val localityId: String?,
+    private val occasionId: String?,
+    private val mouseId: String?,
+    private val isRecapture: Boolean?,
 ): ViewModel() {
-
-    private var occasionId: String? = null
-    private var localityId: String? = null
-    private var isRecapture: Boolean? = null
 
     private val _state = MutableStateFlow(MouseUiState())
     val state = _state.asStateFlow()
@@ -59,11 +53,6 @@ class MouseViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val mouseId = savedStateHandle.getMainScreenNavArgs()?.mouseId
-            occasionId = savedStateHandle.getMainScreenNavArgs()?.occasionId
-            localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
-            isRecapture = savedStateHandle.getMainScreenNavArgs()?.isRecapture
-
             protocolRepository.getSettingsEntityList().collect { proList ->
                 _state.update { it.copy(
                     protocolList = proList.filterIsInstance<ProtocolEntity>(),

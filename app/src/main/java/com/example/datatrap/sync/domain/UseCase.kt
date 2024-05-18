@@ -1,8 +1,6 @@
 package com.example.datatrap.sync.domain
 
-import javax.inject.Inject
-
-class GetCoinsUseCase @Inject constructor(
+class GetCoinsUseCase(
     //private val repository: CoinRepository // inject the Interface then it is easily replaceable
 ) {
     // use cases should have one public function

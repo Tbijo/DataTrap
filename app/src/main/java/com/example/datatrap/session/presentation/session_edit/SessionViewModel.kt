@@ -1,13 +1,10 @@
 package com.example.datatrap.session.presentation.session_edit
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.session.data.SessionEntity
 import com.example.datatrap.session.data.SessionRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,12 +13,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@HiltViewModel
-class SessionViewModel @Inject constructor(
+class SessionViewModel(
     private val sessionRepository: SessionRepository,
-    savedStateHandle: SavedStateHandle,
+    private val sessionId: String?,
+    private val projectId: String?,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(SessionUiState())
@@ -29,9 +25,6 @@ class SessionViewModel @Inject constructor(
 
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
-
-    private val sessionId = savedStateHandle.getMainScreenNavArgs()?.sessionId
-    private val projectId = savedStateHandle.getMainScreenNavArgs()?.projectId
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

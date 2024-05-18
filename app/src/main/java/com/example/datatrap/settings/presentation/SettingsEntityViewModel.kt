@@ -1,6 +1,5 @@
 package com.example.datatrap.settings.presentation
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.settings.SettingsScreenNames
@@ -12,8 +11,6 @@ import com.example.datatrap.settings.data.methodtype.MethodTypeRepository
 import com.example.datatrap.settings.data.protocol.ProtocolRepository
 import com.example.datatrap.settings.data.traptype.TrapTypeRepository
 import com.example.datatrap.settings.data.veg_type.VegetTypeRepository
-import com.example.datatrap.settings.getSettingEntityNavArg
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,17 +20,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import java.util.UUID
-import javax.inject.Inject
 
-@HiltViewModel
-class SettingsEntityViewModel @Inject constructor (
+class SettingsEntityViewModel(
     private val envTypeRepository: EnvTypeRepository,
     private val methodRepository: MethodRepository,
     private val methodTypeRepository: MethodTypeRepository,
     private val protocolRepository: ProtocolRepository,
     private val trapTypeRepository: TrapTypeRepository,
     private val vegetTypeRepository: VegetTypeRepository,
-    val savedStateHandle: SavedStateHandle,
+    private val settingsEntity: SettingsScreenNames,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(SettingsEntityUiState())
@@ -118,7 +113,7 @@ class SettingsEntityViewModel @Inject constructor (
     }
 
     private fun setRepository() {
-        settingsEntityRepository = when(savedStateHandle.getSettingEntityNavArg()) {
+        settingsEntityRepository = when(settingsEntity) {
             SettingsScreenNames.ENVIRONMENT -> envTypeRepository
             SettingsScreenNames.METHOD -> methodRepository
             SettingsScreenNames.METHODTYPE -> methodTypeRepository
@@ -142,7 +137,7 @@ class SettingsEntityViewModel @Inject constructor (
     }
 
     private fun setTitle(): String {
-        return when(savedStateHandle.getSettingEntityNavArg()) {
+        return when(settingsEntity) {
             SettingsScreenNames.ENVIRONMENT -> "EnvType List"
             SettingsScreenNames.METHOD -> "Method List"
             SettingsScreenNames.METHODTYPE -> "Method Type List"
@@ -153,7 +148,7 @@ class SettingsEntityViewModel @Inject constructor (
         }
     }
     private fun setIconDesc(): String {
-        return when(savedStateHandle.getSettingEntityNavArg()) {
+        return when(settingsEntity) {
             SettingsScreenNames.ENVIRONMENT -> "Add EnvType"
             SettingsScreenNames.METHOD -> "Add Method"
             SettingsScreenNames.METHODTYPE -> "Add Method Type"
@@ -164,7 +159,7 @@ class SettingsEntityViewModel @Inject constructor (
         }
     }
     private fun setPlaceHolderAndLabel(): String {
-        return when(savedStateHandle.getSettingEntityNavArg()) {
+        return when(settingsEntity) {
             SettingsScreenNames.ENVIRONMENT -> "Environment Type"
             SettingsScreenNames.METHOD -> "Method"
             SettingsScreenNames.METHODTYPE -> "Method Type"

@@ -4,7 +4,6 @@ plugins {
     id("kotlin-android")
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     kotlin("kapt")
-    id("com.google.dagger.hilt.android")
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "1.8.10"
 }
@@ -18,7 +17,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs::class.java).
 
 android {
     namespace = "com.example.datatrap"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.datatrap"
@@ -93,7 +92,7 @@ dependencies {
     // Optional - Integration with ViewModels
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
     // navigation
-    implementation("androidx.navigation:navigation-compose:2.6.0")
+    implementation("androidx.navigation:navigation-compose:2.8.0-alpha08")
     // lifecycle aware state
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.1")
 
@@ -109,12 +108,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     // compose map
     implementation("com.google.maps.android:maps-compose:2.14.0")
-
-    // dagger hilt
-    implementation("com.google.dagger:hilt-android:2.44")
-    kapt("com.google.dagger:hilt-android-compiler:2.44")
-    // hilt viewModel
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Preferences DataStore
     implementation("androidx.datastore:datastore-preferences:1.0.0")
@@ -135,5 +128,11 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.4.0")
 
     // kotlin serial
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+
+    //koin
+    implementation("io.insert-koin:koin-core:3.5.0")
+    implementation("io.insert-koin:koin-android:3.5.0")
+    implementation("io.insert-koin:koin-androidx-compose:3.5.0")
+    implementation("io.insert-koin:koin-androidx-navigation:3.5.0")
 }

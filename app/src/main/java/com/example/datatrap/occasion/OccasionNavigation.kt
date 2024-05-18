@@ -2,25 +2,19 @@ package com.example.datatrap.occasion
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.example.datatrap.camera.CameraScreenRoute
 import com.example.datatrap.camera.clearImageChange
 import com.example.datatrap.camera.getImageChange
 import com.example.datatrap.camera.getImageName
 import com.example.datatrap.camera.getImageNote
-import com.example.datatrap.camera.navigateToCameraScreen
 import com.example.datatrap.camera.util.EntityType
-import com.example.datatrap.core.ScreenNavArgs
-import com.example.datatrap.core.getMainScreenArguments
-import com.example.datatrap.core.getMainScreenNavArgs
-import com.example.datatrap.core.navigateToMainScreen
 import com.example.datatrap.core.presentation.util.UiEvent
-import com.example.datatrap.core.setMainRouteWithArgs
-import com.example.datatrap.mouse.navigateToMouseListScreen
+import com.example.datatrap.mouse.MouseListScreenRoute
 import com.example.datatrap.occasion.presentation.occasion_add_edit.OccasionScreen
 import com.example.datatrap.occasion.presentation.occasion_add_edit.OccasionScreenEvent
 import com.example.datatrap.occasion.presentation.occasion_add_edit.OccasionViewModel
@@ -29,61 +23,88 @@ import com.example.datatrap.occasion.presentation.occasion_detail.OccasionDetail
 import com.example.datatrap.occasion.presentation.occasion_list.OccasionListScreen
 import com.example.datatrap.occasion.presentation.occasion_list.OccasionListScreenEvent
 import com.example.datatrap.occasion.presentation.occasion_list.OccasionListViewModel
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-private const val OCCASION_LIST_SCREEN_ROUTE = "occasion_list_screen"
-private const val OCCASION_SCREEN_ROUTE = "occasion_screen"
-private const val OCCASION_DETAIL_SCREEN_ROUTE = "occasion_detail_screen"
-
-fun NavController.navigateToOccasionListScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(OCCASION_LIST_SCREEN_ROUTE, screenNavArgs)
-}
-private fun NavController.navigateToOccasionScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(OCCASION_SCREEN_ROUTE, screenNavArgs)
-}
-private fun NavController.navigateToOccasionDetailScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(OCCASION_DETAIL_SCREEN_ROUTE, screenNavArgs)
-}
+@Serializable
+data class OccasionListScreenRoute(
+    val projectId: String?,
+    val localityId: String?,
+    val sessionId: String?,
+)
+@Serializable
+data class OccasionScreenRoute(
+    val projectId: String?,
+    val localityId: String?,
+    val sessionId: String?,
+    val occasionId: String?,
+)
+@Serializable
+data class OccasionDetailScreenRoute(
+    val projectId: String?,
+    val localityId: String?,
+    val sessionId: String?,
+    val occasionId: String?,
+)
 
 fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
-    composable(
-        route = setMainRouteWithArgs(OCCASION_LIST_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: OccasionListViewModel = hiltViewModel()
+    composable<OccasionListScreenRoute> {
+        val args = it.toRoute<OccasionListScreenRoute>()
+        val viewModel: OccasionListViewModel = koinViewModel(
+            parameters = {
+                parametersOf(
+                    args.sessionId,
+                    args.localityId,
+                )
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
-
-        val screenNavArgs = it.getMainScreenNavArgs() ?: ScreenNavArgs()
 
         OccasionListScreen(
             onEvent = { event ->
                 when(event) {
                     OccasionListScreenEvent.OnAddButtonClick -> {
-                        navController.navigateToOccasionScreen(
-                            screenNavArgs = screenNavArgs,
+                        navController.navigate(
+                            OccasionScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
+                                occasionId = null,
+                            )
                         )
                     }
 
                     is OccasionListScreenEvent.OnUpdateButtonClick -> {
-                        navController.navigateToOccasionScreen(
-                            screenNavArgs = screenNavArgs.copy(
+                        navController.navigate(
+                            OccasionScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
                                 occasionId = event.occasionEntity.occasionId,
-                            ),
+                            )
                         )
                     }
 
                     is OccasionListScreenEvent.OnDetailButtonClick -> {
-                        navController.navigateToOccasionDetailScreen(
-                            screenNavArgs = screenNavArgs.copy(
+                        navController.navigate(
+                            OccasionDetailScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
                                 occasionId = event.occasionEntity.occasionId,
-                            ),
+                            )
                         )
                     }
 
                     is OccasionListScreenEvent.OnItemClick -> {
-                        navController.navigateToMouseListScreen(
-                            screenNavArgs = screenNavArgs.copy(
+                        navController.navigate(
+                            MouseListScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
                                 occasionId = event.occasionEntity.occasionId,
-                            ),
+                            )
                         )
                     }
 
@@ -94,11 +115,17 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setMainRouteWithArgs(OCCASION_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: OccasionViewModel = hiltViewModel()
+    composable<OccasionScreenRoute> {
+        val args = it.toRoute<OccasionScreenRoute>()
+        val viewModel: OccasionViewModel = koinViewModel(
+            parameters = {
+                parametersOf(
+                    args.occasionId,
+                    args.localityId,
+                    args.sessionId,
+                )
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
         val imageName = navController.getImageName()
         val imageNote = navController.getImageNote()
@@ -132,9 +159,11 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
             onEvent = { event ->
                 when(event) {
                     is OccasionScreenEvent.OnCameraClick -> {
-                        navController.navigateToCameraScreen(
-                            entityType = EntityType.OCCASION,
-                            entityId = event.occasionId,
+                        navController.navigate(
+                            CameraScreenRoute(
+                                entityType = EntityType.OCCASION.name,
+                                entityId = event.occasionId,
+                            )
                         )
                     }
 
@@ -150,11 +179,16 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setMainRouteWithArgs(OCCASION_DETAIL_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: OccasionDetailViewModel = hiltViewModel()
+    composable<OccasionDetailScreenRoute> {
+        val args = it.toRoute<OccasionDetailScreenRoute>()
+        val viewModel: OccasionDetailViewModel = koinViewModel(
+            parameters = {
+                parametersOf(
+                    args.occasionId,
+                    args.localityId,
+                )
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         OccasionDetailScreen(

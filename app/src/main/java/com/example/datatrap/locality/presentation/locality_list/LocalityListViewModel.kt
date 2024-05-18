@@ -1,13 +1,10 @@
 package com.example.datatrap.locality.presentation.locality_list
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.domain.use_case.InsertProjectLocalityUseCase
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.locality.data.locality.LocalityRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,19 +12,17 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class LocalityListViewModel @Inject constructor (
+class LocalityListViewModel(
     private val localityRepository: LocalityRepository,
     private val insertProjectLocalityUseCase: InsertProjectLocalityUseCase,
-    savedStateHandle: SavedStateHandle,
+    val projectID: String,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LocalityListUiState())
     val state = _state.asStateFlow()
 
-    val projectID = savedStateHandle.getMainScreenNavArgs()?.projectId
+
 
     init {
         _state.update { it.copy(

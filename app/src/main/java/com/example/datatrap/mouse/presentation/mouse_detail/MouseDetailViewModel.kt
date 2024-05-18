@@ -1,26 +1,21 @@
 package com.example.datatrap.mouse.presentation.mouse_detail
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.mouse.domain.use_case.GetMouseDetail
 import com.example.datatrap.mouse.domain.use_case.GetPreviousLogsOfMouse
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MouseDetailViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+class MouseDetailViewModel(
     private val mouseImageRepository: MouseImageRepository,
     private val getMouseDetail: GetMouseDetail,
     private val getPreviousLogsOfMouse: GetPreviousLogsOfMouse,
+    private val mouseId: String?,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(MouseDetailUiState())
@@ -28,8 +23,6 @@ class MouseDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val mouseId = savedStateHandle.getMainScreenNavArgs()?.mouseId
-
             mouseId?.let {
                 getMouseDetail(mouseId).collect { mouseView ->
                     _state.update { it.copy(

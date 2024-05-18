@@ -2,7 +2,6 @@ package com.example.datatrap.login
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -10,20 +9,23 @@ import androidx.navigation.compose.composable
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.login.presentation.LoginScreen
 import com.example.datatrap.login.presentation.LoginViewModel
-import com.example.datatrap.project.navigateToProjectListScreen
+import com.example.datatrap.project.ProjectListScreenRoute
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
 
-const val LOGIN_SCREEN_ROUTE = "login_screen"
+@Serializable
+object LoginScreenRoute
 
 fun NavGraphBuilder.loginNavigation(navController: NavHostController) {
-    composable(route = LOGIN_SCREEN_ROUTE) {
-        val viewModel: LoginViewModel = hiltViewModel()
+    composable<LoginScreenRoute> {
+        val viewModel: LoginViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collect { event ->
                 when(event) {
                     UiEvent.NavigateNext -> {
-                        navController.navigateToProjectListScreen()
+                        navController.navigate(ProjectListScreenRoute)
                     }
                     else -> Unit
                 }

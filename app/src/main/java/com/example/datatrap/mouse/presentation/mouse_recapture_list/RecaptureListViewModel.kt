@@ -4,16 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.mouse.domain.use_case.GetMiceForRecapture
 import com.example.datatrap.specie.data.SpecieRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class RecaptureListViewModel @Inject constructor(
+class RecaptureListViewModel(
     private val specieRepository: SpecieRepository,
     private val getMiceForRecapture: GetMiceForRecapture,
 ): ViewModel() {

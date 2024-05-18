@@ -1,19 +1,18 @@
 package com.example.datatrap.sync
 
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import com.example.datatrap.sync.presentation.SyncScreen
 import com.example.datatrap.sync.presentation.SyncUiState
+import kotlinx.serialization.Serializable
 
-private const val SYNC_SCREEN_ROUTE = "synchronize_screen"
-
-fun NavController.navigateToSyncScreen() = navigate(SYNC_SCREEN_ROUTE)
+@Serializable
+object SyncScreenRoute
 
 fun NavGraphBuilder.syncNavigation(navController: NavHostController) {
 
-    composable(SYNC_SCREEN_ROUTE) {
+    composable<SyncScreenRoute> {
         SyncScreen(
             onEvent = {},
             state = SyncUiState(),

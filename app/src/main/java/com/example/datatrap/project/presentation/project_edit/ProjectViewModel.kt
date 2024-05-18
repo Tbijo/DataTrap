@@ -1,13 +1,10 @@
 package com.example.datatrap.project.presentation.project_edit
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.project.data.ProjectRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,12 +13,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@HiltViewModel
-class ProjectViewModel @Inject constructor(
+class ProjectViewModel(
     private val projectRepository: ProjectRepository,
-    savedStateHandle: SavedStateHandle,
+    private val projectId: String?,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(ProjectUiState())
@@ -31,22 +26,19 @@ class ProjectViewModel @Inject constructor(
     val eventFlow = _eventFlow.asSharedFlow()
 
     init {
-        savedStateHandle.getMainScreenNavArgs()?.let { navArgs ->
-            navArgs.projectId?.let { projectId ->
-                viewModelScope.launch {
-                    with(projectRepository.getProjectById(projectId)) {
-                        _state.update { it.copy(
-                            selectedProject = this,
-                        ) }
-                    }
+        projectId?.let { projectId ->
+            viewModelScope.launch {
+                with(projectRepository.getProjectById(projectId)) {
+                    _state.update { it.copy(
+                        selectedProject = this,
+                    ) }
                 }
             }
-
-            _state.update { it.copy(
-                isLoading = false,
-            ) }
         }
 
+        _state.update { it.copy(
+            isLoading = false,
+        ) }
     }
 
     fun onEvent(event: ProjectScreenEvent) {

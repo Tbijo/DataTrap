@@ -2,24 +2,18 @@ package com.example.datatrap.mouse
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import com.example.datatrap.camera.CameraScreenRoute
 import com.example.datatrap.camera.clearImageChange
 import com.example.datatrap.camera.getImageChange
 import com.example.datatrap.camera.getImageName
 import com.example.datatrap.camera.getImageNote
-import com.example.datatrap.camera.navigateToCameraScreen
 import com.example.datatrap.camera.util.EntityType
-import com.example.datatrap.core.ScreenNavArgs
-import com.example.datatrap.core.getMainScreenArguments
-import com.example.datatrap.core.getMainScreenNavArgs
-import com.example.datatrap.core.navigateToMainScreen
 import com.example.datatrap.core.presentation.util.UiEvent
-import com.example.datatrap.core.setMainRouteWithArgs
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseScreen
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseScreenEvent
 import com.example.datatrap.mouse.presentation.mouse_add_edit.MouseViewModel
@@ -33,76 +27,145 @@ import com.example.datatrap.mouse.presentation.mouse_list.MouseListViewModel
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListScreen
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListScreenEvent
 import com.example.datatrap.mouse.presentation.mouse_recapture_list.RecaptureListViewModel
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-private const val MOUSE_LIST_SCREEN_ROUTE = "mouse_list_screen"
-private const val MOUSE_SCREEN_ROUTE = "mouse_screen"
-private const val MOUSE_MULTI_SCREEN_ROUTE = "mouse_multi_screen"
-private const val MOUSE_DETAIL_SCREEN_ROUTE = "mouse_detail_screen"
-private const val MOUSE_RECAP_LIST_SCREEN_ROUTE = "mouse_recap_list_screen"
-
-fun NavController.navigateToMouseListScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(MOUSE_LIST_SCREEN_ROUTE, screenNavArgs)
-}
-private fun NavController.navigateToMouseScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(MOUSE_SCREEN_ROUTE, screenNavArgs)
-}
-private fun NavController.navigateToMouseMultiScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(MOUSE_MULTI_SCREEN_ROUTE, screenNavArgs)
-}
-private fun NavController.navigateToMouseDetailScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(MOUSE_DETAIL_SCREEN_ROUTE, screenNavArgs)
-}
-private fun NavController.navigateToMouseRecapScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(MOUSE_RECAP_LIST_SCREEN_ROUTE, screenNavArgs)
-}
+@Serializable
+data class MouseListScreenRoute(
+    val projectId: String?,
+    val localityId: String?,
+    val sessionId: String?,
+    val occasionId: String?,
+)
+@Serializable
+data class MouseScreenRoute(
+    val projectId: String?,
+    val localityId: String?,
+    val sessionId: String?,
+    val occasionId: String?,
+    val mouseId: String?,
+    val primeMouseId: String?,
+    val isRecapture: Boolean,
+)
+@Serializable
+data class MouseMultiScreenRoute(
+    val projectId: String?,
+    val localityId: String?,
+    val sessionId: String?,
+    val occasionId: String?,
+    val mouseId: String?,
+    val primeMouseId: String?,
+    val isRecapture: Boolean,
+)
+@Serializable
+data class MouseDetailScreenRoute(
+    val projectId: String?,
+    val localityId: String?,
+    val sessionId: String?,
+    val occasionId: String?,
+    val mouseId: String?,
+    val primeMouseId: String?,
+    val isRecapture: Boolean,
+)
+@Serializable
+data class MouseRecapListScreenRoute(
+    val projectId: String?,
+    val localityId: String?,
+    val sessionId: String?,
+    val occasionId: String?,
+    val mouseId: String?,
+    val primeMouseId: String?,
+    val isRecapture: Boolean,
+)
 
 // TODO Create composables() for MouseScreen with separate viewModels for Insert Update and Recapture
-
 fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
 
-    composable(
-        route = setMainRouteWithArgs(MOUSE_LIST_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: MouseListViewModel = hiltViewModel()
+    composable<MouseListScreenRoute> {
+        val args = it.toRoute<MouseListScreenRoute>()
+        val viewModel: MouseListViewModel = koinViewModel(
+            parameters = {
+                parametersOf(
+                    args.projectId,
+                    args.localityId,
+                    args.sessionId,
+                    args.occasionId,
+                )
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
-
-        val screenNavArgs = it.getMainScreenNavArgs() ?: ScreenNavArgs()
 
         MouseListScreen(
             onEvent = { event ->
                 when(event) {
                     MouseListScreenEvent.OnAddButtonClick -> {
-                        navController.navigateToMouseScreen(
-                            screenNavArgs = screenNavArgs,
+                        navController.navigate(
+                            MouseScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
+                                occasionId = args.occasionId,
+                                mouseId = null,
+                                primeMouseId = null,
+                                isRecapture = false,
+                            )
                         )
                     }
 
                     is MouseListScreenEvent.OnUpdateButtonClick -> {
-                        navController.navigateToMouseScreen(
-                            screenNavArgs = screenNavArgs.copy(
+                        navController.navigate(
+                            MouseScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
+                                occasionId = args.occasionId,
                                 mouseId = event.mouseId,
-                            ),
+                                primeMouseId = null,
+                                isRecapture = false,
+                            )
                         )
                     }
 
                     is MouseListScreenEvent.OnItemClick -> {
-                        navController.navigateToMouseDetailScreen(
-                            screenNavArgs = screenNavArgs.copy(
+                        navController.navigate(
+                            MouseDetailScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
+                                occasionId = args.occasionId,
                                 mouseId = event.mouseId,
-                            ),
+                                primeMouseId = null,
+                                isRecapture = false,
+                            )
                         )
                     }
 
                     is MouseListScreenEvent.OnRecaptureButtonClick -> {
-                        navController.navigateToMouseRecapScreen(
-                            screenNavArgs = screenNavArgs,
+                        navController.navigate(
+                            MouseRecapListScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
+                                occasionId = args.occasionId,
+                                mouseId = null,
+                                primeMouseId = null,
+                                isRecapture = false,
+                            )
                         )
                     }
 
                     MouseListScreenEvent.OnMultiButtonClick -> {
-                        navController.navigateToMouseMultiScreen(
-                            screenNavArgs = screenNavArgs,
+                        navController.navigate(
+                            MouseMultiScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
+                                occasionId = args.occasionId,
+                                mouseId = null,
+                                primeMouseId = null,
+                                isRecapture = false,
+                            )
                         )
                     }
 
@@ -113,11 +176,18 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setMainRouteWithArgs(MOUSE_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: MouseViewModel = hiltViewModel()
+    composable<MouseScreenRoute> {
+        val args = it.toRoute<MouseScreenRoute>()
+        val viewModel: MouseViewModel = koinViewModel(
+            parameters = {
+                parametersOf(
+                    args.localityId,
+                    args.occasionId,
+                    args.mouseId,
+                    args.isRecapture,
+                )
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
         val imageName = navController.getImageName()
         val imageNote = navController.getImageNote()
@@ -151,9 +221,11 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
             onEvent = { event ->
                 when(event) {
                     is MouseScreenEvent.OnCameraClick -> {
-                        navController.navigateToCameraScreen(
-                            entityType = EntityType.MOUSE,
-                            entityId = event.mouseId,
+                        navController.navigate(
+                            CameraScreenRoute(
+                                entityType = EntityType.MOUSE.name,
+                                entityId = event.mouseId,
+                            )
                         )
                     }
                     is MouseScreenEvent.OnLeave -> {
@@ -168,11 +240,13 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setMainRouteWithArgs(MOUSE_DETAIL_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: MouseDetailViewModel = hiltViewModel()
+    composable<MouseDetailScreenRoute> {
+        val args = it.toRoute<MouseDetailScreenRoute>()
+        val viewModel: MouseDetailViewModel = koinViewModel(
+            parameters = {
+                parametersOf(args.mouseId)
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         MouseDetailScreen(
@@ -181,11 +255,16 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setMainRouteWithArgs(MOUSE_MULTI_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: MouseMultiViewModel = hiltViewModel()
+    composable<MouseMultiScreenRoute> {
+        val args = it.toRoute<MouseMultiScreenRoute>()
+        val viewModel: MouseMultiViewModel = koinViewModel(
+            parameters = {
+                parametersOf(
+                    args.localityId,
+                    args.occasionId,
+                )
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(Unit) {
@@ -206,25 +285,25 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setMainRouteWithArgs(MOUSE_RECAP_LIST_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: RecaptureListViewModel = hiltViewModel()
+    composable<MouseRecapListScreenRoute> {
+        val args = it.toRoute<MouseRecapListScreenRoute>()
+        val viewModel: RecaptureListViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
-
-        val screenNavArgs = it.getMainScreenNavArgs() ?: ScreenNavArgs()
 
         RecaptureListScreen(
             onEvent = { event ->
                 when(event) {
                     is RecaptureListScreenEvent.OnItemClick -> {
-                        navController.navigateToMouseScreen(
-                            screenNavArgs = screenNavArgs.copy(
-                                isRecapture = true,
+                        navController.navigate(
+                            MouseScreenRoute(
+                                projectId = args.projectId,
+                                localityId = args.localityId,
+                                sessionId = args.sessionId,
+                                occasionId = args.occasionId,
                                 mouseId = event.mouse.mouseId,
                                 primeMouseId = event.mouse.primeMouseID,
-                            ),
+                                isRecapture = true,
+                            )
                         )
                     }
 

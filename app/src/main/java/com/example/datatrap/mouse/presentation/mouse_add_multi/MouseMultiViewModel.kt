@@ -1,16 +1,13 @@
 package com.example.datatrap.mouse.presentation.mouse_add_multi
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.mouse.data.MouseEntity
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.model.MultiMouse
 import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.specie.data.SpecieRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,14 +16,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@HiltViewModel
-class MouseMultiViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+class MouseMultiViewModel(
     private val mouseRepository: MouseRepository,
     private val specieRepository: SpecieRepository,
     private val occasionRepository: OccasionRepository,
+    private val localityId: String?,
+    private val occasionId: String?,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(MouseMultiUiState())
@@ -35,27 +31,19 @@ class MouseMultiViewModel @Inject constructor(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
-    private lateinit var occasionId: String
-    private lateinit var localityId: String
-
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            savedStateHandle.getMainScreenNavArgs()?.occasionId?.let {
-                occasionId = it
-            }
-            savedStateHandle.getMainScreenNavArgs()?.localityId?.let {
-                localityId = it
-            }
-
             _state.update { it.copy(
                 specieList = specieRepository.getNonSpecie(),
             ) }
 
-            val occasion = occasionRepository.getOccasion(occasionId)
+            occasionId?.let {
+                val occasion = occasionRepository.getOccasion(occasionId)
 
-            _state.update { it.copy(
-                trapIdList = (1..occasion.numTraps).toList(),
-            ) }
+                _state.update { it.copy(
+                    trapIdList = (1..occasion.numTraps).toList(),
+                ) }
+            }
 
             _state.update { it.copy(
                 isLoading = false,
@@ -135,6 +123,9 @@ class MouseMultiViewModel @Inject constructor(
     }
 
     private fun insertMultiMouse() {
+        if (occasionId == null) return
+        if (localityId == null) return
+
         val list = state.value.mouseList
 
         if (!checkInput(list)) return

@@ -2,84 +2,78 @@ package com.example.datatrap.project
 
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
-import com.example.datatrap.about.navigateToAboutScreen
-import com.example.datatrap.core.ScreenNavArgs
-import com.example.datatrap.core.getMainScreenArguments
-import com.example.datatrap.core.navigateToMainScreen
+import androidx.navigation.toRoute
+import com.example.datatrap.about.AboutScreenRoute
 import com.example.datatrap.core.presentation.components.DrawerScreens
 import com.example.datatrap.core.presentation.util.UiEvent
-import com.example.datatrap.core.setMainRouteWithArgs
-import com.example.datatrap.locality.navigateToLocalityListScreen
+import com.example.datatrap.locality.LocalityListScreenRoute
 import com.example.datatrap.project.presentation.project_edit.ProjectScreen
 import com.example.datatrap.project.presentation.project_edit.ProjectViewModel
 import com.example.datatrap.project.presentation.project_list.ProjectListScreen
 import com.example.datatrap.project.presentation.project_list.ProjectListScreenEvent
 import com.example.datatrap.project.presentation.project_list.ProjectListViewModel
-import com.example.datatrap.settings.navigateToSettingsScreen
-import com.example.datatrap.specie.navigateToSpecieListScreen
-import com.example.datatrap.sync.navigateToSyncScreen
+import com.example.datatrap.settings.SettingsListScreenRoute
+import com.example.datatrap.specie.SpecieListScreenRoute
+import com.example.datatrap.sync.SyncScreenRoute
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-private const val PROJECT_LIST_SCREEN_ROUTE = "project_list_screen"
-private const val PROJECT_SCREEN_ROUTE = "project_screen"
-
-fun NavController.navigateToProjectListScreen() {
-    navigate(PROJECT_LIST_SCREEN_ROUTE)
-}
-
-private fun NavController.navigateToProjectScreen(screenNavArgs: ScreenNavArgs) {
-    navigateToMainScreen(PROJECT_SCREEN_ROUTE, screenNavArgs)
-}
+@Serializable
+object ProjectListScreenRoute
+@Serializable
+data class ProjectScreenRoute(
+    val projectId: String? = null,
+)
 
 fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
 
-    composable(route = PROJECT_LIST_SCREEN_ROUTE) {
-        val viewModel: ProjectListViewModel = hiltViewModel()
+    composable<ProjectListScreenRoute> {
+        val viewModel: ProjectListViewModel = koinViewModel()
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         ProjectListScreen(
             onEvent = { event ->
                 when(event) {
                     ProjectListScreenEvent.OnAddButtonClick -> {
-                        navController.navigateToProjectScreen(
-                            screenNavArgs = ScreenNavArgs(),
+                        navController.navigate(
+                            ProjectScreenRoute()
                         )
                     }
 
                     is ProjectListScreenEvent.OnUpdateButtonClick -> {
-                        navController.navigateToProjectScreen(
-                            screenNavArgs = ScreenNavArgs(
+                        navController.navigate(
+                            ProjectScreenRoute(
                                 projectId = event.projectEntity.projectId,
-                            ),
+                            )
                         )
                     }
 
                     is ProjectListScreenEvent.OnItemClick -> {
-                        navController.navigateToLocalityListScreen(
-                            screenNavArgs = ScreenNavArgs(
+                        navController.navigate(
+                            LocalityListScreenRoute(
                                 projectId = event.projectEntity.projectId,
-                            ),
+                            )
                         )
                     }
 
                     is ProjectListScreenEvent.OnDrawerItemClick -> {
                         when(event.drawerScreen) {
                             DrawerScreens.SPECIES -> {
-                                navController.navigateToSpecieListScreen()
+                                navController.navigate(SpecieListScreenRoute)
                             }
                             DrawerScreens.SETTINGS -> {
-                                navController.navigateToSettingsScreen()
+                                navController.navigate(SettingsListScreenRoute)
                             }
                             DrawerScreens.ABOUT -> {
-                                navController.navigateToAboutScreen()
+                                navController.navigate(AboutScreenRoute)
                             }
                             DrawerScreens.SYNCHRONIZE -> {
-                                navController.navigateToSyncScreen()
+                                navController.navigate(SyncScreenRoute)
                             }
                             else -> Unit
                         }
@@ -96,11 +90,13 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
         )
     }
 
-    composable(
-        route = setMainRouteWithArgs(PROJECT_SCREEN_ROUTE),
-        arguments = getMainScreenArguments(),
-    ) {
-        val viewModel: ProjectViewModel = hiltViewModel()
+    composable<ProjectScreenRoute> {
+        val args = it.toRoute<ProjectScreenRoute>()
+        val viewModel: ProjectViewModel = koinViewModel(
+            parameters = {
+                parametersOf(args.projectId)
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         LaunchedEffect(Unit) {

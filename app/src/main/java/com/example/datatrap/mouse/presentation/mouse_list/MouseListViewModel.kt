@@ -1,26 +1,24 @@
 package com.example.datatrap.mouse.presentation.mouse_list
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.domain.use_case.GetInfoNamesUseCase
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.mouse.domain.use_case.DeleteMouseUseCase
 import com.example.datatrap.mouse.domain.use_case.GetMiceByOccasion
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@HiltViewModel
-class MouseListViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+class MouseListViewModel(
     private val getMiceByOccasion: GetMiceByOccasion,
     private val deleteMouseUseCase: DeleteMouseUseCase,
     private val getInfoNamesUseCase: GetInfoNamesUseCase,
+    private val projectId: String?,
+    private val localityId: String?,
+    private val sessionId: String?,
+    private val occasionId: String?,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(MouseListUiState())
@@ -28,11 +26,6 @@ class MouseListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val projectId = savedStateHandle.getMainScreenNavArgs()?.projectId
-            val localityId = savedStateHandle.getMainScreenNavArgs()?.localityId
-            val sessionId = savedStateHandle.getMainScreenNavArgs()?.sessionId
-            val occasionId = savedStateHandle.getMainScreenNavArgs()?.occasionId
-
             occasionId?.let {
                 getMiceByOccasion(occasionId).collect { mouseList ->
                     _state.update { it.copy(

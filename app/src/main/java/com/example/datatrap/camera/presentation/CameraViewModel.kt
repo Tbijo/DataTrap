@@ -1,16 +1,12 @@
 package com.example.datatrap.camera.presentation
 
 import android.graphics.Bitmap
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
-import com.example.datatrap.camera.getEntityIdNavArg
-import com.example.datatrap.camera.getEntityTypeNavArg
 import com.example.datatrap.camera.util.EntityType
 import com.example.datatrap.core.data.storage.InternalStorageRepository
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,18 +14,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import javax.inject.Inject
 
-@HiltViewModel
-class CameraViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+class CameraViewModel(
     private val mouseImageRepository: MouseImageRepository,
     private val occasionImageRepository: OccasionImageRepository,
     private val internalStorageRepository: InternalStorageRepository,
+    private val entity: EntityType?,
+    private val entityId: String?,
 ) : ViewModel() {
-
-    private val entity: EntityType? = savedStateHandle.getEntityTypeNavArg()
-    private val entityId: String? = savedStateHandle.getEntityIdNavArg()
 
     private val _state = MutableStateFlow(CameraUiState())
     val state = _state.asStateFlow()

@@ -1,6 +1,6 @@
 package com.example.datatrap.mouse.domain.use_case
 
-import com.example.datatrap.core.data.shared_nav_args.NavArgsStorage
+import com.example.datatrap.core.data.shared_nav_args.ScreenNavArgs
 import com.example.datatrap.core.util.Constants
 import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumSpecie
@@ -15,7 +15,7 @@ import java.time.ZonedDateTime
 
 class GenerateCodeUseCase(
     private val mouseRepository: MouseRepository,
-    private val navArgsStorage: NavArgsStorage,
+    private val screenNavArgs: ScreenNavArgs,
 ) {
     private val codeRange = 1..9999
     private val badRangeFor4 = arrayOf(500..599, 900..999, 5000..5999, 9000..9999).toList()
@@ -147,7 +147,7 @@ class GenerateCodeUseCase(
 
             code = (getMiceFromLocality(localityId) + 1)
 
-            team = navArgsStorage.readUserTeam()
+            team = screenNavArgs.readUserTeam()
 
             codeList = getCodeOfAliveMiceInLocality(localityId)
 

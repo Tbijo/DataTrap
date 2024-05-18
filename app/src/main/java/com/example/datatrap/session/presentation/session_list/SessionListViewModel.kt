@@ -1,39 +1,32 @@
 package com.example.datatrap.session.presentation.session_list
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.domain.use_case.InsertLocalitySessionUseCase
-import com.example.datatrap.core.getMainScreenNavArgs
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.project.data.ProjectRepository
 import com.example.datatrap.session.data.SessionEntity
 import com.example.datatrap.session.data.SessionRepository
 import com.example.datatrap.session.domain.DeleteSessionUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@HiltViewModel
-class SessionListViewModel @Inject constructor(
+class SessionListViewModel(
     private val sessionRepository: SessionRepository,
     private val localityRepository: LocalityRepository,
     private val projectRepository: ProjectRepository,
     private val insertLocalitySessionUseCase: InsertLocalitySessionUseCase,
     private val deleteSessionUseCase: DeleteSessionUseCase,
-    savedStateHandle: SavedStateHandle,
+    private val localityID: String?,
+    private val projectID: String?,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SessionListUiState())
     val state = _state.asStateFlow()
-
-    private val localityID = savedStateHandle.getMainScreenNavArgs()?.localityId
-    private val projectID = savedStateHandle.getMainScreenNavArgs()?.projectId
 
     init {
         viewModelScope.launch(Dispatchers.IO) {

@@ -1,50 +1,29 @@
 package com.example.datatrap.camera
 
 import androidx.compose.runtime.getValue
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NamedNavArgument
-import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.example.datatrap.camera.presentation.CameraScreen
 import com.example.datatrap.camera.presentation.CameraScreenEvent
 import com.example.datatrap.camera.presentation.CameraViewModel
-import com.example.datatrap.camera.util.EntityType
+import com.example.datatrap.camera.util.toEntityType
+import kotlinx.serialization.Serializable
+import org.koin.androidx.compose.koinViewModel
+import org.koin.core.parameter.parametersOf
 
-private const val CAMERA_SCREEN_ROUTE = "camera_screen"
-private const val ENTITY_TYPE_KEY = "entityTypeKey"
-private const val ENTITY_ID_KEY = "entityIdKey"
+@Serializable
+data class CameraScreenRoute(
+    val entityType: String,
+    val entityId: String?,
+)
+
 // to send to previous screen
 private const val IMAGE_NAME_KEY = "imageNameKey"
 private const val IMAGE_NOTE_KEY = "imageNoteKey"
 private const val IMAGE_CHANGE_KEY = "imageChangeKey"
-
-fun NavController.navigateToCameraScreen(entityType: EntityType, entityId: String?) {
-    navigate("$CAMERA_SCREEN_ROUTE/$entityType/$entityId")
-}
-private fun setCameraRouteWithArgs(): String {
-    return "$CAMERA_SCREEN_ROUTE/{$ENTITY_TYPE_KEY}/{$ENTITY_ID_KEY}"
-}
-
-fun SavedStateHandle.getEntityTypeNavArg(): EntityType? = get<EntityType>(ENTITY_TYPE_KEY)
-fun SavedStateHandle.getEntityIdNavArg(): String? = get<String>(ENTITY_ID_KEY)
-private fun getCameraNavArgs(): List<NamedNavArgument> {
-    return listOf(
-        navArgument(name = ENTITY_TYPE_KEY) {
-            nullable = false
-            type = NavType.EnumType(EntityType::class.java)
-        },
-        navArgument(name = ENTITY_ID_KEY) {
-            nullable = true
-            type = NavType.StringType
-        },
-    )
-}
 
 // set imageName and note for previous screen
 private fun NavHostController.setImageName(imageName: String?, imageNote: String?, makeChange: Boolean) {
@@ -67,11 +46,16 @@ fun NavHostController.clearImageChange() {
 }
 
 fun NavGraphBuilder.cameraNavigation(navController: NavHostController) {
-    composable(
-        route = setCameraRouteWithArgs(),
-        arguments = getCameraNavArgs(),
-    ) {
-        val viewModel: CameraViewModel = hiltViewModel()
+    composable<CameraScreenRoute> {
+        val args = it.toRoute<CameraScreenRoute>()
+        val viewModel: CameraViewModel = koinViewModel(
+            parameters = {
+                parametersOf(
+                    toEntityType(args.entityType),
+                    args.entityId,
+                )
+            }
+        )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
         CameraScreen(

@@ -1,7 +1,6 @@
 package com.example.datatrap.specie.presentation.specie_add_edit
 
 import android.net.Uri
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.presentation.util.UiEvent
@@ -9,8 +8,6 @@ import com.example.datatrap.specie.data.SpecieEntity
 import com.example.datatrap.specie.data.SpecieRepository
 import com.example.datatrap.specie.data.specie_image.SpecieImageRepository
 import com.example.datatrap.specie.domain.use_case.InsertSpecieUseCase
-import com.example.datatrap.specie.getSpecieIdArg
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,14 +16,12 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
-import javax.inject.Inject
 
-@HiltViewModel
-class SpecieViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle,
+class SpecieViewModel(
     private val specieRepository: SpecieRepository,
     private val insertSpecieUseCase: InsertSpecieUseCase,
     private val specieImageRepository: SpecieImageRepository,
+    private val specieId: String?,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(SpecieUiState())
@@ -37,8 +32,6 @@ class SpecieViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            val specieId = savedStateHandle.getSpecieIdArg()
-
             specieId?.let {
                 val image = specieImageRepository.getImageForSpecie(specieId)
 
