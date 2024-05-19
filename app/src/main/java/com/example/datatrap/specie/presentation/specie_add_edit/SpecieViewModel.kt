@@ -30,14 +30,16 @@ class SpecieViewModel(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    private var specieEntity: SpecieEntity? = null
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             specieId?.let {
                 val image = specieImageRepository.getImageForSpecie(specieId)
 
                 with(specieRepository.getSpecie(specieId)) {
+                    specieEntity = this
                     _state.update { it.copy(
-                        specieEntity = this,
                         specieCode = speciesCode,
                         fullName = fullName,
                         synonym = synonym ?: "",
@@ -210,7 +212,7 @@ class SpecieViewModel(
                 )
             } else {
                 SpecieEntity(
-                    specieId = specieEntity.specieId,
+                    specieId = specieEntity!!.specieId,
                     speciesCode = speciesCode,
                     fullName = fullName,
                     authority = authority,
@@ -227,7 +229,7 @@ class SpecieViewModel(
                     feetLengthMax = feetMaxLen,
 
                     note = note,
-                    specieDateTimeCreated = specieEntity.specieDateTimeCreated,
+                    specieDateTimeCreated = specieEntity!!.specieDateTimeCreated,
                     specieDateTimeUpdated = ZonedDateTime.now(),
                 )
             }

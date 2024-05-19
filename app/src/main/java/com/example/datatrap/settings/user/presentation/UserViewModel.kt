@@ -20,12 +20,9 @@ class UserViewModel(
     private val _state = MutableStateFlow(UserScreenUiState())
     val state = _state.asStateFlow()
 
+    private var selectedUserEntity: UserEntity? = null
+
     init {
-
-        _state.update { it.copy(
-            isLoading = true,
-        ) }
-
         userRepository.getUserEntityList().onEach { userList ->
             _state.update { it.copy(
                 isLoading = false,
@@ -33,6 +30,9 @@ class UserViewModel(
             ) }
         }.launchIn(viewModelScope)
 
+        _state.update { it.copy(
+            isLoading = false,
+        ) }
     }
 
     fun onEvent(event: UserScreenEvent) {
@@ -43,16 +43,16 @@ class UserViewModel(
                     userName = state.value.textNameValue,
                     password = state.value.textPasswordValue,
                 )
+
+                selectedUserEntity = null
+
                 _state.update { it.copy(
-                    selectedUserEntity = null,
                     textNameValue = "",
                     textPasswordValue = "",
                 ) }
             }
             is UserScreenEvent.OnItemClick -> {
-                _state.update { it.copy(
-                    selectedUserEntity = event.userEntity
-                ) }
+                selectedUserEntity = event.userEntity
             }
             is UserScreenEvent.OnNameTextChanged -> {
                 _state.update { it.copy(
@@ -92,14 +92,14 @@ class UserViewModel(
             return
         }
 
-        val userEntity: UserEntity = if (state.value.selectedUserEntity == null) {
+        val userEntity: UserEntity = if (selectedUserEntity == null) {
             UserEntity(
                 userName = userName,
                 password = password,
             )
         } else {
             UserEntity(
-                userId = state.value.selectedUserEntity?.userId ?: UUID.randomUUID().toString(),
+                userId = selectedUserEntity?.userId ?: UUID.randomUUID().toString(),
                 userName = userName,
                 password = password,
             )

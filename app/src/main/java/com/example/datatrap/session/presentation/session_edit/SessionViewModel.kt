@@ -26,12 +26,14 @@ class SessionViewModel(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    private var initSession: SessionEntity? = null
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             sessionId?.let {
                 with(sessionRepository.getSession(sessionId)) {
+                    initSession = this
                     _state.update { it.copy(
-                        session = this,
                         sessionNum = session.toString(),
                         numOcc = numOcc.toString(),
                     ) }
@@ -86,7 +88,7 @@ class SessionViewModel(
             return
         }
 
-        val currentSessionEntity = state.value.session
+        val currentSessionEntity = initSession
         val sessionEntity = if (currentSessionEntity == null) {
             SessionEntity(
                 session = session,

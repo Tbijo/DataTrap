@@ -25,12 +25,17 @@ class ProjectViewModel(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    var projectEntity: ProjectEntity? = null
+
     init {
         projectId?.let { projectId ->
             viewModelScope.launch {
                 with(projectRepository.getProjectById(projectId)) {
+                    projectEntity = this
                     _state.update { it.copy(
-                        selectedProject = this,
+                        projectName = projectName,
+                        numLocal = numLocal.toString(),
+                        numMice = numMice.toString(),
                     ) }
                 }
             }
@@ -82,7 +87,7 @@ class ProjectViewModel(
             Integer.parseInt(value)
         }
 
-        val currentProject = state.value.selectedProject
+        val currentProject = projectEntity
         val projectEntity = if (currentProject == null) {
             ProjectEntity(
                 projectName = projectName,

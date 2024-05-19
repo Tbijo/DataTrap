@@ -43,18 +43,14 @@ class ProjectListViewModel(
     }
 
     private fun searchProjects(query: String) {
-        viewModelScope.launch(Dispatchers.Main) {
-            _state.update { it.copy(
-                isLoading = true,
-                searchTextFieldValue = query,
-            ) }
-        }
+        _state.update { it.copy(
+            searchTextFieldValue = query,
+        ) }
 
         viewModelScope.launch(Dispatchers.IO) {
             val searchQuery = "%$query%"
             projectRepository.searchProjects(searchQuery).onEach { projectList ->
                 _state.update { it.copy(
-                    isLoading = false,
                     projectList = projectList,
                 ) }
             }

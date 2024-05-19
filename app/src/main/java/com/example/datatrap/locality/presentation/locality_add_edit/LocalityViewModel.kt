@@ -30,12 +30,14 @@ class LocalityViewModel(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    private var localityEntity: LocalityEntity? = null
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
             localityId?.let {
                 with(localityRepository.getLocality(localityId)) {
+                    localityEntity = this
                     _state.update { it.copy(
-                        localityEntity = this,
                         localityName = localityName,
                         numSessions = numSessions.toString(),
                         note = note ?: "",
@@ -112,7 +114,7 @@ class LocalityViewModel(
         val longitudeB = state.value.longitudeB.ifEmpty { null }
         val note = state.value.note.ifEmpty { null }
 
-        val currentLocality = state.value.localityEntity
+        val currentLocality = localityEntity
         val localityEntity = if (currentLocality == null) {
             LocalityEntity(
                 localityName = localityName,

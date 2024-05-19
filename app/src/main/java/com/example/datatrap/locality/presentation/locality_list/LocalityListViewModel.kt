@@ -16,13 +16,11 @@ import kotlinx.coroutines.launch
 class LocalityListViewModel(
     private val localityRepository: LocalityRepository,
     private val insertProjectLocalityUseCase: InsertProjectLocalityUseCase,
-    val projectID: String,
+    val projectID: String?,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(LocalityListUiState())
     val state = _state.asStateFlow()
-
-
 
     init {
         _state.update { it.copy(

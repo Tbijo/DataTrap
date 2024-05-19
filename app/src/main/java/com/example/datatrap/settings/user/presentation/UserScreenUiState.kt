@@ -6,7 +6,6 @@ data class UserScreenUiState(
     val isLoading: Boolean = true,
     val error: String? = null,
     val userEntityList: List<UserEntity> = emptyList(),
-    val selectedUserEntity: UserEntity? = null,
 
     val textNameValue: String = "",
     val textNameError: String? = null,

@@ -48,7 +48,7 @@ private fun ScreenContent(
             .padding(it)
         ) {
             MyTextField(
-                value = state.selectedProject?.projectName ?: "",
+                value = state.projectName,
                 placeholder = "Patince",
                 error = state.projectNameError,
                 label = "Project Name",
@@ -60,7 +60,7 @@ private fun ScreenContent(
             )
 
             MyTextField(
-                value = "${state.selectedProject?.numLocal ?: ""}",
+                value = state.numLocal,
                 placeholder = "22",
                 error = state.numLocalError,
                 label = "Locality Count",
@@ -73,7 +73,7 @@ private fun ScreenContent(
             )
 
             MyTextField(
-                value = "${state.selectedProject?.numMice ?: ""}",
+                value = state.numMice,
                 placeholder = "33",
                 error = state.numMiceError,
                 label = "Mouse Count",
