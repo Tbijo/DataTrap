@@ -161,7 +161,7 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
                     is OccasionScreenEvent.OnCameraClick -> {
                         navController.navigate(
                             CameraScreenRoute(
-                                entityType = EntityType.OCCASION.name,
+                                entityType = EntityType.OCCASION,
                                 entityId = event.occasionId,
                             )
                         )

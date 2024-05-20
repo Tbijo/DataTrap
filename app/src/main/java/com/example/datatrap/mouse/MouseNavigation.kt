@@ -223,7 +223,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
                     is MouseScreenEvent.OnCameraClick -> {
                         navController.navigate(
                             CameraScreenRoute(
-                                entityType = EntityType.MOUSE.name,
+                                entityType = EntityType.MOUSE,
                                 entityId = event.mouseId,
                             )
                         )

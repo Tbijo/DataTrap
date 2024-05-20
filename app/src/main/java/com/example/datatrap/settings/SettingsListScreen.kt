@@ -38,20 +38,6 @@ enum class SettingsScreenNames(val properName: String) {
     )
 }
 
-fun toSettingsScreenNames(settingsScreenNames: String?): SettingsScreenNames? {
-    return when(settingsScreenNames) {
-        null -> null
-        SettingsScreenNames.ENVIRONMENT.properName -> SettingsScreenNames.ENVIRONMENT
-        SettingsScreenNames.METHOD.properName  ->SettingsScreenNames.METHOD
-        SettingsScreenNames.METHODTYPE.properName  ->SettingsScreenNames.METHODTYPE
-        SettingsScreenNames.PROTOCOL.properName  ->SettingsScreenNames.PROTOCOL
-        SettingsScreenNames.TRAPTYPE.properName  ->SettingsScreenNames.TRAPTYPE
-        SettingsScreenNames.USER.properName  ->SettingsScreenNames.USER
-        SettingsScreenNames.VEGETTYPE.properName  ->SettingsScreenNames.VEGETTYPE
-        else -> null
-    }
-}
-
 sealed interface SettingsListEvent {
     data class OnDrawerClick(val drawerScreens: DrawerScreens): SettingsListEvent
     data class OnListClick(val sreenName: SettingsScreenNames): SettingsListEvent

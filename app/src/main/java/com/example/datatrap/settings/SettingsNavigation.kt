@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.datatrap.about.AboutScreenRoute
@@ -18,12 +19,13 @@ import com.example.datatrap.sync.SyncScreenRoute
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.reflect.typeOf
 
 @Serializable
 object SettingsListScreenRoute
 @Serializable
 data class SettingsEntityScreenRoute(
-    val settingsEntityKey: String,
+    val settingsEntity: SettingsScreenNames,
 )
 @Serializable
 object UserListScreenRoute
@@ -56,7 +58,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
                         } else {
                             navController.navigate(
                                 SettingsEntityScreenRoute(
-                                    settingsEntityKey = event.sreenName.properName,
+                                    settingsEntity = event.sreenName,
                                 )
                             )
                         }
@@ -66,12 +68,14 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
         )
     }
 
-    composable<SettingsEntityScreenRoute> {
+    composable<SettingsEntityScreenRoute>(
+        typeMap = mapOf(typeOf<SettingsScreenNames>() to NavType.EnumType(SettingsScreenNames::class.java)),
+    ) {
         val args = it.toRoute<SettingsEntityScreenRoute>()
         val viewModel: SettingsEntityViewModel = koinViewModel(
             parameters = {
                 parametersOf(
-                    toSettingsScreenNames(args.settingsEntityKey)
+                    args.settingsEntity,
                 )
             }
         )

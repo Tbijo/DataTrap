@@ -4,19 +4,21 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.datatrap.camera.presentation.CameraScreen
 import com.example.datatrap.camera.presentation.CameraScreenEvent
 import com.example.datatrap.camera.presentation.CameraViewModel
-import com.example.datatrap.camera.util.toEntityType
+import com.example.datatrap.camera.util.EntityType
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.reflect.typeOf
 
 @Serializable
 data class CameraScreenRoute(
-    val entityType: String,
+    val entityType: EntityType,
     val entityId: String?,
 )
 
@@ -46,12 +48,14 @@ fun NavHostController.clearImageChange() {
 }
 
 fun NavGraphBuilder.cameraNavigation(navController: NavHostController) {
-    composable<CameraScreenRoute> {
+    composable<CameraScreenRoute>(
+        typeMap = mapOf(typeOf<EntityType>() to NavType.EnumType(EntityType::class.java)),
+    ) {
         val args = it.toRoute<CameraScreenRoute>()
         val viewModel: CameraViewModel = koinViewModel(
             parameters = {
                 parametersOf(
-                    toEntityType(args.entityType),
+                    args.entityType,
                     args.entityId,
                 )
             }
