@@ -8,10 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.datatrap.camera.CameraScreenRoute
-import com.example.datatrap.camera.clearImageChange
-import com.example.datatrap.camera.getImageChange
-import com.example.datatrap.camera.getImageName
-import com.example.datatrap.camera.getImageNote
+import com.example.datatrap.camera.getImageData
 import com.example.datatrap.camera.util.EntityType
 import com.example.datatrap.core.presentation.util.UiEvent
 import com.example.datatrap.mouse.MouseListScreenRoute
@@ -57,7 +54,7 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
                     args.sessionId,
                     args.localityId,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -124,12 +121,10 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
                     args.localityId,
                     args.sessionId,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
-        val imageName = navController.getImageName()
-        val imageNote = navController.getImageNote()
-        val makeChange = navController.getImageChange()
+        val imageData = navController.getImageData()
 
         LaunchedEffect(Unit) {
             viewModel.eventFlow.collect { event ->
@@ -142,16 +137,14 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
             }
         }
 
-        LaunchedEffect(key1 = imageName, key2 = imageNote, key3 = makeChange) {
-            if (makeChange == true) {
+        LaunchedEffect(key1 = imageData) {
+            if (imageData?.change == true) {
                 viewModel.onEvent(
                     OccasionScreenEvent.OnReceiveImageName(
-                        imageName = imageName,
-                        imageNote = imageNote,
+                        imageName = imageData.name,
+                        imageNote = imageData.note,
                     )
                 )
-                // clear for config change
-                navController.clearImageChange()
             }
         }
 
@@ -187,7 +180,7 @@ fun NavGraphBuilder.occasionNavigation(navController: NavHostController) {
                     args.occasionId,
                     args.localityId,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 

@@ -1,5 +1,6 @@
 package com.example.datatrap.camera
 
+import android.os.Parcelable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -11,6 +12,7 @@ import com.example.datatrap.camera.presentation.CameraScreen
 import com.example.datatrap.camera.presentation.CameraScreenEvent
 import com.example.datatrap.camera.presentation.CameraViewModel
 import com.example.datatrap.camera.util.EntityType
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -23,28 +25,20 @@ data class CameraScreenRoute(
 )
 
 // to send to previous screen
-private const val IMAGE_NAME_KEY = "imageNameKey"
-private const val IMAGE_NOTE_KEY = "imageNoteKey"
-private const val IMAGE_CHANGE_KEY = "imageChangeKey"
+@Parcelize
+data class ReturnedImageData(
+    val name: String?,
+    val note: String?,
+    val change: Boolean,
+): Parcelable
 
-// set imageName and note for previous screen
-private fun NavHostController.setImageName(imageName: String?, imageNote: String?, makeChange: Boolean) {
-    previousBackStackEntry?.savedStateHandle?.set(IMAGE_NAME_KEY, imageName)
-    previousBackStackEntry?.savedStateHandle?.set(IMAGE_NOTE_KEY, imageNote)
-    previousBackStackEntry?.savedStateHandle?.set(IMAGE_CHANGE_KEY, makeChange)
+private const val IMAGE_DATA_KEY = "image_data_key"
+
+private fun NavHostController.setImageData(data: ReturnedImageData) {
+    previousBackStackEntry?.savedStateHandle?.set(IMAGE_DATA_KEY, data)
 }
-// get imageName and note from camera screen
-fun NavHostController.getImageName(): String? {
-    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_NAME_KEY)
-}
-fun NavHostController.getImageNote(): String? {
-    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_NOTE_KEY)
-}
-fun NavHostController.getImageChange(): Boolean? {
-    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_CHANGE_KEY)
-}
-fun NavHostController.clearImageChange() {
-    currentBackStackEntry?.savedStateHandle?.set(IMAGE_CHANGE_KEY, null)
+fun NavHostController.getImageData(): ReturnedImageData? {
+    return currentBackStackEntry?.savedStateHandle?.get<ReturnedImageData?>(IMAGE_DATA_KEY)
 }
 
 fun NavGraphBuilder.cameraNavigation(navController: NavHostController) {
@@ -58,7 +52,7 @@ fun NavGraphBuilder.cameraNavigation(navController: NavHostController) {
                     args.entityType,
                     args.entityId,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -66,10 +60,12 @@ fun NavGraphBuilder.cameraNavigation(navController: NavHostController) {
             onEvent = { event ->
                 when(event) {
                     is CameraScreenEvent.OnLeave -> {
-                        navController.setImageName(
-                            imageName = state.imageName,
-                            imageNote = state.note,
-                            makeChange = event.makeChange,
+                        navController.setImageData(
+                            ReturnedImageData(
+                                name = state.imageName,
+                                note = state.note,
+                                change = event.makeChange,
+                            )
                         )
                         navController.navigateUp()
                     }

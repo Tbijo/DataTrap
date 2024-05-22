@@ -1,5 +1,6 @@
 package com.example.datatrap.specie
 
+import android.os.Parcelable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -23,6 +24,7 @@ import com.example.datatrap.specie.presentation.specie_list.SpecieListScreen
 import com.example.datatrap.specie.presentation.specie_list.SpecieListScreenEvent
 import com.example.datatrap.specie.presentation.specie_list.SpecieListViewModel
 import com.example.datatrap.sync.SyncScreenRoute
+import kotlinx.parcelize.Parcelize
 import kotlinx.serialization.Serializable
 import org.koin.androidx.compose.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -42,29 +44,20 @@ data class SpecieDetailScreenRoute(
     val specieId: String,
 )
 
-// to send to previous screen
-private const val IMAGE_URI_KEY = "imageUriKey"
-private const val IMAGE_NOTE_KEY = "imageNoteKey"
-private const val IMAGE_CHANGE_KEY = "imageChangeKey"
+@Parcelize
+private data class ReturnedUriData(
+    val uriString: String?,
+    val note: String?,
+    val change: Boolean,
+): Parcelable
 
-// set imageName and note for previous screen
-private fun NavHostController.setImageName(imageUri: String?, imageNote: String?, makeChange: Boolean) {
-    previousBackStackEntry?.savedStateHandle?.set(IMAGE_URI_KEY, imageUri)
-    previousBackStackEntry?.savedStateHandle?.set(IMAGE_NOTE_KEY, imageNote)
-    previousBackStackEntry?.savedStateHandle?.set(IMAGE_CHANGE_KEY, makeChange)
+private const val URI_DATA_KEY = "uri_data_key"
+
+private fun NavHostController.setUriData(data: ReturnedUriData) {
+    previousBackStackEntry?.savedStateHandle?.set(URI_DATA_KEY, data)
 }
-// get imageName and note from camera screen
-private fun NavHostController.getImageName(): String? {
-    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_URI_KEY)
-}
-private fun NavHostController.getImageNote(): String? {
-    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_NOTE_KEY)
-}
-private fun NavHostController.getImageChange(): Boolean? {
-    return currentBackStackEntry?.savedStateHandle?.get(IMAGE_CHANGE_KEY)
-}
-private fun NavHostController.clearImageChange() {
-    currentBackStackEntry?.savedStateHandle?.set(IMAGE_CHANGE_KEY, null)
+private fun NavHostController.getUriData(): ReturnedUriData? {
+    return currentBackStackEntry?.savedStateHandle?.get<ReturnedUriData?>(URI_DATA_KEY)
 }
 
 fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
@@ -122,23 +115,19 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
         val viewModel: SpecieViewModel = koinViewModel(
             parameters = {
                 parametersOf(args.specieId)
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
-        val imageName = navController.getImageName()
-        val imageNote = navController.getImageNote()
-        val makeChange = navController.getImageChange()
+        val uriData = navController.getUriData()
 
-        LaunchedEffect(key1 = imageName, key2 = imageNote, key3 = makeChange) {
-            if (makeChange == true) {
+        LaunchedEffect(key1 = uriData) {
+            if (uriData?.change == true) {
                 viewModel.onEvent(
                     SpecieScreenEvent.OnReceiveImageName(
-                        imageName = imageName,
-                        imageNote = imageNote,
+                        imageName = uriData.uriString,
+                        imageNote = uriData.note,
                     )
                 )
-                // clear for config change
-                navController.clearImageChange()
             }
         }
 
@@ -164,7 +153,7 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
         val viewModel: SpecieImageViewModel = koinViewModel(
             parameters = {
                 parametersOf(args.specieId)
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -172,10 +161,12 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
             onEvent = { event ->
                 when(event) {
                     is SpecieImageScreenEvent.OnLeave -> {
-                        navController.setImageName(
-                            imageUri = state.imageUri.toString(),
-                            imageNote = state.note,
-                            makeChange = event.makeChange,
+                        navController.setUriData(
+                            ReturnedUriData(
+                                uriString = state.imageUri.toString(),
+                                note = state.note,
+                                change = event.makeChange,
+                            )
                         )
                         navController.navigateUp()
                     }
@@ -191,7 +182,7 @@ fun NavGraphBuilder.specieNavigation(navController: NavHostController) {
         val viewModel: SpecieDetailViewModel = koinViewModel(
             parameters = {
                 parametersOf(args.specieId)
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
