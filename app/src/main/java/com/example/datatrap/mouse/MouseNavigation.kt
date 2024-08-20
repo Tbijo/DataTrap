@@ -89,7 +89,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
                     args.sessionId,
                     args.occasionId,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -183,7 +183,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
                     args.mouseId,
                     args.isRecapture,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
         val imageData = navController.getImageData()
@@ -238,7 +238,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
         val viewModel: MouseDetailViewModel = koinViewModel(
             parameters = {
                 parametersOf(args.mouseId)
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -256,7 +256,7 @@ fun NavGraphBuilder.mouseNavigation(navController: NavHostController) {
                     args.localityId,
                     args.occasionId,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 

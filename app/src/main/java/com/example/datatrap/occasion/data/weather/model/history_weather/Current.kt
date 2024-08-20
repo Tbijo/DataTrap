@@ -1,5 +1,8 @@
 package com.example.datatrap.occasion.data.weather.model.history_weather
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Current(
     val clouds: Int?,
     val dew_point: Double?,

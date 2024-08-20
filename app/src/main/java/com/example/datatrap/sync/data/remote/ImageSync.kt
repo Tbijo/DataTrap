@@ -1,5 +1,8 @@
 package com.example.datatrap.sync.data.remote
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class MouseImageSync(
     val imgName: String,
     val path: String,
@@ -9,6 +12,7 @@ data class MouseImageSync(
     val uniqueCode: Long
 )
 
+@Serializable
 data class OccasionImageSync(
     val imgName: String,
     val path: String,
@@ -17,6 +21,7 @@ data class OccasionImageSync(
     val uniqueCode: Long
 )
 
+@Serializable
 data class SpecieImageSync(
     val imgName: String,
     val path: String,
@@ -25,6 +30,7 @@ data class SpecieImageSync(
     val uniqueCode: Long
 )
 
+@Serializable
 data class ImageSync(
     val mouseImages: List<MouseImageSync>,
     val occasionImages: List<OccasionImageSync>,

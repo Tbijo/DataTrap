@@ -1,4 +1,4 @@
-package com.example.datatrap.sync.utils
+package com.example.datatrap.sync.domain
 
 object Mappers {
 //    fun toSyncClassList(mouseList: List<Mouse>, occasionList: List<Occasion>,

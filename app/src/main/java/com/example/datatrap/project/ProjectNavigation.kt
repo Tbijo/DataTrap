@@ -95,7 +95,7 @@ fun NavGraphBuilder.projectNavigation(navController: NavHostController) {
         val viewModel: ProjectViewModel = koinViewModel(
             parameters = {
                 parametersOf(args.projectId)
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 

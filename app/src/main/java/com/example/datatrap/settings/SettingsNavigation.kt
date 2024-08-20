@@ -77,7 +77,7 @@ fun NavGraphBuilder.settingsNavigation(navController: NavHostController) {
                 parametersOf(
                     args.settingsEntity,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 

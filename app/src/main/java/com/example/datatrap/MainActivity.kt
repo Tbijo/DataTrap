@@ -1,8 +1,10 @@
 package com.example.datatrap
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.datatrap.about.aboutNavigation
@@ -21,6 +23,7 @@ import com.example.datatrap.sync.syncNavigation
 
 class MainActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -57,5 +60,4 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 }

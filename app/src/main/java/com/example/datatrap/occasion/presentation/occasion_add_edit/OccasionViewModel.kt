@@ -6,7 +6,6 @@ import com.example.datatrap.camera.data.occasion_image.OccasionImageRepository
 import com.example.datatrap.core.data.shared_nav_args.ScreenNavArgs
 import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.core.presentation.util.UiEvent
-import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ifNullOrBlank
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
@@ -24,6 +23,8 @@ import com.example.datatrap.settings.data.traptype.TrapTypeRepository
 import com.example.datatrap.settings.data.veg_type.VegetTypeEntity
 import com.example.datatrap.settings.data.veg_type.VegetTypeRepository
 import com.example.datatrap.settings.user.data.UserRepository
+import com.example.datatrap.sync.utils.onError
+import com.example.datatrap.sync.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -354,19 +355,18 @@ class OccasionViewModel(
                         latitude = latitudeA?.toDouble(),
                         longitude = longitudeA?.toDouble(),
                     ).collect { result ->
-                        when(result) {
-                            is Resource.Error -> {
+                        result
+                            .onSuccess { weather ->
                                 _state.update { it.copy(
-                                    error = result.throwable?.message.toString(),
+                                    weatherText = weather.weather ?: "",
+                                    temperatureText = weather.temp?.toString() ?: "",
                                 ) }
                             }
-                            is Resource.Success -> {
+                            .onError { error ->
                                 _state.update { it.copy(
-                                    weatherText = result.data?.weather ?: "",
-                                    temperatureText = result.data?.temp?.toString() ?: "",
+                                    error = error.toString(),
                                 ) }
                             }
-                        }
                     }
                 }
             }

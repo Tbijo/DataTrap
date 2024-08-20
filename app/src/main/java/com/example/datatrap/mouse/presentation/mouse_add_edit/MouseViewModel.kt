@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.datatrap.camera.data.mouse_image.MouseImageRepository
 import com.example.datatrap.core.data.storage.InternalStorageRepository
 import com.example.datatrap.core.presentation.util.UiEvent
-import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ifNullOrBlank
 import com.example.datatrap.core.util.toEnumCaptureID
 import com.example.datatrap.core.util.toEnumMouseAge
@@ -19,6 +18,8 @@ import com.example.datatrap.occasion.data.occasion.OccasionRepository
 import com.example.datatrap.settings.data.protocol.ProtocolEntity
 import com.example.datatrap.settings.data.protocol.ProtocolRepository
 import com.example.datatrap.specie.data.SpecieRepository
+import com.example.datatrap.sync.utils.onError
+import com.example.datatrap.sync.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -313,20 +314,17 @@ class MouseViewModel(
                 captureID = state.value.captureID?.myName,
                 localityId = localityId,
             ).collect { result ->
-                when(result) {
-                    is Resource.Error -> {
+                result
+                    .onSuccess { code ->
                         _state.update { it.copy(
-                            error = result.throwable?.message,
+                            code = "$code",
                         ) }
                     }
-                    is Resource.Success -> {
-                        result.data?.let { code ->
-                            _state.update { it.copy(
-                                code = "$code",
-                            ) }
-                        }
+                    .onError { error ->
+                        _state.update { it.copy(
+                            error = error.name,
+                        ) }
                     }
-                }
             }
         }
     }

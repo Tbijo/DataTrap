@@ -4,11 +4,11 @@ import com.example.datatrap.core.data.shared_nav_args.ScreenNavArgs
 import com.example.datatrap.core.util.Constants
 import com.example.datatrap.core.util.EnumCaptureID
 import com.example.datatrap.core.util.EnumSpecie
-import com.example.datatrap.core.util.Resource
 import com.example.datatrap.core.util.ScienceTeam
 import com.example.datatrap.mouse.data.MouseRepository
 import com.example.datatrap.mouse.domain.util.CodeGeneratorError
 import com.example.datatrap.mouse.domain.util.CodeGeneratorException
+import com.example.datatrap.sync.utils.Result
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import java.time.ZonedDateTime
@@ -127,7 +127,7 @@ class GenerateCodeUseCase(
 
     operator fun invoke(
         upperFingers: Int?, specieCode: String?, captureID: String?, localityId: String?,
-    ): Flow<Resource<Int>> = flow {
+    ): Flow<Result<Int, CodeGeneratorError>> = flow {
         try {
             if (upperFingers == null) throw CodeGeneratorException(CodeGeneratorError.NUMBER_OF_FINGERS_MISSING)
 
@@ -153,9 +153,9 @@ class GenerateCodeUseCase(
 
             val code = startGenerating(upperFingers)
 
-            emit(Resource.Success(code))
+            emit(Result.Success(code))
         } catch (e: CodeGeneratorException) {
-            emit(Resource.Error(e))
+            emit(Result.Error(e.error))
         }
     }
 

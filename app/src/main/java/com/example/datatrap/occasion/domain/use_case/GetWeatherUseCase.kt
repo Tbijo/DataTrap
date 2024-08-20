@@ -1,16 +1,14 @@
 package com.example.datatrap.occasion.domain.use_case
 
 import com.example.datatrap.core.util.Constants
-import com.example.datatrap.core.util.Resource
 import com.example.datatrap.occasion.data.occasion.OccasionEntity
 import com.example.datatrap.occasion.data.weather.WeatherRepository
-import com.example.datatrap.occasion.data.weather.model.current_weather.CurrentWeatherDto
-import com.example.datatrap.occasion.data.weather.model.history_weather.HistoryWeatherDto
 import com.example.datatrap.occasion.domain.model.MyWeather
+import com.example.datatrap.sync.utils.NetworkError
+import com.example.datatrap.sync.utils.Result
+import com.example.datatrap.sync.utils.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import retrofit2.HttpException
-import java.io.IOException
 import java.util.Calendar
 
 class GetWeatherUseCase(
@@ -20,11 +18,13 @@ class GetWeatherUseCase(
         occasionEntity: OccasionEntity?,
         latitude: Double?,
         longitude: Double?,
-    ): Flow<Resource<MyWeather>> = flow {
+    ): Flow<Result<MyWeather, NetworkError>> = flow {
         if (latitude == null || longitude == null) {
-            emit(Resource.Error(throwable = Exception("No coordinates for this locality.")))
+            // No coordinates for this locality
+            emit(Result.Error(NetworkError.MISSING_DATA))
             return@flow
         }
+
         if (occasionEntity == null) {
             val weather = getCurrentWeather(
                 latitude = latitude,
@@ -44,25 +44,17 @@ class GetWeatherUseCase(
     private suspend fun getCurrentWeather(
         latitude: Double,
         longitude: Double,
-    ): Resource<MyWeather> {
-        return try {
-            val currentWeather: CurrentWeatherDto = weatherRepository.getCurrentWeather(
-                latitude = latitude,
-                longitude = longitude,
-            )
+    ): Result<MyWeather, NetworkError> {
+        val result = weatherRepository.getCurrentWeather(
+            latitude = latitude,
+            longitude = longitude,
+        )
 
-            val temp = currentWeather.main?.temp
-            val weather = currentWeather.weather?.first()?.main
+        return result.map {
+            val temp = it.main?.temp
+            val weather = it.weather?.first()?.main
 
-            Resource.Success(
-                data = MyWeather(temp, weather),
-            )
-        } catch (e: IOException) {
-            Resource.Error(e)
-        } catch (e: HttpException) {
-            Resource.Error(e)
-        } catch (e: Exception) {
-            Resource.Error(e)
+            MyWeather(temp, weather)
         }
     }
 
@@ -70,31 +62,24 @@ class GetWeatherUseCase(
         latitude: Double,
         longitude: Double,
         unixTime: Long,
-    ): Resource<MyWeather> {
-        return try {
-            val currentTime = Calendar.getInstance().time.time
-            if (currentTime - unixTime >= Constants.SECONDS_IN_FIVE_DAYS) {
-                Resource.Error<MyWeather>(Exception("Occasion is older than 5 days."))
-            }
+    ): Result<MyWeather, NetworkError> {
+        val currentTime = Calendar.getInstance().time.time
+        if (currentTime - unixTime >= Constants.SECONDS_IN_FIVE_DAYS) {
+            // Occasion is older than 5 days
+            return Result.Error(NetworkError.API_ERROR)
+        }
 
-            val historyWeather: HistoryWeatherDto = weatherRepository.getHistoryWeather(
-                latitude = latitude,
-                longitude = longitude,
-                unixTime = unixTime,
-            )
+        val result = weatherRepository.getHistoryWeather(
+            latitude = latitude,
+            longitude = longitude,
+            unixTime = unixTime,
+        )
 
-            val temp = historyWeather.current?.temp
-            val weather = historyWeather.current?.weather?.first()?.main
+        return result.map {
+            val temp = it.current?.temp
+            val weather = it.current?.weather?.first()?.main
 
-            Resource.Success(
-                data = MyWeather(temp, weather),
-            )
-        } catch (e: IOException) {
-            Resource.Error(e)
-        } catch (e: HttpException) {
-            Resource.Error(e)
-        } catch (e: Exception) {
-            Resource.Error(e)
+            MyWeather(temp, weather)
         }
     }
 }

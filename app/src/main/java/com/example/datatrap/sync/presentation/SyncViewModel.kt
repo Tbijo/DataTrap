@@ -1,7 +1,6 @@
 package com.example.datatrap.sync.presentation
 
-//@HiltViewModel
-//class SyncViewModel @Inject constructor(
+//class SyncViewModel(
 //    private val mouseRepository: MouseRepository,
 //    private val occasionRepository: OccasionRepository,
 //    private val localityRepository: LocalityRepository,

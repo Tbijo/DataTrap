@@ -7,6 +7,7 @@ import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.session.data.SessionEntity
 import com.example.datatrap.sync.data.remote.MouseImageSync
 import com.example.datatrap.sync.data.remote.OccasionImageSync
+import com.example.datatrap.sync.data.remote.SpecieImageSync
 
 class SyncRepository(
     private val syncDao: SyncDao,
@@ -43,9 +44,9 @@ class SyncRepository(
         return syncDao.getMouseImages(unixTime)
     }
 
-//    suspend fun getSpecieImages(unixTime: Long): List<SpecieImageSync> {
-//        return syncDao.getSpecieImages(unixTime)
-//    }
+    suspend fun getSpecieImages(unixTime: Long): List<SpecieImageSync> {
+        return syncDao.getSpecieImages(unixTime)
+    }
 
     suspend fun insertSyncLocality(localityEntity: LocalityEntity) {
         return syncDao.insertSyncLocality(localityEntity)

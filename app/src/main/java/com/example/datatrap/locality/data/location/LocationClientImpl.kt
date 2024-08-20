@@ -5,10 +5,11 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationManager
 import com.example.datatrap.core.presentation.permission.hasFineLocationPermission
-import com.example.datatrap.core.util.Resource
 import com.example.datatrap.locality.domain.GPSException
 import com.example.datatrap.locality.domain.LocationClient
+import com.example.datatrap.locality.domain.LocationException
 import com.example.datatrap.locality.domain.MissingPermissionException
+import com.example.datatrap.sync.utils.Result
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -30,14 +31,14 @@ class LocationClientImpl(
     }
 
     @SuppressLint("MissingPermission")
-    override fun getLocation(): Flow<Resource<Location>> {
+    override fun getLocation(): Flow<Result<Location, LocationException>> {
 
         return callbackFlow {
             // check for locations permissions
             if(!context.hasFineLocationPermission()) {
                 // permissions arent granted
                 send(
-                    Resource.Error(throwable = MissingPermissionException())
+                    Result.Error(MissingPermissionException())
                 )
             }
 
@@ -49,7 +50,7 @@ class LocationClientImpl(
             if(!isGpsEnabled && !isNetworkEnabled) {
                 // no location hardware is enabled
                 send(
-                    Resource.Error(throwable = GPSException())
+                    Result.Error(GPSException())
                 )
             }
 
@@ -60,7 +61,7 @@ class LocationClientImpl(
             currentLocationTask.addOnSuccessListener { location ->
                 launch {
                     send(
-                        Resource.Success(data = location)
+                        Result.Success(location)
                     )
                 }
             }

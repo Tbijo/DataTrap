@@ -39,7 +39,7 @@ fun NavGraphBuilder.sessionNavigation(navController: NavHostController) {
                     args.localityId,
                     args.projectId,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -83,7 +83,7 @@ fun NavGraphBuilder.sessionNavigation(navController: NavHostController) {
                     args.sessionId,
                     args.projectId,
                 )
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 

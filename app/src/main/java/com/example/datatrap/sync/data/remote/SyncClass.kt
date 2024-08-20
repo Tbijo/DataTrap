@@ -1,5 +1,8 @@
 package com.example.datatrap.sync.data.remote
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class MouseSync(
     val mouseIid: Long,
     val code: Int?,
@@ -33,6 +36,8 @@ data class MouseSync(
     val note: String?,
     val mouseCaught: Long
 )
+
+@Serializable
 data class OccasionSync(
     val occasion: Int,
     val localityID: Long,
@@ -51,6 +56,8 @@ data class OccasionSync(
     val note: String?,
     val occasionStart: Long
 )
+
+@Serializable
 data class LocalitySync(
     val localityName: String,
     val xA: Float?,
@@ -60,12 +67,16 @@ data class LocalitySync(
     val numSessions: Int,
     val note: String?
 )
+
+@Serializable
 data class SessionSync(
     val session: Int,
     val projectID: Long,
     val numOcc: Int,
     val sessionStart: Long
 )
+
+@Serializable
 data class ProjectSync(
     val projectName: String,
     val numLocal: Int,
@@ -73,17 +84,20 @@ data class ProjectSync(
     val projectStart: Long
 )
 
+@Serializable
 data class LocOccLMouse(
     val loc: LocalitySync,
     val occ: OccasionSync,
     val listMouse: List<MouseSync>
 )
 
+@Serializable
 data class SesLOLM(
     val ses: SessionSync,
     val listLOLM: List<LocOccLMouse>
 )
 
+@Serializable
 data class SyncClass(
     val prj: ProjectSync,
     val listSesLOLM: List<SesLOLM>

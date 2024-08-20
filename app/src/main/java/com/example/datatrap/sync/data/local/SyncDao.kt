@@ -11,6 +11,8 @@ import com.example.datatrap.project.data.ProjectEntity
 import com.example.datatrap.session.data.SessionEntity
 import com.example.datatrap.sync.data.remote.MouseImageSync
 import com.example.datatrap.sync.data.remote.OccasionImageSync
+import com.example.datatrap.sync.data.remote.SpecieImageSync
+import java.time.ZonedDateTime
 
 @Dao
 interface SyncDao {
@@ -40,8 +42,8 @@ interface SyncDao {
     @Query("SELECT imgName, path, note FROM MouseImageEntity")
     suspend fun getMouseImages(unixTime: Long): List<MouseImageSync>
 
-//    @Query("SELECT imgName, path, note, specieID, uniqueCode FROM SpecieImageEntity WHERE uniqueCode >= :unixTime")
-//    suspend fun getSpecieImages(unixTime: Long): List<SpecieImageSync>
+    @Query("SELECT imageUri, note, specieID FROM SpecieImageEntity WHERE specieImgId >= :unixTime")
+    suspend fun getSpecieImages(unixTime: Long): List<SpecieImageSync>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSyncLocality(localityEntity: LocalityEntity)
@@ -65,6 +67,6 @@ interface SyncDao {
     suspend fun getSessionForSync(sessionIds: List<String>): List<SessionEntity>
 
     // 604800 dlzka tyzdna v sekundach treba v milisekundach 604 800 000
-//    @Query("SELECT * FROM SessionEntity WHERE projectID = :projectID GROUP BY sessionId HAVING MIN(ABS(sessionStart - :sessionStart)) <= 604800000")
-//    suspend fun getNearSession(projectID: String, sessionStart: ZonedDateTime): SessionEntity?
+    @Query("SELECT * FROM SessionEntity WHERE projectID = :projectID GROUP BY sessionId HAVING MIN(ABS(sessionStart - :sessionStart)) <= 604800000")
+    suspend fun getNearSession(projectID: String, sessionStart: ZonedDateTime): SessionEntity?
 }

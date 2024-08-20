@@ -2,17 +2,10 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.androidMapLibrary)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.pluginSerialization)
     id("kotlin-android")
-    kotlin("kapt")
     id("kotlin-parcelize")
-    kotlin("plugin.serialization") version "1.8.10"
-}
-
-// kapt is fucked up switch to ksp, this is a workaround
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs::class.java).configureEach {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 android {
@@ -57,7 +50,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.0"
     }
     packaging {
         resources {
@@ -100,7 +93,7 @@ dependencies {
     //Room
     implementation(libs.androidx.room.runtime)
     annotationProcessor(libs.androidx.room.compiler)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.room.ktx)
 
     // fused location provider
@@ -113,12 +106,15 @@ dependencies {
     // Preferences DataStore
     implementation(libs.androidx.datastore.preferences)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    // gson
-    implementation(libs.converter.gson)
-    // scalars
-    implementation(libs.converter.scalars)
+    // ktor
+    implementation(libs.ktor.client.core)
+    implementation(libs.ktor.client.okhttp)
+    implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.client.logging)
+    implementation(libs.ktor.serialization.kotlinx.json)
+
+    // kotlin serial
+    implementation(libs.kotlinx.serialization.json)
 
     // kotlin datetime picker
     implementation (libs.datetime)
@@ -127,9 +123,6 @@ dependencies {
 
     // coil
     implementation(libs.coil.compose)
-
-    // kotlin serial
-    implementation(libs.kotlinx.serialization.json)
 
     //koin
     implementation(libs.koin.core)

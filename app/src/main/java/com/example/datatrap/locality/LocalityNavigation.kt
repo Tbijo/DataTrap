@@ -39,7 +39,7 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
         val viewModel: LocalityListViewModel = koinViewModel(
             parameters = {
                 parametersOf(args.projectId)
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 
@@ -89,7 +89,7 @@ fun NavGraphBuilder.localityNavigation(navController: NavHostController) {
         val viewModel: LocalityViewModel = koinViewModel(
             parameters = {
                 parametersOf(args.localityId)
-            }
+            },
         )
         val state by viewModel.state.collectAsStateWithLifecycle()
 

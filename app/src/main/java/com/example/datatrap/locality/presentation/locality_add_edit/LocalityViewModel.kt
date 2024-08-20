@@ -3,10 +3,11 @@ package com.example.datatrap.locality.presentation.locality_add_edit
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.datatrap.core.presentation.util.UiEvent
-import com.example.datatrap.core.util.Resource
 import com.example.datatrap.locality.data.locality.LocalityEntity
 import com.example.datatrap.locality.data.locality.LocalityRepository
 import com.example.datatrap.locality.domain.LocationClient
+import com.example.datatrap.sync.utils.onError
+import com.example.datatrap.sync.utils.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -150,37 +151,35 @@ class LocalityViewModel(
 
     private fun getLocationA() {
         locationClient.getLocation().onEach { result ->
-            when(result) {
-                is Resource.Error -> {
+            result
+                .onSuccess { location ->
                     _state.update { it.copy(
-                        error = result.throwable?.message.toString(),
+                        latitudeA = location.latitude.toString(),
+                        longitudeA = location.longitude.toString(),
                     ) }
                 }
-                is Resource.Success -> {
+                .onError { error ->
                     _state.update { it.copy(
-                        latitudeA = result.data?.latitude.toString(),
-                        longitudeA = result.data?.longitude.toString(),
+                        error = error.message.toString(),
                     ) }
                 }
-            }
         }.launchIn(viewModelScope)
     }
 
     private fun getLocationB() {
         locationClient.getLocation().onEach { result ->
-            when(result) {
-                is Resource.Error -> {
+            result
+                .onSuccess { location ->
                     _state.update { it.copy(
-                        error = result.throwable?.message.toString(),
+                        latitudeA = location.latitude.toString(),
+                        longitudeA = location.longitude.toString(),
                     ) }
                 }
-                is Resource.Success -> {
+                .onError { error ->
                     _state.update { it.copy(
-                        latitudeB = result.data?.latitude.toString(),
-                        longitudeB = result.data?.longitude.toString(),
+                        error = error.message.toString(),
                     ) }
                 }
-            }
         }.launchIn(viewModelScope)
     }
 

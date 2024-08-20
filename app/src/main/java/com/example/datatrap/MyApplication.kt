@@ -5,7 +5,6 @@ import com.example.datatrap.camera.di.cameraModule
 import com.example.datatrap.di.dataTrapApiModule
 import com.example.datatrap.di.otherModule
 import com.example.datatrap.di.roomDatabaseModule
-import com.example.datatrap.di.weatherApiModule
 import com.example.datatrap.locality.di.localityModule
 import com.example.datatrap.login.di.loginModule
 import com.example.datatrap.mouse.di.mouseModule
@@ -25,7 +24,6 @@ class MyApplication: Application() {
             modules(
                 dataTrapApiModule,
                 roomDatabaseModule,
-                weatherApiModule,
                 otherModule,
                 settingsModule,
                 specieModule,

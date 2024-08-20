@@ -1,6 +1,8 @@
 package com.example.datatrap.mouse.domain.util
 
-enum class CodeGeneratorError {
+import com.example.datatrap.sync.utils.Error
+
+enum class CodeGeneratorError: Error {
     INVALID_SPECIE_CODE,
     INVALID_CAPTURE_ID,
     NUMBER_OF_FINGERS_MISSING,
