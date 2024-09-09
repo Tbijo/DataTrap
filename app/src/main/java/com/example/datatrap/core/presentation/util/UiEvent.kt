@@ -1,6 +1,6 @@
 package com.example.datatrap.core.presentation.util
 
 sealed interface UiEvent {
-    object NavigateBack: UiEvent
-    object NavigateNext: UiEvent
+    data object NavigateBack: UiEvent
+    data object NavigateNext: UiEvent
 }

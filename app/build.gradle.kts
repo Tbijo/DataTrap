@@ -71,8 +71,8 @@ dependencies {
     // compose
     implementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    // or Material Design 2
-    implementation(libs.androidx.compose.material)
+    // Material 3
+    implementation(libs.androidx.compose.material3)
     // Android Studio Preview support
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)

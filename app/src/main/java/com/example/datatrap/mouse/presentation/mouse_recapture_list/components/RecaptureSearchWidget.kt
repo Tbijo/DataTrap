@@ -4,10 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Text
-import androidx.compose.material.TextButton
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.components.DateTimeWidget
@@ -63,13 +63,16 @@ fun RecaptureSearchHeader(
                 expanded = isSpecieDropDownExpanded,
                 onDismissRequest = onSpecieDismiss,
             ) {
-                DropdownMenuItem(onClick = {}, enabled = false) {
-                    Text(text = "Specie")
-                }
+                DropdownMenuItem(
+                    onClick = {},
+                    enabled = false,
+                    text = { Text(text = "Specie") },
+                )
                 specieList.forEach {
-                    DropdownMenuItem(onClick = { onSpecieSelect(it) }) {
-                        Text(text = it.speciesCode)
-                    }
+                    DropdownMenuItem(
+                        onClick = { onSpecieSelect(it) },
+                        text = { Text(text = it.speciesCode) },
+                    )
                 }
             }
         }

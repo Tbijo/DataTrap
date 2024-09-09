@@ -5,15 +5,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.example.datatrap.core.presentation.LoadingScreen
@@ -80,17 +80,23 @@ private fun ScreenContent(
             ) {
                 state.occasionEntity?.let { occasion ->
                     val envType = state.envTypeList.find { envType -> envType.envTypeId == occasion.envTypeID }?.envTypeName
-                    DropdownMenuItem(onClick = {}, enabled = false) {
-                        Text(text = "$envType")
-                    }
+
+                    DropdownMenuItem(
+                        onClick = {},
+                        enabled = false,
+                        text = { Text(text = "$envType") },
+                    )
                 }
-                DropdownMenuItem(onClick = {}, enabled = false) {
-                    Text(text = "Environment type")
-                }
+                DropdownMenuItem(
+                    onClick = {},
+                    enabled = false,
+                    text = { Text(text = "Environment type") },
+                )
                 state.envTypeList.forEach { envType ->
-                    DropdownMenuItem(onClick = { onEvent(OccasionScreenEvent.OnSelectEnvType(envType)) }) {
-                        Text(text = envType.envTypeName)
-                    }
+                    DropdownMenuItem(
+                        onClick = { onEvent(OccasionScreenEvent.OnSelectEnvType(envType)) },
+                        text = { Text(text = envType.envTypeName) }
+                    )
                 }
             }
 
@@ -103,17 +109,22 @@ private fun ScreenContent(
                     val methodName = state.methodList.find { method ->
                         method.methodId == occasion.methodID
                     }?.methodName
-                    DropdownMenuItem(onClick = {}, enabled = false) {
-                        Text(text = "$methodName")
-                    }
+                    DropdownMenuItem(
+                        onClick = {},
+                        enabled = false,
+                        text = { Text(text = "$methodName") }
+                    )
                 }
-                DropdownMenuItem(onClick = {}, enabled = false) {
-                    Text(text = "Method*")
-                }
+                DropdownMenuItem(
+                    onClick = {},
+                    enabled = false,
+                    text = { Text(text = "Method*") }
+                )
                 state.methodList.forEach { method ->
-                    DropdownMenuItem(onClick = { onEvent(OccasionScreenEvent.OnSelectMethod(method)) }) {
-                        Text(text = method.methodName)
-                    }
+                    DropdownMenuItem(
+                        onClick = { onEvent(OccasionScreenEvent.OnSelectMethod(method)) },
+                        text = { Text(text = method.methodName) }
+                    )
                 }
             }
 
@@ -126,17 +137,23 @@ private fun ScreenContent(
                     val metTypeName = state.methodTypeList.find { methType ->
                         methType.methodTypeId == occasion.methodTypeID
                     }?.methodTypeName
-                    DropdownMenuItem(onClick = {}, enabled = false) {
-                        Text(text = "$metTypeName")
-                    }
+
+                    DropdownMenuItem(
+                        onClick = {},
+                        enabled = false,
+                        text = { Text(text = "$metTypeName") }
+                    )
                 }
-                DropdownMenuItem(onClick = {}, enabled = false) {
-                    Text(text = "Method type*")
-                }
+                DropdownMenuItem(
+                    onClick = {},
+                    enabled = false,
+                    text = { Text(text = "Method type*") },
+                )
                 state.methodTypeList.forEach { methodType ->
-                    DropdownMenuItem(onClick = { onEvent(OccasionScreenEvent.OnSelectMethodType(methodType)) }) {
-                        Text(text = methodType.methodTypeName)
-                    }
+                    DropdownMenuItem(
+                        onClick = { onEvent(OccasionScreenEvent.OnSelectMethodType(methodType)) },
+                        text = { Text(text = methodType.methodTypeName) },
+                    )
                 }
             }
 
@@ -149,17 +166,23 @@ private fun ScreenContent(
                     val trapTypeName = state.trapTypeList.find { trapType ->
                         trapType.trapTypeId == occasion.trapTypeID
                     }?.trapTypeName
-                    DropdownMenuItem(onClick = {}, enabled = false) {
-                        Text(text = "$trapTypeName")
-                    }
+
+                    DropdownMenuItem(
+                        onClick = {},
+                        enabled = false,
+                        text = { Text(text = "$trapTypeName") }
+                    )
                 }
-                DropdownMenuItem(onClick = {}, enabled = false) {
-                    Text(text = "Trap type*")
-                }
+                DropdownMenuItem(
+                    onClick = {},
+                    enabled = false,
+                    text = { Text(text = "Trap type*") },
+                )
                 state.trapTypeList.forEach { trapType ->
-                    DropdownMenuItem(onClick = { onEvent(OccasionScreenEvent.OnSelectTrapType(trapType)) }) {
-                        Text(text = trapType.trapTypeName)
-                    }
+                    DropdownMenuItem(
+                        onClick = { onEvent(OccasionScreenEvent.OnSelectTrapType(trapType)) },
+                        text = { Text(text = trapType.trapTypeName) },
+                    )
                 }
             }
 
@@ -172,17 +195,23 @@ private fun ScreenContent(
                     val vegTypeName = state.vegTypeList.find { vegType ->
                         vegType.vegetTypeId == occasion.vegetTypeID
                     }?.vegetTypeName
-                    DropdownMenuItem(onClick = {}, enabled = false) {
-                        Text(text = "$vegTypeName")
-                    }
+
+                    DropdownMenuItem(
+                        onClick = {},
+                        enabled = false,
+                        text = { Text(text = "$vegTypeName") }
+                    )
                 }
-                DropdownMenuItem(onClick = {}, enabled = false) {
-                    Text(text = "Vegetation type")
-                }
+                DropdownMenuItem(
+                    onClick = {},
+                    enabled = false,
+                    text = { Text(text = "Vegetation type") },
+                )
                 state.vegTypeList.forEach { vegType ->
-                    DropdownMenuItem(onClick = { onEvent(OccasionScreenEvent.OnSelectVegType(vegType)) }) {
-                        Text(text = vegType.vegetTypeName)
-                    }
+                    DropdownMenuItem(
+                        onClick = { onEvent(OccasionScreenEvent.OnSelectVegType(vegType)) },
+                        text = { Text(text = vegType.vegetTypeName) }
+                    )
                 }
             }
 

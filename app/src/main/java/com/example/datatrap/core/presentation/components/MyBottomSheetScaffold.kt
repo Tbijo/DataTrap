@@ -3,42 +3,34 @@ package com.example.datatrap.core.presentation.components
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material.BottomSheetScaffold
-import androidx.compose.material.BottomSheetValue
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.material.rememberBottomSheetScaffoldState
-import androidx.compose.material.rememberBottomSheetState
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyBottomSheetScaffold(
     title: String,
     errorState: String?,
     isSheetExpanded: Boolean = false,
-    floatingActionButton: @Composable () -> Unit = {},
     navigationIcon: @Composable (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     sheetContent: @Composable ColumnScope.() -> Unit,
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    val sheetState = rememberBottomSheetState(
-        initialValue = BottomSheetValue.Collapsed,
-    )
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = sheetState,
-    )
+    val scaffoldState = rememberBottomSheetScaffoldState()
 
     LaunchedEffect(key1 = isSheetExpanded) {
-        if(sheetState.isCollapsed) {
-            sheetState.expand()
+        if(scaffoldState.bottomSheetState.isVisible) {
+            scaffoldState.bottomSheetState.hide()
         }
         else {
-            sheetState.collapse()
+            scaffoldState.bottomSheetState.expand()
         }
     }
 
@@ -52,7 +44,6 @@ fun MyBottomSheetScaffold(
 
     BottomSheetScaffold(
         scaffoldState = scaffoldState,
-        floatingActionButton = floatingActionButton,
         // hidden content
         // height should not be full we maybe want to see something in the normal content (.height(300.dp))
         // or leave height out and it will occupy as much as it needs
@@ -64,7 +55,7 @@ fun MyBottomSheetScaffold(
                 title = {
                     Text(text = title)
                 },
-                navigationIcon = navigationIcon,
+                navigationIcon = navigationIcon ?: {},
                 actions = actions,
             )
         },
@@ -72,5 +63,3 @@ fun MyBottomSheetScaffold(
         content = content,
     )
 }
-
-// sheetState.progress - current position

@@ -13,17 +13,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.ScaffoldState
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.rememberScaffoldState
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -106,6 +108,7 @@ fun DrawerBody(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationScaffold(
     title: String,
@@ -114,30 +117,15 @@ fun NavigationScaffold(
     floatingActionButton: @Composable () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     scope: CoroutineScope = rememberCoroutineScope(),
-    scaffoldState: ScaffoldState = rememberScaffoldState(),
     content: @Composable (PaddingValues) -> Unit,
 ) {
-    MyScaffold(
-        title = title,
-        scaffoldState = scaffoldState,
-        errorState = errorState,
-        floatingActionButton = floatingActionButton,
-        actions = actions,
-        navigationIcon = {
-            IconButton(onClick = {
-                scope.launch {
-                    scaffoldState.drawerState.open()
-                }
-            }) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "Toggle drawer",
-                )
-            }
-        },
-        drawerGesturesEnabled = scaffoldState.drawerState.isOpen,
+    val drawerState = rememberDrawerState(DrawerValue.Closed)
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
         drawerContent = {
             DrawerHeader()
+
             DrawerBody(
                 items = listOf(
                     DrawerItem(
@@ -174,9 +162,29 @@ fun NavigationScaffold(
                 ),
                 onItemClick = {
                     onDrawerItemClick(it.id)
-                }
+                },
             )
         },
-        content = content,
+        content = {
+            MyScaffold(
+                title = title,
+                errorState = errorState,
+                floatingActionButton = floatingActionButton,
+                actions = actions,
+                navigationIcon = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            drawerState.open()
+                        }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = "Toggle drawer",
+                        )
+                    }
+                },
+                content = content,
+            )
+        },
     )
 }

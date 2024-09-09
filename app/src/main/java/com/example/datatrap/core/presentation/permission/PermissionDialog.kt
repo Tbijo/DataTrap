@@ -4,9 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AlertDialog
-import androidx.compose.material.Divider
-import androidx.compose.material.Text
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Divider
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -27,10 +27,21 @@ fun PermissionDialog(
     // listener if the user needs to navigate to the settings if he declined a permission twice
     onGoToAppSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
-){
+) {
     AlertDialog(
+        modifier = modifier,
         onDismissRequest = onDismiss,
-        buttons = {
+        title = {
+            Text(text = "Permission required")
+        },
+        text = {
+            Text(
+                text = permissionTextProvider.getDescription(
+                    isPermanentlyDeclined = isPermanentlyDeclined
+                )
+            )
+        },
+        confirmButton = {
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
@@ -59,18 +70,7 @@ fun PermissionDialog(
                         .padding(16.dp)
                 )
             }
-        },
-        title = {
-            Text(text = "Permission required")
-        },
-        text = {
-            Text(
-                text = permissionTextProvider.getDescription(
-                    isPermanentlyDeclined = isPermanentlyDeclined
-                )
-            )
-        },
-        modifier = modifier
+        }
     )
 }
 

@@ -8,15 +8,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Save
+import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -117,17 +117,22 @@ private fun ScreenContent(
                 ) {
                     state.mouseEntity?.let { mouse ->
                         val specieCode = state.specieList.find { specie -> specie.specieId == mouse.speciesID }?.speciesCode
-                        DropdownMenuItem(onClick = {}, enabled = false) {
-                            Text(text = "$specieCode")
-                        }
+                        DropdownMenuItem(
+                            onClick = {},
+                            enabled = false,
+                            text = { Text(text = "$specieCode") },
+                        )
                     }
-                    DropdownMenuItem(onClick = {}, enabled = false) {
-                        Text(text = "Specie*")
-                    }
+                    DropdownMenuItem(
+                        onClick = {},
+                        enabled = false,
+                        text = { Text(text = "Specie*") },
+                    )
                     state.specieList.forEach { specie ->
-                        DropdownMenuItem(onClick = { onEvent(MouseScreenEvent.OnSelectSpecie(specie)) }) {
-                            Text(text = specie.speciesCode)
-                        }
+                        DropdownMenuItem(
+                            onClick = { onEvent(MouseScreenEvent.OnSelectSpecie(specie)) },
+                            text = { Text(text = specie.speciesCode) }
+                        )
                     }
                 }
 
@@ -137,17 +142,22 @@ private fun ScreenContent(
                     onDismissRequest = { onEvent(MouseScreenEvent.OnTrapIDDropDownDismiss) },
                 ) {
                     state.mouseEntity?.let { mouse ->
-                        DropdownMenuItem(onClick = {}, enabled = false) {
-                            Text(text = "${mouse.trapID}")
-                        }
+                        DropdownMenuItem(
+                            onClick = {},
+                            enabled = false,
+                            text = { Text(text = "${mouse.trapID}") },
+                        )
                     }
-                    DropdownMenuItem(onClick = {}, enabled = false) {
-                        Text(text = "TrapID")
-                    }
+                    DropdownMenuItem(
+                        onClick = {},
+                        enabled = false,
+                        text = { Text(text = "TrapID") },
+                    )
                     state.trapIDList.forEach { trapId ->
-                        DropdownMenuItem(onClick = { onEvent(MouseScreenEvent.OnSelectTrapID(trapId)) }) {
-                            Text(text = "$trapId")
-                        }
+                        DropdownMenuItem(
+                            onClick = { onEvent(MouseScreenEvent.OnSelectTrapID(trapId)) },
+                            text = { Text(text = "$trapId") },
+                        )
                     }
                 }
 
@@ -158,17 +168,22 @@ private fun ScreenContent(
                 ) {
                     state.mouseEntity?.let { mouse ->
                         val protocol = state.protocolList.find { protocol -> protocol.protocolId == mouse.protocolID }?.protocolName
-                        DropdownMenuItem(onClick = {}, enabled = false) {
-                            Text(text = "$protocol")
-                        }
+                        DropdownMenuItem(
+                            onClick = {},
+                            enabled = false,
+                            text = { Text(text = "$protocol") },
+                        )
                     }
-                    DropdownMenuItem(onClick = {}, enabled = false) {
-                        Text(text = "Protocol")
-                    }
+                    DropdownMenuItem(
+                        onClick = {},
+                        enabled = false,
+                        text = { Text(text = "Protocol") },
+                    )
                     state.protocolList.forEach { protocol ->
-                        DropdownMenuItem(onClick = { onEvent(MouseScreenEvent.OnSelectProtocol(protocol)) }) {
-                            Text(text = protocol.protocolName)
-                        }
+                        DropdownMenuItem(
+                            onClick = { onEvent(MouseScreenEvent.OnSelectProtocol(protocol)) },
+                            text = { Text(text = protocol.protocolName) },
+                        )
                     }
                 }
             }

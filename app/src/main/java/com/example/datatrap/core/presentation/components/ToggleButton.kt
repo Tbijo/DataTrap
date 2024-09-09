@@ -1,8 +1,8 @@
 package com.example.datatrap.core.presentation.components
 
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
@@ -15,7 +15,7 @@ fun ToggleButton(
     OutlinedButton(
         onClick = onClick,
         colors = ButtonDefaults.outlinedButtonColors(
-            backgroundColor = if (isSelected) Color.Green else Color.Transparent
+            contentColor = if (isSelected) Color.White else Color.Black,
         )
     ) {
         Text(text = text)
